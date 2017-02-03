@@ -39,7 +39,11 @@ public class MongolTextView extends View {
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.FILL);
         // default to a single line of text
-        int width = (int) mTextPaint.measureText(mText);
+        //int width = (int) mTextPaint.measureText(mText);
+
+
+
+
 
 
     }
@@ -84,11 +88,12 @@ public class MongolTextView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.save();
-        canvas.translate(getPaddingLeft(), getPaddingTop());
-        canvas.rotate(90);
-        canvas.drawText(mText, 0, 0, mTextPaint);
-        canvas.drawCircle(0, 0, 10, mPaint);
-        canvas.restore();
+        // FIXME don't instantiate here
+        MongolTextLine textLine = MongolTextLine.obtain();
+        textLine.set(mTextPaint, mText);
+
+        textLine.draw(canvas, 0, 0, 0, 0);
+        MongolTextLine.recycle(textLine);
+
     }
 }
