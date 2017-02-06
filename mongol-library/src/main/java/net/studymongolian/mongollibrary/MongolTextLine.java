@@ -21,15 +21,8 @@ public class MongolTextLine {
 
     private TextPaint mPaint;
     private CharSequence mText;
-    //private List<Integer> mOffsetsOfCharsToRotate;
     private List<TextRunOffset> mTextRunOffsets;
-    //private List<RunType> mTextRunOffsets;
-    //private CharSequence mTextRuns[];
 
-    // offset and type arrays must be the same length. each index is a pair.
-    // NORMAL type characters are written vertically, other types are written horizontally.
-    //private int runOffsets[];
-    //private int runTypes[];
 
 
     private class TextRunOffset {
@@ -53,23 +46,6 @@ public class MongolTextLine {
             return mIsRotated;
         }
     }
-
-//    private class TextRun {
-//        private CharSequence mText;
-//        private boolean mIsRotatated;
-//
-//        public TextRun(CharSequence text, boolean isRotated) {
-//            mText = text;
-//            mIsRotatated = isRotated;
-//        }
-//
-//        public boolean isRotated() {
-//            return mIsRotatated;
-//        }
-//        public CharSequence getText() {
-//            return mText;
-//        }
-//    }
 
 
 
