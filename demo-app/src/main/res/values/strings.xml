@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MongolLibraryDemo</string>
+    <string name="mongol_label_activity_title">MongolLabel</string>
 </resources>
