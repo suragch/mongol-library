@@ -9,8 +9,9 @@ import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
-
+import android.widget.Toast;
 
 
 /**
@@ -26,6 +27,7 @@ public class MongolLabel extends View {
     private String mText;
     private int mTextColor;
     private float mTextSizePx;
+    private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
 
     public MongolLabel(Context context) {
@@ -42,6 +44,7 @@ public class MongolLabel extends View {
             mText = a.getString(R.styleable.MongolLabel_text);
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolLabel_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolLabel_textColor, Color.BLACK);
+            mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
         } finally {
             a.recycle();
         }
@@ -112,8 +115,20 @@ public class MongolLabel extends View {
         // draw the text on the canvas after adjusting for padding
         canvas.save();
         canvas.rotate(90);
+
+        float gravityOffset = 0;
+        if (mGravity != Gravity.TOP) {
+            float textWidth = mTextPaint.measureText(mText);
+            if (mGravity == Gravity.CENTER) {
+                gravityOffset = (getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth) / 2;
+            } else if (mGravity == Gravity.BOTTOM) {
+                gravityOffset = getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth;
+            }
+            if (gravityOffset < 0) gravityOffset = 0;
+        }
+
         canvas.drawText(mText,
-                getPaddingTop(),
+                getPaddingTop() + gravityOffset,
                 -getPaddingLeft() - mTextPaint.getFontMetrics().descent,
                 mTextPaint);
         canvas.restore();
@@ -155,6 +170,24 @@ public class MongolLabel extends View {
         mTextPaint.setTextSize(mTextSizePx);
         invalidate();
         requestLayout();
+    }
+
+    public int getGravity() {
+        return mGravity;
+    }
+
+    /**
+     *  This sets a custom gravity attribute but uses the same values as Android gravity.
+     *  The gravity values are used as integers and not flags. Thus, combining two
+     *  flags with | will not work.
+     *
+     * @param gravity Choices are Gravity.TOP (default), Gravity.CENTER, and Gravity.BOTTOM
+     */
+    public void setGravity(int gravity) {
+        if (mGravity != gravity) {
+            mGravity = gravity;
+            invalidate();
+        }
     }
 
 

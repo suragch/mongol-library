@@ -2,12 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="@dimen/activity_vertical_margin">
+
 
     <net.studymongolian.mongollibrary.MongolLabel
-        android:id="@+id/mongol_label"
+        android:id="@+id/mongol_label_matchparent"
         app:text="Mongol"
         app:textSize="30sp"
+        app:gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:padding="5dp"
+        android:layout_alignParentLeft="true"/>
+
+    <net.studymongolian.mongollibrary.MongolLabel
+        android:id="@+id/mongol_label_wrapcontent"
+        app:text="Mongol"
+        app:textSize="30sp"
+        android:gravity="bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -15,6 +29,32 @@
         android:paddingLeft="5dp"
         android:paddingBottom="20dp"
         android:paddingRight="5dp"
-        android:layout_centerInParent="true"/>
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/mongol_label_matchparent"
+        android:layout_centerVertical="true"/>
+
+    <Spinner
+        android:id="@+id/fontcolor_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <Spinner
+        android:id="@+id/fontsize_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/fontcolor_spinner"/>
+
+    <Spinner
+        android:id="@+id/alignment_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/fontsize_spinner"/>
 
 </RelativeLayout>

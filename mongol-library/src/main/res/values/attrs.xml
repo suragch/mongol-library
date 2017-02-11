@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="MongolLabel">
-        <attr name="text" format="string" />
-        <attr name="textSize" format="dimension" />
-        <attr name="textColor" format="color" />
+        <attr name="text" format="string"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="gravity">
+            <!-- these are the same values as the Android Gravity constants -->
+            <flag name="top" value="48" />
+            <flag name="center" value="17" />
+            <flag name="bottom" value="80" />
+        </attr>
     </declare-styleable>
 </resources>
