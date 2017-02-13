@@ -15,7 +15,6 @@ public class MongolTextView extends View {
     String mText = "g This is some 文字 . 😊";
     TextPaint mTextPaint;
     Paint mPaint;
-    //StaticLayout mStaticLayout;
 
     // use this constructor if creating MyView programmatically
     public MongolTextView(Context context) {

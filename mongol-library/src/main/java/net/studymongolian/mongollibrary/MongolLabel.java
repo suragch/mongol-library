@@ -11,12 +11,11 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
 
 
 /**
  * This is a lightweight vertical TextView for displaying Mongolian text.
- * It is single line and does not handle rotated emoji or CJK characters.
+ * It is single line and does not handle rotated emoji, CJK, or tabs.
  * It cannot be styled beyond text color, size, and font. If more styling
  * or flexibility than this is needed, then please use a MongolTextView.
  */
