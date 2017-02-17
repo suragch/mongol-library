@@ -3,17 +3,13 @@ package net.studymongolian.mongollibrary;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MongolTextLine {
-    private static final boolean DEBUG = true;
+
     private static final int UNICODE_HANGUL_JAMO_START = 0x1100;
     private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;
     private static final int UNICODE_CJK_START = 0x11FF;
@@ -63,9 +59,7 @@ public class MongolTextLine {
             }
         }
         tl = new MongolTextLine();
-        if (DEBUG) {
-            Log.v("TLINE", "new: " + tl);
-        }
+
         return tl;
     }
 
@@ -84,22 +78,13 @@ public class MongolTextLine {
         return null;
     }
 
-    /**
-     * Initializes a MongolTextLine and prepares it for use.
-     *
-     * @param paint the base paint for the line
-     * @param text the text, can be Styled
-     */
+
+
     void set(TextPaint paint, CharSequence text, int start, int end) {
 
-        // 0 g 1    2 T  3 h  4 i   5s   6    7i   8s  9    10s  11o   12m  13e  14   15   16   17   18.  19   20  21
-        //0067 0020 0054 0068 0069 0073 0020 0069 0073 0020 0073 006F 006D 0065 0020 6587 5B57 0020 002E 0020 D83D DE0A
-
-        //SpannableStringBuilder currentRun = new SpannableStringBuilder();
         mPaint = paint;
         mText = text;
         mTextRunOffsets = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
-        //mOffsetsOfCharsToRotate = new ArrayList<Integer>();
         int charCount;
         int currentRunStart = start;
         int currentRunLength = 0;
@@ -131,7 +116,7 @@ public class MongolTextLine {
                     currentRunStart = offset + charCount;
                     currentRunLength = 0;
                 } else {
-                    // some other obsure character -> don't rotate it.
+                    // some other obscure character -> don't rotate it.
                     currentRunLength += charCount;
                 }
             }
@@ -143,7 +128,7 @@ public class MongolTextLine {
         }
     }
 
-    private boolean isCJK(Character.UnicodeBlock block) {
+    private static boolean isCJK(Character.UnicodeBlock block) {
         // TODO add hardcoded ranges for api 19 (and EXTENSION_E?)
         return (
                 Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(block)||
@@ -165,7 +150,7 @@ public class MongolTextLine {
     }
 
 
-    private boolean isJapaneseKana(Character.UnicodeBlock block) {
+    private static boolean isJapaneseKana(Character.UnicodeBlock block) {
         return (
                 Character.UnicodeBlock.HIRAGANA.equals(block) ||
                 Character.UnicodeBlock.KATAKANA.equals(block) ||
@@ -174,7 +159,7 @@ public class MongolTextLine {
 
 
 
-    private boolean isKoreanHangul(Character.UnicodeBlock block) {
+    private static boolean isKoreanHangul(Character.UnicodeBlock block) {
         // TODO add hardcoded ranges for api 19
         return (Character.UnicodeBlock.HANGUL_JAMO.equals(block) ||
                 //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_A.equals(block) ||    // api 19
@@ -186,7 +171,7 @@ public class MongolTextLine {
 
 
 
-    private boolean isEmoji(int codepoint) {
+    private static boolean isEmoji(int codepoint) {
         // XXX later may want to check specific code blocks, for now this is ok.
         return (codepoint >= UNICODE_EMOJI_START);
     }
@@ -201,7 +186,7 @@ public class MongolTextLine {
      * @param bottom the bottom of the line
      */
     void draw(Canvas c, float x, int top, int y, int bottom) {
-        // FIXME top/bottom parameters are not being used
+        // FIXME top parameter is not being used
 
         // (x, y) are the start coordinates of each vertical line
         // where x is the top of the line and y is the baseline running down.
@@ -210,7 +195,7 @@ public class MongolTextLine {
         // top and bottom are the font metrics values in the normal
         // horizontal orientation of a text line.
 
-        float width = 0;
+        float fontHeight = mPaint.getFontMetrics().descent - mPaint.getFontMetrics().ascent;
         int start = 0;
         int end = 0;
         //float tempBottom = mPaint.getFontMetrics().bottom; // get this from bottom parameter?
@@ -223,18 +208,19 @@ public class MongolTextLine {
 
             start = run.getOffset();
             end = run.getOffset() + run.getLength();
-            width = mPaint.measureText(mText, start, end);
+            //width = mPaint.measureText(mText, start, end);
 
             if (run.isRotated()) {
+            //if (false) {
 
-                // measure how far to move down and then move down
-                c.translate(width, 0);
+                // move down
+                c.translate(fontHeight, 0);
 
                 // then rotate and draw
                 c.save();
 
                 c.rotate(-90);
-                c.translate(-bottom, 0);
+                c.translate(-bottom, -bottom);
                 c.drawText(mText, start, end, 0, 0, mPaint);
 
                 c.restore();
@@ -242,36 +228,10 @@ public class MongolTextLine {
             } else {
 
                 c.drawText(mText, start, end, 0, 0, mPaint);
+                float width = mPaint.measureText(mText, start, end);
                 c.translate(width, 0);
             }
         }
-
-
-
-
-//        if (mOffsetsOfCharsToRotate.size() == 0) {
-//            c.drawText(mText, 0, mText.length(), x, y, mPaint);
-//        } else {
-//            Log.i("TAG", "size: " + mOffsetsOfCharsToRotate.size());
-//            Rect textBounds = new Rect();
-//            int lastDrawnOffset = -1;
-//            for (int offset : mOffsetsOfCharsToRotate) {
-//                // first draw any normal text
-//                float width = mPaint.measureText(mText, lastDrawnOffset + 1, offset + 1);
-//                c.drawText(mText, lastDrawnOffset + 1, offset, x, y, mPaint);
-//                // rotate and draw the current char
-//                //c.rotate(-90);
-//                c.translate(width, 0);
-//                c.rotate(-90);
-//                c.drawText(mText, offset, offset + 1, x, y, mPaint);
-//
-//                break;
-//            }
-//
-//        }
-
-        //c.drawText(mText, 0, mText.length(), x, y, mPaint);
-        //c.drawCircle(0, 0, 10, mPaint);
 
         c.restore();
     }
@@ -286,60 +246,55 @@ public class MongolTextLine {
         return 0;
     }
 
-    /**
-     * Returns information about a position on the line.
-     *
-     * @param offset the line-relative character offset, between 0 and the
-     * line length, inclusive
-     * @param trailing true to measure the trailing edge of the character
-     * before offset, false to measure the leading edge of the character
-     * at offset.
-     * @param fmi receives metrics information about the requested
-     * character, can be null.
-     * @return the signed offset from the leading margin to the requested
-     * character edge.
-     */
-    float measure(int offset, boolean trailing, Paint.FontMetricsInt fmi) {
 
-        return 0;
-    }
+    public static float measure(TextPaint paint, CharSequence text, int start, int end) {
+        float measuredSum = 0;
+        float lineHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
+        int charCount;
+        int currentRunStart = start;
+        int currentRunLength = 0;
+        for (int offset = start; offset < end; ) {
+            final int codepoint = Character.codePointAt(text, offset);
+            charCount = Character.charCount(codepoint);
 
-    /**
-     * Draws a unidirectional (but possibly multi-styled) run of text.
-     *
-     *
-     * @param c the canvas to draw on
-     * @param start the line-relative start
-     * @param limit the line-relative limit
-     * @param x the position of the run that is closest to the leading margin
-     * @param top the top of the line
-     * @param y the baseline
-     * @param bottom the bottom of the line
-     * @param needWidth true if the width value is required.
-     * @return the signed width of the run, based on the paragraph direction.
-     * Only valid if needWidth is true.
-     */
-    private float drawRun(Canvas c, int start,
-                          int limit, float x, int top, int y, int bottom,
-                          boolean needWidth) {
+            // first check for Mongolian/latin/etc. (less than CJK and not Korean Jamo)
+            // Most chars are expected to be here so this is an early exit to avoid
+            // checking every single character for CJK and Emoji
+            if ((codepoint > UNICODE_HANGUL_JAMO_END && codepoint < UNICODE_CJK_START) || // Mongolian, etc
+                    codepoint < UNICODE_HANGUL_JAMO_START) { // English, etc
+                currentRunLength += charCount;
+            } else {
+                // Check for Chinese and emoji
+                Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
+                if (isCJK(block) ||
+                        isJapaneseKana(block) ||
+                        isKoreanHangul(block) ||
+                        isEmoji(codepoint)) {
+                    // save any old normal (nonrotated) runs
+                    if (currentRunLength > 0) {
+                        measuredSum += paint.measureText(text, currentRunStart, currentRunStart + currentRunLength);
+                        //mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
+                    }
+                    // save this rotated character
+                    measuredSum += lineHeight;
+                    //mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
+                    // reset normal run
+                    currentRunStart = offset + charCount;
+                    currentRunLength = 0;
+                } else {
+                    // some other obscure character -> don't rotate it.
+                    currentRunLength += charCount;
+                }
+            }
+            offset += charCount;
+        }
 
-        return 0;
-    }
+        if (currentRunLength > 0) {
+            measuredSum += paint.measureText(text, currentRunStart, currentRunStart + currentRunLength);
+            //mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
+        }
 
-    /**
-     * Measures a unidirectional (but possibly multi-styled) run of text.
-     *
-     *
-     * @param start the line-relative start of the run
-     * @param offset the offset to measure to, between start and limit inclusive
-     * @param limit the line-relative limit of the run
-     * @param fmi receives metrics information about the requested
-     * run, can be null.
-     * @return the signed width from the start of the run to the leading edge
-     * of the character at offset, based on the run (not paragraph) direction
-     */
-    private float measureRun(int start, int offset, int limit, Paint.FontMetricsInt fmi) {
-        return 0;
+        return measuredSum;
     }
 
 

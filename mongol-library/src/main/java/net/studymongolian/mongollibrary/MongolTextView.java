@@ -14,7 +14,7 @@ import java.text.BreakIterator;
 
 public class MongolTextView extends View {
 
-    String mText = "g This is some 文字. \uD83D\uDE42";
+    String mText = "g This is some 文字文字a文字文字. a\uD83D\uDE42\uD83D\uDE42\uD83D\uDE42a\uD83D\uDE42a";
     //String mText = "asdf asdff asdfasd asdfa a asdfas asdf a asdfasasdfasd a";
     //String mText = "This is a senctence that needs some text-wrapping.";
     TextPaint mTextPaint;
@@ -90,7 +90,6 @@ public class MongolTextView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
 
         int wrapHeight = h - getPaddingTop() - getPaddingBottom();
-        wrapHeight = 480; // FIXME dummy height
         mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
     }
 

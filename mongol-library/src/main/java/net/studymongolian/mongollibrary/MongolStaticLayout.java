@@ -151,7 +151,7 @@ public class MongolStaticLayout {
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
         int lineToLineDistance = lbottom - ltop;
 
-        int x = 0; // start position of each vertical line
+        int x = lbottom; // start position of each vertical line
         int y = 0; // baseline
         MongolTextLine tl = MongolTextLine.obtain();
 
@@ -235,11 +235,10 @@ public class MongolStaticLayout {
     // call this in onSizeChanged initially
     private void updateLines() {
 
+        // XXX can we just use a char sequence? BreakIterator is the only thing that needs it.
         String tempString = mText.toString();
 
         BreakIterator boundary = BreakIterator.getLineInstance();
-        //BreakIterator charBoundary = BreakIterator.getCharacterInstance();
-
         boundary.setText(tempString);
         int start = boundary.first();
         mLinesInfo.add(new LineInfo(start, 0, 0, false)); // TODO add top, descent, special chars
@@ -247,7 +246,8 @@ public class MongolStaticLayout {
         float measuredLength = 0;
         for (int end = boundary.next(); end != BreakIterator.DONE; end = boundary.next()) {
 
-            measuredLength = mTextPaint.measureText(tempString, start, end);
+            //measuredLength = mTextPaint.measureText(tempString, start, end);
+            measuredLength = MongolTextLine.measure(mTextPaint, tempString, start, end);
             measuredSum += measuredLength;
             if (measuredSum > mHeight) {
                 mLinesInfo.add(new LineInfo(start, 0, 0, false));
@@ -269,7 +269,8 @@ public class MongolStaticLayout {
                         codepoint = tempString.codePointAt(endChar);
                         endChar += Character.charCount(codepoint);
                         // XXX this needs to be optimized. Measures too many times.
-                        measuredLength = mTextPaint.measureText(tempString, start, endChar);
+                        //measuredLength = mTextPaint.measureText(tempString, start, endChar);
+                        measuredLength = MongolTextLine.measure(mTextPaint, tempString, start, endChar);
                         if (measuredLength > mHeight) {
                             start = previousEndChar;
                             mLinesInfo.add(new LineInfo(start, 0, 0, false));
@@ -279,7 +280,8 @@ public class MongolStaticLayout {
                         previousEndChar = endChar;
                     }
 
-                    measuredSum = mTextPaint.measureText(tempString, start, end);
+                    //measuredSum = mTextPaint.measureText(tempString, start, end);
+                    measuredSum = MongolTextLine.measure(mTextPaint, tempString, start, end);
                 }
             }
 
