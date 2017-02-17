@@ -203,12 +203,20 @@ public class MongolTextLine {
     void draw(Canvas c, float x, int top, int y, int bottom) {
         // FIXME top/bottom parameters are not being used
 
+        // (x, y) are the start coordinates of each vertical line
+        // where x is the top of the line and y is the baseline running down.
+        // Don't confuse these with Paint.drawText coordinates.
+
+        // top and bottom are the font metrics values in the normal
+        // horizontal orientation of a text line.
+
         float width = 0;
         int start = 0;
         int end = 0;
         //float tempBottom = mPaint.getFontMetrics().bottom; // get this from bottom parameter?
 
         c.save();
+        c.translate(x, y);
         c.rotate(90);
 
         for (TextRunOffset run : mTextRunOffsets) {
@@ -227,13 +235,13 @@ public class MongolTextLine {
 
                 c.rotate(-90);
                 c.translate(-bottom, 0);
-                c.drawText(mText, start, end, x, y, mPaint);
+                c.drawText(mText, start, end, 0, 0, mPaint);
 
                 c.restore();
 
             } else {
 
-                c.drawText(mText, start, end, x, y, mPaint);
+                c.drawText(mText, start, end, 0, 0, mPaint);
                 c.translate(width, 0);
             }
         }

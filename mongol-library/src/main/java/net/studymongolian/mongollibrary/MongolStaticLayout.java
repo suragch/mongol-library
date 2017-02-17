@@ -151,7 +151,8 @@ public class MongolStaticLayout {
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
         int lineToLineDistance = lbottom - ltop;
 
-        int lbaseline = 0;
+        int x = 0; // start position of each vertical line
+        int y = 0; // baseline
         MongolTextLine tl = MongolTextLine.obtain();
 
         // draw the lines one at a time
@@ -167,15 +168,13 @@ public class MongolStaticLayout {
                 end = mText.length();
             }
 
-            int x = 0;
-
             if (!isSpannedText && !hasSpecialChar) {
-                canvas.drawText(mText, start, end, x, lbaseline, mTextPaint);
+                canvas.drawText(mText, start, end, x, y, mTextPaint);
             } else {
                 tl.set(mTextPaint, mText, start, end);
-                tl.draw(canvas, x, ltop, lbaseline, lbottom);
+                tl.draw(canvas, x, ltop, y, lbottom);
             }
-            lbaseline -= lineToLineDistance;
+            x += lineToLineDistance;
         }
 
         MongolTextLine.recycle(tl);

@@ -14,9 +14,9 @@ import java.text.BreakIterator;
 
 public class MongolTextView extends View {
 
-    //String mText = "g This is some 文字. \uD83D\uDE42";
+    String mText = "g This is some 文字. \uD83D\uDE42";
     //String mText = "asdf asdff asdfasd asdfa a asdfas asdf a asdfasasdfasd a";
-    String mText = "This is a senctence that needs some text-wrapping.";
+    //String mText = "This is a senctence that needs some text-wrapping.";
     TextPaint mTextPaint;
     Paint mPaint;
     MongolStaticLayout mStaticLayout;
