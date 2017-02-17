@@ -23,13 +23,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         setContentView(R.layout.activity_main);
 
         // data to populate the RecyclerView with
-        ArrayList<String> animalNames = new ArrayList<>();
-        animalNames.add("MongolLabel");
+        ArrayList<String> apiDemos = new ArrayList<>();
+        apiDemos.add("MongolLabel");
+        apiDemos.add("MongolTextView");
 
         // set up the RecyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvApiDemoList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MainActivityRecyclerViewAdapter(this, animalNames);
+        adapter = new MainActivityRecyclerViewAdapter(this, apiDemos);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -40,8 +41,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
 
         switch (position) {
             case 0: // MongolLabel
-                Intent intent = new Intent(this, MongolLabelActivity.class);
-                startActivity(intent);
+                Intent labelIntent = new Intent(this, MongolLabelActivity.class);
+                startActivity(labelIntent);
+                break;
+            case 1: // MongolTextView
+                Intent textViewIntent = new Intent(this, MongolTextViewActivity.class);
+                startActivity(textViewIntent);
                 break;
         }
     }

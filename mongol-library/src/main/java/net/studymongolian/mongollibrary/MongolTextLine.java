@@ -90,7 +90,7 @@ public class MongolTextLine {
      * @param paint the base paint for the line
      * @param text the text, can be Styled
      */
-    void set(TextPaint paint, CharSequence text) {
+    void set(TextPaint paint, CharSequence text, int start, int end) {
 
         // 0 g 1    2 T  3 h  4 i   5s   6    7i   8s  9    10s  11o   12m  13e  14   15   16   17   18.  19   20  21
         //0067 0020 0054 0068 0069 0073 0020 0069 0073 0020 0073 006F 006D 0065 0020 6587 5B57 0020 002E 0020 D83D DE0A
@@ -98,13 +98,13 @@ public class MongolTextLine {
         //SpannableStringBuilder currentRun = new SpannableStringBuilder();
         mPaint = paint;
         mText = text;
-        mTextRunOffsets = new ArrayList<>();
+        mTextRunOffsets = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
         //mOffsetsOfCharsToRotate = new ArrayList<Integer>();
-        int charCount = 0;
-        int currentRunStart = 0;
+        int charCount;
+        int currentRunStart = start;
         int currentRunLength = 0;
-        final int length = mText.length();
-        for (int offset = 0; offset < length; ) {
+        final int length = end - start;
+        for (int offset = start; offset < end; ) {
             final int codepoint = Character.codePointAt(mText, offset);
             charCount = Character.charCount(codepoint);
 
@@ -206,7 +206,7 @@ public class MongolTextLine {
         float width = 0;
         int start = 0;
         int end = 0;
-        float tempBottom = mPaint.getFontMetrics().bottom; // get this from bottom parameter?
+        //float tempBottom = mPaint.getFontMetrics().bottom; // get this from bottom parameter?
 
         c.save();
         c.rotate(90);
@@ -226,7 +226,7 @@ public class MongolTextLine {
                 c.save();
 
                 c.rotate(-90);
-                c.translate(-tempBottom, 0);
+                c.translate(-bottom, 0);
                 c.drawText(mText, start, end, x, y, mPaint);
 
                 c.restore();

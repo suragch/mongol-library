@@ -6,15 +6,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 
+import java.text.BreakIterator;
 
 
 public class MongolTextView extends View {
 
-    String mText = "g This is some 文字 . 😊";
+    //String mText = "g This is some 文字. \uD83D\uDE42";
+    //String mText = "asdf asdff asdfasd asdfa a asdfas asdf a asdfasasdfasd a";
+    String mText = "This is a senctence that needs some text-wrapping.";
     TextPaint mTextPaint;
     Paint mPaint;
+    MongolStaticLayout mStaticLayout;
 
     // use this constructor if creating MyView programmatically
     public MongolTextView(Context context) {
@@ -42,9 +47,6 @@ public class MongolTextView extends View {
 
 
 
-
-
-
     }
 
     @Override
@@ -66,7 +68,7 @@ public class MongolTextView extends View {
             }
         }
 
-        // determine the height
+        // FIXME determine the height
         int height;
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightRequirement = MeasureSpec.getSize(heightMeasureSpec);
@@ -84,15 +86,29 @@ public class MongolTextView extends View {
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        int wrapHeight = h - getPaddingTop() - getPaddingBottom();
+        wrapHeight = 480; // FIXME dummy height
+        mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // FIXME don't instantiate here
-        MongolTextLine textLine = MongolTextLine.obtain();
-        textLine.set(mTextPaint, mText);
+        mStaticLayout.draw(canvas);
 
-        textLine.draw(canvas, 0, 0, 0, 0);
-        MongolTextLine.recycle(textLine);
+
+        // FIXME don't instantiate here
+//        MongolTextLine textLine = MongolTextLine.obtain();
+//        textLine.set(mTextPaint, mText);
+//
+//        textLine.draw(canvas, 0, 0, 0, 0);
+//        MongolTextLine.recycle(textLine);
 
     }
+
+
 }
