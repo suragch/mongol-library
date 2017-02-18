@@ -3,15 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin" >
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <net.studymongolian.mongollibrary.MongolTextView
-        android:id="@+id/mongol_textview"
+        android:id="@+id/mongol_textview_matchparent"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        app:text="@string/medium_string"
+        android:background="@android:color/white"/>
+
+    <net.studymongolian.mongollibrary.MongolTextView
+        android:id="@+id/mongol_textview_wrapcontent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:text="@string/medium_string"
+        android:layout_below="@id/mongol_textview_matchparent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="16dp"
         android:background="@android:color/white"/>
 
 </RelativeLayout>

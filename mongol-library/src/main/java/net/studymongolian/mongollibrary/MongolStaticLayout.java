@@ -74,7 +74,7 @@ public class MongolStaticLayout {
      * Return how wide a layout must be in order to display the
      * specified text slice with one line per paragraph.
      */
-    public static float getDesiredWidth(CharSequence source,
+    public static float getDesiredHeight(CharSequence source,
                                         int start, int end,
                                         TextPaint paint) {
         float need = 0;
@@ -86,10 +86,10 @@ public class MongolStaticLayout {
             if (next < 0)
                 next = end;
 
-            float w = measurePara(paint, source, i, next);
+            float height = MongolTextLine.measure(paint, source, i, next);
 
-            if (w > need)
-                need = w;
+            if (height > need)
+                need = height;
 
             next++;
         }
@@ -97,20 +97,55 @@ public class MongolStaticLayout {
         return need;
     }
 
-    static float measurePara(TextPaint paint, CharSequence text, int start, int end) {
-        // TODO
-        return 0;
-//        MongolTextLine tl = MongolTextLine.obtain();
-//        try {
+//    /**
+//     * @param text
+//     * @param start
+//     * @param end
+//     * @param paint
+//     * @param heightRequirement use 0 for no height requirement. Height will be determined
+//     *                          based on how tall the longest paragraph would be if a single line.
+//     * @return an array of length 2 containing the desired {width, height}.
+//     */
+//    public static float[] getDesiredSize(CharSequence text,
+//                                         int start, int end,
+//                                         TextPaint paint, float heightRequirement) {
 //
-//            tl.set(paint, text, start, end, dir, directions, hasTabs, tabStops);
-//            return margin + tl.metrics(null);
-//        } finally {
-//            MongolTextLine.recycle(tl);
+//        float[] widthHeight = new float[2];
+//        float need = 0;
+//        float width = 0;
+//
+//
+//        if (heightRequirement <= 0) {
+//            int next;
+//            int lineCount = 0;
+//            for (int i = start; i <= end; i = next) {
+//                next = TextUtils.indexOf(text, '\n', i, end);
+//
+//                if (next < 0)
+//                    next = end;
+//
+//                float height = MongolTextLine.measure(paint, text, i, next);
+//
+//                if (height > need)
+//                    need = height;
+//
+//                next++;
+//                lineCount++;
+//            }
+//            width = lineCount * (paint.getFontMetrics().bottom - paint.getFontMetrics().top);
+//            widthHeight[0] = width;
+//            widthHeight[1] = need;
+//        } else {
 //
 //        }
-    }
-
+//
+//
+//
+//
+//
+//
+//        return need;
+//    }
 
     /**
      * Draw this Layout on the specified Canvas.
@@ -149,7 +184,7 @@ public class MongolStaticLayout {
 
         int ltop = mTextPaint.getFontMetricsInt().top;
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
-        int lineToLineDistance = lbottom - ltop;
+        int lineToLineDistance = lbottom - ltop; // XXX this ignores leading
 
         int x = lbottom; // start position of each vertical line
         int y = 0; // baseline
@@ -287,6 +322,14 @@ public class MongolStaticLayout {
 
             start = end;
         }
+    }
+
+    public int getHeight() {
+        return mHeight;
+    }
+
+    public int getWidth() {
+        return (int) (mLinesInfo.size() * (mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top));
     }
 
 

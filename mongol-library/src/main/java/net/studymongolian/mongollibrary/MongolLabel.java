@@ -31,6 +31,12 @@ public class MongolLabel extends View {
 
     public MongolLabel(Context context) {
         super(context);
+
+        mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
+        mTextColor = Color.BLACK;
+        mGravity = Gravity.TOP;
+
         init();
     }
 
@@ -41,6 +47,9 @@ public class MongolLabel extends View {
 
         try {
             mText = a.getString(R.styleable.MongolLabel_text);
+            if (mText == null) {
+                mText = "";
+            }
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolLabel_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolLabel_textColor, Color.BLACK);
             mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
@@ -60,7 +69,7 @@ public class MongolLabel extends View {
                     DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         }
         mTextPaint.setTextSize(mTextSizePx);
-        mTextPaint.setColor(0xFF000000);
+        mTextPaint.setColor(mTextColor);
 
         // TODO font
 
