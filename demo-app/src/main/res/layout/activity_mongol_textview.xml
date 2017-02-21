@@ -9,21 +9,60 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <net.studymongolian.mongollibrary.MongolTextView
+    <!--<net.studymongolian.mongollibrary.MongolTextView-->
+        <!--android:id="@+id/mongol_textview_matchparent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="300dp"-->
+        <!--android:padding="10dp"-->
+        <!--app:text="@string/medium_string"-->
+        <!--android:background="@android:color/white"/>-->
+
+    <View
         android:id="@+id/mongol_textview_matchparent"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        app:text="@string/medium_string"
+        android:padding="10dp"
         android:background="@android:color/white"/>
 
     <net.studymongolian.mongollibrary.MongolTextView
         android:id="@+id/mongol_textview_wrapcontent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:text="@string/medium_string"
+        app:text="@string/short_string"
         android:layout_below="@id/mongol_textview_matchparent"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="16dp"
         android:background="@android:color/white"/>
+
+
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:layout_below="@id/mongol_textview_matchparent">
+
+        <Spinner
+            android:id="@+id/fontcolor_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
+
+        <Spinner
+            android:id="@+id/fontsize_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
+
+        <Spinner
+            android:id="@+id/alignment_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

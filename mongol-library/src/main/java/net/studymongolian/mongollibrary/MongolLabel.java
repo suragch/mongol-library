@@ -127,9 +127,10 @@ public class MongolLabel extends View {
         float gravityOffset = 0;
         if (mGravity != Gravity.TOP) {
             float textWidth = mTextPaint.measureText(mText);
-            if (mGravity == Gravity.CENTER) {
+            int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
+            if (verticalGravity == Gravity.CENTER_VERTICAL) {
                 gravityOffset = (getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth) / 2;
-            } else if (mGravity == Gravity.BOTTOM) {
+            } else if (verticalGravity == Gravity.BOTTOM) {
                 gravityOffset = getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth;
             }
             if (gravityOffset < 0) gravityOffset = 0;

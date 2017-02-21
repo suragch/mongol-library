@@ -8,7 +8,7 @@ import android.text.TextPaint;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MongolTextLine {
+class MongolTextLine {
 
     private static final int UNICODE_HANGUL_JAMO_START = 0x1100;
     private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;

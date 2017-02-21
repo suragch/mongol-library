@@ -27,7 +27,9 @@ public class MongolTextView extends View {
     private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
     private Paint mPaint;
-    private MongolStaticLayout mStaticLayout;
+    private MongolLayout mLayout;
+    private boolean mNeedsRelayout = false;
+    //private boolean mStaticLayoutNeedsRedraw = false;
 
     // programmatic constructor
     public MongolTextView(Context context) {
@@ -77,6 +79,9 @@ public class MongolTextView extends View {
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.FILL);
+
+        // initialize the layout, but the height still needs to be set
+        mLayout = new MongolLayout(mText, mTextPaint);
     }
 
     @Override
@@ -91,7 +96,7 @@ public class MongolTextView extends View {
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightRequirement;
         } else {
-            int desiredHeight = (int) MongolStaticLayout.getDesiredHeight(mText, 0, mText.length(), mTextPaint)
+            int desiredHeight = (int) MongolLayout.getDesiredHeight(mText, 0, mText.length(), mTextPaint)
                     + getPaddingTop() + getPaddingBottom();
             if (heightMode == MeasureSpec.AT_MOST && desiredHeight > heightRequirement) {
                 height = heightRequirement;
@@ -107,11 +112,13 @@ public class MongolTextView extends View {
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthRequirement;
         } else {
-            if (mStaticLayout == null || mStaticLayout.getHeight() != height) {
-                int wrapHeight = height - getPaddingTop() - getPaddingBottom();
-                mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
-            }
-            int desiredWidth = mStaticLayout.getWidth() + getPaddingLeft() + getPaddingRight();
+//            if (mStaticLayout == null || mStaticLayout.getHeight() != height || mStaticLayoutNeedsRedraw) {
+//                int wrapHeight = height - getPaddingTop() - getPaddingBottom();
+//                mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
+//                mStaticLayoutNeedsRedraw = false;
+//            }
+            mLayout.setHeight(height);
+            int desiredWidth = mLayout.getWidth() + getPaddingLeft() + getPaddingRight();
             if (widthMode == MeasureSpec.AT_MOST && desiredWidth > widthRequirement) {
                 width = widthRequirement;
             } else {
@@ -127,27 +134,105 @@ public class MongolTextView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        if (mStaticLayout == null || mStaticLayout.getHeight() != h) {
-            int wrapHeight = h - getPaddingTop() - getPaddingBottom();
-            mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
+        //if (h != oldh) {
+            mLayout.setHeight(h);
+            mNeedsRelayout = false;
+        //}
+
+
+//        if (mStaticLayout == null || mStaticLayout.getHeight() != h || mStaticLayoutNeedsRedraw) {
+//            int wrapHeight = h - getPaddingTop() - getPaddingBottom();
+//            mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
+//            mStaticLayoutNeedsRedraw = false;
+//        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        // TODO Make it a MongolLayout where parameters can be adjusted rather than creating a new
+        // layout every time.
+
+//        int h = bottom - top;
+//        mLayout.setHeight(h);
+        if (mNeedsRelayout) {
+            mLayout.reflowLines();
+            mNeedsRelayout = false;
         }
+
+//        if (mStaticLayout == null || mStaticLayout.getHeight() != h || mStaticLayoutNeedsRedraw) {
+//            int wrapHeight = h - getPaddingTop() - getPaddingBottom();
+//            mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
+//            mStaticLayoutNeedsRedraw = false;
+//        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        mStaticLayout.draw(canvas);
-
-
-        // FIXME don't instantiate here
-//        MongolTextLine textLine = MongolTextLine.obtain();
-//        textLine.set(mTextPaint, mText);
-//
-//        textLine.draw(canvas, 0, 0, 0, 0);
-//        MongolTextLine.recycle(textLine);
+        mLayout.draw(canvas);
 
     }
 
 
+    public CharSequence getText() {
+        return mText;
+    }
+
+    public void setText(String text) {
+        mText = text;
+        mNeedsRelayout = true;
+        invalidate();
+        requestLayout();
+    }
+
+    public int getTextColor() {
+        return mTextColor;
+    }
+
+    public void setTextColor(int color) {
+        mTextColor = color;
+        mTextPaint.setColor(mTextColor);
+        invalidate();
+    }
+
+    /**
+     * @return text size in pixels
+     */
+    public float getTextSize() {
+        return mTextSizePx;
+    }
+
+    /**
+     * @param size in SP units
+     */
+    public void setTextSize(int size) {
+        mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                size, getResources().getDisplayMetrics());
+        mTextPaint.setTextSize(mTextSizePx);
+        //mStaticLayoutNeedsRedraw = true;
+        mNeedsRelayout = true;
+        invalidate();
+        requestLayout();
+    }
+
+    public int getGravity() {
+        return mGravity;
+    }
+
+    /**
+     *  This sets a custom gravity attribute but uses the same values as Android gravity.
+     *  The gravity values are used as integers and not flags. Thus, combining two
+     *  flags with | will not work.
+     *
+     * @param gravity Choices are Gravity.TOP (default), Gravity.CENTER_HORIZONTAL, and Gravity.BOTTOM
+     */
+    public void setGravity(int gravity) {
+        if (mGravity != gravity) {
+            mGravity = gravity;
+            invalidate();
+        }
+    }
 }
