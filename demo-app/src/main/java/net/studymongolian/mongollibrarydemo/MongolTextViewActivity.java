@@ -27,7 +27,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
         setContentView(R.layout.activity_mongol_textview);
 
         //mTvMatchParent = (MongolTextView) findViewById(R.id.mongol_textview_matchparent);
-        mTvWrapContent = (MongolTextView) findViewById(R.id.mongol_textview_wrapcontent);
+        //mTvWrapContent = (MongolTextView) findViewById(R.id.mongol_textview_wrapcontent);
 
         // Color choice spinner
         Spinner colorSpinner = (Spinner) findViewById(R.id.fontcolor_spinner);
@@ -76,11 +76,11 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                     break;
             }
             //mTvMatchParent.setTextColor(color);
-            mTvWrapContent.setTextColor(color);
+            //mTvWrapContent.setTextColor(color);
         } else if (viewid == R.id.fontsize_spinner) {
             int size = Integer.parseInt(parent.getSelectedItem().toString());
             //mTvMatchParent.setTextSize(size);
-            mTvWrapContent.setTextSize(size);
+            //mTvWrapContent.setTextSize(size);
         } else if (viewid == R.id.alignment_spinner) {
             int gravity = Gravity.TOP;
             String item = String.valueOf(parent.getItemAtPosition(pos));
@@ -93,7 +93,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                     break;
             }
             //mTvMatchParent.setGravity(gravity);
-            mTvWrapContent.setGravity(gravity);
+            //mTvWrapContent.setGravity(gravity);
         }
     }
 

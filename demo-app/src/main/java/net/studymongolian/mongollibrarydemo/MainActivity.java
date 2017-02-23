@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         ArrayList<String> apiDemos = new ArrayList<>();
         apiDemos.add("MongolLabel");
         apiDemos.add("MongolTextView");
+        apiDemos.add("Testing");
 
         // set up the RecyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvApiDemoList);
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
             case 1: // MongolTextView
                 Intent textViewIntent = new Intent(this, MongolTextViewActivity.class);
                 startActivity(textViewIntent);
+                break;
+            case 2: // Testing
+                Intent testingViewIntent = new Intent(this, TestingActivity.class);
+                startActivity(testingViewIntent);
                 break;
         }
     }

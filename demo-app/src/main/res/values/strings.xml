@@ -5,5 +5,7 @@
 
     <string name="short_string">Mongol</string>
     <string name="medium_string">g This is some 文字文字a文字文字. a🙂🙂🙂a🙂a</string>
+    <string name="long_string">000000 111111 222222 333333 444444 555555 666666 777777 888888 99999999</string>
+    <!--<string name="long_string">123 456 678 890 101112 131415 161718 192021 222324 252627 282930 313233 343536 373839 404142 434445 464748 495051 525354 555657 585960 616263 646566 676869 707172 737475 767778.</string>-->
 
 </resources>

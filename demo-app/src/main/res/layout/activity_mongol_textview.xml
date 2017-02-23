@@ -28,7 +28,7 @@
         android:id="@+id/mongol_textview_wrapcontent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:text="@string/short_string"
+        app:text="@string/long_string"
         android:layout_below="@id/mongol_textview_matchparent"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="16dp"

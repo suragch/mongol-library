@@ -19,6 +19,8 @@
                   android:name=".MongolLabelActivity"/>
         <activity android:label="@string/mongol_textview_activity_title"
                   android:name=".MongolTextViewActivity"/>
+        <activity android:label="Testing"
+                  android:name=".TestingActivity"/>
     </application>
 
 </manifest>
