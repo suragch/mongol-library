@@ -21,6 +21,8 @@
                   android:name=".MongolTextViewActivity"/>
         <activity android:label="Testing"
                   android:name=".TestingActivity"/>
+        <activity android:label="@string/unicode_activity_title"
+                  android:name=".UnicodeActivity"/>
     </application>
 
 </manifest>
