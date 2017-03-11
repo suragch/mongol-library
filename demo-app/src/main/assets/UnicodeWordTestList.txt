@@ -1,0 +1,61 @@
+Words from "A Study of Traditional Mongolian Script Encodings and Rendering"
+ᠪᠢᠴᠢᠭ
+ᠡᠭᠡᠰᠢᠭ ᠢᠨᠦ
+ᠪᠦᠵᠢᠭ ᠢ ᠪᠡᠨ ᠶᠦᠭᠡᠨ
+ᠴᠢᠷᠢᠭ ᠮᠠᠨᠢ
+ᠡᠭᠴᠡ
+ᠬᠦᠭᠵᠢᠮ ᠳᠦᠷ ᠢᠶᠡᠨ ᠳᠡᠭᠡᠨ
+ᠪᠦᠷᠢᠳᠭᠡᠯ ᠢᠶᠡᠨ
+ᠰᠡᠳᠬᠢᠯ ᠮᠢᠨᠢ
+ᠦᠢᠯᠠᠳᠪᠦᠷᠢ ᠳᠦ
+ᠵᠡᠯᠢᠭᠦᠳᠭᠡᠨ ᠦ
+ᠮᠠᠩᠭᠠᠯ ᠳᠤᠷ ᠢᠶᠠᠨ ᠳᠠᠭᠠᠨ
+ᠳ᠋ᠦᠩ ᠢ
+ᠰᠣᠳᠨᠠᠮ ᠠᠴᠠ ᠪᠠᠨ ᠠᠴᠠᠭᠠᠨ
+ᡀᠠᠭᠪᠠ ᠯᠤᠭ᠎ᠠ
+ᠴᠡᠪᠡᠭᠮᠡᠳ ᠯᠦᠭᠡ
+ᠼᠧᠮᠧᠨ᠋ᠲ ᠲᠠᠶᠢᠭᠠᠨ (should't have FVS1 according to Unicode 8.0 draft)
+ᠦᠨᠢᠶ᠎ᠡ ᠲᠡᠶᠢᠭᠡᠨ
+ᠬᠣᠶᠢᠨ᠎ᠠ
+ᠠᠩᠨ᠎ᠠ (missing glyph in Almas font)
+
+﻿Menkhsoft words from Greg
+ᠴᠢᠩᠭ᠎ᠠ
+ᠴᠢᠩᠭᠠᠯᠠᠬᠤ
+ᠠᠩᠭᠯᠢ
+ᠳᠠᠯᠵᠢᠶᠭᠰᠠᠨ
+ᠢᠯᠪᠢᠭᠴᠢ
+ᠪᠢᠴᠢᠭᠴᠢ
+ᠰᠢᠭᠰᠢᠭᠯᠡᠬᠦ
+ᠳᠢᠭᠯᠢᠮᠰᠢᠭᠰᠡᠨ
+ᠴᠢᠭᠢᠭᠯᠢᠭ
+
+Other
+ᠭᠷᠠᠮ (g+non-vowel words)
+ᠮᠢᠩᠭ᠎ᠠ
+ᠮᠢᠩᠭ᠎ᠠᠨ
+ᠨᠠᠢ᠌ᠮᠠ eight
+ᠪᠠᠢᠨ᠎ᠠ
+ᠪᠠᠶᠢᠨ᠎ᠠ
+ᠪᠦᠦ
+ᠬᠦᠦ
+ᠬᠡᠦᠬᠡᠳ
+ᠠᠩᠭᠯᠢ
+ᠰᠤᠶᠤᠯ
+ᠰᠠᠢᠬᠠᠨ (saihan beautiful)
+ᠰᠠᠶ᠋ᠢᠬᠠᠨ (sayihan recently)
+ᠰᠠᠶᠢ (old form - straight Y)
+ᠰᠠᠶ᠋ᠢ (hooked Y)
+ᠨᠠᠷᠠᠨᠭᠡᠷᠡᠯ  (NaranGerel two-part name)
+ᠴᠣᠯᠮᠣᠨ᠍ᠣ᠋ᠳᠣ (CholmonOdo two-part name)
+ᠰᠣᠳᠣᠪᠢᠯᠢᠭ (Sodobilig two-part name)
+ᠰᠣᠳᠣᠪᠢᠯᠢᠭ᠌ (Sodobilig two-part name, with final GA specified)
+ᠡᠷᠳᠡᠨᠢᠲ᠋ᠠᠨ᠎ᠠ (Erdenitana two-part name, with second medial TA form)
+ᠡᠩᠬᠡᠪᠣᠯᠣᠳ (EngheBold two-part name)
+ᠪᠠᠶᠠᠨ᠍ᠦ᠌ᠨᠳᠦᠷ (BayanUndur two-part name)
+ᠪᠢᠪᠦᠷᠢ᠎ᠡ (i-e as an alternate to y-e) 
+ᠠᠰᠢᠭᠯᠠᠵᠤ (ig)
+ᠡᠶᠢᠮᠦ
+ᠨᠠᠮᠠᠶ᠋ᠢ namayi
+ᠬᠡᠳᠦᠶᠢᠨ (ui not in initial syllable)
+

@@ -1,6 +1,8 @@
 package net.studymongolian.mongollibrarydemo;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -14,6 +16,9 @@ import net.studymongolian.mongollibrary.MongolLabel;
 import net.studymongolian.mongollibrary.MongolTextView;
 import net.studymongolian.mongollibrary.MongolUnicodeRenderer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,8 +26,9 @@ import java.util.List;
 
 public class UnicodeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    TextView label;
+    TextView tvLabel;
     TextView tvResults;
+    MongolUnicodeRenderer renderer;
 
     private static final char FVS1 = MongolUnicodeRenderer.Uni.FVS1;
     private static final char FVS2 = MongolUnicodeRenderer.Uni.FVS2;
@@ -78,19 +84,35 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_unicode);
 
-        label = (TextView) findViewById(R.id.tvTitle);
+        // initialize renderer
+        renderer = MongolUnicodeRenderer.INSTANCE;
+
+        // text views
+        tvLabel = (TextView) findViewById(R.id.tvTitle);
         tvResults = (TextView) findViewById(R.id.tvUnicodeResults);
+
+        // set Mongol font
+        Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/MQG8F02.ttf");
+        tvResults.setTypeface(tf);
 
         // spinner
         List<String> spinnerChoices = new ArrayList<>(Arrays.asList(names));
         spinnerChoices.add("MVS");
         spinnerChoices.add("NNBS");
+        spinnerChoices.add("Other");
         Spinner chagaanTolgaiSpinner = (Spinner) findViewById(R.id.spinnerChagaanTolgai);
         ArrayAdapter<String> adapterColor = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, spinnerChoices);
         adapterColor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         chagaanTolgaiSpinner.setAdapter(adapterColor);
         chagaanTolgaiSpinner.setOnItemSelectedListener(this);
+    }
+
+    private void setStrings(String label, String results) {
+        String renderedLabel = renderer.unicodeToGlyphs(label);
+        String renderedResults = renderer.unicodeToGlyphs(results);
+        tvLabel.setText(renderedLabel);
+        tvResults.setText(renderedResults);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -110,12 +132,14 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
             updateForMvs();
         } else if (item.equals("NNBS")) {
             updateForNnbs();
+        } else if (item.equals("Other")) {
+            updateForOther();
         }
     }
 
     private void updateForNnbs() {
         // update label
-        label.setText("NNBS");
+        //tvLabel.setText("NNBS");
 
         // build string
         String space = "     ";
@@ -205,13 +229,14 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         displayString.append(NNBS).append(DA).append(A).append(space).append("DA").append("\n");
         displayString.append(NNBS).append(DA).append(E).append(space).append("DE").append("\n");
 
-        // set string
-        tvResults.setText(displayString);
+        // set strings
+        setStrings("NNBS", displayString.toString());
+        //tvResults.setText(displayString);
     }
 
     private void updateForMvs() {
         // update label
-        label.setText("MVS");
+        //tvLabel.setText("MVS");
 
         // build string
         String space = "     ";
@@ -250,13 +275,38 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
             displayString.append("\n");
         }
 
-        // set string
-        tvResults.setText(displayString);
+        // set strings
+        setStrings("MVS", displayString.toString());
+        //tvResults.setText(displayString);
+    }
+
+    private void updateForOther() {
+
+        try {
+            String displayString = readFromAssets(this, "UnicodeWordTestList.txt");
+            //tvLabel.setText("Other");
+            //tvResults.setText(displayString);
+            setStrings("Other", displayString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readFromAssets(Context context, String filename) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(filename)));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = reader.readLine();
+        while (line != null) {
+            stringBuilder.append(line).append("\n");
+            line = reader.readLine();
+        }
+        reader.close();
+        return stringBuilder.toString();
     }
 
     private void updateTextViews(char unicode, String name) {
         // update label
-        label.setText(name);
+        //tvLabel.setText(name);
 
         // build string
         String space = "     ";
@@ -313,8 +363,9 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
             displayString.append("\n");
         }
 
-        // set string
-        tvResults.setText(displayString);
+        // set strings
+        setStrings(name, displayString.toString());
+        //tvResults.setText(displayString);
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
