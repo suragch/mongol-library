@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolLabel");
         apiDemos.add("MongolTextView");
         apiDemos.add("Unicode");
+        apiDemos.add("Unicode <--> Menksoft");
+        apiDemos.add("Testing");
 
 
         // set up the RecyclerView
@@ -39,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
 
     @Override
     public void onItemClick(View view, int position) {
-        //Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
 
         switch (position) {
             case 0: // MongolLabel
@@ -53,6 +54,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
             case 2: // Unicode
                 Intent unicodeIntent = new Intent(this, UnicodeActivity.class);
                 startActivity(unicodeIntent);
+                break;
+            case 3: // Unicode <--> Menksoft
+                Intent convertCodeIntent = new Intent(this, ConvertCodeActivity.class);
+                startActivity(convertCodeIntent);
+                break;
+            case 4: // Testing
+                Intent testingIntent = new Intent(this, TestingActivity.class);
+                startActivity(testingIntent);
                 break;
         }
     }

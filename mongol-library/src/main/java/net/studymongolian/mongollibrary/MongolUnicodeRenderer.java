@@ -3,6 +3,8 @@ package net.studymongolian.mongollibrary;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.microedition.khronos.opengles.GL;
+
 
 /*
  * Mongol Unicode Rendering Engine
@@ -343,24 +345,24 @@ public final class MongolUnicodeRenderer {
         StringBuilder word = new StringBuilder();
         word.append(mongolWord);
 
-        // MVS rule (only formats A/E after the MVS)
-        // Consonant before is formatted by lookup table
-        // If A/E is not final then ignore MVS (mingg-a -> minggan)
-        for (int i = word.length() - 2; i >= 0; i--) {
-            if (word.charAt(i) == Uni.MVS) {
-                // following char is a vowel
-                if (i == word.length() - 2
-                        && (word.charAt(i + 1) == Uni.A || word.charAt(i + 1) == Uni.E)) {
-                    // insert FVS2 (this is the lower form of FVS1)
-                    word.insert(i + 2, Uni.FVS2);
-                } else if (i == word.length() - 2 && (word.charAt(i + 1) == Uni.ZWJ)) {
-                    // This will still allow consonant to display correctly
-                } else { // following letter is not final A/E or ZWJ
-                    // ignore MVS
-                    word.deleteCharAt(i);
-                }
-            }
-        }
+//        // MVS rule (only formats A/E after the MVS)
+//        // Consonant before is formatted by lookup table
+//        // If A/E is not final then ignore MVS (mingg-a -> minggan)
+//        for (int i = word.length() - 2; i >= 0; i--) {
+//            if (word.charAt(i) == Uni.MVS) {
+//                // following char is a vowel
+//                if (i == word.length() - 2
+//                        && (word.charAt(i + 1) == Uni.A || word.charAt(i + 1) == Uni.E)) {
+//                    // insert FVS2 (this is the lower form of FVS1)
+//                    word.insert(i + 2, Uni.FVS2);
+//                } else if (i == word.length() - 2 && (word.charAt(i + 1) == Uni.ZWJ)) {
+//                    // This will still allow consonant to display correctly
+//                } else { // following letter is not final A/E or ZWJ
+//                    // ignore MVS
+//                    word.deleteCharAt(i);
+//                }
+//            }
+//        }
 
         // Only allow the NG/B/P/F/K/KH and G/Q ligature if A/O/U or MVS follows
         for (int i = word.length() - 3; i >= 0; i--) {
@@ -382,8 +384,8 @@ public final class MongolUnicodeRenderer {
         if (word.length() > 2) {
             // second char is OE or UE
             if (word.charAt(1) == Uni.OE || word.charAt(1) == Uni.UE) {
-                // first char not a vowel or ligature consonant (B/P/Q/G/F/K/KH)
-                if (!isVowel(word.charAt(0)) && word.charAt(0) != Uni.BA && word.charAt(0) != Uni.PA && word.charAt(0) != Uni.QA && word.charAt(0) != Uni.GA && word.charAt(0) != Uni.FA && word.charAt(0) != Uni.KA && word.charAt(0) != Uni.KHA) {
+                // first char not a vowel or ligature consonant (B/P/Q/G/F/K/KH) or ZWJ
+                if (!isVowel(word.charAt(0)) && word.charAt(0) != Uni.BA && word.charAt(0) != Uni.PA && word.charAt(0) != Uni.QA && word.charAt(0) != Uni.GA && word.charAt(0) != Uni.FA && word.charAt(0) != Uni.KA && word.charAt(0) != Uni.KHA && word.charAt(0) != Uni.ZWJ) {
                     if (!isFVS(word.charAt(2))) {
                         // insert FVS1 after OE/UE
                         word.insert(2, Uni.FVS1);
@@ -412,6 +414,27 @@ public final class MongolUnicodeRenderer {
             }
         }
 
+        // *** medial M/L/LH Glyph selection ***
+        for (int i = word.length() - 2; i > 0; i--) {
+            final char thisChar = word.charAt(i);
+            if (thisChar == Uni.MA || thisChar == Uni.LA || thisChar == Uni.LHA ) {
+                final char previousChar = word.charAt(i - 1);
+                final char nextChar = word.charAt(i + 1);
+                // long arm if previous char is B/P/Q/G/F/K/KH
+                if (previousChar == Uni.BA || previousChar == Uni.PA ||
+                        previousChar == Uni.GA || previousChar == Uni.FA || previousChar == Uni.KA ||
+                        previousChar == Uni.KHA || previousChar == Uni.ANG) {
+                    // insert PFVS4
+                    word.insert(i + 1, Uni.PFVS4);
+                }
+                // long stem if next char is M/L
+                else if ((nextChar == Uni.MA || nextChar == Uni.LA || nextChar == Uni.LHA) && thisChar != Uni.LHA) {
+                    // insert PFVS5
+                    word.insert(i + 1, Uni.PFVS5);
+                }
+            }
+        }
+
         // *** medial D rule ***
         for (int i = word.length() - 2; i > 0; i--) {
             if (word.charAt(i) == Uni.DA) {
@@ -430,27 +453,34 @@ public final class MongolUnicodeRenderer {
             if (word.length() > 1 && isConsonant(word.charAt(1))) {
                 // *** Initial GA before consonant rule ***
                 // make it a feminine initial GA
-                word.insert(1, Uni.FVS2);
+                word.insert(1, Uni.PFVS4); // Initial GA + PFVS4 = feminine G
             }
         }
         for (int i = word.length() - 1; i > 0; i--) {
             if (word.charAt(i) == Uni.GA) {
 
                 // final GA
-                boolean isMasculineWord = false;
+                boolean isMasculineWord = true;
                 if (i == word.length() - 1) {
 
                     // **** feminine final GA rule ****
                     for (int j = i - 1; j >= 0; j--) {
-                        // vowel I also defaults to feminine
-                        if (isMasculineVowel(word.charAt(j))) {
-                            isMasculineWord = true;
-                            break;
+                        if (isVowel(word.charAt(j))) {
+                            if (isFeminineVowel(word.charAt(j))) {
+                                isMasculineWord = false;
+                                break;
+                            } else if (word.charAt(j) == Uni.I) {
+                                // vowel I also defaults to feminine
+                                isMasculineWord = false;
+                            } else {
+                                isMasculineWord = true;
+                                break;
+                            }
                         }
                     }
                     if (!isMasculineWord) {
                         // make it a feminine final GA
-                        word.insert(i + 1, Uni.FVS2);
+                        word.insert(i + 1, Uni.FVS1);
                     }
 
                 } else { // medial GA
@@ -483,8 +513,6 @@ public final class MongolUnicodeRenderer {
                             }
                         }
 
-
-
                         if (isFeminineWord) {
                             // make it a feminine medial GA
                             word.insert(i + 1, Uni.FVS3);
@@ -511,30 +539,30 @@ public final class MongolUnicodeRenderer {
             }
         } // End of GA rules
 
-        // *** medial Y rule ***
-        // upturn the Y before any vowel except I (when YI follows vowel)
-        for (int i = word.length() - 2; i > 0; i--) {
-            if (word.charAt(i) == Uni.YA) {
-                char nextChar = word.charAt(i + 1);
-                char prevChar = word.charAt(i - 1);
-                // following char is a vowel besides I (or previous char is consonant)
-                if ((isVowel(nextChar) && nextChar != Uni.I) || (!isVowel(prevChar)) && !isFVS(nextChar) && nextChar != Uni.MVS) {
-                    // insert FVS1 (hooked Y)
-                    word.insert(i + 1, Uni.FVS1);
-                }
-            }
-        }
+//        // *** medial Y rule ***
+//        // upturn the Y before any vowel except I (when YI follows vowel)
+//        for (int i = word.length() - 2; i > 0; i--) {
+//            if (word.charAt(i) == Uni.YA) {
+//                char nextChar = word.charAt(i + 1);
+//                char prevChar = word.charAt(i - 1);
+//                // following char is a vowel besides I (or previous char is consonant)
+//                if ((isVowel(nextChar) && nextChar != Uni.I) || (!isVowel(prevChar)) && !isFVS(nextChar) && nextChar != Uni.MVS) {
+//                    // insert FVS1 (hooked Y)
+//                    word.insert(i + 1, Uni.FVS1);
+//                }
+//            }
+//        }
 
-        // *** medial W rule ***
-        // Use the hooked W before any vowel
-        for (int i = word.length() - 2; i > 0; i--) {
-            if (word.charAt(i) == Uni.WA) {
-                if (isVowel(word.charAt(i + 1))) {
-                    // insert FVS1 (hooked W)
-                    word.insert(i + 1, Uni.FVS1);
-                }
-            }
-        }
+//        // *** medial W rule ***
+//        // Use the hooked W before any vowel
+//        for (int i = word.length() - 2; i > 0; i--) {
+//            if (word.charAt(i) == Uni.WA) {
+//                if (isVowel(word.charAt(i + 1))) {
+//                    // insert FVS1 (hooked W)
+//                    word.insert(i + 1, Uni.FVS1);
+//                }
+//            }
+//        }
 
         // *** AI, EI, OI, UI, OEI, UEI medial double tooth I diphthong rule ***
         // (this rule should come after OE/UE long tooth in first syllable rule)
@@ -731,47 +759,47 @@ public final class MongolUnicodeRenderer {
         mIsolateMap.put("" + Uni.CHI, "" + Glyph.ISOL_CHI);
 
         // Double letters
-        mIsolateMap.put("" + Uni.BA + Uni.A, "" + Glyph.INIT_BA + Glyph.FINA_A);
-        mIsolateMap.put("" + Uni.BA + Uni.E, "" + Glyph.INIT_BA + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.BA + Uni.I, "" + Glyph.INIT_BA + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.BA + Uni.O, "" + Glyph.INIT_BA_OU + Glyph.FINA_O);
-        mIsolateMap.put("" + Uni.BA + Uni.U, "" + Glyph.INIT_BA_OU + Glyph.FINA_U);
-        mIsolateMap.put("" + Uni.BA + Uni.OE, "" + Glyph.INIT_BA_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.BA + Uni.UE, "" + Glyph.INIT_BA_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.BA + Uni.A, "" + Glyph.INIT_BA + Glyph.FINA_A_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.E, "" + Glyph.INIT_BA + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.I, "" + Glyph.INIT_BA + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.O, "" + Glyph.INIT_BA_OU + Glyph.FINA_O_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.U, "" + Glyph.INIT_BA_OU + Glyph.FINA_U_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.OE, "" + Glyph.INIT_BA_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.UE, "" + Glyph.INIT_BA_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.BA + Uni.EE, "" + Glyph.INIT_BA + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.BA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.BA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.PA + Uni.A, "" + Glyph.INIT_PA + Glyph.FINA_A);
-        mIsolateMap.put("" + Uni.PA + Uni.E, "" + Glyph.INIT_PA + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.PA + Uni.I, "" + Glyph.INIT_PA + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.PA + Uni.O, "" + Glyph.INIT_PA_OU + Glyph.FINA_O);
-        mIsolateMap.put("" + Uni.PA + Uni.U, "" + Glyph.INIT_PA_OU + Glyph.FINA_U);
-        mIsolateMap.put("" + Uni.PA + Uni.OE, "" + Glyph.INIT_PA_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.PA + Uni.UE, "" + Glyph.INIT_PA_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.BA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.BA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.FINA_UE_FVS1_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.A, "" + Glyph.INIT_PA + Glyph.FINA_A_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.E, "" + Glyph.INIT_PA + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.I, "" + Glyph.INIT_PA + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.O, "" + Glyph.INIT_PA_OU + Glyph.FINA_O_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.U, "" + Glyph.INIT_PA_OU + Glyph.FINA_U_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.OE, "" + Glyph.INIT_PA_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.UE, "" + Glyph.INIT_PA_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.PA + Uni.EE, "" + Glyph.INIT_PA + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.PA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.PA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.QA + Uni.E, "" + Glyph.INIT_QA_FEM + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.QA + Uni.I, "" + Glyph.INIT_QA_FEM + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.QA + Uni.OE, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.QA + Uni.UE, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.PA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.PA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.FINA_UE_FVS1_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.E, "" + Glyph.INIT_QA_FEM + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.I, "" + Glyph.INIT_QA_FEM + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.OE, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.UE, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.QA + Uni.EE, "" + Glyph.INIT_QA_FEM + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.QA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.QA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.E, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.I, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.QA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.FINA_UE_FVS1_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.E, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.I, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.EE, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.GA + Uni.E, "" + Glyph.INIT_GA_FEM + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.GA + Uni.I, "" + Glyph.INIT_GA_FEM + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.GA + Uni.OE, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.GA + Uni.UE, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.FINA_UE_FVS1_BP);
+        mIsolateMap.put("" + Uni.GA + Uni.E, "" + Glyph.INIT_GA_FEM + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.GA + Uni.I, "" + Glyph.INIT_GA_FEM + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.GA + Uni.OE, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.GA + Uni.UE, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.GA + Uni.EE, "" + Glyph.INIT_GA_FEM + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.GA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.GA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_UE_FVS1);
+        mIsolateMap.put("" + Uni.GA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.GA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.FINA_UE_FVS1_BP);
         // XXX what would these look like?
         //mIsolateMap.put("" + Uni.GA + Uni.FVS1 + Uni.E, "" + Glyph.INIT_GA_FVS1_FEM + Glyph.FINA_E);
         //mIsolateMap.put("" + Uni.GA + Uni.FVS1 + Uni.I, "" + Glyph.INIT_GA_FVS1_FEM + Glyph.FINA_I);
@@ -780,36 +808,36 @@ public final class MongolUnicodeRenderer {
         //mIsolateMap.put("" + Uni.GA + Uni.FVS1 + Uni.EE, "" + Glyph.INIT_GA_FVS1_FINA_EE);
         //mIsolateMap.put("" + Uni.GA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.INIT_GA_FVS1_FINA_OE_FVS1);
         //mIsolateMap.put("" + Uni.GA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.INIT_GA_FVS1_FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.FA + Uni.A, "" + Glyph.INIT_FA + Glyph.FINA_A);
-        mIsolateMap.put("" + Uni.FA + Uni.E, "" + Glyph.INIT_FA + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.FA + Uni.I, "" + Glyph.INIT_FA + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.FA + Uni.O, "" + Glyph.INIT_FA_OU + Glyph.FINA_O);
-        mIsolateMap.put("" + Uni.FA + Uni.U, "" + Glyph.INIT_FA_OU + Glyph.FINA_U);
-        mIsolateMap.put("" + Uni.FA + Uni.OE, "" + Glyph.INIT_FA_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.FA + Uni.UE, "" + Glyph.INIT_FA_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.FA + Uni.A, "" + Glyph.INIT_FA + Glyph.FINA_A_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.E, "" + Glyph.INIT_FA + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.I, "" + Glyph.INIT_FA + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.O, "" + Glyph.INIT_FA_OU + Glyph.FINA_O_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.U, "" + Glyph.INIT_FA_OU + Glyph.FINA_U_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.OE, "" + Glyph.INIT_FA_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.UE, "" + Glyph.INIT_FA_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.FA + Uni.EE, "" + Glyph.INIT_FA + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.FA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.FA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.KA + Uni.A, "" + Glyph.INIT_KA + Glyph.FINA_A);
-        mIsolateMap.put("" + Uni.KA + Uni.E, "" + Glyph.INIT_KA + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.KA + Uni.I, "" + Glyph.INIT_KA + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.KA + Uni.O, "" + Glyph.INIT_KA_OU + Glyph.FINA_O);
-        mIsolateMap.put("" + Uni.KA + Uni.U, "" + Glyph.INIT_KA_OU + Glyph.FINA_U);
-        mIsolateMap.put("" + Uni.KA + Uni.OE, "" + Glyph.INIT_KA_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.KA + Uni.UE, "" + Glyph.INIT_KA_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.FA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.FA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.FINA_UE_FVS1_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.A, "" + Glyph.INIT_KA + Glyph.FINA_A_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.E, "" + Glyph.INIT_KA + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.I, "" + Glyph.INIT_KA + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.O, "" + Glyph.INIT_KA_OU + Glyph.FINA_O_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.U, "" + Glyph.INIT_KA_OU + Glyph.FINA_U_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.OE, "" + Glyph.INIT_KA_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.UE, "" + Glyph.INIT_KA_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.KA + Uni.EE, "" + Glyph.INIT_KA + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.KA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.KA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.FINA_UE_FVS1);
-        mIsolateMap.put("" + Uni.KHA + Uni.A, "" + Glyph.INIT_KHA + Glyph.FINA_A);
-        mIsolateMap.put("" + Uni.KHA + Uni.E, "" + Glyph.INIT_KHA + Glyph.FINA_E);
-        mIsolateMap.put("" + Uni.KHA + Uni.I, "" + Glyph.INIT_KHA + Glyph.FINA_I);
-        mIsolateMap.put("" + Uni.KHA + Uni.O, "" + Glyph.INIT_KHA_OU + Glyph.FINA_O);
-        mIsolateMap.put("" + Uni.KHA + Uni.U, "" + Glyph.INIT_KHA_OU + Glyph.FINA_U);
-        mIsolateMap.put("" + Uni.KHA + Uni.OE, "" + Glyph.INIT_KHA_OU + Glyph.FINA_OE);
-        mIsolateMap.put("" + Uni.KHA + Uni.UE, "" + Glyph.INIT_KHA_OU + Glyph.FINA_UE);
+        mIsolateMap.put("" + Uni.KA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.KA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.FINA_UE_FVS1_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.A, "" + Glyph.INIT_KHA + Glyph.FINA_A_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.E, "" + Glyph.INIT_KHA + Glyph.FINA_E_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.I, "" + Glyph.INIT_KHA + Glyph.FINA_I_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.O, "" + Glyph.INIT_KHA_OU + Glyph.FINA_O_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.U, "" + Glyph.INIT_KHA_OU + Glyph.FINA_U_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.OE, "" + Glyph.INIT_KHA_OU + Glyph.FINA_OE_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.UE, "" + Glyph.INIT_KHA_OU + Glyph.FINA_UE_BP);
         mIsolateMap.put("" + Uni.KHA + Uni.EE, "" + Glyph.INIT_KHA + Glyph.FINA_EE);
-        mIsolateMap.put("" + Uni.KHA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.FINA_OE_FVS1);
-        mIsolateMap.put("" + Uni.KHA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.FINA_UE_FVS1);
+        mIsolateMap.put("" + Uni.KHA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.FINA_OE_FVS1_BP);
+        mIsolateMap.put("" + Uni.KHA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.FINA_UE_FVS1_BP);
 
         // BUU exception (no tooth on first UE)
         mIsolateMap.put("" + Uni.BA + Uni.UE + Uni.UE, "" + Glyph.INIT_BA + Glyph.MEDI_U + Glyph.FINA_UE);
@@ -852,54 +880,67 @@ public final class MongolUnicodeRenderer {
         mInitialMap.put("" + Uni.NA + Uni.FVS1, "" + Glyph.INIT_NA_FVS1);
         mInitialMap.put("" + Uni.ANG, "" + Glyph.INIT_ANG);
         mInitialMap.put("" + Uni.BA, "" + Glyph.INIT_BA);
-        mInitialMap.put("" + Uni.BA + Uni.A, "" + Glyph.INIT_BA + Glyph.MEDI_A);
-        mInitialMap.put("" + Uni.BA + Uni.E, "" + Glyph.INIT_BA + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.BA + Uni.I, "" + Glyph.INIT_BA + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.BA + Uni.O, "" + Glyph.INIT_BA_OU + Glyph.MEDI_O);
-        mInitialMap.put("" + Uni.BA + Uni.U, "" + Glyph.INIT_BA_OU + Glyph.MEDI_U);
-        mInitialMap.put("" + Uni.BA + Uni.OE, "" + Glyph.INIT_BA_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.BA + Uni.UE, "" + Glyph.INIT_BA_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.BA + Uni.A, "" + Glyph.INIT_BA + Glyph.MEDI_A_BP);
+        mInitialMap.put("" + Uni.BA + Uni.E, "" + Glyph.INIT_BA + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.BA + Uni.I, "" + Glyph.INIT_BA + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.BA + Uni.O, "" + Glyph.INIT_BA_OU + Glyph.MEDI_O_BP);
+        mInitialMap.put("" + Uni.BA + Uni.U, "" + Glyph.INIT_BA_OU + Glyph.MEDI_U_BP);
+        mInitialMap.put("" + Uni.BA + Uni.OE, "" + Glyph.INIT_BA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.BA + Uni.UE, "" + Glyph.INIT_BA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.BA + Uni.EE, "" + Glyph.INIT_BA + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.BA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.BA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.BA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.BA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_BA_OU + Glyph.MEDI_UE_FVS1_BP);
+        //mInitialMap.put("" + Uni.BA + Uni.MA, "" + Glyph.INIT_BA + Glyph.MEDI_MA_BP);
+        //mInitialMap.put("" + Uni.BA + Uni.LA, "" + Glyph.INIT_BA + Glyph.MEDI_LA_BP);
+        //mInitialMap.put("" + Uni.BA + Uni.LHA, "" + Glyph.INIT_BA + Glyph.MEDI_LHA_BP);
         mInitialMap.put("" + Uni.PA, "" + Glyph.INIT_PA);
-        mInitialMap.put("" + Uni.PA + Uni.A, "" + Glyph.INIT_PA + Glyph.MEDI_A);
-        mInitialMap.put("" + Uni.PA + Uni.E, "" + Glyph.INIT_PA + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.PA + Uni.I, "" + Glyph.INIT_PA + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.PA + Uni.O, "" + Glyph.INIT_PA_OU + Glyph.MEDI_O);
-        mInitialMap.put("" + Uni.PA + Uni.U, "" + Glyph.INIT_PA_OU + Glyph.MEDI_U);
-        mInitialMap.put("" + Uni.PA + Uni.OE, "" + Glyph.INIT_PA_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.PA + Uni.UE, "" + Glyph.INIT_PA_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.PA + Uni.A, "" + Glyph.INIT_PA + Glyph.MEDI_A_BP);
+        mInitialMap.put("" + Uni.PA + Uni.E, "" + Glyph.INIT_PA + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.PA + Uni.I, "" + Glyph.INIT_PA + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.PA + Uni.O, "" + Glyph.INIT_PA_OU + Glyph.MEDI_O_BP);
+        mInitialMap.put("" + Uni.PA + Uni.U, "" + Glyph.INIT_PA_OU + Glyph.MEDI_U_BP);
+        mInitialMap.put("" + Uni.PA + Uni.OE, "" + Glyph.INIT_PA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.PA + Uni.UE, "" + Glyph.INIT_PA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.PA + Uni.EE, "" + Glyph.INIT_PA + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.PA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.PA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.PA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.PA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_PA_OU + Glyph.MEDI_UE_FVS1_BP);
+        //mInitialMap.put("" + Uni.PA + Uni.MA, "" + Glyph.INIT_PA + Glyph.MEDI_MA_BP);
+        //mInitialMap.put("" + Uni.PA + Uni.LA, "" + Glyph.INIT_PA + Glyph.MEDI_LA_BP);
+        //mInitialMap.put("" + Uni.PA + Uni.LHA, "" + Glyph.INIT_PA + Glyph.MEDI_LHA_BP);
         mInitialMap.put("" + Uni.QA, "" + Glyph.INIT_QA);
         mInitialMap.put("" + Uni.QA + Uni.FVS1, "" + Glyph.INIT_QA_FVS1);
-        mInitialMap.put("" + Uni.QA + Uni.E, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.QA + Uni.I, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.QA + Uni.OE, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.QA + Uni.UE, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.QA + Uni.E, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.QA + Uni.I, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.QA + Uni.OE, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.QA + Uni.UE, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.QA + Uni.EE, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.QA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.QA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.QA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.QA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FEM_OU + Glyph.MEDI_UE_FVS1_BP);
         //mInitialMap.put("" + Uni.QA + Uni.FVS2, "" + Glyph.INIT_QA_FVS2);
         //mInitialMap.put("" + Uni.QA + Uni.FVS3, "" + Glyph.INIT_QA_FVS3);
-        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.E, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.I, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.E, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.I, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.EE, "" + Glyph.INIT_QA_FVS1_FEM + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.INIT_QA_FVS1_FEM_OU + Glyph.MEDI_UE_FVS1_BP);
+        //mInitialMap.put("" + Uni.QA + Uni.MA, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_MA_BP);
+        //mInitialMap.put("" + Uni.QA + Uni.LA, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_LA_BP);
+        //mInitialMap.put("" + Uni.QA + Uni.LHA, "" + Glyph.INIT_QA_FEM + Glyph.MEDI_LHA_BP);
         mInitialMap.put("" + Uni.GA, "" + Glyph.INIT_GA);
         mInitialMap.put("" + Uni.GA + Uni.FVS1, "" + Glyph.INIT_GA_FVS1);
-        mInitialMap.put("" + Uni.GA + Uni.E, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.GA + Uni.I, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.GA + Uni.OE, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.GA + Uni.UE, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.GA + Uni.PFVS4, "" + Glyph.INIT_GA_FEM); // initial G + PGS1 = select feminine G before consonant
+        mInitialMap.put("" + Uni.GA + Uni.E, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.GA + Uni.I, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.GA + Uni.OE, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.GA + Uni.UE, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.GA + Uni.EE, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.GA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.GA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.GA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.GA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_GA_FEM_OU + Glyph.MEDI_UE_FVS1_BP);
+        //mInitialMap.put("" + Uni.GA + Uni.MA, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_MA_BP);
+        //mInitialMap.put("" + Uni.GA + Uni.LA, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_LA_BP);
+        //mInitialMap.put("" + Uni.GA + Uni.LHA, "" + Glyph.INIT_GA_FEM + Glyph.MEDI_LHA_BP);
         //mInitialMap.put("" + Uni.GA + Uni.FVS2, "" + Glyph.INIT_GA_FVS2);
         //mInitialMap.put("" + Uni.GA + Uni.FVS3, "" + Glyph.INIT_GA_FVS3);
         // XXX what would these look like?
@@ -924,38 +965,38 @@ public final class MongolUnicodeRenderer {
         mInitialMap.put("" + Uni.RA, "" + Glyph.INIT_RA);
         mInitialMap.put("" + Uni.WA, "" + Glyph.INIT_WA);
         mInitialMap.put("" + Uni.FA, "" + Glyph.INIT_FA);
-        mInitialMap.put("" + Uni.FA + Uni.A, "" + Glyph.INIT_FA + Glyph.MEDI_A);
-        mInitialMap.put("" + Uni.FA + Uni.E, "" + Glyph.INIT_FA + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.FA + Uni.I, "" + Glyph.INIT_FA + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.FA + Uni.O, "" + Glyph.INIT_FA_OU + Glyph.MEDI_O);
-        mInitialMap.put("" + Uni.FA + Uni.U, "" + Glyph.INIT_FA_OU + Glyph.MEDI_U);
-        mInitialMap.put("" + Uni.FA + Uni.OE, "" + Glyph.INIT_FA_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.FA + Uni.UE, "" + Glyph.INIT_FA_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.FA + Uni.A, "" + Glyph.INIT_FA + Glyph.MEDI_A_BP);
+        mInitialMap.put("" + Uni.FA + Uni.E, "" + Glyph.INIT_FA + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.FA + Uni.I, "" + Glyph.INIT_FA + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.FA + Uni.O, "" + Glyph.INIT_FA_OU + Glyph.MEDI_O_BP);
+        mInitialMap.put("" + Uni.FA + Uni.U, "" + Glyph.INIT_FA_OU + Glyph.MEDI_U_BP);
+        mInitialMap.put("" + Uni.FA + Uni.OE, "" + Glyph.INIT_FA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.FA + Uni.UE, "" + Glyph.INIT_FA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.FA + Uni.EE, "" + Glyph.INIT_FA + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.FA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.FA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.FA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.FA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_FA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.KA, "" + Glyph.INIT_KA);
-        mInitialMap.put("" + Uni.KA + Uni.A, "" + Glyph.INIT_KA + Glyph.MEDI_A);
-        mInitialMap.put("" + Uni.KA + Uni.E, "" + Glyph.INIT_KA + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.KA + Uni.I, "" + Glyph.INIT_KA + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.KA + Uni.O, "" + Glyph.INIT_KA_OU + Glyph.MEDI_O);
-        mInitialMap.put("" + Uni.KA + Uni.U, "" + Glyph.INIT_KA_OU + Glyph.MEDI_U);
-        mInitialMap.put("" + Uni.KA + Uni.OE, "" + Glyph.INIT_KA_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.KA + Uni.UE, "" + Glyph.INIT_KA_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.KA + Uni.A, "" + Glyph.INIT_KA + Glyph.MEDI_A_BP);
+        mInitialMap.put("" + Uni.KA + Uni.E, "" + Glyph.INIT_KA + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.KA + Uni.I, "" + Glyph.INIT_KA + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.KA + Uni.O, "" + Glyph.INIT_KA_OU + Glyph.MEDI_O_BP);
+        mInitialMap.put("" + Uni.KA + Uni.U, "" + Glyph.INIT_KA_OU + Glyph.MEDI_U_BP);
+        mInitialMap.put("" + Uni.KA + Uni.OE, "" + Glyph.INIT_KA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.KA + Uni.UE, "" + Glyph.INIT_KA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.KA + Uni.EE, "" + Glyph.INIT_KA + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.KA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.KA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.KA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.KA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.KHA, "" + Glyph.INIT_KHA);
-        mInitialMap.put("" + Uni.KHA + Uni.A, "" + Glyph.INIT_KHA + Glyph.MEDI_A);
-        mInitialMap.put("" + Uni.KHA + Uni.E, "" + Glyph.INIT_KHA + Glyph.MEDI_E);
-        mInitialMap.put("" + Uni.KHA + Uni.I, "" + Glyph.INIT_KHA + Glyph.MEDI_I);
-        mInitialMap.put("" + Uni.KHA + Uni.O, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_O);
-        mInitialMap.put("" + Uni.KHA + Uni.U, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_U);
-        mInitialMap.put("" + Uni.KHA + Uni.OE, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_OE);
-        mInitialMap.put("" + Uni.KHA + Uni.UE, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_UE);
+        mInitialMap.put("" + Uni.KHA + Uni.A, "" + Glyph.INIT_KHA + Glyph.MEDI_A_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.E, "" + Glyph.INIT_KHA + Glyph.MEDI_E_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.I, "" + Glyph.INIT_KHA + Glyph.MEDI_I_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.O, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_O_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.U, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_U_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.OE, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.UE, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.KHA + Uni.EE, "" + Glyph.INIT_KHA + Glyph.MEDI_EE);
-        mInitialMap.put("" + Uni.KHA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_OE_FVS1);
-        mInitialMap.put("" + Uni.KHA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_UE_FVS1);
+        mInitialMap.put("" + Uni.KHA + Uni.OE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_OE_FVS1_BP);
+        mInitialMap.put("" + Uni.KHA + Uni.UE + Uni.FVS1, "" + Glyph.INIT_KHA_OU + Glyph.MEDI_UE_FVS1_BP);
         mInitialMap.put("" + Uni.TSA, "" + Glyph.INIT_TSA);
         mInitialMap.put("" + Uni.ZA, "" + Glyph.INIT_ZA);
         mInitialMap.put("" + Uni.HAA, "" + Glyph.INIT_HAA);
@@ -984,6 +1025,7 @@ public final class MongolUnicodeRenderer {
 
         mMedialMap.put("" + Uni.A, "" + Glyph.MEDI_A);
         mMedialMap.put("" + Uni.A + Uni.FVS1, "" + Glyph.MEDI_A_FVS1);
+        mMedialMap.put("" + Uni.A + Uni.FVS2, "" + Glyph.MEDI_A_FVS2);
         mMedialMap.put("" + Uni.E, "" + Glyph.MEDI_E);
         mMedialMap.put("" + Uni.I, "" + Glyph.MEDI_I);
         mMedialMap.put("" + Uni.I + Uni.FVS1, "" + Glyph.MEDI_I_FVS1);
@@ -1003,6 +1045,7 @@ public final class MongolUnicodeRenderer {
         mMedialMap.put("" + Uni.NA, "" + Glyph.MEDI_NA);
         mMedialMap.put("" + Uni.NA + Uni.FVS1, "" + Glyph.MEDI_NA_FVS1);
         mMedialMap.put("" + Uni.NA + Uni.FVS2, "" + Glyph.MEDI_NA_FVS2);
+        // mMedialMap.put("" + Uni.NA + Uni.FVS3, "" + Glyph.MEDI_NA_FVS3); // TODO this is for tod script
         mMedialMap.put("" + Uni.ANG, "" + Glyph.MEDI_ANG);
         mMedialMap.put("" + Uni.ANG + Uni.QA, "" + Glyph.MEDI_ANG + Glyph.MEDI_QA);
         mMedialMap.put("" + Uni.ANG + Uni.GA, "" + Glyph.MEDI_ANG + Glyph.MEDI_GA);
@@ -1086,11 +1129,15 @@ public final class MongolUnicodeRenderer {
         //mMedialMap.put("" + Uni.GA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_GA_FVS1_MEDI_OE_FVS1);
         //mMedialMap.put("" + Uni.GA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_GA_FVS1_MEDI_UE_FVS1);
         mMedialMap.put("" + Uni.MA, "" + Glyph.MEDI_MA);
-        mMedialMap.put("" + Uni.MA + Uni.MA, "" + Glyph.MEDI_MA_ML + Glyph.MEDI_MA);
-        mMedialMap.put("" + Uni.MA + Uni.LA, "" + Glyph.MEDI_MA_ML + Glyph.MEDI_LA);
+        mMedialMap.put("" + Uni.MA + Uni.PFVS4, "" + Glyph.MEDI_MA_BP);
+        mMedialMap.put("" + Uni.MA + Uni.PFVS5, "" + Glyph.MEDI_MA_ML);
+        //mMedialMap.put("" + Uni.MA + Uni.MA, "" + Glyph.MEDI_MA_ML + Glyph.MEDI_MA);
+        //mMedialMap.put("" + Uni.MA + Uni.LA, "" + Glyph.MEDI_MA_ML + Glyph.MEDI_LA);
         mMedialMap.put("" + Uni.LA, "" + Glyph.MEDI_LA);
-        mMedialMap.put("" + Uni.LA + Uni.MA, "" + Glyph.MEDI_LA_ML + Glyph.MEDI_MA);
-        mMedialMap.put("" + Uni.LA + Uni.LA, "" + Glyph.MEDI_LA_ML + Glyph.MEDI_LA);
+        mMedialMap.put("" + Uni.LA + Uni.PFVS4, "" + Glyph.MEDI_LA_BP);
+        mMedialMap.put("" + Uni.LA + Uni.PFVS5, "" + Glyph.MEDI_LA_ML);
+        //mMedialMap.put("" + Uni.LA + Uni.MA, "" + Glyph.MEDI_LA_ML + Glyph.MEDI_MA);
+        //mMedialMap.put("" + Uni.LA + Uni.LA, "" + Glyph.MEDI_LA_ML + Glyph.MEDI_LA);
         mMedialMap.put("" + Uni.SA, "" + Glyph.MEDI_SA);
         mMedialMap.put("" + Uni.SHA, "" + Glyph.MEDI_SHA);
         mMedialMap.put("" + Uni.TA, "" + Glyph.MEDI_TA);
@@ -1100,8 +1147,10 @@ public final class MongolUnicodeRenderer {
         mMedialMap.put("" + Uni.DA + Uni.FVS1, "" + Glyph.MEDI_DA_FVS1);
         mMedialMap.put("" + Uni.CHA, "" + Glyph.MEDI_CHA);
         mMedialMap.put("" + Uni.JA, "" + Glyph.MEDI_JA);
+        mMedialMap.put("" + Uni.JA + Uni.FVS1, "" + Glyph.MEDI_JA_FVS1);
         mMedialMap.put("" + Uni.YA, "" + Glyph.MEDI_YA);
         mMedialMap.put("" + Uni.YA + Uni.FVS1, "" + Glyph.MEDI_YA_FVS1);
+        mMedialMap.put("" + Uni.YA + Uni.FVS2, "" + Glyph.MEDI_YA_FVS2);
         mMedialMap.put("" + Uni.RA, "" + Glyph.MEDI_RA);
         mMedialMap.put("" + Uni.WA, "" + Glyph.MEDI_WA);
         //mMedialMap.put("" + Uni.WA + Uni.FVS1, "" + Glyph.MEDI_WA_FVS1);
@@ -1159,43 +1208,44 @@ public final class MongolUnicodeRenderer {
         mMedialMap.put("" + Uni.HAA, "" + Glyph.MEDI_HAA);
         mMedialMap.put("" + Uni.ZRA, "" + Glyph.MEDI_ZRA);
         mMedialMap.put("" + Uni.LHA, "" + Glyph.MEDI_LHA);
+        mMedialMap.put("" + Uni.LHA + Uni.PFVS4, "" + Glyph.MEDI_LHA_BP);
         mMedialMap.put("" + Uni.ZHI, "" + Glyph.MEDI_ZHI);
         mMedialMap.put("" + Uni.CHI, "" + Glyph.MEDI_CHI);
 
-        // MVS
-        // FIXME the mvs vowel glyph forms are not getting selected
-        mMedialMap.put("" + Uni.NA + Uni.MVS, "" + Glyph.MEDI_NA_FVS2);
-        mMedialMap.put("" + Uni.ANG + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.FINA_QA);
-        //mMedialMap.put("" + Uni.ANG + Uni.FVS1 + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_QA);
-        //mMedialMap.put("" + Uni.ANG + Uni.FVS1 + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_GA);
-        mMedialMap.put("" + Uni.ANG + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.MEDI_GA_FVS2);
-        mMedialMap.put("" + Uni.BA + Uni.MVS, "" + Glyph.FINA_BA);
-        mMedialMap.put("" + Uni.PA + Uni.MVS, "" + Glyph.FINA_PA);
-        mMedialMap.put("" + Uni.QA + Uni.MVS, "" + Glyph.FINA_QA);
-        mMedialMap.put("" + Uni.GA + Uni.MVS, "" + Glyph.MEDI_GA_FVS2);
-        mMedialMap.put("" + Uni.MA + Uni.MVS, "" + Glyph.FINA_MA);
-        mMedialMap.put("" + Uni.LA + Uni.MVS, "" + Glyph.FINA_LA);
-        mMedialMap.put("" + Uni.SA + Uni.MVS, "" + Glyph.FINA_SA);
-        mMedialMap.put("" + Uni.SA + Uni.FVS1 + Uni.MVS, "" + Glyph.FINA_SA_FVS1);
-        mMedialMap.put("" + Uni.SHA + Uni.MVS, "" + Glyph.FINA_SHA);
-        mMedialMap.put("" + Uni.TA + Uni.MVS, "" + Glyph.FINA_TA);
-        mMedialMap.put("" + Uni.DA + Uni.MVS, "" + Glyph.FINA_DA_FVS1);
-        mMedialMap.put("" + Uni.CHA + Uni.MVS, "" + Glyph.FINA_CHA);
-        mMedialMap.put("" + Uni.JA + Uni.MVS, "" + Glyph.FINA_JA_FVS1);
-        mMedialMap.put("" + Uni.YA + Uni.MVS, "" + Glyph.FINA_YA);
-        mMedialMap.put("" + Uni.I + Uni.MVS, "" + Glyph.FINA_YA); // I may be a substitute for YA
-        mMedialMap.put("" + Uni.RA + Uni.MVS, "" + Glyph.FINA_RA);
-        mMedialMap.put("" + Uni.WA + Uni.MVS, "" + Glyph.FINA_WA);
-        mMedialMap.put("" + Uni.FA + Uni.MVS, "" + Glyph.FINA_FA);
-        mMedialMap.put("" + Uni.KA + Uni.MVS, "" + Glyph.FINA_KA);
-        mMedialMap.put("" + Uni.KHA + Uni.MVS, "" + Glyph.FINA_KHA);
-        mMedialMap.put("" + Uni.TSA + Uni.MVS, "" + Glyph.FINA_TSA);
-        mMedialMap.put("" + Uni.ZA + Uni.MVS, "" + Glyph.FINA_ZA);
-        mMedialMap.put("" + Uni.HAA + Uni.MVS, "" + Glyph.FINA_HAA);
-        mMedialMap.put("" + Uni.ZRA + Uni.MVS, "" + Glyph.FINA_ZRA);
-        mMedialMap.put("" + Uni.LHA + Uni.MVS, "" + Glyph.FINA_LHA);
-        mMedialMap.put("" + Uni.ZHI + Uni.MVS, "" + Glyph.FINA_ZHI);
-        mMedialMap.put("" + Uni.CHI + Uni.MVS, "" + Glyph.FINA_CHI);
+//        // MVS
+//        // FIXME the mvs vowel glyph forms are not getting selected
+//        mMedialMap.put("" + Uni.NA + Uni.MVS, "" + Glyph.MEDI_NA_FVS2);
+//        mMedialMap.put("" + Uni.ANG + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.FINA_QA);
+//        //mMedialMap.put("" + Uni.ANG + Uni.FVS1 + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_QA);
+//        //mMedialMap.put("" + Uni.ANG + Uni.FVS1 + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_GA);
+//        mMedialMap.put("" + Uni.ANG + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.MEDI_GA_FVS2);
+//        mMedialMap.put("" + Uni.BA + Uni.MVS, "" + Glyph.FINA_BA);
+//        mMedialMap.put("" + Uni.PA + Uni.MVS, "" + Glyph.FINA_PA);
+//        mMedialMap.put("" + Uni.QA + Uni.MVS, "" + Glyph.FINA_QA);
+//        mMedialMap.put("" + Uni.GA + Uni.MVS, "" + Glyph.MEDI_GA_FVS2);
+//        mMedialMap.put("" + Uni.MA + Uni.MVS, "" + Glyph.FINA_MA);
+//        mMedialMap.put("" + Uni.LA + Uni.MVS, "" + Glyph.FINA_LA);
+//        mMedialMap.put("" + Uni.SA + Uni.MVS, "" + Glyph.FINA_SA);
+//        mMedialMap.put("" + Uni.SA + Uni.FVS1 + Uni.MVS, "" + Glyph.FINA_SA_FVS1);
+//        mMedialMap.put("" + Uni.SHA + Uni.MVS, "" + Glyph.FINA_SHA);
+//        mMedialMap.put("" + Uni.TA + Uni.MVS, "" + Glyph.FINA_TA);
+//        mMedialMap.put("" + Uni.DA + Uni.MVS, "" + Glyph.FINA_DA_FVS1);
+//        mMedialMap.put("" + Uni.CHA + Uni.MVS, "" + Glyph.FINA_CHA);
+//        mMedialMap.put("" + Uni.JA + Uni.MVS, "" + Glyph.MEDI_JA_FVS1);
+//        mMedialMap.put("" + Uni.YA + Uni.MVS, "" + Glyph.FINA_YA);
+//        mMedialMap.put("" + Uni.I + Uni.MVS, "" + Glyph.FINA_YA); // I may be a substitute for YA
+//        mMedialMap.put("" + Uni.RA + Uni.MVS, "" + Glyph.FINA_RA);
+//        mMedialMap.put("" + Uni.WA + Uni.MVS, "" + Glyph.FINA_WA);
+//        mMedialMap.put("" + Uni.FA + Uni.MVS, "" + Glyph.FINA_FA);
+//        mMedialMap.put("" + Uni.KA + Uni.MVS, "" + Glyph.FINA_KA);
+//        mMedialMap.put("" + Uni.KHA + Uni.MVS, "" + Glyph.FINA_KHA);
+//        mMedialMap.put("" + Uni.TSA + Uni.MVS, "" + Glyph.FINA_TSA);
+//        mMedialMap.put("" + Uni.ZA + Uni.MVS, "" + Glyph.FINA_ZA);
+//        mMedialMap.put("" + Uni.HAA + Uni.MVS, "" + Glyph.FINA_HAA);
+//        mMedialMap.put("" + Uni.ZRA + Uni.MVS, "" + Glyph.FINA_ZRA);
+//        mMedialMap.put("" + Uni.LHA + Uni.MVS, "" + Glyph.FINA_LHA);
+//        mMedialMap.put("" + Uni.ZHI + Uni.MVS, "" + Glyph.FINA_ZHI);
+//        mMedialMap.put("" + Uni.CHI + Uni.MVS, "" + Glyph.FINA_CHI);
 
         // Catch other chars
         mMedialMap.put("" + CURSOR_HOLDER, "" + CURSOR_HOLDER);
@@ -1213,7 +1263,7 @@ public final class MongolUnicodeRenderer {
 
         // NOTE: assuming MAXIMUM_SEARCH_LENGTH = 4
 
-        mFinalMap = new HashMap<String, String>();
+        mFinalMap = new HashMap<>();
 
         mFinalMap.put("" + Uni.A, "" + Glyph.FINA_A);
         mFinalMap.put("" + Uni.A + Uni.FVS1, "" + Glyph.FINA_A_FVS1);
@@ -1238,56 +1288,56 @@ public final class MongolUnicodeRenderer {
         mFinalMap.put("" + Uni.ANG + Uni.QA, "" + Glyph.MEDI_ANG + Glyph.FINA_QA);
         mFinalMap.put("" + Uni.ANG + Uni.GA, "" + Glyph.MEDI_ANG + Glyph.FINA_GA);
         mFinalMap.put("" + Uni.BA, "" + Glyph.FINA_BA);
-        mFinalMap.put("" + Uni.BA + Uni.A, "" + Glyph.MEDI_BA + Glyph.FINA_A);
-        mFinalMap.put("" + Uni.BA + Uni.E, "" + Glyph.MEDI_BA + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.BA + Uni.I, "" + Glyph.MEDI_BA + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.BA + Uni.O, "" + Glyph.MEDI_BA_OU + Glyph.FINA_O);
-        mFinalMap.put("" + Uni.BA + Uni.U, "" + Glyph.MEDI_BA_OU + Glyph.FINA_U);
-        mFinalMap.put("" + Uni.BA + Uni.OE, "" + Glyph.MEDI_BA_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.BA + Uni.UE, "" + Glyph.MEDI_BA_OU + Glyph.FINA_UE);
+        mFinalMap.put("" + Uni.BA + Uni.A, "" + Glyph.MEDI_BA + Glyph.FINA_A_BP);
+        mFinalMap.put("" + Uni.BA + Uni.E, "" + Glyph.MEDI_BA + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.BA + Uni.I, "" + Glyph.MEDI_BA + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.BA + Uni.O, "" + Glyph.MEDI_BA_OU + Glyph.FINA_O_BP);
+        mFinalMap.put("" + Uni.BA + Uni.U, "" + Glyph.MEDI_BA_OU + Glyph.FINA_U_BP);
+        mFinalMap.put("" + Uni.BA + Uni.OE, "" + Glyph.MEDI_BA_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.BA + Uni.UE, "" + Glyph.MEDI_BA_OU + Glyph.FINA_UE_BP);
         mFinalMap.put("" + Uni.BA + Uni.EE, "" + Glyph.MEDI_BA + Glyph.FINA_EE);
-        mFinalMap.put("" + Uni.BA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_BA_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.BA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_BA_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.BA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_BA_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.BA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_BA_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.BA + Uni.FVS1, "" + Glyph.FINA_BA_FVS1);
         mFinalMap.put("" + Uni.PA, "" + Glyph.FINA_PA);
-        mFinalMap.put("" + Uni.PA + Uni.A, "" + Glyph.MEDI_PA + Glyph.FINA_A);
-        mFinalMap.put("" + Uni.PA + Uni.E, "" + Glyph.MEDI_PA + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.PA + Uni.I, "" + Glyph.MEDI_PA + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.PA + Uni.O, "" + Glyph.MEDI_PA_OU + Glyph.FINA_O);
-        mFinalMap.put("" + Uni.PA + Uni.U, "" + Glyph.MEDI_PA_OU + Glyph.FINA_U);
-        mFinalMap.put("" + Uni.PA + Uni.OE, "" + Glyph.MEDI_PA_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.PA + Uni.UE, "" + Glyph.MEDI_PA_OU + Glyph.FINA_UE);
+        mFinalMap.put("" + Uni.PA + Uni.A, "" + Glyph.MEDI_PA + Glyph.FINA_A_BP);
+        mFinalMap.put("" + Uni.PA + Uni.E, "" + Glyph.MEDI_PA + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.PA + Uni.I, "" + Glyph.MEDI_PA + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.PA + Uni.O, "" + Glyph.MEDI_PA_OU + Glyph.FINA_O_BP);
+        mFinalMap.put("" + Uni.PA + Uni.U, "" + Glyph.MEDI_PA_OU + Glyph.FINA_U_BP);
+        mFinalMap.put("" + Uni.PA + Uni.OE, "" + Glyph.MEDI_PA_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.PA + Uni.UE, "" + Glyph.MEDI_PA_OU + Glyph.FINA_UE_BP);
         mFinalMap.put("" + Uni.PA + Uni.EE, "" + Glyph.MEDI_PA + Glyph.FINA_EE);
-        mFinalMap.put("" + Uni.PA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_PA_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.PA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_PA_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.PA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_PA_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.PA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_PA_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.QA, "" + Glyph.FINA_QA);
         //mFinalMap.put("" + Uni.QA + Uni.FVS1, "" + Glyph.FINA_QA_FVS1);
         //mFinalMap.put("" + Uni.QA + Uni.FVS2, "" + Glyph.FINA_QA_FVS2);
-        mFinalMap.put("" + Uni.QA + Uni.E, "" + Glyph.MEDI_QA_FEM + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.QA + Uni.I, "" + Glyph.MEDI_QA_FEM + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.QA + Uni.OE, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.QA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.QA + Uni.UE, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_UE);
-        mFinalMap.put("" + Uni.QA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.QA + Uni.E, "" + Glyph.MEDI_QA_FEM + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.QA + Uni.I, "" + Glyph.MEDI_QA_FEM + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.QA + Uni.OE, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.QA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.QA + Uni.UE, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_UE_BP);
+        mFinalMap.put("" + Uni.QA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_QA_FEM_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.QA + Uni.EE, "" + Glyph.MEDI_QA_FEM + Glyph.FINA_EE);
-        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.E, "" + Glyph.MEDI_QA_FVS1_FEM + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.I, "" + Glyph.MEDI_QA_FVS1_FEM + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_UE);
+        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.E, "" + Glyph.MEDI_QA_FVS1_FEM + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.I, "" + Glyph.MEDI_QA_FVS1_FEM + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_UE_BP);
         mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.EE, "" + Glyph.MEDI_QA_FVS1_FEM + Glyph.FINA_EE);
-        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.QA + Uni.FVS1 + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_QA_FVS1_FEM_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.GA, "" + Glyph.FINA_GA);
         mFinalMap.put("" + Uni.GA + Uni.FVS1, "" + Glyph.FINA_GA_FVS1);
         //mFinalMap.put("" + Uni.GA + Uni.FVS2, "" + Glyph.FINA_GA_FVS2);
         // TODO The FSV3 is just to make it compatible with Baiti
         //mFinalMap.put("" + Uni.GA + Uni.FVS3, "" + Glyph.FINA_GA_FVS3);
-        mFinalMap.put("" + Uni.GA + Uni.E, "" + Glyph.MEDI_GA_FEM + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.GA + Uni.I, "" + Glyph.MEDI_GA_FEM + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.GA + Uni.OE, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.GA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.GA + Uni.UE, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_UE);
-        mFinalMap.put("" + Uni.GA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.GA + Uni.E, "" + Glyph.MEDI_GA_FEM + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.GA + Uni.I, "" + Glyph.MEDI_GA_FEM + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.GA + Uni.OE, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.GA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.GA + Uni.UE, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_UE_BP);
+        mFinalMap.put("" + Uni.GA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_GA_FEM_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.GA + Uni.EE, "" + Glyph.MEDI_GA_FEM + Glyph.FINA_EE);
         //mFinalMap.put("" + Uni.GA + Uni.FVS1 + Uni.E, "" + Glyph.MEDI_GA_FVS1_FEM + Glyph.FINA_E);
         //mFinalMap.put("" + Uni.GA + Uni.FVS1 + Uni.I, "" + Glyph.MEDI_GA_FVS1_FEM + Glyph.FINA_I);
@@ -1307,43 +1357,43 @@ public final class MongolUnicodeRenderer {
         mFinalMap.put("" + Uni.DA + Uni.FVS1, "" + Glyph.FINA_DA_FVS1);
         mFinalMap.put("" + Uni.CHA, "" + Glyph.FINA_CHA);
         mFinalMap.put("" + Uni.JA, "" + Glyph.FINA_JA);
-        mFinalMap.put("" + Uni.JA + Uni.FVS1, "" + Glyph.FINA_JA_FVS1);
+        //mFinalMap.put("" + Uni.JA + Uni.FVS1, "" + Glyph.FINA_JA_FVS1);
         mFinalMap.put("" + Uni.YA, "" + Glyph.FINA_YA);
         mFinalMap.put("" + Uni.RA, "" + Glyph.FINA_RA);
         mFinalMap.put("" + Uni.WA, "" + Glyph.FINA_WA);
         mFinalMap.put("" + Uni.WA + Uni.FVS1, "" + Glyph.FINA_WA_FVS1);
         mFinalMap.put("" + Uni.FA, "" + Glyph.FINA_FA);
-        mFinalMap.put("" + Uni.FA + Uni.A, "" + Glyph.MEDI_FA + Glyph.FINA_A);
-        mFinalMap.put("" + Uni.FA + Uni.E, "" + Glyph.MEDI_FA + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.FA + Uni.I, "" + Glyph.MEDI_FA + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.FA + Uni.O, "" + Glyph.MEDI_FA_OU + Glyph.FINA_O);
-        mFinalMap.put("" + Uni.FA + Uni.U, "" + Glyph.MEDI_FA_OU + Glyph.FINA_U);
-        mFinalMap.put("" + Uni.FA + Uni.OE, "" + Glyph.MEDI_FA_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.FA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_FA_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.FA + Uni.UE, "" + Glyph.MEDI_FA_OU + Glyph.FINA_UE);
-        mFinalMap.put("" + Uni.FA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_FA_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.FA + Uni.A, "" + Glyph.MEDI_FA + Glyph.FINA_A_BP);
+        mFinalMap.put("" + Uni.FA + Uni.E, "" + Glyph.MEDI_FA + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.FA + Uni.I, "" + Glyph.MEDI_FA + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.FA + Uni.O, "" + Glyph.MEDI_FA_OU + Glyph.FINA_O_BP);
+        mFinalMap.put("" + Uni.FA + Uni.U, "" + Glyph.MEDI_FA_OU + Glyph.FINA_U_BP);
+        mFinalMap.put("" + Uni.FA + Uni.OE, "" + Glyph.MEDI_FA_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.FA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_FA_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.FA + Uni.UE, "" + Glyph.MEDI_FA_OU + Glyph.FINA_UE_BP);
+        mFinalMap.put("" + Uni.FA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_FA_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.FA + Uni.EE, "" + Glyph.MEDI_FA + Glyph.FINA_EE);
         mFinalMap.put("" + Uni.KA, "" + Glyph.FINA_KA);
-        mFinalMap.put("" + Uni.KA + Uni.A, "" + Glyph.MEDI_KA + Glyph.FINA_A);
-        mFinalMap.put("" + Uni.KA + Uni.E, "" + Glyph.MEDI_KA + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.KA + Uni.I, "" + Glyph.MEDI_KA + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.KA + Uni.O, "" + Glyph.MEDI_KA_OU + Glyph.FINA_O);
-        mFinalMap.put("" + Uni.KA + Uni.U, "" + Glyph.MEDI_KA_OU + Glyph.FINA_U);
-        mFinalMap.put("" + Uni.KA + Uni.OE, "" + Glyph.MEDI_KA_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.KA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_KA_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.KA + Uni.UE, "" + Glyph.MEDI_KA_OU + Glyph.FINA_UE);
-        mFinalMap.put("" + Uni.KA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_KA_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.KA + Uni.A, "" + Glyph.MEDI_KA + Glyph.FINA_A_BP);
+        mFinalMap.put("" + Uni.KA + Uni.E, "" + Glyph.MEDI_KA + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.KA + Uni.I, "" + Glyph.MEDI_KA + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.KA + Uni.O, "" + Glyph.MEDI_KA_OU + Glyph.FINA_O_BP);
+        mFinalMap.put("" + Uni.KA + Uni.U, "" + Glyph.MEDI_KA_OU + Glyph.FINA_U_BP);
+        mFinalMap.put("" + Uni.KA + Uni.OE, "" + Glyph.MEDI_KA_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.KA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_KA_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.KA + Uni.UE, "" + Glyph.MEDI_KA_OU + Glyph.FINA_UE_BP);
+        mFinalMap.put("" + Uni.KA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_KA_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.KA + Uni.EE, "" + Glyph.MEDI_KA + Glyph.FINA_EE);
         mFinalMap.put("" + Uni.KHA, "" + Glyph.FINA_KHA);
-        mFinalMap.put("" + Uni.KHA + Uni.A, "" + Glyph.MEDI_KHA + Glyph.FINA_A);
-        mFinalMap.put("" + Uni.KHA + Uni.E, "" + Glyph.MEDI_KHA + Glyph.FINA_E);
-        mFinalMap.put("" + Uni.KHA + Uni.I, "" + Glyph.MEDI_KHA + Glyph.FINA_I);
-        mFinalMap.put("" + Uni.KHA + Uni.O, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_O);
-        mFinalMap.put("" + Uni.KHA + Uni.U, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_U);
-        mFinalMap.put("" + Uni.KHA + Uni.OE, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_OE);
-        mFinalMap.put("" + Uni.KHA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_OE_FVS1);
-        mFinalMap.put("" + Uni.KHA + Uni.UE, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_UE);
-        mFinalMap.put("" + Uni.KHA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_UE_FVS1);
+        mFinalMap.put("" + Uni.KHA + Uni.A, "" + Glyph.MEDI_KHA + Glyph.FINA_A_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.E, "" + Glyph.MEDI_KHA + Glyph.FINA_E_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.I, "" + Glyph.MEDI_KHA + Glyph.FINA_I_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.O, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_O_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.U, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_U_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.OE, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_OE_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.OE + Uni.FVS1, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_OE_FVS1_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.UE, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_UE_BP);
+        mFinalMap.put("" + Uni.KHA + Uni.UE + Uni.FVS1, "" + Glyph.MEDI_KHA_OU + Glyph.FINA_UE_FVS1_BP);
         mFinalMap.put("" + Uni.KHA + Uni.EE, "" + Glyph.MEDI_KHA + Glyph.FINA_EE);
         mFinalMap.put("" + Uni.TSA, "" + Glyph.FINA_TSA);
         mFinalMap.put("" + Uni.ZA, "" + Glyph.FINA_ZA);
@@ -1360,22 +1410,44 @@ public final class MongolUnicodeRenderer {
         // and chimayi. Is there a reason for it?)
 
 
+//        // MVS
+//        // TODO handle MVS in preFormatter()?
+//        mFinalMap.put("" + Uni.NA + Uni.MVS, "" + Glyph.MEDI_NA_FVS2);
+//        mFinalMap.put("" + Uni.ANG + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.FINA_QA);
+//        //mFinalMap.put("" + Uni.ANG + Uni.FVS1 + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_QA);
+//        //mFinalMap.put("" + Uni.ANG + Uni.FVS1 + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_GA);
+//        mFinalMap.put("" + Uni.ANG + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.MEDI_GA_FVS2);
+//        mFinalMap.put("" + Uni.QA + Uni.MVS, "" + Glyph.FINA_QA);
+//        mFinalMap.put("" + Uni.GA + Uni.MVS, "" + Glyph.MEDI_GA_FVS2);
+//        mFinalMap.put("" + Uni.MA + Uni.MVS, "" + Glyph.FINA_MA);
+//        mFinalMap.put("" + Uni.LA + Uni.MVS, "" + Glyph.FINA_LA);
+//        mFinalMap.put("" + Uni.JA + Uni.MVS, "" + Glyph.MEDI_JA_FVS1);
+//        mFinalMap.put("" + Uni.YA + Uni.MVS, "" + Glyph.FINA_YA);
+//        mFinalMap.put("" + Uni.I + Uni.MVS, "" + Glyph.FINA_YA); // I may be a substitute for YA
+//        mFinalMap.put("" + Uni.RA + Uni.MVS, "" + Glyph.FINA_RA);
+//        mFinalMap.put("" + Uni.WA + Uni.MVS, "" + Glyph.FINA_WA);
+
         // MVS
-        // TODO handle MVS in preFormatter()?
-        mFinalMap.put("" + Uni.NA + Uni.MVS, "" + Glyph.MEDI_NA_FVS2);
-        mFinalMap.put("" + Uni.ANG + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.FINA_QA);
-        //mFinalMap.put("" + Uni.ANG + Uni.FVS1 + Uni.QA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_QA);
-        //mFinalMap.put("" + Uni.ANG + Uni.FVS1 + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG_FINA_GA);
-        mFinalMap.put("" + Uni.ANG + Uni.GA + Uni.MVS, "" + Glyph.MEDI_ANG + Glyph.MEDI_GA_FVS2);
-        mFinalMap.put("" + Uni.QA + Uni.MVS, "" + Glyph.FINA_QA);
-        mFinalMap.put("" + Uni.GA + Uni.MVS, "" + Glyph.MEDI_GA_FVS2);
-        mFinalMap.put("" + Uni.MA + Uni.MVS, "" + Glyph.FINA_MA);
-        mFinalMap.put("" + Uni.LA + Uni.MVS, "" + Glyph.FINA_LA);
-        mFinalMap.put("" + Uni.JA + Uni.MVS, "" + Glyph.FINA_JA_FVS1);
-        mFinalMap.put("" + Uni.YA + Uni.MVS, "" + Glyph.FINA_YA);
-        mFinalMap.put("" + Uni.I + Uni.MVS, "" + Glyph.FINA_YA); // I may be a substitute for YA
-        mFinalMap.put("" + Uni.RA + Uni.MVS, "" + Glyph.FINA_RA);
-        mFinalMap.put("" + Uni.WA + Uni.MVS, "" + Glyph.FINA_WA);
+        // A
+        mFinalMap.put("" + Uni.NA + Uni.MVS + Uni.A, "" + Glyph.MEDI_NA_FVS2 + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.QA + Uni.MVS + Uni.A, "" + Glyph.FINA_QA + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.GA + Uni.MVS + Uni.A, "" + Glyph.MEDI_GA_FVS2 + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.MA + Uni.MVS + Uni.A, "" + Glyph.FINA_MA + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.LA + Uni.MVS + Uni.A, "" + Glyph.FINA_LA + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.JA + Uni.MVS + Uni.A, "" + Glyph.MEDI_JA_FVS1 + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.YA + Uni.MVS + Uni.A, "" + Glyph.FINA_YA + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.RA + Uni.MVS + Uni.A, "" + Glyph.FINA_RA + Glyph.FINA_A_MVS);
+        mFinalMap.put("" + Uni.WA + Uni.MVS + Uni.A, "" + Glyph.FINA_WA_FVS1 + Glyph.FINA_A_MVS);
+        // E
+        mFinalMap.put("" + Uni.NA + Uni.MVS + Uni.E, "" + Glyph.MEDI_NA_FVS2 + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.QA + Uni.MVS + Uni.E, "" + Glyph.FINA_QA + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.GA + Uni.MVS + Uni.E, "" + Glyph.MEDI_GA_FVS2 + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.MA + Uni.MVS + Uni.E, "" + Glyph.FINA_MA + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.LA + Uni.MVS + Uni.E, "" + Glyph.FINA_LA + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.JA + Uni.MVS + Uni.E, "" + Glyph.MEDI_JA_FVS1 + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.YA + Uni.MVS + Uni.E, "" + Glyph.FINA_YA + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.RA + Uni.MVS + Uni.E, "" + Glyph.FINA_RA + Glyph.FINA_E_MVS);
+        mFinalMap.put("" + Uni.WA + Uni.MVS + Uni.E, "" + Glyph.FINA_WA_FVS1 + Glyph.FINA_E_MVS);
 
         // Catch other chars
         mFinalMap.put("" + CURSOR_HOLDER, "" + CURSOR_HOLDER);
@@ -1585,6 +1657,8 @@ public final class MongolUnicodeRenderer {
         public static final char FVS1 = '\u180b';
         public static final char FVS2 = '\u180c';
         public static final char FVS3 = '\u180d';
+        public static final char PFVS4 = '\u180f'; // Private FVS4 for internal glyph selection (undefined in Unicode)
+        public static final char PFVS5 = '\u181f'; // Private FVS5 for internal glyph selection (undefined in Unicode)
         public static final char MVS = '\u180e'; // MONGOLIAN_VOWEL_SEPARATOR
         public static final char MONGOLIAN_DIGIT_ZERO = '\u1810';
         public static final char MONGOLIAN_DIGIT_ONE = '\u1811';
@@ -1637,6 +1711,9 @@ public final class MongolUnicodeRenderer {
     //public static final char CURSOR_HOLDER = '|';
 
     private class Glyph {
+
+        // Extra selector used for selecting glyph forms
+        //private static final char PGS1 = '\uE230'; // Private Glyph Selector 1
 
         // Private Use Area glyph values
         //private static final char NOTDEF = '\uE360';
@@ -1748,7 +1825,7 @@ public final class MongolUnicodeRenderer {
         //private static final char ISOL_U_FVS2 = '\uE3A5';
         //private static final char INIT_U_FVS1 = '\uE3A7';
         private static final char MEDI_U_FVS1 = '\uE290';
-        private static final char FINA_U_FVS1 = '\uE28E';
+        private static final char FINA_U_FVS1 = '\uE28E';  // TODO not defined in Unicode 9.0
 
         private static final char ISOL_OE = '\uE293';
         private static final char INIT_OE = '\uE295';
@@ -1996,7 +2073,7 @@ public final class MongolUnicodeRenderer {
         private static final char INIT_MA = '\uE2F2';
         private static final char MEDI_MA = '\uE2F4';
         private static final char MEDI_MA_ML = '\uE2F5'; // long stem GV, use this if M or L follows
-        private static final char MEDI_MA_BP = '\uE2F5'; // GV use this if following a B, P, H, K, etc.
+        private static final char MEDI_MA_BP = '\uE2F6'; // GV use this if following a B, P, H, K, etc.
         private static final char FINA_MA = '\uE2F3';
 
         private static final char ISOL_LA = '\uE2F7';
@@ -2011,7 +2088,7 @@ public final class MongolUnicodeRenderer {
         private static final char MEDI_SA = '\uE301';
         private static final char FINA_SA = '\uE2FF';
         private static final char FINA_SA_FVS1 = '\uE300';
-        private static final char FINA_SA_FVS2 = '\uE2FF'; //0x100CE; FIXME: glyph is not in PUA
+        private static final char FINA_SA_FVS2 = '\uE2FF'; //0x100CE; FIXME: glyph is not in Menksoft PUA, substituting first form
 
         private static final char ISOL_SHA = '\uE303';
         private static final char INIT_SHA = '\uE304';
@@ -2043,7 +2120,7 @@ public final class MongolUnicodeRenderer {
         private static final char INIT_JA = '\uE319';
         private static final char MEDI_JA = '\uE31D';
         private static final char FINA_JA = '\uE31B';
-        private static final char FINA_JA_FVS1 = '\uE31C'; // MVS
+        private static final char MEDI_JA_FVS1 = '\uE31C'; // MVS
         //private static final char ISOL_JA_FVS1 = '\uE489';
 
         private static final char ISOL_YA = '\uE31E';
@@ -2067,8 +2144,8 @@ public final class MongolUnicodeRenderer {
         //private static final char WORD_U = '\uE498';
         //private static final char MEDI_WA_FVS1 = '\uE499'; // TODO matching Baiti
 
-        private static final char ISOL_FA = '\uE32B';
-        private static final char INIT_FA = '\uE32B';
+        private static final char ISOL_FA = '\uE32D';
+        private static final char INIT_FA = '\uE32D';
         private static final char INIT_FA_OU = '\uE32E';
         private static final char MEDI_FA = '\uE330';
         private static final char MEDI_FA_OU = '\uE331';
@@ -2117,7 +2194,7 @@ public final class MongolUnicodeRenderer {
         private static final char MEDI_KA = '\uE336';
         private static final char MEDI_KA_OU = '\uE337';
         private static final char MEDI_KA_STEM = '\uE338';
-        private static final char FINA_KA = '\uE225';
+        private static final char FINA_KA = '\uE335';
         //private static final char INIT_KA_FINA_A = '\uE4C8';
         //private static final char INIT_KA_MEDI_A = '\uE4C9';
         //private static final char MEDI_KA_MEDI_A = '\uE4CA';

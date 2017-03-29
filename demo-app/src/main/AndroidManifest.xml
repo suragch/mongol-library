@@ -23,6 +23,8 @@
                   android:name=".TestingActivity"/>
         <activity android:label="@string/unicode_activity_title"
                   android:name=".UnicodeActivity"/>
+        <activity android:label="@string/convert_code_activity_title"
+                  android:name=".ConvertCodeActivity"/>
     </application>
 
 </manifest>
