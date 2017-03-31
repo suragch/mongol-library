@@ -11,13 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import net.studymongolian.mongollibrary.MongolCode;
+import net.studymongolian.mongollibrary.MongolFont;
 
 
 public class ConvertCodeActivity extends AppCompatActivity {
 
     EditText etCodeWindow;
     MongolCode converter;
-    Typeface tfMongolFont;
+    //Typeface tfMongolFont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class ConvertCodeActivity extends AppCompatActivity {
 
         // set Mongol font
         //tfMongolFont = Typeface.createFromAsset(this.getAssets(), "fonts/MQG8F02.ttf");
-        tfMongolFont = Typeface.createFromAsset(this.getAssets(), "fonts/MenksoftHawang.ttf");
+        //tfMongolFont = Typeface.createFromAsset(this.getAssets(), "fonts/MenksoftHawang.ttf");
         //etCodeWindow.setTypeface(tf);
 
 
@@ -45,7 +46,8 @@ public class ConvertCodeActivity extends AppCompatActivity {
 
         String menksoftString = converter.unicodeToMenksoft(etCodeWindow.getText().toString());
 
-        etCodeWindow.setTypeface(tfMongolFont);
+        Typeface tf = MongolFont.get(MongolFont.QAGAN, this);
+        etCodeWindow.setTypeface(tf);
         etCodeWindow.setText(menksoftString);
     }
 
@@ -60,6 +62,7 @@ public class ConvertCodeActivity extends AppCompatActivity {
     @SuppressLint("NewApi")
     @SuppressWarnings("deprecation")
     public void copyClick(View view) {
+
         int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -74,31 +77,33 @@ public class ConvertCodeActivity extends AppCompatActivity {
     @SuppressLint("NewApi")
     @SuppressWarnings("deprecation")
     public void pasteClick(View view) {
+
+        CharSequence textToPaste = null;
+
+        // get the text from the clipboard manager
         int sdk = android.os.Build.VERSION.SDK_INT;
-        CharSequence pasteString = "";
         if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-
             try {
-                pasteString = clipboard.getText();
+                textToPaste = clipboard.getText();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         } else {
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-
             if (clipboard.getPrimaryClip() != null) {
                 android.content.ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
-                pasteString = item.getText();
+                textToPaste = item.getText();
             }
-
         }
-        if (pasteString != null) {
+
+        // insert the text at the cursor position, or if there is a selection it
+        // replaces the selection with the text to paste
+        if (textToPaste != null) {
             int start = Math.max(etCodeWindow.getSelectionStart(), 0);
             int end = Math.max(etCodeWindow.getSelectionEnd(), 0);
             etCodeWindow.getText().replace(Math.min(start, end), Math.max(start, end),
-                    pasteString, 0, pasteString.length());
+                    textToPaste, 0, textToPaste.length());
         }
     }
 

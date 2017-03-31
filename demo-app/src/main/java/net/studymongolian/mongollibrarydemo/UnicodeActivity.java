@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,7 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.studymongolian.mongollibrary.MongolCode;
-import net.studymongolian.mongollibrary.MongolUnicodeRenderer;
+import net.studymongolian.mongollibrary.MongolFont;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,47 +28,47 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
     TextView tvResults;
     MongolCode renderer;
 
-    private static final char FVS1 = MongolUnicodeRenderer.Uni.FVS1;
-    private static final char FVS2 = MongolUnicodeRenderer.Uni.FVS2;
-    private static final char FVS3 = MongolUnicodeRenderer.Uni.FVS3;
-    private static final char ZWJ = MongolUnicodeRenderer.Uni.ZWJ;
-    private static final char MVS = MongolUnicodeRenderer.Uni.MVS;
-    private static final char NNBS = MongolUnicodeRenderer.Uni.NNBS;
-    private static final char A = MongolUnicodeRenderer.Uni.A;
-    private static final char E = MongolUnicodeRenderer.Uni.E;
-    private static final char I = MongolUnicodeRenderer.Uni.I;
-    private static final char O = MongolUnicodeRenderer.Uni.O;
-    private static final char U = MongolUnicodeRenderer.Uni.U;
-    private static final char OE = MongolUnicodeRenderer.Uni.OE;
-    private static final char UE = MongolUnicodeRenderer.Uni.UE;
-    private static final char EE = MongolUnicodeRenderer.Uni.EE;
-    private static final char NA = MongolUnicodeRenderer.Uni.NA;
-    private static final char ANG = MongolUnicodeRenderer.Uni.ANG;
-    private static final char BA = MongolUnicodeRenderer.Uni.BA;
-    private static final char PA = MongolUnicodeRenderer.Uni.PA;
-    private static final char QA = MongolUnicodeRenderer.Uni.QA;
-    private static final char GA = MongolUnicodeRenderer.Uni.GA;
-    private static final char MA = MongolUnicodeRenderer.Uni.MA;
-    private static final char LA = MongolUnicodeRenderer.Uni.LA;
-    private static final char SA = MongolUnicodeRenderer.Uni.SA;
-    private static final char SHA = MongolUnicodeRenderer.Uni.SHA;
-    private static final char TA = MongolUnicodeRenderer.Uni.TA;
-    private static final char DA = MongolUnicodeRenderer.Uni.DA;
-    private static final char CHA = MongolUnicodeRenderer.Uni.CHA;
-    private static final char JA = MongolUnicodeRenderer.Uni.JA;
-    private static final char YA = MongolUnicodeRenderer.Uni.YA;
-    private static final char RA = MongolUnicodeRenderer.Uni.RA;
-    private static final char WA = MongolUnicodeRenderer.Uni.WA;
-    private static final char FA = MongolUnicodeRenderer.Uni.FA;
-    private static final char KA = MongolUnicodeRenderer.Uni.KA;
-    private static final char KHA = MongolUnicodeRenderer.Uni.KHA;
-    private static final char TSA = MongolUnicodeRenderer.Uni.TSA;
-    private static final char ZA = MongolUnicodeRenderer.Uni.ZA;
-    private static final char HAA = MongolUnicodeRenderer.Uni.HAA;
-    private static final char ZRA = MongolUnicodeRenderer.Uni.ZRA;
-    private static final char LHA = MongolUnicodeRenderer.Uni.LHA;
-    private static final char ZHI = MongolUnicodeRenderer.Uni.ZHI;
-    private static final char CHI = MongolUnicodeRenderer.Uni.CHI;
+    private static final char FVS1 = MongolCode.Uni.FVS1;
+    private static final char FVS2 = MongolCode.Uni.FVS2;
+    private static final char FVS3 = MongolCode.Uni.FVS3;
+    private static final char ZWJ = MongolCode.Uni.ZWJ;
+    private static final char MVS = MongolCode.Uni.MVS;
+    private static final char NNBS = MongolCode.Uni.NNBS;
+    private static final char A = MongolCode.Uni.A;
+    private static final char E = MongolCode.Uni.E;
+    private static final char I = MongolCode.Uni.I;
+    private static final char O = MongolCode.Uni.O;
+    private static final char U = MongolCode.Uni.U;
+    private static final char OE = MongolCode.Uni.OE;
+    private static final char UE = MongolCode.Uni.UE;
+    private static final char EE = MongolCode.Uni.EE;
+    private static final char NA = MongolCode.Uni.NA;
+    private static final char ANG = MongolCode.Uni.ANG;
+    private static final char BA = MongolCode.Uni.BA;
+    private static final char PA = MongolCode.Uni.PA;
+    private static final char QA = MongolCode.Uni.QA;
+    private static final char GA = MongolCode.Uni.GA;
+    private static final char MA = MongolCode.Uni.MA;
+    private static final char LA = MongolCode.Uni.LA;
+    private static final char SA = MongolCode.Uni.SA;
+    private static final char SHA = MongolCode.Uni.SHA;
+    private static final char TA = MongolCode.Uni.TA;
+    private static final char DA = MongolCode.Uni.DA;
+    private static final char CHA = MongolCode.Uni.CHA;
+    private static final char JA = MongolCode.Uni.JA;
+    private static final char YA = MongolCode.Uni.YA;
+    private static final char RA = MongolCode.Uni.RA;
+    private static final char WA = MongolCode.Uni.WA;
+    private static final char FA = MongolCode.Uni.FA;
+    private static final char KA = MongolCode.Uni.KA;
+    private static final char KHA = MongolCode.Uni.KHA;
+    private static final char TSA = MongolCode.Uni.TSA;
+    private static final char ZA = MongolCode.Uni.ZA;
+    private static final char HAA = MongolCode.Uni.HAA;
+    private static final char ZRA = MongolCode.Uni.ZRA;
+    private static final char LHA = MongolCode.Uni.LHA;
+    private static final char ZHI = MongolCode.Uni.ZHI;
+    private static final char CHI = MongolCode.Uni.CHI;
 
     private static final String[] names = {"A", "E", "I", "O", "U", "OE", "UE", "EE",
             "N", "NG", "B", "P", "Q", "G", "M", "L", "S", "SH", "T", "D", "CH", "J", "Y",
@@ -75,6 +76,9 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
     private static final char[] characters = {A, E, I, O, U, OE, UE, EE,
             NA, ANG, BA, PA, QA, GA, MA, LA, SA, SHA, TA, DA, CHA, JA, YA,
             RA, WA, FA, KA, KHA, TSA, ZA, HAA, ZRA, LHA, ZHI, CHI};
+    private static final String[] fonts = {"QAGAN", "GARQAG", "HARA", "SCNIN", "HAWANG",
+            "QIMED", "NARIN", "MCDVNBAR", "AMGLANG", "SIDAM", "QINGMING", "ONQA_HARA",
+            "SVGVNAG", "SVLBIYA", "JCLGQ",};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,21 +93,31 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         tvResults = (TextView) findViewById(R.id.tvUnicodeResults);
 
         // set Mongol font
+        Typeface tf = MongolFont.get(MongolFont.QAGAN, this);
         //Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/MQG8F02.ttf");
-        Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/MenksoftHawang.ttf");
+        //Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/MenksoftHawang.ttf");
         tvResults.setTypeface(tf);
 
-        // spinner
-        List<String> spinnerChoices = new ArrayList<>(Arrays.asList(names));
-        spinnerChoices.add("MVS");
-        spinnerChoices.add("NNBS");
-        spinnerChoices.add("Other");
-        Spinner chagaanTolgaiSpinner = (Spinner) findViewById(R.id.spinnerChagaanTolgai);
-        ArrayAdapter<String> adapterColor = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, spinnerChoices);
-        adapterColor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        chagaanTolgaiSpinner.setAdapter(adapterColor);
-        chagaanTolgaiSpinner.setOnItemSelectedListener(this);
+        // Chagaan tologai spinner
+        List<String> viewChoices = new ArrayList<>(Arrays.asList(names));
+        viewChoices.add("MVS");
+        viewChoices.add("NNBS");
+        viewChoices.add("Other");
+        Spinner chagaanTologaiSpinner = (Spinner) findViewById(R.id.spinnerChagaanTolgai);
+        ArrayAdapter<String> adapterChagaanTologai = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, viewChoices);
+        adapterChagaanTologai.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        chagaanTologaiSpinner.setAdapter(adapterChagaanTologai);
+        chagaanTologaiSpinner.setOnItemSelectedListener(this);
+
+        // Font spinner
+        List<String> fontChoices = new ArrayList<>(Arrays.asList(fonts));
+        Spinner fontSpinner = (Spinner) findViewById(R.id.spinnerFont);
+        ArrayAdapter<String> adapterFont = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, fontChoices);
+        adapterFont.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fontSpinner.setAdapter(adapterFont);
+        fontSpinner.setOnItemSelectedListener(this);
     }
 
     private void setStrings(String label, String results) {
@@ -116,24 +130,81 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-        //char unicode = MongolUnicodeRenderer.Uni.A;
         String item = String.valueOf(parent.getItemAtPosition(pos));
 
+        int viewid = parent.getId();
+        if (viewid == R.id.spinnerChagaanTolgai) {
+            int index = Arrays.asList(names).indexOf(item);
+            if (index >= 0) {
+                //unicode = characters[index];
+                updateTextViews(characters[index], item);
+                return;
+            }
 
-        int index = Arrays.asList(names).indexOf(item);
-        if (index >= 0) {
-            //unicode = characters[index];
-            updateTextViews(characters[index], item);
-            return;
+            if (item.equals("MVS")) {
+                updateForMvs();
+            } else if (item.equals("NNBS")) {
+                updateForNnbs();
+            } else if (item.equals("Other")) {
+                updateForOther();
+            }
+        } else if (viewid == R.id.spinnerFont) {
+            String fontChoice;
+            switch (item) {
+                case "QAGAN":
+                    fontChoice = MongolFont.QAGAN;
+                    break;
+                case "GARQAG":
+                    fontChoice = MongolFont.GARQAG;
+                    break;
+                case "HARA":
+                    fontChoice = MongolFont.HARA;
+                    break;
+                case "SCNIN":
+                    fontChoice = MongolFont.SCNIN;
+                    break;
+                case "HAWANG":
+                    fontChoice = MongolFont.HAWANG;
+                    break;
+                case "QIMED":
+                    fontChoice = MongolFont.QIMED;
+                    break;
+                case "NARIN":
+                    fontChoice = MongolFont.NARIN;
+                    break;
+                case "MCDVNBAR":
+                    fontChoice = MongolFont.MCDVNBAR;
+                    break;
+                case "AMGLANG":
+                    fontChoice = MongolFont.AMGLANG;
+                    break;
+                case "SIDAM":
+                    fontChoice = MongolFont.SIDAM;
+                    break;
+                case "QINGMING":
+                    fontChoice = MongolFont.QINGMING;
+                    break;
+                case "ONQA_HARA":
+                    fontChoice = MongolFont.ONQA_HARA;
+                    break;
+                case "SVGVNAG":
+                    fontChoice = MongolFont.SVGVNAG;
+                    break;
+                case "SVLBIYA":
+                    fontChoice = MongolFont.SVLBIYA;
+                    break;
+                case "JCLGQ":
+                    fontChoice = MongolFont.JCLGQ;
+                    break;
+                default:
+                    Log.e("TAG", "onItemSelected: Font doesn't exist. Defaulting to QAGAN.");
+                    fontChoice = MongolFont.QAGAN;
+                    break;
+            }
+            Typeface tf = MongolFont.get(fontChoice, this);
+            tvResults.setTypeface(tf);
         }
 
-        if (item.equals("MVS")) {
-            updateForMvs();
-        } else if (item.equals("NNBS")) {
-            updateForNnbs();
-        } else if (item.equals("Other")) {
-            updateForOther();
-        }
     }
 
     private void updateForNnbs() {

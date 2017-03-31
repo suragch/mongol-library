@@ -32,32 +32,14 @@ public class MongolFont {
         Typeface tf = fontCache.get(name);
         if (tf == null) {
             try {
-                switch (name) {
-                    case QAGAN:
-                    case GARQAG:
-                    case HARA:
-                    case SCNIN:
-                    case HAWANG:
-                    case QIMED:
-                    case NARIN:
-                    case MCDVNBAR:
-                    case AMGLANG:
-                    case SIDAM:
-                    case QINGMING:
-                    case ONQA_HARA:
-                    case SVGVNAG:
-                    case SVLBIYA:
-                    case JCLGQ:
-                        tf = Typeface.createFromAsset(context.getAssets(), name);
-                        break;
-                    default:
-                        tf = Typeface.createFromAsset(context.getAssets(), QAGAN);
-                        break;
-                }
-
+                tf = Typeface.createFromAsset(context.getAssets(), name);
             }
             catch (Exception e) {
-                return null;
+                try {
+                    tf = Typeface.createFromAsset(context.getAssets(), QAGAN);
+                } catch (Exception err) {
+                    return null;
+                }
             }
             fontCache.put(name, tf);
         }

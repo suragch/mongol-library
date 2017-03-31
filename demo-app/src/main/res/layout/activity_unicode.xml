@@ -20,6 +20,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>
 
+    <Spinner
+        android:id="@+id/spinnerFont"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@id/spinnerChagaanTolgai"
+        android:layout_alignParentRight="true"/>
+
     <ScrollView
         android:layout_marginTop="100dp"
         android:layout_width="match_parent"

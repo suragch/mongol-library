@@ -1,14 +1,12 @@
 package net.studymongolian.mongollibrarydemo;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
 import net.studymongolian.mongollibrary.MongolCode;
 import net.studymongolian.mongollibrary.MongolTextView;
-import net.studymongolian.mongollibrary.MongolUnicodeRenderer;
 
 
 public class TestingActivity extends AppCompatActivity {
