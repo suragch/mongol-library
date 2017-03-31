@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingTop="16dp"
+        android:orientation="horizontal">
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_qagan"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_garqag"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_hara"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_scnin"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_hawang"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_qimed"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_narin"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_mcdcnbar"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_amglang"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_sidam"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_qingming"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_onqa_hara"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_svgvnag"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_svlbiya"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+        <net.studymongolian.mongollibrary.MongolLabel
+            android:id="@+id/mongolLabel15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:text="@string/font_name_jclgq"
+            app:textColor="@android:color/white"
+            app:textSize="50sp"/>
+
+
+    </LinearLayout>
+
+
+</HorizontalScrollView>

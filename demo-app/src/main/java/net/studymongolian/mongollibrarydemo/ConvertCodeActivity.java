@@ -30,13 +30,6 @@ public class ConvertCodeActivity extends AppCompatActivity {
 
         etCodeWindow = (EditText) findViewById(R.id.etCodeWindow);
         etCodeWindow.setText("ᠮᠤᠩᠭᠤᠯ"); // Mongol
-
-        // set Mongol font
-        //tfMongolFont = Typeface.createFromAsset(this.getAssets(), "fonts/MQG8F02.ttf");
-        //tfMongolFont = Typeface.createFromAsset(this.getAssets(), "fonts/MenksoftHawang.ttf");
-        //etCodeWindow.setTypeface(tf);
-
-
     }
 
     // Button click methods

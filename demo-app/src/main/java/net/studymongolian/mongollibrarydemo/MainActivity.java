@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolTextView");
         apiDemos.add("Unicode");
         apiDemos.add("Unicode <--> Menksoft");
+        apiDemos.add("MongolFont");
         apiDemos.add("Testing");
 
 
@@ -59,7 +60,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 Intent convertCodeIntent = new Intent(this, ConvertCodeActivity.class);
                 startActivity(convertCodeIntent);
                 break;
-            case 4: // Testing
+            case 4: // MongolFont
+                Intent fontIntent = new Intent(this, MongolFontActivity.class);
+                startActivity(fontIntent);
+                break;
+            case 5: // Testing
                 Intent testingIntent = new Intent(this, TestingActivity.class);
                 startActivity(testingIntent);
                 break;

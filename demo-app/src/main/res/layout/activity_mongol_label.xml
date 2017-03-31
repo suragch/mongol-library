@@ -8,7 +8,7 @@
 
     <net.studymongolian.mongollibrary.MongolLabel
         android:id="@+id/mongol_label_matchparent"
-        app:text="Mongol"
+        app:text="@string/short_string"
         app:textSize="30sp"
         app:gravity="center"
         android:layout_width="100dp"
@@ -19,7 +19,7 @@
 
     <net.studymongolian.mongollibrary.MongolLabel
         android:id="@+id/mongol_label_wrapcontent"
-        app:text="Mongol"
+        app:text="@string/short_string"
         app:textSize="30sp"
         android:gravity="bottom"
         android:layout_width="wrap_content"

@@ -1,43 +1,34 @@
 package net.studymongolian.mongollibrary;
 
 
-import javax.microedition.khronos.opengles.GL10;
-
 /*
- * Mongol Unicode Rendering Engine
- * Version 4.0.0
+ * Mongol Code
+ * Version 1.0.0
  *
  * Updated for Unicode 9.0 standards
  * http://unicode.org/charts/PDF/U1800.pdf
+ * Deviating from Unicode 9.0 for
+ *    - MONGOLIAN LETTER A second form medial (mistake in Unicode 9.0)
+ *    - MONGOLIAN LETTER GA feminine form final (matching DS01, needed to
+  *     break context)
  *
  * The purpose of this class is to render Unicode text into glyphs
  * that can be displayed on all versions of Android. It solves the
- * problem of (1) OpenType smart font rendering not being supported,
- * (2) Mongolian script not being supported before Android 6.0, and
- * (3) problems with Unicode rendering after Android 6.0.
+ * problem of Mongolian script not being supported before Android 6.0,
+ * and problems with Unicode rendering after Android 6.0.
  *
- * Current version needs to be used with Menksoft font glyphs
- * located in the PUA starting at \uE234. These PUA encodings are
- * only to be used internally for glyph selection. All external text
- * should use Unicode.
+ * Current version needs to be used with Menksoft font glyphs located
+ * in the PUA starting at \uE234. It is recommended that all external
+ * text use Unicode. However, Menksoft code can also be converted back
+ * into Unicode.
  */
 public final class MongolCode {
 
-    // static final constants are declared at end of class for readability
-
-    // this is a singleton class
+    // this is a singleton class (should it just be a static class?)
     public final static MongolCode INSTANCE = new MongolCode();
-    private static final int MAXIMUM_SEARCH_LENGTH = 2; // max length in HashMap is 2
-
-    // private class variables
-    //private Map<String, String> mIsolateMap; // <Unicode, glyph>
-    //private Map<String, String> mInitialMap; // <Unicode, glyph>
-    //private Map<String, String> mMedialMap; // <Unicode, glyph>
-    //private Map<String, String> mFinalMap; // <Unicode, glyph>
-    //private Map<String, String> mSuffixMap; // <Unicode, complete_suffix_glyph_string>
 
     public enum Location {
-        ISOLATE, INITIAL, MEDIAL, FINAL, NOT_MONGOLIAN
+        ISOLATE, INITIAL, MEDIAL, FINAL
     }
 
     public enum Gender {
@@ -47,14 +38,11 @@ public final class MongolCode {
     private enum Shape {
         TOOTH,     // glyph slants to the left like a tooth (includes medial T/D, R, W, etc)
         STEM,      // glyph starts with a vertical stem (includes B, O/U, CH, etc)
-        ROUND,     // glyph top is round (includes feminine Q/G)
-        UNDEFINED
+        ROUND      // glyph top is round (includes feminine Q/G)
     }
 
     // Constructor
-    private MongolCode() {
-        //init();
-    }
+    private MongolCode() {}
 
     public String unicodeToMenksoft(String inputString) {
         StringBuilder outputString = new StringBuilder();
@@ -96,7 +84,6 @@ public final class MongolCode {
     public String menksoftToUnicode(String inputString) {
         final char space = ' ';
         StringBuilder outputString = new StringBuilder();
-        StringBuilder mongolWord = new StringBuilder();
 
         if (inputString == null || inputString.length() == 0) {
             return "";
@@ -145,7 +132,148 @@ public final class MongolCode {
             // If there is a mismatch then add ZWJ
 
             if (currentChar < Glyph.A_START) {                         // punctuation
-
+                switch (currentChar) {
+                    case Glyph.BIRGA:
+                        outputString.append(Uni.MONGOLIAN_BIRGA);
+                        break;
+                    case Glyph.ELLIPSIS:
+                        outputString.append(Uni.MONGOLIAN_ELLIPSIS);
+                        break;
+                    case Glyph.COMMA:
+                        outputString.append(Uni.MONGOLIAN_COMMA);
+                        break;
+                    case Glyph.FULL_STOP:
+                        outputString.append(Uni.MONGOLIAN_FULL_STOP);
+                        break;
+                    case Glyph.COLON:
+                        outputString.append(Uni.MONGOLIAN_COLON);
+                        break;
+                    case Glyph.FOUR_DOTS:
+                        outputString.append(Uni.MONGOLIAN_FOUR_DOTS);
+                        break;
+                    case Glyph.TODO_SOFT_HYPHEN:
+                        outputString.append(Uni.MONGOLIAN_TODO_SOFT_HYPHEN);
+                        break;
+                    case Glyph.SIBE_SYLLABLE_BOUNDARY_MARKER:
+                        outputString.append(Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER);
+                        break;
+                    case Glyph.MANCH_COMMA:
+                        outputString.append(Uni.MONGOLIAN_MANCH_COMMA);
+                        break;
+                    case Glyph.MANCHU_FULL_STOP:
+                        outputString.append(Uni.MONGOLIAN_MANCHU_FULL_STOP);
+                        break;
+                    case Glyph.NIRUGU:
+                        outputString.append(Uni.MONGOLIAN_NIRUGU);
+                        break;
+                    case Glyph.BIRGA_WITH_ORNAMENT:
+                        outputString.append("\uD805\uDE60"); // U+11660
+                        break;
+                    case Glyph.ROTATED_BIRGA:
+                        outputString.append("\uD805\uDE61"); // U+11661
+                        break;
+                    case Glyph.DOUBLE_BIRGA_WITH_ORNAMENT:
+                        outputString.append("\uD805\uDE62"); // U+11662
+                        break;
+                    case Glyph.TRIPLE_BIRGA_WITH_ORNAMENT:
+                        outputString.append("\uD805\uDE63"); // U+11663
+                        break;
+                    case Glyph.MIDDLE_DOT:
+                        outputString.append('\u00B7');
+                        break;
+                    case Glyph.ZERO:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_ZERO);
+                        break;
+                    case Glyph.ONE:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_ONE);
+                        break;
+                    case Glyph.TWO:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_TWO);
+                        break;
+                    case Glyph.THREE:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_THREE);
+                        break;
+                    case Glyph.FOUR:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_FOUR);
+                        break;
+                    case Glyph.FIVE:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_FIVE);
+                        break;
+                    case Glyph.SIX:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_SIX);
+                        break;
+                    case Glyph.SEVEN:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_SEVEN);
+                        break;
+                    case Glyph.EIGHT:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_EIGHT);
+                        break;
+                    case Glyph.NINE:
+                        outputString.append(Uni.MONGOLIAN_DIGIT_NINE);
+                        break;
+                    case Glyph.QUESTION_EXCLAMATION:
+                        outputString.append('\u2048');
+                        break;
+                    case Glyph.EXCLAMATION_QUESTION:
+                        outputString.append('\u2049');
+                        break;
+                    case Glyph.EXCLAMATION:
+                        outputString.append('!');
+                        break;
+                    case Glyph.QUESTION:
+                        outputString.append('?');
+                        break;
+                    case Glyph.SEMICOLON:
+                        outputString.append(';');
+                        break;
+                    case Glyph.LEFT_PARENTHESIS:
+                        outputString.append('\uFF08'); // full width
+                        break;
+                    case Glyph.RIGHT_PARENTHESIS:
+                        outputString.append('\uFF09'); // full width
+                        break;
+                    case Glyph.LEFT_ANGLE_BRACKET:
+                        outputString.append('\u3008');
+                        break;
+                    case Glyph.RIGHT_ANGLE_BRACKET:
+                        outputString.append('\u3009');
+                        break;
+                    case Glyph.LEFT_BRACKET:
+                        outputString.append('[');
+                        break;
+                    case Glyph.RIGHT_BRACKET:
+                        outputString.append(']');
+                        break;
+                    case Glyph.LEFT_DOUBLE_ANGLE_BRACKET:
+                        outputString.append('\u00AB');
+                        break;
+                    case Glyph.RIGHT_DOUBLE_ANGLE_BRACKET:
+                        outputString.append('\u00BB');
+                        break;
+                    case Glyph.LEFT_WHITE_CORNER_BRACKET:
+                        outputString.append('\u300E');
+                        break;
+                    case Glyph.RIGHT_WHITE_CORNER_BRACKET:
+                        outputString.append('\u300F');
+                        break;
+                    case Glyph.FULLWIDTH_COMMA:
+                        outputString.append('\uFF0C');
+                        break;
+                    case Glyph.X:
+                        outputString.append('\u00D7'); // FIXME using the multiplication sign?
+                        break;
+                    case Glyph.REFERENCE_MARK:
+                        outputString.append('\u203B');
+                        break;
+                    case Glyph.EM_DASH:
+                        outputString.append('\u2014');
+                        break;
+                    case Glyph.TWO_EM_DASH:
+                        outputString.append('\u2e3a');
+                        break;
+                    default:
+                        outputString.append(currentChar);
+                }
             } else if (currentChar < Glyph.E_START) {                  // A
                 switch (currentChar) {
                     case Glyph.ISOL_A_FVS1:
@@ -186,8 +314,6 @@ public final class MongolCode {
                         break;
                     case Glyph.MEDI_I_DOUBLE_TOOTH:
                         outputString.append(Uni.YA);
-                        // TODO add an FVS1 to the Y?
-                        //outputString.append(Uni.FVS1);
                         outputString.append(Uni.I);
                         break;
                     default:
@@ -369,13 +495,12 @@ public final class MongolCode {
         return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
     }
 
-    private String convertWordToMenksoftCode(String mongolWord) { // TODO change name to something more descriptive
-        // This method defines the exact glyph to use by adding FVS characters to every character
-        // The hash tables do the actual glyph code substitutions
+    private String convertWordToMenksoftCode(String mongolWord) {
 
         if (mongolWord == null || mongolWord.length() == 0) {
             return "";
         }
+
         int length = mongolWord.length();
         StringBuilder renderedWord = new StringBuilder();
 
@@ -388,7 +513,6 @@ public final class MongolCode {
         char charBelow = 0;
         char charBelowFvs = 0;
         Shape glyphShapeBelow = Shape.STEM;
-        //char nextChar = 0;
 
 
         // start at the bottom of the word and work up
@@ -2035,10 +2159,6 @@ public final class MongolCode {
         return (character >= Uni.A && character <= Uni.CHI);
     }
 
-    private boolean isMongolianGlyphAlphabet(char character) {
-        return (character >= Glyph.BIRGA && character <= Glyph.FINA_CHI);
-    }
-
     // this starts at the index and works up
     // FIXME: If there are mixed genders then only the first will be reported
     // (could add a MIXED form)
@@ -2053,34 +2173,34 @@ public final class MongolCode {
         return Gender.NEUTER;
     }
 
-    public boolean isMasculineWord(String word) {
-        // This method is not used internally, only for external use.
-        if (word == null || word.equals("")) {
-            return false;
-        }
-        char[] characters = word.toCharArray();
-        for (int i = characters.length - 1; i >= 0; i--) {
-            if (characters[i] == Uni.A || characters[i] == Uni.O || characters[i] == Uni.U) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isFeminineWord(String word) {
-        // This method is not used internally, only for external use.
-        if (word == null || word.equals("")) {
-            return false;
-        }
-        char[] characters = word.toCharArray();
-        for (int i = characters.length - 1; i >= 0; i--) {
-            if (characters[i] == Uni.E || characters[i] == Uni.OE || characters[i] == Uni.UE
-                    || characters[i] == Uni.EE) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean isMasculineWord(String word) {
+//        // This method is not used internally, only for external use.
+//        if (word == null || word.equals("")) {
+//            return false;
+//        }
+//        char[] characters = word.toCharArray();
+//        for (int i = characters.length - 1; i >= 0; i--) {
+//            if (characters[i] == Uni.A || characters[i] == Uni.O || characters[i] == Uni.U) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    public boolean isFeminineWord(String word) {
+//        // This method is not used internally, only for external use.
+//        if (word == null || word.equals("")) {
+//            return false;
+//        }
+//        char[] characters = word.toCharArray();
+//        for (int i = characters.length - 1; i >= 0; i--) {
+//            if (characters[i] == Uni.E || characters[i] == Uni.OE || characters[i] == Uni.UE
+//                    || characters[i] == Uni.EE) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
 
 
@@ -2098,6 +2218,10 @@ public final class MongolCode {
         public static final char MONGOLIAN_FULL_STOP = '\u1803';
         public static final char MONGOLIAN_COLON = '\u1804';
         public static final char MONGOLIAN_FOUR_DOTS = '\u1805';
+        public static final char MONGOLIAN_TODO_SOFT_HYPHEN = '\u1806';
+        public static final char MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER = '\u1807';
+        public static final char MONGOLIAN_MANCH_COMMA = '\u1808';
+        public static final char MONGOLIAN_MANCHU_FULL_STOP = '\u1809';
         public static final char MONGOLIAN_NIRUGU = '\u180a';
         public static final char FVS1 = '\u180b';
         public static final char FVS2 = '\u180c';
@@ -2160,22 +2284,23 @@ public final class MongolCode {
 
         // Private Use Area glyph values
         //private static final char NOTDEF = '\uE360';
+        // TODO add these to the MenksoftToUnicode conversion
         private static final char BIRGA = '\uE234';
         private static final char ELLIPSIS = '\uE235';
         private static final char COMMA = '\uE236';
         private static final char FULL_STOP = '\uE237';
         private static final char COLON = '\uE238';
         private static final char FOUR_DOTS = '\uE239';
-        private static final char NIRUGU_LONG = '\uE23A';
-        private static final char UNKNOWN_1 = '\uE23B';
-        private static final char UNKNOWN_2 = '\uE23C';
-        private static final char UNKNOWN_3 = '\uE23C';
+        private static final char TODO_SOFT_HYPHEN = '\uE23A';
+        private static final char SIBE_SYLLABLE_BOUNDARY_MARKER = '\uE23B';
+        private static final char MANCH_COMMA = '\uE23C';
+        private static final char MANCHU_FULL_STOP = '\uE23D';
         private static final char NIRUGU = '\uE23E';
-        private static final char BIRGA_1 = '\uE23F';
-        private static final char BIRGA_2 = '\uE240';
-        private static final char BIRGA_3 = '\uE241';
-        private static final char BIRGA_4 = '\uE242';
-        private static final char DOT = '\uE243';
+        private static final char BIRGA_WITH_ORNAMENT = '\uE23F';
+        private static final char ROTATED_BIRGA = '\uE240';
+        private static final char DOUBLE_BIRGA_WITH_ORNAMENT = '\uE241';
+        private static final char TRIPLE_BIRGA_WITH_ORNAMENT = '\uE242';
+        private static final char MIDDLE_DOT = '\uE243';
         private static final char ZERO = '\uE244';
         private static final char ONE = '\uE245';
         private static final char TWO = '\uE246';
@@ -2191,21 +2316,21 @@ public final class MongolCode {
         private static final char EXCLAMATION = '\uE250';
         private static final char QUESTION = '\uE251';
         private static final char SEMICOLON = '\uE252';
-        private static final char PARENTHESIS_TOP = '\uE253';
-        private static final char PARENTHESIS_BOTTOM = '\uE254';
-        private static final char ANGLE_TOP = '\uE255';
-        private static final char ANGLE_BOTTOM = '\uE256';
-        private static final char BRACKET_TOP = '\uE257';
-        private static final char BRACKET_BOTTOM = '\uE258';
-        private static final char DOUBLE_ANGLE_TOP = '\uE259';
-        private static final char DOUBLE_ANGLE_BOTTOM = '\uE25A';
-        private static final char SQUARE_BRACKET_UPPER_CORNER = '\uE25B';
-        private static final char SQUARE_BRACKET_LOWER_CORNER = '\uE25C';
-        private static final char COMMA_2 = '\uE25D';
+        private static final char LEFT_PARENTHESIS = '\uE253';
+        private static final char RIGHT_PARENTHESIS = '\uE254';
+        private static final char LEFT_ANGLE_BRACKET = '\uE255';
+        private static final char RIGHT_ANGLE_BRACKET = '\uE256';
+        private static final char LEFT_BRACKET = '\uE257';
+        private static final char RIGHT_BRACKET = '\uE258';
+        private static final char LEFT_DOUBLE_ANGLE_BRACKET = '\uE259';
+        private static final char RIGHT_DOUBLE_ANGLE_BRACKET = '\uE25A';
+        private static final char LEFT_WHITE_CORNER_BRACKET = '\uE25B';
+        private static final char RIGHT_WHITE_CORNER_BRACKET = '\uE25C';
+        private static final char FULLWIDTH_COMMA = '\uE25D';
         private static final char X = '\uE25E';
         private static final char REFERENCE_MARK = '\uE25F';                   // 0x203b
-        private static final char DASH = '\uE260';
-        private static final char DASH_LONG = '\uE261';
+        private static final char EM_DASH = '\uE260';
+        private static final char TWO_EM_DASH = '\uE261';
 
         // These are in the order of the Unicode 9 specs sheet
         // BP = looks better after B, P (and other rounded like Q, G, F, K, KH)

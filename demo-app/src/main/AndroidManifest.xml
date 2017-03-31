@@ -25,6 +25,8 @@
                   android:name=".UnicodeActivity"/>
         <activity android:label="@string/convert_code_activity_title"
                   android:name=".ConvertCodeActivity"/>
+        <activity android:label="@string/mongol_font_activity_title"
+                  android:name=".MongolFontActivity"/>
     </application>
 
 </manifest>

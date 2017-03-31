@@ -4,10 +4,29 @@
     <string name="mongol_textview_activity_title">MongolTextView</string>
     <string name="unicode_activity_title">Unicode Renderer</string>
     <string name="convert_code_activity_title">Unicode &lt;--&gt; Menksoft</string>
+    <string name="mongol_font_activity_title">MongolFont</string>
 
-    <string name="short_string">Mongol</string>
+    <string name="short_string">ᠮᠣᠩᠭᠣᠯ</string>
     <string name="medium_string">g This is some 文字文字a文字文字. a🙂🙂🙂a🙂a</string>
     <string name="long_string">000000 111111 222222 333333 444444 555555 666666 777777 888888 99999999123 456 678 890 101112 131415 161718 192021 222324 25123 456 678 890 101112 131415 161718 192021 222324 25123 456 678 890 101112 131415 161718 192021 222324 25123 456 678 890 101112 131415 161718 192021 222324 252627 282930 313233 343536 373839 40123 456 678 890 101112 131415 161718 192021 222324 252627 282930 313233 343536 373839 402627 282930 313233 343536 373839 402627 282930 313233 343536 373839 402627 282930 313233 343536 373839 40</string>
+
+    <string name="font_name_qagan">ᠴᠠᠭᠠᠨ ᠲᠢᠭ</string>
+    <string name="font_name_garqag">ᠭᠠᠷᠴᠠᠭ ᠲᠢᠭ</string>
+    <string name="font_name_hara">ᠬᠠᠷ᠎ᠠ ᠲᠢᠭ</string>
+    <string name="font_name_scnin">ᠰᠣᠨᠢᠨ ᠲᠢᠭ</string>
+    <string name="font_name_hawang">ᠬᠠᠸᠠᠩ ᠲᠢᠭ</string>
+    <string name="font_name_qimed">ᠴᠢᠮᠡᠳ ᠲᠢᠭ</string>
+    <string name="font_name_narin">ᠨᠠᠷᠢᠨ ᠲᠢᠭ</string>
+    <string name="font_name_mcdcnbar">ᠮᠣᠳᠣᠨ ᠪᠠᠷ ᠲᠢᠭ</string>
+    <string name="font_name_amglang">ᠠᠮᠤᠭᠤᠯᠠᠩ ᠲᠢᠭ</string>
+    <string name="font_name_sidam">ᠰᠢᠳᠠᠮ ᠲᠢᠭ</string>
+    <string name="font_name_qingming">ᠴᠢᠩ ᠮᠢᠩ ᠲᠢᠭ</string>
+    <string name="font_name_onqa_hara">ᠤᠨᠴᠠ ᠬᠠᠷ᠎ᠠ ᠲᠢᠭ</string>
+    <string name="font_name_svgvnag">ᠰᠤᠭᠤᠨᠠᠭ ᠲᠢᠭ</string>
+    <string name="font_name_svlbiya">ᠰᠤᠯᠪᠢᠶ᠎ᠠ ᠲᠢᠭ</string>
+    <string name="font_name_jclgq">ᠵᠣᠯᠭᠠᠴᠠ ᠲᠢᠭ</string>
+
+
     <!--<string name="long_string">123 456 678 890 101112 131415 161718 192021 222324 252627 282930 313233 343536 373839 404142 434445 464748 495051 525354 555657 585960 616263 646566 676869 707172 737475 767778.</string>-->
 
 </resources>

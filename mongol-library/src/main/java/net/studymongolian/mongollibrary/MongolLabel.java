@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -23,11 +24,15 @@ public class MongolLabel extends View {
 
     private final static int DEFAULT_FONT_SIZE_SP = 17;
 
-    private String mText;
+    private Context mContext;
+    private String mUnicodeText;
+    private String mGlyphText;
+    private Typeface mTypeface;
     private int mTextColor;
     private float mTextSizePx;
     private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
+    private MongolCode mRenderer;
 
     public MongolLabel(Context context) {
         super(context);
@@ -36,7 +41,7 @@ public class MongolLabel extends View {
                 DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         mTextColor = Color.BLACK;
         mGravity = Gravity.TOP;
-
+        mContext = context;
         init();
     }
 
@@ -46,10 +51,7 @@ public class MongolLabel extends View {
                 attrs, R.styleable.MongolLabel, 0, 0);
 
         try {
-            mText = a.getString(R.styleable.MongolLabel_text);
-            if (mText == null) {
-                mText = "";
-            }
+            mUnicodeText = a.getString(R.styleable.MongolLabel_text);
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolLabel_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolLabel_textColor, Color.BLACK);
             mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
@@ -57,7 +59,7 @@ public class MongolLabel extends View {
             a.recycle();
         }
 
-
+        mContext = context;
         init();
     }
 
@@ -70,9 +72,13 @@ public class MongolLabel extends View {
         }
         mTextPaint.setTextSize(mTextSizePx);
         mTextPaint.setColor(mTextColor);
-
-        // TODO font
-
+        mTypeface = MongolFont.get(MongolFont.QAGAN, mContext);
+        mTextPaint.setTypeface(mTypeface);
+        mRenderer = MongolCode.INSTANCE;
+        if (mUnicodeText == null) {
+            mUnicodeText = "";
+        }
+        mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText);
     }
 
 
@@ -104,7 +110,7 @@ public class MongolLabel extends View {
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightRequirement;
         } else {
-            int desiredHeight = (int) mTextPaint.measureText(mText) + getPaddingTop() + getPaddingBottom();
+            int desiredHeight = (int) mTextPaint.measureText(mGlyphText) + getPaddingTop() + getPaddingBottom();
             if (heightMode == MeasureSpec.AT_MOST && desiredHeight > heightRequirement) {
                 height = heightRequirement;
             } else {
@@ -126,7 +132,7 @@ public class MongolLabel extends View {
 
         float gravityOffset = 0;
         if (mGravity != Gravity.TOP) {
-            float textWidth = mTextPaint.measureText(mText);
+            float textWidth = mTextPaint.measureText(mGlyphText);
             int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
             if (verticalGravity == Gravity.CENTER_VERTICAL) {
                 gravityOffset = (getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth) / 2;
@@ -136,7 +142,7 @@ public class MongolLabel extends View {
             if (gravityOffset < 0) gravityOffset = 0;
         }
 
-        canvas.drawText(mText,
+        canvas.drawText(mGlyphText,
                 getPaddingTop() + gravityOffset,
                 -getPaddingLeft() - mTextPaint.getFontMetrics().descent,
                 mTextPaint);
@@ -144,11 +150,14 @@ public class MongolLabel extends View {
     }
 
     public CharSequence getText() {
-        return mText;
+        return mUnicodeText;
     }
 
     public void setText(String text) {
-        mText = text;
+        if (text.equals(mUnicodeText)) return;
+
+        mUnicodeText = text;
+        mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText);
         invalidate();
         requestLayout();
     }
@@ -158,6 +167,8 @@ public class MongolLabel extends View {
     }
 
     public void setTextColor(int color) {
+        if (color == mTextColor) return;
+
         mTextColor = color;
         mTextPaint.setColor(mTextColor);
         invalidate();
@@ -177,6 +188,17 @@ public class MongolLabel extends View {
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(mTextSizePx);
+        invalidate();
+        requestLayout();
+    }
+
+    public Typeface getTypeface() {
+        return mTypeface;
+    }
+
+    public void setTypeface(Typeface typeface) {
+        mTypeface = typeface;
+        mTextPaint.setTypeface(mTypeface);
         invalidate();
         requestLayout();
     }
