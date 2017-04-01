@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <LinearLayout
-        android:id="@+id/spinner_control_group"
+        android:id="@+id/spinner_control_group_1"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -39,18 +39,52 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/spinner_control_group_2"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/spinner_control_group_1"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/textlength_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
+
+        <Spinner
+            android:id="@+id/font_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
+
+        <Spinner
+            android:id="@+id/spantype_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
+
+    </LinearLayout>
+
+    <!-- MongolTextView does not yet natively support scrolling
+    so it should be wrapped in a HorizontalScrollView. -->
+
     <HorizontalScrollView
         android:id="@+id/hsvTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spinner_control_group">
+        android:layout_below="@id/spinner_control_group_1">
 
         <net.studymongolian.mongollibrary.MongolTextView
-            android:id="@+id/mongol_textview_matchparent"
+            android:id="@+id/mongol_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            app:text="@string/medium_string"
+            android:padding="5dp"
+            app:text="hi"
             android:background="@android:color/white"/>
 
     </HorizontalScrollView>
