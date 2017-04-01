@@ -14,8 +14,8 @@ import net.studymongolian.mongollibrary.MongolTextView;
 
 public class MongolTextViewActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
 
-    //MongolTextView mTvMatchParent;
-    MongolTextView mTvWrapContent;
+    MongolTextView mTvMatchParent;
+    //MongolTextView mTvWrapContent;
 
     private static final String[] fontColors = {"BLACK", "BLUE", "RED", "YELLOW"};
     private static final String[] fontSizesSP = {"10", "20", "30", "40", "50"};
@@ -26,7 +26,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mongol_textview);
 
-        //mTvMatchParent = (MongolTextView) findViewById(R.id.mongol_textview_matchparent);
+        mTvMatchParent = (MongolTextView) findViewById(R.id.mongol_textview_matchparent);
         //mTvWrapContent = (MongolTextView) findViewById(R.id.mongol_textview_wrapcontent);
 
         // Color choice spinner
@@ -75,11 +75,11 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                     color = Color.YELLOW;
                     break;
             }
-            //mTvMatchParent.setTextColor(color);
+            mTvMatchParent.setTextColor(color);
             //mTvWrapContent.setTextColor(color);
         } else if (viewid == R.id.fontsize_spinner) {
             int size = Integer.parseInt(parent.getSelectedItem().toString());
-            //mTvMatchParent.setTextSize(size);
+            mTvMatchParent.setTextSize(size);
             //mTvWrapContent.setTextSize(size);
         } else if (viewid == R.id.alignment_spinner) {
             int gravity = Gravity.TOP;
@@ -92,7 +92,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                     gravity = Gravity.BOTTOM;
                     break;
             }
-            //mTvMatchParent.setGravity(gravity);
+            mTvMatchParent.setGravity(gravity);
             //mTvWrapContent.setGravity(gravity);
         }
     }
