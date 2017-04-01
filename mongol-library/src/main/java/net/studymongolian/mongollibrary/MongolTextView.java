@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,15 +22,18 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private static final String TAG = "CustomView";
 
 
-
-    private String mText;
+    private Context mContext;
+    private String mUnicodeText;
+    private String mGlyphText;
     private int mTextColor;
     private float mTextSizePx;
+    private Typeface mTypeface;
     private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
     private Paint mPaint;
     private MongolLayout mLayout;
     private boolean mNeedsRelayout = false;
+    private MongolCode mRenderer;
 
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
     //private int mBreakHeight = 0;
@@ -44,12 +48,13 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public MongolTextView(Context context) {
         super(context);
 
-        mText = "";
+        //mUnicodeText = "";
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         mTextColor = Color.BLACK;
         mGravity = Gravity.TOP;
 
+        mContext = context;
         init();
     }
 
@@ -60,10 +65,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                 attrs, R.styleable.MongolTextView, 0, 0);
 
         try {
-            mText = a.getString(R.styleable.MongolTextView_text);
-            if (mText == null) {
-                mText = ""; // FIXME still crashes if text is not set in xml
-            }
+            mUnicodeText = a.getString(R.styleable.MongolTextView_text);
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolTextView_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolTextView_textColor, Color.BLACK);
             mGravity = a.getInteger(R.styleable.MongolTextView_gravity, Gravity.TOP);
@@ -71,6 +73,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
             a.recycle();
         }
 
+        mContext = context;
         init();
     }
 
@@ -83,7 +86,13 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                     DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         }
         mTextPaint.setTextSize(mTextSizePx);
-
+        mTypeface = MongolFont.get(MongolFont.QAGAN, mContext);
+        mTextPaint.setTypeface(mTypeface);
+        mRenderer = MongolCode.INSTANCE;
+        if (mUnicodeText == null) {
+            mUnicodeText = "";  // FIXME still crashes if text is not set in xml
+        }
+        mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText);
 
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
@@ -101,7 +110,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
         // TODO don't need to calculate this if using sticky width
         // TODO pass in a limit where we can stop measuring?
-        int desiredHeight = (int) MongolLayout.getDesiredHeight(mText, 0, mText.length(), mTextPaint);
+        int desiredHeight = (int) MongolLayout.getDesiredHeight(mGlyphText, 0, mGlyphText.length(), mTextPaint)
+                + getPaddingTop() + getPaddingBottom();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -129,8 +139,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
             // used if the first layout got the wrong size
             desiredWidth = mStickyWidth;
         } else {
-            MongolLayout layout = new MongolLayout(mText, 0, mText.length(), mTextPaint, height, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-            desiredWidth = layout.getWidth();
+            MongolLayout layout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, height, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+            desiredWidth = layout.getWidth() + getPaddingLeft() + getPaddingRight();
         }
 
         //Measure Width
@@ -220,7 +230,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 //            mNeedsRelayout = false;
         //}
 
-        mLayout = new MongolLayout(mText, 0, mText.length(), mTextPaint, h, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+        mLayout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, h, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
 
     }
 
@@ -281,16 +291,21 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // draw the text on the canvas after adjusting for padding
+        canvas.save();
+        canvas.translate(getPaddingLeft(), getPaddingTop());
         mLayout.draw(canvas);
+        canvas.restore();
     }
 
 
     public CharSequence getText() {
-        return mText;
+        return mUnicodeText;
     }
 
     public void setText(String text) {
-        mText = text;
+        mUnicodeText = text;
+        mGlyphText = mRenderer.unicodeToMenksoft(text);
         mNeedsRelayout = true;
         invalidate();
         requestLayout();
@@ -322,6 +337,17 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTextPaint.setTextSize(mTextSizePx);
         //mStaticLayoutNeedsRedraw = true;
         mNeedsRelayout = true;
+        invalidate();
+        requestLayout();
+    }
+
+    public Typeface getTypeface() {
+        return mTypeface;
+    }
+
+    public void setTypeface(Typeface typeface) {
+        mTypeface = typeface;
+        mTextPaint.setTypeface(mTypeface);
         invalidate();
         requestLayout();
     }
