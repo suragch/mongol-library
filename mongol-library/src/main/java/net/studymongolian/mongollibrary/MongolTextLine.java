@@ -3,6 +3,7 @@ package net.studymongolian.mongollibrary;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.text.TextPaint;
 
 import java.util.ArrayList;
@@ -185,7 +186,7 @@ class MongolTextLine {
      * @param y the baseline
      * @param bottom the bottom of the line
      */
-    void draw(Canvas c, float x, int top, int y, int bottom) {
+    void draw(Canvas c, float x, int top, float y, int bottom) {
         // FIXME top parameter is not being used
 
         // (x, y) are the start coordinates of each vertical line
@@ -208,21 +209,17 @@ class MongolTextLine {
 
             start = run.getOffset();
             end = run.getOffset() + run.getLength();
-            //width = mPaint.measureText(mText, start, end);
 
             if (run.isRotated()) {
-            //if (false) {
 
                 // move down
                 c.translate(fontHeight, 0);
 
                 // then rotate and draw
                 c.save();
-
                 c.rotate(-90);
                 c.translate(-bottom, -bottom);
                 c.drawText(mText, start, end, 0, 0, mPaint);
-
                 c.restore();
 
             } else {
@@ -247,9 +244,10 @@ class MongolTextLine {
     }
 
 
-    public static float measure(TextPaint paint, CharSequence text, int start, int end) {
+    public static RectF measure(TextPaint paint, CharSequence text, int start, int end) {
         float measuredSum = 0;
         float lineHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
+        float adjustedHeight = 0;
         int charCount;
         int currentRunStart = start;
         int currentRunLength = 0;
@@ -275,12 +273,15 @@ class MongolTextLine {
                         measuredSum += paint.measureText(text, currentRunStart, currentRunStart + currentRunLength);
                         //mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
                     }
-                    // save this rotated character
-                    measuredSum += lineHeight;
-                    //mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
                     // reset normal run
                     currentRunStart = offset + charCount;
                     currentRunLength = 0;
+                    // increase the line hight (vertical line width) if this is a wide emoji
+                    adjustedHeight = Math.max(adjustedHeight, paint.measureText(text, offset, currentRunStart));
+                    // save this rotated character
+                    measuredSum += lineHeight;
+                    //mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
+
                 } else {
                     // some other obscure character -> don't rotate it.
                     currentRunLength += charCount;
@@ -294,7 +295,10 @@ class MongolTextLine {
             //mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
         }
 
-        return measuredSum;
+        // left, top, right, bottom (for non rotated line)
+        return new RectF(0, 0, measuredSum, Math.max(lineHeight, adjustedHeight));
+
+
     }
 
 

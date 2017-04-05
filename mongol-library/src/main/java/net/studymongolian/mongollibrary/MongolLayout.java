@@ -3,6 +3,7 @@ package net.studymongolian.mongollibrary;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -75,7 +76,7 @@ public class MongolLayout {
             if (next < 0)
                 next = end;
 
-            float height = MongolTextLine.measure(paint, source, i, next);
+            float height = MongolTextLine.measure(paint, source, i, next).right; // unrotated line
 
             if (height > need)
                 need = height;
@@ -128,7 +129,7 @@ public class MongolLayout {
 
         int ltop = mTextPaint.getFontMetricsInt().top;
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
-        int lineToLineDistance = lbottom - ltop; // XXX this ignores leading
+        //int lineToLineDistance = lbottom - ltop; // XXX this ignores leading
 
         int x = lbottom; // start position of each vertical line
         int y = 0; // baseline
@@ -147,13 +148,27 @@ public class MongolLayout {
                 end = mText.length();
             }
 
+            float gravityOffset = 0;
+            if (mAlignment != Gravity.TOP) {
+                float textWidth = mLinesInfo.get(i).getMeasuredWidth();
+                int verticalGravity = mAlignment & Gravity.VERTICAL_GRAVITY_MASK;
+                if (verticalGravity == Gravity.CENTER_VERTICAL) {
+                    gravityOffset = (mHeight - textWidth) / 2;
+                } else if (verticalGravity == Gravity.BOTTOM) {
+                    gravityOffset = mHeight - textWidth;
+                }
+                if (gravityOffset < 0) gravityOffset = 0;
+            }
+
             if (!isSpannedText && !hasSpecialChar) {
+                // TODO add gravityOffset
                 canvas.drawText(mText, start, end, x, y, mTextPaint);
             } else {
                 tl.set(mTextPaint, mText, start, end);
-                tl.draw(canvas, x, ltop, y, lbottom);
+                tl.draw(canvas, x, ltop, y + gravityOffset, lbottom);
+
             }
-            x += lineToLineDistance;
+            x += mLinesInfo.get(i).getMeasuredHeight();
         }
 
         MongolTextLine.recycle(tl);
@@ -165,100 +180,6 @@ public class MongolLayout {
         // TODO
     }
 
-    /**
-     * This method is meant to find the lengths of all the places a line break could occur.
-     * The purpose is to cache the measure info so that the layout can be resized quickly
-     * when there is a change in size. This way an entire new layout does not need to be
-     * created.
-     */
-//    private void updateBreaks() {
-//
-//        if (mBreaks == null || mBreaks.size() > 0)
-//            mBreaks = new ArrayList<>();
-//
-//        // XXX can we just use a char sequence? BreakIterator is the only thing that needs it.
-//        String tempString = mText.toString();
-//
-//        BreakIterator boundary = BreakIterator.getLineInstance();
-//        boundary.setText(tempString);
-//        int start = boundary.first();
-//        for (int end = boundary.next(); end != BreakIterator.DONE; end = boundary.next()) {
-//            final float measuredLength = MongolTextLine.measure(mTextPaint, tempString, start, end);
-//            mBreaks.add(new BreakInfo(start, measuredLength));
-//            start = end;
-//        }
-//    }
-
-    /**
-     * Reflow the line-wrap locations based on the height and line breaks.
-     */
-//    private void updateLines() {
-//
-//        if (mHeight <= 0)
-//            return;
-//
-//        if (mLinesInfo == null || mLinesInfo.size() > 0)
-//            mLinesInfo = new ArrayList<>();
-//
-//        if (mBreaks == null)
-//            updateBreaks();
-//
-//        // XXX can we just use a char sequence? BreakIterator is the only thing that needs it.
-//        String tempString = mText.toString();
-//
-//        int start = mBreaks.get(0).getStartOffset();
-//        mLinesInfo.add(new LineInfo(start, 0)); // TODO add top, descent, special chars
-//        float  measuredSum = 0;
-//        int size = mBreaks.size();
-//        for (int i = 0; i < size; i++) {
-//
-//            final int end;
-//            if (i < size - 1) {
-//                end = mBreaks.get(i+1).getStartOffset();
-//            } else {
-//                end = tempString.length();
-//            }
-//
-//            float measuredLength = mBreaks.get(i).getMeasuredLength();
-//            measuredSum += measuredLength;
-//            if (Math.floor(measuredSum) > mHeight) {
-//                mLinesInfo.add(new LineInfo(start, 0));
-//                measuredSum = measuredLength;
-//                if (measuredSum > mHeight) {
-//
-//                    // There were no natural line wrap boundaries shorter than the wrap height
-//                    // so we have to split the word unnaturally across lines.
-//
-//                    // This would be a better starting point but can't be sure we wouldn't
-//                    // end up in the middle of a surrogate pair:
-//                    //int estimatedCharsPerLine = (int) ((end - start) * mHeight / measuredSum);
-//
-//
-//                    int previousEndChar = start;
-//                    for (int endChar = start; endChar < end; ) {
-//
-//
-//                        final int codepoint = tempString.codePointAt(endChar);
-//                        endChar += Character.charCount(codepoint);
-//                        // XXX this needs to be optimized. Measures too many times.
-//                        // TODO use Paint.breakText
-//                        measuredLength = (int) MongolTextLine.measure(mTextPaint, tempString, start, endChar);
-//                        if (measuredLength > mHeight) {
-//                            start = previousEndChar;
-//                            mLinesInfo.add(new LineInfo(start, 0));
-//                            // TODO what if mHeight is shorter than a single character
-//                        }
-//
-//                        previousEndChar = endChar;
-//                    }
-//
-//                    measuredSum = (int) MongolTextLine.measure(mTextPaint, tempString, start, end);
-//                }
-//            }
-//
-//            start = end;
-//        }
-//    }
     private void updateLines() {
 
         if (mHeight <= 0)
@@ -273,51 +194,57 @@ public class MongolLayout {
         BreakIterator boundary = BreakIterator.getLineInstance();
         boundary.setText(tempString);
         int start = boundary.first();
-        mLinesInfo.add(new LineInfo(start, 0)); // TODO add top, descent, special chars
+        int lineStart = start;
         float measuredSum = 0;
-        float measuredLength = 0;
+        RectF measuredSize;
+        float previousLineHeight = 0;
         for (int end = boundary.next(); end != BreakIterator.DONE; end = boundary.next()) {
 
-            //measuredLength = mTextPaint.measureText(tempString, start, end);
-            measuredLength = MongolTextLine.measure(mTextPaint, tempString, start, end);
-            measuredSum += measuredLength;
-            if (Math.floor(measuredSum) > mHeight) {
-                mLinesInfo.add(new LineInfo(start, 0));
-                measuredSum = measuredLength;
-                if (measuredSum > mHeight) {
+            measuredSize = MongolTextLine.measure(mTextPaint, tempString, start, end);
+            //adjustedHeight = Math.max(adjustedHeight, measuredSize.bottom);
 
-                    // There were no natural line wrap boundaries shorter than the wrap height
-                    // so we have to split the word unnaturally across lines.
+            if (Math.floor(measuredSize.right) > mHeight) {
 
-                    // This would be a better starting point but can't be sure we wouldn't
-                    // end up in the middle of an emoji:
-                    //int estimatedCharsPerLine = (int) ((end - start) * mHeight / measuredSum);
-
-                    int codepoint;
-                    int previousEndChar = start;
-                    for (int endChar = start; endChar < end; ) {
-
-
-                        codepoint = tempString.codePointAt(endChar);
-                        endChar += Character.charCount(codepoint);
-                        // XXX this needs to be optimized. Measures too many times.
-                        //measuredLength = mTextPaint.measureText(tempString, start, endChar);
-                        measuredLength = MongolTextLine.measure(mTextPaint, tempString, start, endChar);
-                        if (measuredLength > mHeight) {
-                            start = previousEndChar;
-                            mLinesInfo.add(new LineInfo(start, 0));
-                            // TODO what if mHeight is shorter than a single character
-                        }
-
-                        previousEndChar = endChar;
-                    }
-
-                    //measuredSum = mTextPaint.measureText(tempString, start, end);
-                    measuredSum = MongolTextLine.measure(mTextPaint, tempString, start, end);
+                // add previously measured text as a new line
+                if (measuredSum > 0) {
+                    mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
                 }
+
+                // There were no natural line wrap boundaries shorter than the wrap height
+                // so we have to split the word unnaturally across lines.
+                lineStart = start;
+                float[] measuredWidth = new float[1];
+                int charactersMeasured = mTextPaint.breakText(tempString, lineStart, end, true, mHeight - measuredSum, measuredWidth);
+                if (charactersMeasured > 0) {
+                    //float height = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
+                    mLinesInfo.add(new LineInfo(lineStart, measuredWidth[0], measuredSize.bottom));
+                    lineStart += charactersMeasured;
+                } else {
+                    // if mHeight is shorter than a single character then just add that char to the line
+                    mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.bottom));
+                    lineStart++;
+                }
+
+                measuredSum = 0;
+                //adjustedHeight = 0;
+            } else  if (Math.floor(measuredSum + measuredSize.right) > mHeight) {
+
+                mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
+                lineStart = start;
+                measuredSum = measuredSize.right;
+                //adjustedHeight = measuredSize.bottom;
+            } else {
+                measuredSum += measuredSize.right;
             }
 
+            previousLineHeight = measuredSize.bottom;
             start = end;
+
+        }
+
+        // add any last line info
+        if (measuredSum > 0) {
+            mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
         }
     }
 
@@ -345,31 +272,56 @@ public class MongolLayout {
     }
 
     public int getWidth() {
-        int lineWidth = getLineWidth();
-        return mLinesInfo.size() * lineWidth;
+        if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
+        float width = 0;
+        for (LineInfo line : mLinesInfo) {
+            width += line.mMeasuredHeight;
+        }
+        return (int) width;
     }
 
-    public int getLineWidth() {
-        return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
+//    public int getLineWidth() {
+//        return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
+//    }
+
+    public int getAlignment() {
+        return mAlignment;
     }
 
+    public void setAlignment(int alignment) {
+        mAlignment = alignment;
+    }
 
     private class LineInfo {
         private int mStartOffset;
         private int mTop;
+        private float mMeasuredWidth;
+        private float mMeasuredHeight;
+        private RectF mSize;
 
-        LineInfo(int start, int top) {
+        LineInfo(int start, float measuredWidth, float measuredHeight) {
             mStartOffset = start;
-            mTop = top;
+            mMeasuredWidth = measuredWidth;
+            mMeasuredHeight = measuredHeight;
+            //mTop = top;
+            //mSize = size;
         }
 
         int getStartOffset() {
             return mStartOffset;
         }
 
-        int getTop() {
-            return mTop;
+        //int getTop() {
+        //    return mTop;
+        //}
+
+        float getMeasuredWidth() {
+            return mMeasuredWidth;
         }
+        float getMeasuredHeight() {
+            return mMeasuredHeight;
+        }
+
     }
 
     private class BreakInfo {

@@ -36,13 +36,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private MongolCode mRenderer;
 
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
-    //private int mBreakHeight = 0;
-    //private int mLastDesiredWidth = 0;
     private int[] mOnMeasureData = new int[6];
-//    private int mOldWidthSpec = 0;
-//    private int mOldHeight = 0;
-//    private int mOldDesiredWidth = 0;
-//    private int mNewDesiredWidth = 0;
 
     // programmatic constructor1
     public MongolTextView(Context context) {
@@ -175,51 +169,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mOnMeasureData[NEW_DESIRED_WIDTH_INDEX] = desiredWidth;
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        // Tell the parent layout how big this view would like to be
-//        // but still respect any requirements (measure specs) that are passed down.
-//
-//        // determine the height
-//        int height;
-//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-//        int heightRequirement = MeasureSpec.getSize(heightMeasureSpec);
-//        if (heightMode == MeasureSpec.EXACTLY) {
-//            height = heightRequirement;
-//        } else {
-//            int desiredHeight = (int) MongolLayout.getDesiredHeight(mText, 0, mText.length(), mTextPaint)
-//                    + getPaddingTop() + getPaddingBottom();
-//            if (heightMode == MeasureSpec.AT_MOST && desiredHeight > heightRequirement) {
-//                height = heightRequirement;
-//            } else {
-//                height = desiredHeight;
-//            }
-//        }
-//
-//        // determine the width
-//        int width;
-//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-//        int widthRequirement = MeasureSpec.getSize(widthMeasureSpec);
-//        if (widthMode == MeasureSpec.EXACTLY) {
-//            width = widthRequirement;
-//        } else {
-////            if (mStaticLayout == null || mStaticLayout.getHeight() != height || mStaticLayoutNeedsRedraw) {
-////                int wrapHeight = height - getPaddingTop() - getPaddingBottom();
-////                mStaticLayout = new MongolStaticLayout(mText, mTextPaint, wrapHeight, Gravity.TOP, 1, 0);
-////                mStaticLayoutNeedsRedraw = false;
-////            }
-//            mLayout.setHeight(height);
-//            int desiredWidth = mLayout.getWidth() + getPaddingLeft() + getPaddingRight();
-//            if (widthMode == MeasureSpec.AT_MOST && desiredWidth > widthRequirement) {
-//                width = widthRequirement;
-//            } else {
-//                width = desiredWidth;
-//            }
-//        }
-//
-//        // Required call: set width and height
-//        setMeasuredDimension(width, height);
-//    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -366,6 +315,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public void setGravity(int gravity) {
         if (mGravity != gravity) {
             mGravity = gravity;
+            mLayout.setAlignment(gravity);
             invalidate();
         }
     }

@@ -83,8 +83,6 @@
             android:id="@+id/mongol_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            app:text="hi"
             android:background="@android:color/white"/>
 
     </HorizontalScrollView>

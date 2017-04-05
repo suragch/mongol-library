@@ -27,13 +27,16 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
     private static final String[] fonts = {"QAGAN", "SCNIN", "HAWANG", "AMGLANG", "JCLGQ"};
     private static final String[] spanTypes = {"HIGHLIGHT", "TEXT COLOR", "SIZE", "FONT"};
 
+    private static final String TEXT_1 = "ᠮᠣᠩᠭᠣᠯ";
+    private static final String TEXT_2 = "ᠨᠢᠭᠡ ᠬᠣᠶᠠᠷ ᠭᠣᠷᠪᠠ one two three 壹贰叁 \uD83D\uDE42\uD83D\uDE42\uD83D\uDE42";
+    private static final String TEXT_3 = "ᠨᠢᠭᠡ ᠬᠣᠶᠠᠷ ᠭᠣᠷᠪᠠ ᠳᠥᠷᠪᠡ ᠲᠠᠪᠤ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠳᠣᠯᠣᠭ᠎ᠠ ᠨᠠᠢᠮᠠ ᠶᠢᠰᠦ ᠠᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠨᠢᠭᠡ ᠠᠷᠪᠠᠨ ᠬᠣᠶᠠᠷ ᠠᠷᠪᠠᠨ ᠭᠣᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠳᠥᠷᠪᠡ ᠠᠷᠪᠠᠨ ᠲᠠᠪᠤ ᠠᠷᠪᠠᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠨᠠᠢᠮᠠ ᠠᠷᠪᠠ ᠶᠢᠰᠦ ᠬᠣᠷᠢ ᠬᠣᠷᠢᠨ ᠨᠢᠭᠡ ᠬᠣᠷᠢᠨ ᠬᠣᠶᠠᠷ ᠬᠣᠷᠢᠨ ᠭᠣᠷᠪᠠ ᠬᠣᠷᠢᠨ ᠳᠥᠷᠪᠡ ᠬᠣᠷᠢᠨ ᠲᠠᠪᠤ ᠬᠣᠷᠢᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠨᠠᠢᠮᠠ ᠬᠣᠷᠢ ᠶᠢᠰᠦ  ᠭᠣᠴᠢ one two three four five six seven eight nine ten 一二三四五六七八九十\uD83D\uDE03\uD83D\uDE0A\uD83D\uDE1C\uD83D\uDE01\uD83D\uDE2C\uD83D\uDE2E\uD83D\uDC34\uD83D\uDC02\uD83D\uDC2B\uD83D\uDC11\uD83D\uDC10";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mongol_textview);
 
         mtvExample = (MongolTextView) findViewById(R.id.mongol_textview);
-        //mTvWrapContent = (MongolTextView) findViewById(R.id.mongol_textview_wrapcontent);
 
         // Color choice spinner
         Spinner colorSpinner = (Spinner) findViewById(R.id.fontcolor_spinner);
@@ -106,13 +109,15 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                     break;
             }
             mtvExample.setTextColor(color);
-            //mTvWrapContent.setTextColor(color);
+
         } else if (viewid == R.id.fontsize_spinner) {
+
             int size = Integer.parseInt(parent.getSelectedItem().toString());
             mtvExample.setTextSize(size);
-            //mTvWrapContent.setTextSize(size);
+
         } else if (viewid == R.id.alignment_spinner) {
-            int gravity = Gravity.TOP;
+
+            int gravity;
             String item = String.valueOf(parent.getItemAtPosition(pos));
             switch (item) {
                 case "CENTER":
@@ -121,24 +126,29 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 case "BOTTOM":
                     gravity = Gravity.BOTTOM;
                     break;
+                default:
+                    gravity = Gravity.TOP;
             }
             mtvExample.setGravity(gravity);
-            //mTvWrapContent.setGravity(gravity);
+
         } else if (viewid == R.id.textlength_spinner) {
+
             String newString = "";
             switch (pos) {
                 case 0: // TEXT 1
-                    newString = getString(R.string.short_string);
+                    newString = TEXT_1;
                     break;
                 case 1: // TEXT 2
-                    newString = getString(R.string.medium_string);
+                    newString = TEXT_2;
                     break;
                 case 2: // TEXT 3
-                    newString = getString(R.string.long_string);
+                    newString = TEXT_3;
                     break;
             }
             mtvExample.setText(newString);
+
         } else if (viewid == R.id.font_spinner) {
+
             Typeface tf;
             String item = String.valueOf(parent.getItemAtPosition(pos));
             switch (item) {
