@@ -94,6 +94,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
         // initialize the layout, but the height still needs to be set
         //mLayout = new MongolLayout(mText, mTextPaint);
+        mLayout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+        //mLayout = new MongolLayout(mGlyphText, mTextPaint);
 
     }
 
@@ -102,7 +104,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
         // TODO do fewer expensive calculations here
 
-        // TODO don't need to calculate this if using sticky width
+        // TODO don't need to calculate this if using sticky width?
         // TODO pass in a limit where we can stop measuring?
         int desiredHeight = (int) MongolLayout.getDesiredHeight(mGlyphText, 0, mGlyphText.length(), mTextPaint)
                 + getPaddingTop() + getPaddingBottom();
@@ -133,8 +135,9 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
             // used if the first layout got the wrong size
             desiredWidth = mStickyWidth;
         } else {
-            MongolLayout layout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, height, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-            desiredWidth = layout.getWidth() + getPaddingLeft() + getPaddingRight();
+            //MongolLayout layout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, height, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+            mLayout.setHeight(height);
+            desiredWidth = mLayout.getWidth() + getPaddingLeft() + getPaddingRight();
         }
 
         //Measure Width
@@ -174,13 +177,10 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        //if (h != oldh) {
-//            mLayout.setHeight(h);
-//            mNeedsRelayout = false;
-        //}
 
-        mLayout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, h, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
 
+        //mLayout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, h, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+        mLayout.setHeight(h);
     }
 
     @Override
@@ -255,7 +255,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public void setText(String text) {
         mUnicodeText = text;
         mGlyphText = mRenderer.unicodeToMenksoft(text);
-        mNeedsRelayout = true;
+        mLayout.setText(text);
+        mNeedsRelayout = true; // TODO is mNeedsRelayout necessary
         invalidate();
         requestLayout();
     }

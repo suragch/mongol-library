@@ -22,7 +22,8 @@ public class MongolLayout {
     private float mSpacingMult;
     private float mSpacingAdd;
     private List<LineInfo> mLinesInfo;
-    private List<BreakInfo> mBreaks;
+    //private List<BreakInfo> mBreaks;
+    private boolean needsLineUpdate = true;
     //private int mLineWidth; // distance from line to line
 
     private static final char CHAR_NEW_LINE = '\n';
@@ -50,14 +51,15 @@ public class MongolLayout {
 
         //updateBreaks();
         if (height > 0) {
-            updateLines();
+            //updateLines();
+            needsLineUpdate = true;
         }
     }
 
 
-    public MongolLayout(CharSequence text, TextPaint paint) {
-        this(text, 0, text.length(), paint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-    }
+//    public MongolLayout(CharSequence text, TextPaint paint) {
+//        this(text, 0, text.length(), paint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+//    }
 
 
     /**
@@ -110,6 +112,8 @@ public class MongolLayout {
 
         if (mHeight <= 0) return;
 
+        if (needsLineUpdate) updateLines();
+
         // TODO for now draw all the lines. Should we only draw the visible lines?
         // (see Layout source code)
         //final long lineRange = getLineRangeForDraw(canvas);
@@ -126,6 +130,8 @@ public class MongolLayout {
     public void drawText(Canvas canvas) {
 
         if (mHeight <= 0) return;
+
+        if (needsLineUpdate) updateLines();
 
         int ltop = mTextPaint.getFontMetricsInt().top;
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
@@ -181,7 +187,7 @@ public class MongolLayout {
     }
 
     private void updateLines() {
-
+        needsLineUpdate = false;
         if (mHeight <= 0)
             return;
 
@@ -253,7 +259,14 @@ public class MongolLayout {
      */
     public void reflowLines() {
         //updateBreaks();
-        updateLines();
+        //updateLines();
+        needsLineUpdate = true;
+    }
+
+    public void setText(CharSequence text) {
+        mText = text;
+        needsLineUpdate = true;
+        //updateLines();
     }
 
     public int getHeight() {
@@ -268,10 +281,12 @@ public class MongolLayout {
 
         mHeight = height;
         //updateBreaks();
-        updateLines();
+        //updateLines();
+        needsLineUpdate = true;
     }
 
     public int getWidth() {
+        if (needsLineUpdate) updateLines();
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         float width = 0;
         for (LineInfo line : mLinesInfo) {
@@ -284,9 +299,9 @@ public class MongolLayout {
 //        return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
 //    }
 
-    public int getAlignment() {
-        return mAlignment;
-    }
+//    public int getAlignment() {
+//        return mAlignment;
+//    }
 
     public void setAlignment(int alignment) {
         mAlignment = alignment;
