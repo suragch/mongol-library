@@ -32,7 +32,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private TextPaint mTextPaint;
     private Paint mPaint;
     private MongolLayout mLayout;
-    private boolean mNeedsRelayout = false;
+    //private boolean mNeedsRelayout = false;
     private MongolCode mRenderer;
 
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
@@ -102,8 +102,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        // TODO do fewer expensive calculations here
-
         // TODO don't need to calculate this if using sticky width?
         // TODO pass in a limit where we can stop measuring?
         int desiredHeight = (int) MongolLayout.getDesiredHeight(mGlyphText, 0, mGlyphText.length(), mTextPaint)
@@ -135,8 +133,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
             // used if the first layout got the wrong size
             desiredWidth = mStickyWidth;
         } else {
-            //MongolLayout layout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, height, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-            mLayout.setHeight(height);
+            mLayout.setHeight(height - getPaddingTop() - getPaddingBottom());
             desiredWidth = mLayout.getWidth() + getPaddingLeft() + getPaddingRight();
         }
 
@@ -176,11 +173,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
-
-
-        //mLayout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, h, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-        mLayout.setHeight(h);
+        mLayout.setHeight(h - getPaddingTop() - getPaddingBottom());
     }
 
     @Override
@@ -214,26 +207,14 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
             mStickyWidth = STICKY_WIDTH_UNDEFINED;
         }
 
-//        if (h <= mBreakHeight && (w < mLastDesiredWidth) && (mStickyWidth == STICKY_WIDTH_UNDEFINED)) {
-//            mStickyWidth = mLastDesiredWidth;
-//            getViewTreeObserver().addOnPreDrawListener(this);
-//        } else {
-//            mStickyWidth = STICKY_WIDTH_UNDEFINED;
-//        }
         mOnMeasureData = new int[6];
         Log.d(TAG, ">>>>onLayout: w=" + w + " h=" + h + " mStickyWidth=" + mStickyWidth);
 
 
-
-        // TODO Make it a MongolLayout where parameters can be adjusted rather than creating a new
-        // layout every time.
-
-//        int h = bottom - top;
-//        mLayout.setHeight(h);
-        if (mNeedsRelayout) {
-            mLayout.reflowLines();
-            mNeedsRelayout = false;
-        }
+//        if (mNeedsRelayout) {
+//            mLayout.reflowLines();
+//            mNeedsRelayout = false;
+//        }
     }
 
     @Override
@@ -255,8 +236,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public void setText(String text) {
         mUnicodeText = text;
         mGlyphText = mRenderer.unicodeToMenksoft(text);
-        mLayout.setText(text);
-        mNeedsRelayout = true; // TODO is mNeedsRelayout necessary
+        mLayout.setText(mGlyphText);
+        //mNeedsRelayout = true; // TODO is mNeedsRelayout necessary
         invalidate();
         requestLayout();
     }
@@ -286,7 +267,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                 size, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(mTextSizePx);
         //mStaticLayoutNeedsRedraw = true;
-        mNeedsRelayout = true;
+        //mNeedsRelayout = true;
         invalidate();
         requestLayout();
     }
@@ -301,6 +282,14 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         invalidate();
         requestLayout();
     }
+
+    public void setPadding (int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
+        mLayout.reflowLines();
+        invalidate();
+        requestLayout();
+    }
+
 
     public int getGravity() {
         return mGravity;

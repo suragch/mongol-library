@@ -23,6 +23,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
     private static final String[] fontColors = {"BLACK", "BLUE", "RED", "YELLOW"};
     private static final String[] fontSizesSP = {"10", "20", "30", "40", "50"};
     private static final String[] alignments = {"TOP", "CENTER", "BOTTOM"};
+    private static final String[] paddings = {"0 PADDING", "10 PADDING"};
     private static final String[] textLengths = {"TEXT 1", "TEXT 2", "TEXT 3"};
     private static final String[] fonts = {"QAGAN", "SCNIN", "HAWANG", "AMGLANG", "JCLGQ"};
     private static final String[] spanTypes = {"HIGHLIGHT", "TEXT COLOR", "SIZE", "FONT"};
@@ -62,6 +63,14 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
         adapterAlignment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         alignmentSpinner.setAdapter(adapterAlignment);
         alignmentSpinner.setOnItemSelectedListener(this);
+
+        // Padding size spinner
+        Spinner paddingSpinner = (Spinner) findViewById(R.id.padding_spinner);
+        ArrayAdapter<String> adapterPadding = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, paddings);
+        adapterPadding.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        paddingSpinner.setAdapter(adapterPadding);
+        paddingSpinner.setOnItemSelectedListener(this);
 
         // Text length choice spinner
         Spinner textLengthSpinner = (Spinner) findViewById(R.id.textlength_spinner);
@@ -130,6 +139,21 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                     gravity = Gravity.TOP;
             }
             mtvExample.setGravity(gravity);
+
+        } else if (viewid == R.id.padding_spinner) {
+
+            int padding = 0;
+            switch (pos) {
+                case 0: // 0 padding
+                    padding = 0;
+                    break;
+                case 1: // 10 padding
+                    padding = 10;
+                    break;
+            }
+            // convert pixels to dp
+            int px = (int) (padding * getResources().getDisplayMetrics().density);
+            mtvExample.setPadding(px, px, px, px);
 
         } else if (viewid == R.id.textlength_spinner) {
 
