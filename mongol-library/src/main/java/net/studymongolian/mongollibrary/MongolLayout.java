@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -144,7 +145,7 @@ public class MongolLayout {
         // draw the lines one at a time
         int lastLine = mLinesInfo.size() - 1;
         for (int i = 0; i <= lastLine; i++) {
-            boolean isSpannedText = false; // TODO
+            boolean isSpannedText = mText instanceof Spanned;
             boolean hasSpecialChar = true; // TODO mLinesInfo.get(i).hasSpecialChars();
             int start = mLinesInfo.get(i).getStartOffset();
             int end;

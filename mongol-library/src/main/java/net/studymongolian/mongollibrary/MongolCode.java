@@ -26,6 +26,9 @@ public final class MongolCode {
 
     // this is a singleton class (should it just be a static class?)
     public final static MongolCode INSTANCE = new MongolCode();
+    private static final int NORMAL_GLYPH = 0;
+    private static final int NON_PRINTING_CHAR = -1;
+
 
     public enum Location {
         ISOLATE, INITIAL, MEDIAL, FINAL
@@ -45,27 +48,53 @@ public final class MongolCode {
     private MongolCode() {}
 
     public String unicodeToMenksoft(String inputString) {
-        StringBuilder outputString = new StringBuilder();
-        StringBuilder mongolWord = new StringBuilder();
+        return unicodeToMenksoft(inputString, null);
+    }
+
+    public String unicodeToMenksoft(String inputString, int[] glyphIndexes) {
+
+
+
+        //inputString = "\u1830\u1820\u1822\u1828 \u182A\u1820\u1836\u1822\u1828\u180E\u1820 \u1824\u1824\uFE16";
+        //glyphIndexes = new int[inputString.length()];
+
+
+
 
         if (inputString == null || inputString.length() == 0) {
             return "";
         }
 
-        // Loop through characters in string
-        for (char character : inputString.toCharArray()) {
+        // the index array must be passed in with the correct size, or else ignore it.
+        int length = inputString.length();
+        //int currentGlyphIndex = 0;
+        if (glyphIndexes != null && glyphIndexes.length != length) {
+            glyphIndexes = null; // TODO reset the glyph indexes to the right length
+        }
 
+        StringBuilder outputString = new StringBuilder();
+        StringBuilder mongolWord = new StringBuilder();
+
+
+        // Loop through characters in string
+        //for (char character : inputString.toCharArray()) {
+        for (int i = 0; i < length; i++) {
+            final char character = inputString.charAt(i);
             if (isMongolian(character)) {
                 mongolWord.append(character);
             } else if (character == Uni.NNBS) {
                 if (mongolWord.length() > 0) {
-                    outputString.append(convertWordToMenksoftCode(mongolWord.toString()));
+                    String renderedWord = convertWordToMenksoftCode(mongolWord.toString(), glyphIndexes, i);
+                    //currentGlyphIndex += renderedWord.length();
+                    outputString.append(renderedWord);
                     mongolWord.setLength(0);
                 }
                 mongolWord.append(Uni.NNBS);
             } else { // non-Mongol character
                 if (mongolWord.length() > 0) {
-                    outputString.append(convertWordToMenksoftCode(mongolWord.toString()));
+                    String renderedWord = convertWordToMenksoftCode(mongolWord.toString(), glyphIndexes, i);
+                    //currentGlyphIndex += renderedWord.length();
+                    outputString.append(renderedWord);
                     mongolWord.setLength(0);
                 }
                 outputString.append(character);
@@ -74,8 +103,23 @@ public final class MongolCode {
 
         // Add any final substring
         if (mongolWord.length() > 0) {
-            outputString.append(convertWordToMenksoftCode(mongolWord.toString()));
-            mongolWord.setLength(0);
+            String renderedWord = convertWordToMenksoftCode(mongolWord.toString(), glyphIndexes, length - 1);
+            outputString.append(renderedWord);
+        }
+
+        // calculate the glyph indexes
+        if (glyphIndexes != null) {
+            boolean indexingHasStarted = false;
+            int glyphIndex = 0;
+            for (int i = 0; i < length; i++) {
+                if (glyphIndexes[i] == NORMAL_GLYPH) {
+                    if (indexingHasStarted) {
+                        glyphIndex++;
+                    }
+                    indexingHasStarted = true;
+                }
+                glyphIndexes[i] = glyphIndex;
+            }
         }
 
         return outputString.toString();
@@ -495,11 +539,19 @@ public final class MongolCode {
         return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
     }
 
-    private String convertWordToMenksoftCode(String mongolWord) {
+    private String convertWordToMenksoftCode(String mongolWord, int[] glyphIndexes, int lastUnicodeIndex) {
 
-        if (mongolWord == null || mongolWord.length() == 0) {
-            return "";
-        }
+//        if (mongolWord == null || mongolWord.length() == 0) {
+//            return "";
+//        }
+//        int glyphIndex = 0;
+//        if (glyphIndexes != null && lastUnicodeIndex - mongolWord.length() - 1 > 0) {
+//            glyphIndex = glyphIndexes[lastUnicodeIndex - mongolWord.length() - 1];
+//        }
+
+        // TODO would anything bad happen if lastUnicodeIndex were less than zero?
+
+        boolean glyphIndexNeedsAdjusting = false;
 
         int length = mongolWord.length();
         StringBuilder renderedWord = new StringBuilder();
@@ -1711,10 +1763,12 @@ public final class MongolCode {
                                 } else if (isVowel(charAbove)) {
                                     if (charBelow == Uni.I) {
                                         if (i < length - 2) {
+                                            //renderedWord.insert(0, Glyph.MEDI_YA_FVS1);     // no hook
                                             renderedWord.setCharAt(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth replacement
                                         } else {
                                             // omit the Y if YI is at the end of a word
                                         }
+                                        glyphIndexNeedsAdjusting = true;
                                     } else if (isConsonant(charBelow)) {
                                         renderedWord.insert(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
                                     } else {
@@ -2058,15 +2112,36 @@ public final class MongolCode {
                     break;
                 default:
                     // any extra FVS and MVS characters are ignored
-                    // TODO remove this
-                    //throw new RuntimeException("You need to handle this situation in the preformatter");
+                    glyphIndexNeedsAdjusting = true;
             }
 
+            if (glyphIndexNeedsAdjusting) {
+                if (glyphIndexes != null) {
+                    glyphIndexes[lastUnicodeIndex - length  + 1 + i] = NON_PRINTING_CHAR; // FIXME
+                }
+                glyphIndexNeedsAdjusting = false;
+            }
 
             charBelow = currentChar;
             charBelowFvs = fvs;
             fvs = 0;
         }
+
+//        if (glyphIndexes != null) {
+//            //int len = mongolWord.length();
+//            int glyphIndex = 0;
+//            if (lastUnicodeIndex - length - 1 > 0) {
+//                glyphIndex = glyphIndexes[lastUnicodeIndex - mongolWord.length() - 1];
+//            }
+//            for (int i = 0; i < length; i++) {
+//                int thisIndex = lastUnicodeIndex - length + i;
+//                if (thisIndex > 0 ) {
+//                    glyphIndexes[thisIndex] += glyphIndexes[thisIndex - 1] + 1;
+//                } else {
+//
+//                }
+//            }
+//        }
 
         return renderedWord.toString();
     }

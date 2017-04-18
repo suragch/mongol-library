@@ -4,7 +4,10 @@ package net.studymongolian.mongollibrary;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,9 @@ class MongolTextLine {
     private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;
     private static final int UNICODE_CJK_START = 0x11FF;
     private static final int UNICODE_EMOJI_START = 0x1F000;
+    private static final int MENKSOFT_START = 0xE234;
+    private static final int MENKSOFT_END = 0xE34F;
+
 
     private TextPaint mPaint;
     private CharSequence mText;
@@ -83,41 +89,49 @@ class MongolTextLine {
 
     void set(TextPaint paint, CharSequence text, int start, int end) {
 
+        int nextSpanTransition = 0;
+        boolean hasSpan = text instanceof Spanned;
         mPaint = paint;
         mText = text;
         mTextRunOffsets = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
         int charCount;
         int currentRunStart = start;
         int currentRunLength = 0;
-        final int length = end - start;
+
+        if (hasSpan) {
+            nextSpanTransition = ((Spanned) mText).nextSpanTransition(start, end, CharacterStyle.class);
+        }
+
         for (int offset = start; offset < end; ) {
             final int codepoint = Character.codePointAt(mText, offset);
             charCount = Character.charCount(codepoint);
 
-            // first check for Mongolian/latin/etc. (less than CJK and not Korean Jamo)
-            // Most chars are expected to be here so this is an early exit to avoid
-            // checking every single character for CJK and Emoji
-            if ((codepoint > UNICODE_HANGUL_JAMO_END && codepoint < UNICODE_CJK_START) || // Mongolian, etc
-                    codepoint < UNICODE_HANGUL_JAMO_START) { // English, etc
-                currentRunLength += charCount;
+            // Rotate Chinese, emoji, etc
+            Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
+            if (isCJK(block) ||
+                    isJapaneseKana(block) ||
+                    isKoreanHangul(block) ||
+                    isEmoji(codepoint)) {
+                // save any old normal (nonrotated) runs
+                if (currentRunLength > 0) {
+                    mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
+                }
+                // save this rotated character
+                mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
+                // reset normal run
+                currentRunStart = offset + charCount;
+                currentRunLength = 0;
             } else {
-                // Check for Chinese and emoji
-                Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
-                if (isCJK(block) ||
-                        isJapaneseKana(block) ||
-                        isKoreanHangul(block) ||
-                        isEmoji(codepoint)) {
-                    // save any old normal (nonrotated) runs
+                // Mongolian, Latin, etc. Don't rotate.
+                if (hasSpan && nextSpanTransition == offset) {
                     if (currentRunLength > 0) {
                         mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
                     }
-                    // save this rotated character
-                    mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
                     // reset normal run
-                    currentRunStart = offset + charCount;
-                    currentRunLength = 0;
+                    currentRunStart = offset;
+                    currentRunLength = charCount;
+                    nextSpanTransition = ((Spanned) mText).nextSpanTransition(offset, end, CharacterStyle.class);
                 } else {
-                    // some other obscure character -> don't rotate it.
                     currentRunLength += charCount;
                 }
             }
@@ -127,6 +141,10 @@ class MongolTextLine {
         if (currentRunLength > 0) {
             mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
         }
+    }
+
+    private boolean isMenksoft(int codepoint) {
+        return codepoint >= MENKSOFT_START && codepoint <= MENKSOFT_END;
     }
 
     private static boolean isCJK(Character.UnicodeBlock block) {
@@ -196,6 +214,8 @@ class MongolTextLine {
         // top and bottom are the font metrics values in the normal
         // horizontal orientation of a text line.
 
+        boolean hasSpan = mText instanceof Spanned;
+        int defaultColor = mPaint.getColor();
         float fontHeight = mPaint.getFontMetrics().descent - mPaint.getFontMetrics().ascent;
         int start = 0;
         int end = 0;
@@ -209,6 +229,14 @@ class MongolTextLine {
 
             start = run.getOffset();
             end = run.getOffset() + run.getLength();
+
+            if (hasSpan) {
+                // set foreground color
+                ForegroundColorSpan[] fgSpans = ((Spanned) mText).getSpans(start, end, ForegroundColorSpan.class);
+                if (fgSpans.length > 0) {
+                    mPaint.setColor(fgSpans[0].getForegroundColor());
+                }
+            }
 
             if (run.isRotated()) {
 
@@ -227,6 +255,11 @@ class MongolTextLine {
                 c.drawText(mText, start, end, 0, 0, mPaint);
                 float width = mPaint.measureText(mText, start, end);
                 c.translate(width, 0);
+            }
+
+            if (hasSpan) {
+                // restore default foreground color
+                mPaint.setColor(defaultColor);
             }
         }
 

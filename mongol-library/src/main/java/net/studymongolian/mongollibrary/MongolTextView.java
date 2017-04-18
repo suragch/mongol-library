@@ -19,12 +19,10 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
     private final static int DEFAULT_FONT_SIZE_SP = 17;
     private static final int STICKY_WIDTH_UNDEFINED = -1;
-    private static final String TAG = "CustomView";
+    private static final String TAG = "MongolTextView";
 
 
     private Context mContext;
-    private String mUnicodeText;
-    private String mGlyphText;
     private int mTextColor;
     private float mTextSizePx;
     private Typeface mTypeface;
@@ -32,17 +30,17 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private TextPaint mTextPaint;
     private Paint mPaint;
     private MongolLayout mLayout;
-    //private boolean mNeedsRelayout = false;
-    private MongolCode mRenderer;
+    private MongolTextStorage mTextStorage;
 
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
     private int[] mOnMeasureData = new int[6];
 
-    // programmatic constructor1
+    // programmatic constructor
     public MongolTextView(Context context) {
         super(context);
 
-        //mUnicodeText = "";
+        mTextStorage = new MongolTextStorage();
+
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         mTextColor = Color.BLACK;
@@ -55,11 +53,12 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     // xml constructor
     public MongolTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs, R.styleable.MongolTextView, 0, 0);
 
         try {
-            mUnicodeText = a.getString(R.styleable.MongolTextView_text);
+            mTextStorage = new MongolTextStorage(a.getString(R.styleable.MongolTextView_text));
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolTextView_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolTextView_textColor, Color.BLACK);
             mGravity = a.getInteger(R.styleable.MongolTextView_gravity, Gravity.TOP);
@@ -82,20 +81,14 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTextPaint.setTextSize(mTextSizePx);
         mTypeface = MongolFont.get(MongolFont.QAGAN, mContext);
         mTextPaint.setTypeface(mTypeface);
-        mRenderer = MongolCode.INSTANCE;
-        if (mUnicodeText == null) {
-            mUnicodeText = "";  // FIXME still crashes if text is not set in xml
-        }
-        mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText);
 
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.FILL);
 
         // initialize the layout, but the height still needs to be set
-        //mLayout = new MongolLayout(mText, mTextPaint);
-        mLayout = new MongolLayout(mGlyphText, 0, mGlyphText.length(), mTextPaint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-        //mLayout = new MongolLayout(mGlyphText, mTextPaint);
+        final CharSequence text = mTextStorage.getGlyphText();
+        mLayout = new MongolLayout(text, 0, text.length(), mTextPaint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
 
     }
 
@@ -104,7 +97,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
         // TODO don't need to calculate this if using sticky width?
         // TODO pass in a limit where we can stop measuring?
-        int desiredHeight = (int) MongolLayout.getDesiredHeight(mGlyphText, 0, mGlyphText.length(), mTextPaint)
+        final CharSequence text = mTextStorage.getGlyphText();
+        int desiredHeight = (int) MongolLayout.getDesiredHeight(text, 0, text.length(), mTextPaint)
                 + getPaddingTop() + getPaddingBottom();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -230,14 +224,12 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
 
     public CharSequence getText() {
-        return mUnicodeText;
+        return mTextStorage.getUnicodeText();
     }
 
-    public void setText(String text) {
-        mUnicodeText = text;
-        mGlyphText = mRenderer.unicodeToMenksoft(text);
-        mLayout.setText(mGlyphText);
-        //mNeedsRelayout = true; // TODO is mNeedsRelayout necessary
+    public void setText(CharSequence text) {
+        mTextStorage.setText(text);
+        mLayout.setText(mTextStorage.getGlyphText());
         invalidate();
         requestLayout();
     }

@@ -4,6 +4,10 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -45,6 +49,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 android.R.layout.simple_spinner_item, fontColors);
         adapterColor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(adapterColor);
+        //colorSpinner.setSelection(0, false);
         colorSpinner.setOnItemSelectedListener(this);
 
         // Font size spinner
@@ -54,6 +59,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
         adapterFontSizes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeSpinner.setAdapter(adapterFontSizes);
         sizeSpinner.setSelection(2); // 30sp
+        //sizeSpinner.setSelection(0, false);
         sizeSpinner.setOnItemSelectedListener(this);
 
         // Alignment choice spinner
@@ -62,6 +68,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 android.R.layout.simple_spinner_item, alignments);
         adapterAlignment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         alignmentSpinner.setAdapter(adapterAlignment);
+        alignmentSpinner.setSelection(0, false);
         alignmentSpinner.setOnItemSelectedListener(this);
 
         // Padding size spinner
@@ -70,6 +77,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 android.R.layout.simple_spinner_item, paddings);
         adapterPadding.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         paddingSpinner.setAdapter(adapterPadding);
+        paddingSpinner.setSelection(0, false);
         paddingSpinner.setOnItemSelectedListener(this);
 
         // Text length choice spinner
@@ -78,6 +86,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 android.R.layout.simple_spinner_item, textLengths);
         adapterTextLength.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         textLengthSpinner.setAdapter(adapterTextLength);
+        //textLengthSpinner.setSelection(0, false);
         textLengthSpinner.setOnItemSelectedListener(this);
 
         // Font choice spinner
@@ -86,6 +95,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 android.R.layout.simple_spinner_item, fonts);
         adapterFont.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fontSpinner.setAdapter(adapterFont);
+        fontSpinner.setSelection(0, false);
         fontSpinner.setOnItemSelectedListener(this);
 
         // Span type spinner
@@ -94,6 +104,7 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
                 android.R.layout.simple_spinner_item, spanTypes);
         adapterSpans.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spanSpinner.setAdapter(adapterSpans);
+        spanSpinner.setSelection(0, false);
         spanSpinner.setOnItemSelectedListener(this);
 
     }
@@ -195,6 +206,28 @@ public class MongolTextViewActivity extends AppCompatActivity  implements Adapte
             mtvExample.setTypeface(tf);
         } else if (viewid == R.id.spantype_spinner) {
 
+            SpannableString spannableString = new SpannableString(mtvExample.getText());
+
+            // select the middle third
+            int start = mtvExample.getText().length()/3;
+            int end = mtvExample.getText().length()*2/3;
+
+            switch (pos) {
+                case 0: // HIGHLIGHT
+                    BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(Color.YELLOW);
+                    spannableString.setSpan(backgroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+                case 1: // TEXT COLOR
+                    ForegroundColorSpan foregroundSpan = new ForegroundColorSpan(Color.RED);
+                    spannableString.setSpan(foregroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+                case 2: // SIZE
+                    break;
+                case 3: // FONT
+                    break;
+            }
+
+            mtvExample.setText(spannableString);
         }
     }
 
