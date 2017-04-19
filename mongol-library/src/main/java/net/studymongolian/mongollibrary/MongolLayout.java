@@ -205,7 +205,8 @@ public class MongolLayout {
         float measuredSum = 0;
         RectF measuredSize;
         float previousLineHeight = 0;
-        for (int end = boundary.next(); end != BreakIterator.DONE; end = boundary.next()) {
+        boolean hadToSplitWord = false;
+        for (int end = boundary.next(); end != BreakIterator.DONE;) {
 
             measuredSize = MongolTextLine.measure(mTextPaint, tempString, start, end);
             //adjustedHeight = Math.max(adjustedHeight, measuredSize.bottom);
@@ -215,13 +216,14 @@ public class MongolLayout {
                 // add previously measured text as a new line
                 if (measuredSum > 0) {
                     mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
+                    measuredSum = 0;
                 }
 
                 // There were no natural line wrap boundaries shorter than the wrap height
                 // so we have to split the word unnaturally across lines.
                 lineStart = start;
                 float[] measuredWidth = new float[1];
-                int charactersMeasured = mTextPaint.breakText(tempString, lineStart, end, true, mHeight - measuredSum, measuredWidth);
+                int charactersMeasured = mTextPaint.breakText(tempString, lineStart, end, true, mHeight, measuredWidth);
                 if (charactersMeasured > 0) {
                     //float height = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
                     mLinesInfo.add(new LineInfo(lineStart, measuredWidth[0], measuredSize.bottom));
@@ -231,21 +233,27 @@ public class MongolLayout {
                     mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.bottom));
                     lineStart++;
                 }
+                hadToSplitWord = true;
 
-                measuredSum = 0;
-                //adjustedHeight = 0;
             } else  if (Math.floor(measuredSum + measuredSize.right) > mHeight) {
 
                 mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
                 lineStart = start;
                 measuredSum = measuredSize.right;
-                //adjustedHeight = measuredSize.bottom;
+
             } else {
                 measuredSum += measuredSize.right;
             }
 
-            previousLineHeight = measuredSize.bottom;
-            start = end;
+            previousLineHeight = measuredSize.bottom; // TODO should I be taking the max here? Test line with large text.
+
+            if (hadToSplitWord) {
+                start = lineStart;
+                hadToSplitWord = false;
+            } else {
+                start = end;
+                end = boundary.next();
+            }
 
         }
 
