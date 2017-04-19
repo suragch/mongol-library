@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 
@@ -23,6 +24,7 @@ class MongolTextLine {
 
 
     private TextPaint mPaint;
+    private Paint mHighlightPaint;
     private CharSequence mText;
     private List<TextRunOffset> mTextRunOffsets;
 
@@ -33,19 +35,19 @@ class MongolTextLine {
         private int mLength;
         private boolean mIsRotated;
 
-        public TextRunOffset(int offset, int length, boolean isRotated) {
+        TextRunOffset(int offset, int length, boolean isRotated) {
             mOffset = offset;
             mLength = length;
             mIsRotated = isRotated;
         }
 
-        public int getOffset() {
+        int getOffset() {
             return mOffset;
         }
-        public int getLength() {
+        int getLength() {
             return mLength;
         }
-        public boolean isRotated() {
+        boolean isRotated() {
             return mIsRotated;
         }
     }
@@ -73,6 +75,7 @@ class MongolTextLine {
     static MongolTextLine recycle(MongolTextLine tl) {
         tl.mText = null;
         tl.mPaint = null;
+        tl.mHighlightPaint = null;
         tl.mTextRunOffsets = null;
         synchronized(sCached) {
             for (int i = 0; i < sCached.length; ++i) {
@@ -92,6 +95,7 @@ class MongolTextLine {
         int nextSpanTransition = 0;
         boolean hasSpan = text instanceof Spanned;
         mPaint = paint;
+        mHighlightPaint = new Paint();
         mText = text;
         mTextRunOffsets = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
         int charCount;
@@ -204,7 +208,7 @@ class MongolTextLine {
      * @param y the baseline
      * @param bottom the bottom of the line
      */
-    void draw(Canvas c, float x, int top, float y, int bottom) {
+    void draw(Canvas c, float x, float top, float y, int bottom) {
         // FIXME top parameter is not being used
 
         // (x, y) are the start coordinates of each vertical line
@@ -215,8 +219,9 @@ class MongolTextLine {
         // horizontal orientation of a text line.
 
         boolean hasSpan = mText instanceof Spanned;
+        boolean hasHighlight = false;
         int defaultColor = mPaint.getColor();
-        float fontHeight = mPaint.getFontMetrics().descent - mPaint.getFontMetrics().ascent;
+        float fontHeight = mPaint.getFontMetrics().descent - mPaint.getFontMetrics().ascent; // TODO will need to check each rotated glyph for height
         int start = 0;
         int end = 0;
         //float tempBottom = mPaint.getFontMetrics().bottom; // get this from bottom parameter?
@@ -231,6 +236,14 @@ class MongolTextLine {
             end = run.getOffset() + run.getLength();
 
             if (hasSpan) {
+                // draw the highlight (background color) first
+                BackgroundColorSpan[] bgSpans = ((Spanned) mText).getSpans(start, end, BackgroundColorSpan.class);
+                if (bgSpans.length > 0) {
+                    mHighlightPaint.setColor(bgSpans[0].getBackgroundColor());
+                    hasHighlight = true;
+                    //canvas.drawRect(run., mTextPaint.getFontMetrics().top, end, mTextPaint.getFontMetrics().bottom, mHighlightPaint);
+                }
+
                 // set foreground color
                 ForegroundColorSpan[] fgSpans = ((Spanned) mText).getSpans(start, end, ForegroundColorSpan.class);
                 if (fgSpans.length > 0) {
@@ -239,6 +252,11 @@ class MongolTextLine {
             }
 
             if (run.isRotated()) {
+
+                if (hasHighlight) {
+                    c.drawRect(0, top, fontHeight, bottom, mHighlightPaint);
+                    hasHighlight = false;
+                }
 
                 // move down
                 c.translate(fontHeight, 0);
@@ -252,8 +270,15 @@ class MongolTextLine {
 
             } else {
 
-                c.drawText(mText, start, end, 0, 0, mPaint);
                 float width = mPaint.measureText(mText, start, end);
+
+                if (hasHighlight) {
+                    //c.drawRect(0, top, width, bottom, mHighlightPaint);
+                    c.drawRect(0, top, width, bottom, mHighlightPaint);
+                    hasHighlight = false;
+                }
+
+                c.drawText(mText, start, end, 0, 0, mPaint);
                 c.translate(width, 0);
             }
 

@@ -34,9 +34,9 @@ public class MongolLayout {
 
 
     public MongolLayout(CharSequence text, int start, int end,
-                              TextPaint paint, int height,
-                              int align, float spacingMult, float spacingAdd,
-                              boolean includepad, int maxLines) {
+                        TextPaint paint, int height,
+                        int align, float spacingMult, float spacingAdd,
+                        boolean includepad, int maxLines) {
 
         if (height < 0)
             throw new IllegalArgumentException("Layout: " + height + " < 0");
@@ -134,7 +134,8 @@ public class MongolLayout {
 
         if (needsLineUpdate) updateLines();
 
-        int ltop = mTextPaint.getFontMetricsInt().top;
+        float ltop;
+        //int ltop = mLinesInfo.size()
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
         //int lineToLineDistance = lbottom - ltop; // XXX this ignores leading
 
@@ -145,11 +146,11 @@ public class MongolLayout {
         // draw the lines one at a time
         int lastLine = mLinesInfo.size() - 1;
         for (int i = 0; i <= lastLine; i++) {
-            boolean isSpannedText = mText instanceof Spanned;
-            boolean hasSpecialChar = true; // TODO mLinesInfo.get(i).hasSpecialChars();
+            //boolean isSpannedText = mText instanceof Spanned;
+            //boolean hasSpecialChar = true; // TODO mLinesInfo.get(i).hasSpecialChars();
             int start = mLinesInfo.get(i).getStartOffset();
             int end;
-            if (i<lastLine) {
+            if (i < lastLine) {
                 end = mLinesInfo.get(i + 1).getStartOffset();
             } else {
                 end = mText.length();
@@ -167,14 +168,10 @@ public class MongolLayout {
                 if (gravityOffset < 0) gravityOffset = 0;
             }
 
-            if (!isSpannedText && !hasSpecialChar) {
-                // TODO add gravityOffset
-                canvas.drawText(mText, start, end, x, y, mTextPaint);
-            } else {
-                tl.set(mTextPaint, mText, start, end);
-                tl.draw(canvas, x, ltop, y + gravityOffset, lbottom);
+            tl.set(mTextPaint, mText, start, end);
+            ltop = lbottom - mLinesInfo.get(i).getMeasuredHeight();
+            tl.draw(canvas, x, ltop, y + gravityOffset, lbottom);
 
-            }
             x += mLinesInfo.get(i).getMeasuredHeight();
         }
 
@@ -206,10 +203,9 @@ public class MongolLayout {
         RectF measuredSize;
         float previousLineHeight = 0;
         boolean hadToSplitWord = false;
-        for (int end = boundary.next(); end != BreakIterator.DONE;) {
+        for (int end = boundary.next(); end != BreakIterator.DONE; ) {
 
             measuredSize = MongolTextLine.measure(mTextPaint, tempString, start, end);
-            //adjustedHeight = Math.max(adjustedHeight, measuredSize.bottom);
 
             if (Math.floor(measuredSize.right) > mHeight) {
 
@@ -225,9 +221,10 @@ public class MongolLayout {
                 float[] measuredWidth = new float[1];
                 int charactersMeasured = mTextPaint.breakText(tempString, lineStart, end, true, mHeight, measuredWidth);
                 if (charactersMeasured > 0) {
-                    //float height = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
                     mLinesInfo.add(new LineInfo(lineStart, measuredWidth[0], measuredSize.bottom));
                     lineStart += charactersMeasured;
+
+                    //if (tempString.charAt(lineStart) == CHAR_SPACE) lineStart++;
                 } else {
                     // if mHeight is shorter than a single character then just add that char to the line
                     mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.bottom));
@@ -235,7 +232,7 @@ public class MongolLayout {
                 }
                 hadToSplitWord = true;
 
-            } else  if (Math.floor(measuredSum + measuredSize.right) > mHeight) {
+            } else if (Math.floor(measuredSum + measuredSize.right) > mHeight) {
 
                 mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
                 lineStart = start;
@@ -248,7 +245,14 @@ public class MongolLayout {
             previousLineHeight = measuredSize.bottom; // TODO should I be taking the max here? Test line with large text.
 
             if (hadToSplitWord) {
+                if (tempString.charAt(lineStart) == CHAR_SPACE) {
+                    // don't let a single trailing space make an empty blank next line
+                    lineStart++;
+                }
                 start = lineStart;
+                if (start == end) {
+                    end = boundary.next();
+                }
                 hadToSplitWord = false;
             } else {
                 start = end;
@@ -342,6 +346,7 @@ public class MongolLayout {
         float getMeasuredWidth() {
             return mMeasuredWidth;
         }
+
         float getMeasuredHeight() {
             return mMeasuredHeight;
         }
