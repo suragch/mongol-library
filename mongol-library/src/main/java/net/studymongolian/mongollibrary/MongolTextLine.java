@@ -9,6 +9,8 @@ import android.text.TextPaint;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.MetricAffectingSpan;
+import android.text.style.RelativeSizeSpan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,33 +28,53 @@ class MongolTextLine {
     private TextPaint mPaint;
     private Paint mHighlightPaint;
     private CharSequence mText;
-    private List<TextRunOffset> mTextRunOffsets;
+    private List<TextRun> mTextRuns;
 
+    // XXX is having a static variable a bad idea here?
+    // The purpose of the work paint is to avoid modifying paint
+    // variables being passed in while measuring spanned text.
+    private static final TextPaint mWorkPaint = new TextPaint();
 
+    // A text run is a substring of text within the text line. The substring is made up of
+    //     (1) a single emoji or CJK character,
+    //     (2) a span of styled text, or
+    //     (3) normal Mongolian/Latin/etc. text.
+    // A run may contain multiple types of spans covering the whole run but it should never
+    // contain a span transition. It should also never contain multiple emoji or CJK characters.
+    private class TextRun {
+        int offset;             // the start position of the run in the text
+        int length;             // number of chars in the run
+        boolean isRotated;      // whether run is emoji or CJK (and thus should be rotated)
+        float measuredWidth;    // horizontal line orientation (but height of emoji/CJK)
+        float measuredHeight;   // horizontal line orientation (but width of emoji/CJK)
 
-    private class TextRunOffset {
-        private int mOffset;
-        private int mLength;
-        private boolean mIsRotated;
+        TextRun(int offset, int length, boolean isRotated, boolean isSpanned) {
 
-        TextRunOffset(int offset, int length, boolean isRotated) {
-            mOffset = offset;
-            mLength = length;
-            mIsRotated = isRotated;
-        }
+            this.offset = offset;
+            this.length = length;
+            this.isRotated = isRotated;
 
-        int getOffset() {
-            return mOffset;
-        }
-        int getLength() {
-            return mLength;
-        }
-        boolean isRotated() {
-            return mIsRotated;
+            TextPaint wp;
+            if (isSpanned) {
+                wp = mWorkPaint;
+                wp.set(mPaint);
+                MetricAffectingSpan[] spans = ((Spanned) mText).getSpans(offset, offset + length, MetricAffectingSpan.class);
+                for(MetricAffectingSpan span : spans) {
+                    span.updateDrawState(wp);
+                }
+            } else {
+                wp = mPaint;
+            }
+
+            if (isRotated) {
+                measuredWidth = wp.getFontMetrics().bottom - wp.getFontMetrics().top;
+                measuredHeight = wp.measureText(mText, offset, offset + length);
+            } else {
+                measuredWidth = wp.measureText(mText, offset, offset + length);
+                measuredHeight = wp.getFontMetrics().bottom - wp.getFontMetrics().top;
+            }
         }
     }
-
-
 
     private static final MongolTextLine[] sCached = new MongolTextLine[3];
 
@@ -76,7 +98,7 @@ class MongolTextLine {
         tl.mText = null;
         tl.mPaint = null;
         tl.mHighlightPaint = null;
-        tl.mTextRunOffsets = null;
+        tl.mTextRuns = null;
         synchronized(sCached) {
             for (int i = 0; i < sCached.length; ++i) {
                 if (sCached[i] == null) {
@@ -93,16 +115,16 @@ class MongolTextLine {
     void set(TextPaint paint, CharSequence text, int start, int end) {
 
         int nextSpanTransition = 0;
-        boolean hasSpan = text instanceof Spanned;
+        boolean isSpanned = text instanceof Spanned;
         mPaint = paint;
         mHighlightPaint = new Paint();
         mText = text;
-        mTextRunOffsets = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
+        mTextRuns = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
         int charCount;
         int currentRunStart = start;
         int currentRunLength = 0;
 
-        if (hasSpan) {
+        if (isSpanned) {
             nextSpanTransition = ((Spanned) mText).nextSpanTransition(start, end, CharacterStyle.class);
         }
 
@@ -118,18 +140,18 @@ class MongolTextLine {
                     isEmoji(codepoint)) {
                 // save any old normal (nonrotated) runs
                 if (currentRunLength > 0) {
-                    mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
+                    mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
                 }
                 // save this rotated character
-                mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
+                mTextRuns.add(new TextRun(offset, charCount, true, isSpanned));
                 // reset normal run
                 currentRunStart = offset + charCount;
                 currentRunLength = 0;
             } else {
                 // Mongolian, Latin, etc. Don't rotate.
-                if (hasSpan && nextSpanTransition == offset) {
+                if (isSpanned && nextSpanTransition == offset) {
                     if (currentRunLength > 0) {
-                        mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
+                        mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
                     }
                     // reset normal run
                     currentRunStart = offset;
@@ -143,7 +165,7 @@ class MongolTextLine {
         }
 
         if (currentRunLength > 0) {
-            mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
+            mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
         }
     }
 
@@ -217,148 +239,93 @@ class MongolTextLine {
 
         // top and bottom are the font metrics values in the normal
         // horizontal orientation of a text line.
+        //TextPaint wp = mWorkPaint;
+        //wp.set(mPaint);
 
         boolean hasSpan = mText instanceof Spanned;
         boolean hasHighlight = false;
-        int defaultColor = mPaint.getColor();
-        float fontHeight = mPaint.getFontMetrics().descent - mPaint.getFontMetrics().ascent; // TODO will need to check each rotated glyph for height
-        int start = 0;
-        int end = 0;
-        //float tempBottom = mPaint.getFontMetrics().bottom; // get this from bottom parameter?
+        int start;
+        int end;
 
         c.save();
         c.translate(x, y);
         c.rotate(90);
 
-        for (TextRunOffset run : mTextRunOffsets) {
+        for (TextRun run : mTextRuns) {
 
-            start = run.getOffset();
-            end = run.getOffset() + run.getLength();
+            start = run.offset;
+            end = run.offset + run.length;
 
+            TextPaint wp;
             if (hasSpan) {
+                wp = mWorkPaint;
+                wp.set(mPaint);
+
                 // draw the highlight (background color) first
                 BackgroundColorSpan[] bgSpans = ((Spanned) mText).getSpans(start, end, BackgroundColorSpan.class);
                 if (bgSpans.length > 0) {
+                    // TODO can highlight paint be combined with paint?
                     mHighlightPaint.setColor(bgSpans[0].getBackgroundColor());
                     hasHighlight = true;
-                    //canvas.drawRect(run., mTextPaint.getFontMetrics().top, end, mTextPaint.getFontMetrics().bottom, mHighlightPaint);
                 }
 
-                // set foreground color
-                ForegroundColorSpan[] fgSpans = ((Spanned) mText).getSpans(start, end, ForegroundColorSpan.class);
-                if (fgSpans.length > 0) {
-                    mPaint.setColor(fgSpans[0].getForegroundColor());
+                // set relative size
+                CharacterStyle[] csSpans = ((Spanned) mText).getSpans(start, end, CharacterStyle.class);
+                for (CharacterStyle span : csSpans) {
+                    span.updateDrawState(wp);
                 }
+            } else {
+                wp = mPaint;
             }
 
-            if (run.isRotated()) {
+            if (run.isRotated) {
 
                 if (hasHighlight) {
-                    c.drawRect(0, top, fontHeight, bottom, mHighlightPaint);
+                    c.drawRect(0, top, run.measuredHeight, bottom, mHighlightPaint);
                     hasHighlight = false;
                 }
 
                 // move down
-                c.translate(fontHeight, 0);
+                c.translate(run.measuredHeight, 0);
 
                 // then rotate and draw
                 c.save();
                 c.rotate(-90);
                 c.translate(-bottom, -bottom);
-                c.drawText(mText, start, end, 0, 0, mPaint);
+                c.drawText(mText, start, end, 0, 0, wp);
                 c.restore();
 
             } else {
 
-                float width = mPaint.measureText(mText, start, end);
+                float width = wp.measureText(mText, start, end);
 
                 if (hasHighlight) {
-                    //c.drawRect(0, top, width, bottom, mHighlightPaint);
                     c.drawRect(0, top, width, bottom, mHighlightPaint);
                     hasHighlight = false;
                 }
 
-                c.drawText(mText, start, end, 0, 0, mPaint);
+                c.drawText(mText, start, end, 0, 0, wp);
                 c.translate(width, 0);
             }
 
-            if (hasSpan) {
-                // restore default foreground color
-                mPaint.setColor(defaultColor);
-            }
         }
 
         c.restore();
     }
 
-    /**
-     * Returns metrics information for the entire line.
-     *
-     * @param fmi receives font metrics information, can be null
-     * @return the signed width of the line
-     */
-    float metrics(Paint.FontMetricsInt fmi) {
-        return 0;
-    }
 
+    RectF measure() {
 
-    public static RectF measure(TextPaint paint, CharSequence text, int start, int end) {
-        float measuredSum = 0;
-        float lineHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
-        float adjustedHeight = 0;
-        int charCount;
-        int currentRunStart = start;
-        int currentRunLength = 0;
-        for (int offset = start; offset < end; ) {
-            final int codepoint = Character.codePointAt(text, offset);
-            charCount = Character.charCount(codepoint);
+        float widthSum = 0;
+        float maxHeight = 0;
 
-            // first check for Mongolian/latin/etc. (less than CJK and not Korean Jamo)
-            // Most chars are expected to be here so this is an early exit to avoid
-            // checking every single character for CJK and Emoji
-            if ((codepoint > UNICODE_HANGUL_JAMO_END && codepoint < UNICODE_CJK_START) || // Mongolian, etc
-                    codepoint < UNICODE_HANGUL_JAMO_START) { // English, etc
-                currentRunLength += charCount;
-            } else {
-                // Check for Chinese and emoji
-                Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
-                if (isCJK(block) ||
-                        isJapaneseKana(block) ||
-                        isKoreanHangul(block) ||
-                        isEmoji(codepoint)) {
-                    // save any old normal (nonrotated) runs
-                    if (currentRunLength > 0) {
-                        measuredSum += paint.measureText(text, currentRunStart, currentRunStart + currentRunLength);
-                        //mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
-                    }
-                    // reset normal run
-                    currentRunStart = offset + charCount;
-                    currentRunLength = 0;
-                    // increase the line hight (vertical line width) if this is a wide emoji
-                    adjustedHeight = Math.max(adjustedHeight, paint.measureText(text, offset, currentRunStart));
-                    // save this rotated character
-                    measuredSum += lineHeight;
-                    //mTextRunOffsets.add(new TextRunOffset(offset, charCount, true));
-
-                } else {
-                    // some other obscure character -> don't rotate it.
-                    currentRunLength += charCount;
-                }
-            }
-            offset += charCount;
+        for (TextRun run : mTextRuns) {
+            widthSum += run.measuredWidth;
+            maxHeight = Math.max(maxHeight, run.measuredHeight);
         }
 
-        if (currentRunLength > 0) {
-            measuredSum += paint.measureText(text, currentRunStart, currentRunStart + currentRunLength);
-            //mTextRunOffsets.add(new TextRunOffset(currentRunStart, currentRunLength, false));
-        }
-
-        // left, top, right, bottom (for non rotated line)
-        return new RectF(0, 0, measuredSum, Math.max(lineHeight, adjustedHeight));
-
-
+        // left, top, right, bottom (for horizontal line orientation)
+        return new RectF(0, 0, widthSum, maxHeight);
     }
-
-
 
 }

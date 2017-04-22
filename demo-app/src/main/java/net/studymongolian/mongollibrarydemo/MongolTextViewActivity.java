@@ -8,8 +8,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.ScaleXSpan;
+import android.text.style.StrikethroughSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,9 +32,16 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
     private static final String TEXT_1 = "ᠮᠣᠩᠭᠣᠯ";
     private static final String TEXT_2 = "ᠨᠢᠭᠡ ᠬᠣᠶᠠᠷ ᠭᠣᠷᠪᠠ one two three 壹贰叁 \uD83D\uDE42\uD83D\uDE42\uD83D\uDE42";
-    private static final String TEXT_3 = "ᠨᠢᠭᠡ ᠬᠣᠶᠠᠷ ᠭᠣᠷᠪᠠ ᠳᠥᠷᠪᠡ ᠲᠠᠪᠤ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠳᠣᠯᠣᠭ᠎ᠠ ᠨᠠ\u200dᠢᠮᠠ ᠶᠢᠰᠦ ᠠᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠨᠢᠭᠡ ᠠᠷᠪᠠᠨ ᠬᠣᠶᠠᠷ ᠠᠷᠪᠠᠨ ᠭᠣᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠳᠥᠷᠪᠡ ᠠᠷᠪᠠᠨ ᠲᠠᠪᠤ ᠠᠷᠪᠠᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠨᠠ\u200dᠢᠮᠠ ᠠᠷᠪᠠ ᠶᠢᠰᠦ ᠬᠣᠷᠢ ᠬᠣᠷᠢᠨ ᠨᠢᠭᠡ ᠬᠣᠷᠢᠨ ᠬᠣᠶᠠᠷ ᠬᠣᠷᠢᠨ ᠭᠣᠷᠪᠠ ᠬᠣᠷᠢᠨ ᠳᠥᠷᠪᠡ ᠬᠣᠷᠢᠨ ᠲᠠᠪᠤ ᠬᠣᠷᠢᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠨᠠ\u200dᠢᠮᠠ ᠬᠣᠷᠢ ᠶᠢᠰᠦ  ᠭᠣᠴᠢ one two three four five six seven eight nine ten 一二三四五六七八九十\uD83D\uDE03\uD83D\uDE0A\uD83D\uDE1C\uD83D\uDE01\uD83D\uDE2C\uD83D\uDE2E\uD83D\uDC34\uD83D\uDC02\uD83D\uDC2B\uD83D\uDC11\uD83D\uDC10";
+    //private static final String TEXT_2 = "\n";
+    private static final String TEXT_3 = "ᠨᠢᠭᠡ ᠬᠣᠶᠠᠷ ᠭᠣᠷᠪᠠ ᠳᠥᠷᠪᠡ ᠲᠠᠪᠤ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠳᠣᠯᠣᠭ᠎ᠠ ᠨᠠ\u200dᠢᠮᠠ ᠶᠢᠰᠦ ᠠᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠨᠢᠭᠡ ᠠᠷᠪᠠᠨ ᠬᠣᠶᠠᠷ ᠠᠷᠪᠠᠨ ᠭᠣᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠳᠥᠷᠪᠡ ᠠᠷᠪᠠᠨ ᠲᠠᠪᠤ ᠠᠷᠪᠠᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠨᠠ\u200dᠢᠮᠠ ᠠᠷᠪᠠ ᠶᠢᠰᠦ ᠬᠣᠷᠢ \uD83D\uDE42 ᠬᠣᠷᠢᠨ ᠨᠢᠭᠡ ᠬᠣᠷᠢᠨ ᠬᠣᠶᠠᠷ ᠬᠣᠷᠢᠨ ᠭᠣᠷᠪᠠ ᠬᠣᠷᠢᠨ ᠳᠥᠷᠪᠡ ᠬᠣᠷᠢᠨ ᠲᠠᠪᠤ ᠬᠣᠷᠢᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠨᠠ\u200dᠢᠮᠠ ᠬᠣᠷᠢ ᠶᠢᠰᠦ  ᠭᠣᠴᠢ one two three four five six seven eight nine ten 一二三四五六七八九十\uD83D\uDE03\uD83D\uDE0A\uD83D\uDE1C\uD83D\uDE01\uD83D\uDE2C\uD83D\uDE2E\uD83D\uDC34\uD83D\uDC02\uD83D\uDC2B\uD83D\uDC11\uD83D\uDC10";
 
     MongolTextView mtvExample;
+    private int mCheckedTextItem = 0;
+    private int mCheckedSizeItem = 0;
+    private int mCheckedFontItem = 0;
+    private int mCheckedColorItem = 0;
+    private int mCheckedAlignmentItem = 0;
+    private int mCheckedPaddingItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +59,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setTitle("Text");
         final String[] textLengths = {"TEXT 1", "TEXT 2", "TEXT 3"};
 
-        builder.setItems(textLengths, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(textLengths, mCheckedTextItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 String text = TEXT_1;
                 switch (which) {
                     case 0:
@@ -62,9 +75,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mtvExample.setText(text);
-
+                mCheckedTextItem = which;
+                dialog.dismiss();
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -77,10 +92,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setTitle("Font Size");
         final String[] fontSizesSP = {"10sp", "20sp", "30sp", "40sp", "50sp"};
 
-        builder.setItems(fontSizesSP, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(fontSizesSP, mCheckedSizeItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 int size = 30;
                 switch (which) {
                     case 0:
@@ -100,9 +114,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mtvExample.setTextSize(size);
-
+                mCheckedSizeItem = which;
+                dialog.dismiss();
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -113,10 +129,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setTitle("Font");
         final String[] fonts = {"QAGAN", "SCNIN", "HAWANG", "AMGLANG", "JCLGQ"};
 
-        builder.setItems(fonts, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(fonts, mCheckedFontItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 Typeface tf = MongolFont.get(MongolFont.QAGAN, getApplicationContext());
                 switch (which) {
                     case 0:
@@ -136,9 +151,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mtvExample.setTypeface(tf);
-
+                mCheckedFontItem = which;
+                dialog.dismiss();
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -149,10 +166,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setTitle("Color");
         final String[] fontColors = {"BLACK", "BLUE", "RED"};
 
-        builder.setItems(fontColors, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(fontColors, mCheckedColorItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 int color = Color.BLACK;
                 switch (which) {
                     case 0:
@@ -166,9 +182,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mtvExample.setTextColor(color);
-
+                mCheckedColorItem = which;
+                dialog.dismiss();
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -178,12 +196,14 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
         builder.setTitle("Span");
         final String[] spanTypes = {"HIGHLIGHT", "TEXT COLOR", "SIZE", "FONT"};
+        final SpannableString spannableString = new SpannableString(mtvExample.getText().toString());
 
-        builder.setItems(spanTypes, new DialogInterface.OnClickListener() {
+        // check boxes
+        builder.setMultiChoiceItems(spanTypes, null, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
-                SpannableString spannableString = new SpannableString(mtvExample.getText());
+                // user checked or unchecked a box
 
                 // select the middle third
                 int start = mtvExample.getText().length()/3;
@@ -191,34 +211,53 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
                 switch (which) {
 
-                    // highlight
-                    case 0:
+                    case 0: // highlight
+
                         BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(Color.YELLOW);
-                        spannableString.setSpan(backgroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        if (isChecked) {
+                            spannableString.setSpan(backgroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            spannableString.removeSpan(backgroundSpan);
+                        }
                         break;
 
-                    // text color
-                    case 1:
-                        ForegroundColorSpan foregroundSpan = new ForegroundColorSpan(Color.RED);
-                        spannableString.setSpan(foregroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    case 1: // text color
+                        ForegroundColorSpan foregroundSpan = new ForegroundColorSpan(Color.GREEN);
+                        if (isChecked) {
+                            spannableString.setSpan(foregroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            spannableString.removeSpan(foregroundSpan);
+                        }
                         break;
 
-                    // size
                     case 2: // SIZE
                         // TODO
-                        Toast.makeText(MongolTextViewActivity.this, "TODO size", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MongolTextViewActivity.this, "TODO size", Toast.LENGTH_SHORT).show();
+                        RelativeSizeSpan fontSizeSpan = new RelativeSizeSpan(2f);
+                        if (isChecked) {
+                            spannableString.setSpan(fontSizeSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            spannableString.removeSpan(fontSizeSpan);
+                        }
                         break;
 
-                    // font
                     case 3: // FONT
                         // TODO
                         Toast.makeText(MongolTextViewActivity.this, "TODO font", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                mtvExample.setText(spannableString);
-
             }
         });
+
+        // dialog OK and Cancel buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mtvExample.setText(spannableString);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -229,10 +268,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setTitle("Alignment");
         final String[] alignments = {"TOP", "CENTER", "BOTTOM"};
 
-        builder.setItems(alignments, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(alignments, mCheckedAlignmentItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 int gravity = Gravity.TOP;
                 switch (which) {
                     case 0:
@@ -246,9 +284,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mtvExample.setGravity(gravity);
-
+                mCheckedAlignmentItem = which;
+                dialog.dismiss();
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -257,31 +297,33 @@ public class MongolTextViewActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Padding");
-        final String[] alignments = {"0dp", "10dp", "10dp, 0dp, 20dp, 30dp"};
+        final String[] paddings = {"0dp", "10dp", "10dp, 0dp, 20dp, 30dp"};
 
-        builder.setItems(alignments, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(paddings, mCheckedPaddingItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                float desity = getResources().getDisplayMetrics().density;
+                float density = getResources().getDisplayMetrics().density;
                 switch (which) {
                     case 0:
                         mtvExample.setPadding(0, 0, 0, 0);
                         break;
                     case 1:
-                        int px = (int) (10 * desity);
+                        int px = (int) (10 * density);
                         mtvExample.setPadding(px, px, px, px);
                         break;
                     case 2:
-                        int left = (int) (10 * desity);
-                        int top = (int) (0 * desity);
-                        int right = (int) (20 * desity);
-                        int bottom = (int) (30 * desity);
+                        int left = (int) (10 * density);
+                        int top = (int) (0 * density);
+                        int right = (int) (20 * density);
+                        int bottom = (int) (30 * density);
                         mtvExample.setPadding(left, top, right, bottom);
                         break;
                 }
+                mCheckedPaddingItem = which;
+                dialog.dismiss();
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }

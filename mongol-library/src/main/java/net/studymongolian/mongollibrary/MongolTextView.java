@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -98,8 +100,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         // TODO don't need to calculate this if using sticky width?
         // TODO pass in a limit where we can stop measuring?
         final CharSequence text = mTextStorage.getGlyphText();
-        int desiredHeight = (int) MongolLayout.getDesiredHeight(text, 0, text.length(), mTextPaint)
-                + getPaddingTop() + getPaddingBottom();
+        Rect desiredSizeNoPadding = MongolLayout.getDesiredSize(text, 0, text.length(), mTextPaint);
+        int desiredHeight = desiredSizeNoPadding.height() + getPaddingTop() + getPaddingBottom();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -120,7 +122,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
         // add padding calculations
         int desiredWidth;
-        //mLastDesiredWidth = desiredWidth;
 
         // desired width
         if (mStickyWidth != STICKY_WIDTH_UNDEFINED) {
@@ -176,11 +177,11 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         int h = bottom - top;
         super.onLayout(changed, left, top, right, bottom);
 
+        // This code is to solve the problem described here:
+        // http://stackoverflow.com/questions/42390378/custom-views-onmeasure-how-to-get-width-based-on-height
+        // Sometimes false widths are gotten in onMeasure so a remeasure has to occur.
+        // mStickyWidth holds that value.
 
-        // Here we need to determine if the width has been unnecessarily constrained.
-        // We will try for a re-fit only once. If the sticky width is defined, we have
-        // already tried to re-fit once, so we are not going to have another go at it since it
-        // will (probably) have the same result.
         // old width mode was AT_MOST
         // old desiredWidth did not exceed the old width size
         // the new height was less than the old height
@@ -202,13 +203,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         }
 
         mOnMeasureData = new int[6];
-        Log.d(TAG, ">>>>onLayout: w=" + w + " h=" + h + " mStickyWidth=" + mStickyWidth);
-
-
-//        if (mNeedsRelayout) {
-//            mLayout.reflowLines();
-//            mNeedsRelayout = false;
-//        }
     }
 
     @Override
@@ -258,8 +252,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(mTextSizePx);
-        //mStaticLayoutNeedsRedraw = true;
-        //mNeedsRelayout = true;
         invalidate();
         requestLayout();
     }
@@ -304,12 +296,12 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
     @Override
     public boolean onPreDraw() {
+        // this method helps solve the problem of incorrect width measuring
+        // http://stackoverflow.com/questions/42390378/custom-views-onmeasure-how-to-get-width-based-on-height
         getViewTreeObserver().removeOnPreDrawListener(this);
-        if (mStickyWidth == STICKY_WIDTH_UNDEFINED) { // Happy with the selected width.
+        if (mStickyWidth == STICKY_WIDTH_UNDEFINED) {
             return true;
         }
-
-        Log.d(TAG, ">>>>onPreDraw() requesting new layout");
         requestLayout();
         return false;
     }

@@ -3,16 +3,21 @@ package net.studymongolian.mongollibrary;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
 
+import org.w3c.dom.Text;
+
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
+// lines use width/height in horizontal orientation
+// layout uses width/height in vertical orientation
 
 public class MongolLayout {
 
@@ -20,17 +25,12 @@ public class MongolLayout {
     private TextPaint mTextPaint;
     private int mHeight;
     private int mAlignment; // Use Gravity for now
-    private float mSpacingMult;
-    private float mSpacingAdd;
+    private float mSpacingMult; // TODO
+    private float mSpacingAdd; // TODO
     private List<LineInfo> mLinesInfo;
-    //private List<BreakInfo> mBreaks;
     private boolean needsLineUpdate = true;
-    //private int mLineWidth; // distance from line to line
 
-    private static final char CHAR_NEW_LINE = '\n';
-    private static final char CHAR_TAB = '\t';
     private static final char CHAR_SPACE = ' ';
-    private static final char CHAR_ZWSP = '\u200B';
 
 
     public MongolLayout(CharSequence text, int start, int end,
@@ -47,30 +47,25 @@ public class MongolLayout {
         mAlignment = align;
         mSpacingMult = spacingMult;
         mSpacingAdd = spacingAdd;
-        //mLineWidth = mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
-        //mSpannedText = text instanceof Spanned;
 
-        //updateBreaks();
         if (height > 0) {
-            //updateLines();
             needsLineUpdate = true;
         }
     }
-
-
-//    public MongolLayout(CharSequence text, TextPaint paint) {
-//        this(text, 0, text.length(), paint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
-//    }
 
 
     /**
      * Return how wide a layout must be in order to display the
      * specified text slice with one line per paragraph.
      */
-    public static float getDesiredHeight(CharSequence source,
-                                         int start, int end,
-                                         TextPaint paint) {
-        float need = 0;
+    public static Rect getDesiredSize(CharSequence source,
+                                      int start, int end,
+                                      TextPaint paint) {
+
+        MongolTextLine tl = MongolTextLine.obtain();
+
+        float longestWidth = 0;
+        float heightSum = 0;
 
         int next;
         for (int i = start; i <= end; i = next) {
@@ -79,17 +74,22 @@ public class MongolLayout {
             if (next < 0)
                 next = end;
 
-            float height = MongolTextLine.measure(paint, source, i, next).right; // unrotated line
+            tl.set(paint, source, i, next);
+            RectF size = tl.measure();
+            float width = size.width(); // horizontal line orientation
+            heightSum += size.height(); // horizontal line orientation
 
-            if (height > need)
-                need = height;
+            if (width > longestWidth)
+                longestWidth = width;
 
             next++;
         }
 
-        return need;
-    }
+        MongolTextLine.recycle(tl);
 
+        // returning the size as a vertical line orientation (swapping width and height)
+        return new Rect(0, 0, (int) heightSum, (int) longestWidth);
+    }
 
     /**
      * Draw this Layout on the specified Canvas.
@@ -117,14 +117,12 @@ public class MongolLayout {
 
         // TODO for now draw all the lines. Should we only draw the visible lines?
         // (see Layout source code)
-        //final long lineRange = getLineRangeForDraw(canvas);
         int firstLine = 0;
         int lastLine = mLinesInfo.size() - 1;
         if (lastLine < 0) return;
 
         drawBackground(canvas, highlight, highlightPaint, cursorOffsetVertical,
                 firstLine, lastLine);
-        //drawText(canvas, firstLine, lastLine);
         drawText(canvas);
     }
 
@@ -135,9 +133,7 @@ public class MongolLayout {
         if (needsLineUpdate) updateLines();
 
         float ltop;
-        //int ltop = mLinesInfo.size()
         int lbottom = mTextPaint.getFontMetricsInt().bottom;
-        //int lineToLineDistance = lbottom - ltop; // XXX this ignores leading
 
         int x = lbottom; // start position of each vertical line
         int y = 0; // baseline
@@ -146,19 +142,17 @@ public class MongolLayout {
         // draw the lines one at a time
         int lastLine = mLinesInfo.size() - 1;
         for (int i = 0; i <= lastLine; i++) {
-            //boolean isSpannedText = mText instanceof Spanned;
-            //boolean hasSpecialChar = true; // TODO mLinesInfo.get(i).hasSpecialChars();
-            int start = mLinesInfo.get(i).getStartOffset();
+            int start = mLinesInfo.get(i).startOffset;
             int end;
             if (i < lastLine) {
-                end = mLinesInfo.get(i + 1).getStartOffset();
+                end = mLinesInfo.get(i + 1).startOffset;
             } else {
                 end = mText.length();
             }
 
             float gravityOffset = 0;
             if (mAlignment != Gravity.TOP) {
-                float textWidth = mLinesInfo.get(i).getMeasuredWidth();
+                float textWidth = mLinesInfo.get(i).measuredWidth;
                 int verticalGravity = mAlignment & Gravity.VERTICAL_GRAVITY_MASK;
                 if (verticalGravity == Gravity.CENTER_VERTICAL) {
                     gravityOffset = (mHeight - textWidth) / 2;
@@ -169,10 +163,10 @@ public class MongolLayout {
             }
 
             tl.set(mTextPaint, mText, start, end);
-            ltop = lbottom - mLinesInfo.get(i).getMeasuredHeight();
+            ltop = lbottom - mLinesInfo.get(i).measuredHeight;
             tl.draw(canvas, x, ltop, y + gravityOffset, lbottom);
 
-            x += mLinesInfo.get(i).getMeasuredHeight();
+            x += mLinesInfo.get(i).measuredHeight;
         }
 
         MongolTextLine.recycle(tl);
@@ -193,25 +187,34 @@ public class MongolLayout {
             mLinesInfo = new ArrayList<>();
 
         // XXX can we just use a char sequence? BreakIterator is the only thing that needs it.
-        String tempString = mText.toString();
+        //String tempString = mText.toString();
 
         BreakIterator boundary = BreakIterator.getLineInstance();
-        boundary.setText(tempString);
+        boundary.setText(mText.toString());
         int start = boundary.first();
         int lineStart = start;
         float measuredSum = 0;
         RectF measuredSize;
-        float previousLineHeight = 0;
+        float lineHeightMax = 0;
         boolean hadToSplitWord = false;
+        MongolTextLine tl = MongolTextLine.obtain();
         for (int end = boundary.next(); end != BreakIterator.DONE; ) {
 
-            measuredSize = MongolTextLine.measure(mTextPaint, tempString, start, end);
+            boolean forceNewLine = false;
+            if (mText.charAt(end - 1) == '\n') {
+                forceNewLine = true;
+                tl.set(mTextPaint, mText, start, end - 1);
+            } else {
+                tl.set(mTextPaint, mText, start, end);
+            }
+            measuredSize = tl.measure();
 
-            if (Math.floor(measuredSize.right) > mHeight) {
+            if (Math.floor(measuredSize.width()) > mHeight) {
 
                 // add previously measured text as a new line
                 if (measuredSum > 0) {
-                    mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
+                    mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+                    lineHeightMax = 0;
                     measuredSum = 0;
                 }
 
@@ -219,33 +222,33 @@ public class MongolLayout {
                 // so we have to split the word unnaturally across lines.
                 lineStart = start;
                 float[] measuredWidth = new float[1];
-                int charactersMeasured = mTextPaint.breakText(tempString, lineStart, end, true, mHeight, measuredWidth);
+                int charactersMeasured = mTextPaint.breakText(mText, lineStart, end, true, mHeight, measuredWidth);
                 if (charactersMeasured > 0) {
-                    mLinesInfo.add(new LineInfo(lineStart, measuredWidth[0], measuredSize.bottom));
+                    mLinesInfo.add(new LineInfo(lineStart, measuredWidth[0], measuredSize.height()));
                     lineStart += charactersMeasured;
-
-                    //if (tempString.charAt(lineStart) == CHAR_SPACE) lineStart++;
                 } else {
                     // if mHeight is shorter than a single character then just add that char to the line
-                    mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.bottom));
+                    mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.height()));
                     lineStart++;
                 }
                 hadToSplitWord = true;
 
-            } else if (Math.floor(measuredSum + measuredSize.right) > mHeight) {
+            } else if (Math.floor(measuredSum + measuredSize.width()) > mHeight) {
 
-                mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
+                mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+                lineHeightMax = measuredSize.height();
                 lineStart = start;
-                measuredSum = measuredSize.right;
+                measuredSum = measuredSize.width();
 
             } else {
-                measuredSum += measuredSize.right;
+                measuredSum += measuredSize.width();
+                lineHeightMax = Math.max(lineHeightMax, measuredSize.height());
             }
 
-            previousLineHeight = measuredSize.bottom; // TODO should I be taking the max here? Test line with large text.
-
+            // handle spaces at the end of split lines
+            // TODO still need to handle spaces at the end of normal lines. They shouldn't even be measured
             if (hadToSplitWord) {
-                if (tempString.charAt(lineStart) == CHAR_SPACE) {
+                if (mText.charAt(lineStart) == CHAR_SPACE) {
                     // don't let a single trailing space make an empty blank next line
                     lineStart++;
                 }
@@ -259,11 +262,23 @@ public class MongolLayout {
                 end = boundary.next();
             }
 
+            // handle new line characters
+            if (forceNewLine) {
+                if (lineHeightMax == 0) {
+                    // using the standard line height
+                    // TODO should be using a different height if there is a span
+                    lineHeightMax = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
+                }
+                mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+                lineHeightMax = 0;
+                measuredSum = 0;
+                lineStart = start;
+            }
         }
 
         // add any last line info
-        if (measuredSum > 0) {
-            mLinesInfo.add(new LineInfo(lineStart, measuredSum, previousLineHeight));
+        if (measuredSum > 0 || mText.charAt(mText.length() - 1) == '\n') {
+            mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
         }
     }
 
@@ -271,15 +286,12 @@ public class MongolLayout {
      * Call this if the height has not changed but something else like the font size has.
      */
     public void reflowLines() {
-        //updateBreaks();
-        //updateLines();
         needsLineUpdate = true;
     }
 
     public void setText(CharSequence text) {
         mText = text;
         needsLineUpdate = true;
-        //updateLines();
     }
 
     public int getHeight() {
@@ -293,8 +305,6 @@ public class MongolLayout {
             throw new IllegalArgumentException("height cannot be less than 0");
 
         mHeight = height;
-        //updateBreaks();
-        //updateLines();
         needsLineUpdate = true;
     }
 
@@ -303,71 +313,26 @@ public class MongolLayout {
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         float width = 0;
         for (LineInfo line : mLinesInfo) {
-            width += line.mMeasuredHeight;
+            width += line.measuredHeight;
         }
         return (int) width;
     }
 
-//    public int getLineWidth() {
-//        return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
-//    }
-
-//    public int getAlignment() {
-//        return mAlignment;
-//    }
 
     public void setAlignment(int alignment) {
         mAlignment = alignment;
     }
 
     private class LineInfo {
-        private int mStartOffset;
-        private int mTop;
-        private float mMeasuredWidth;
-        private float mMeasuredHeight;
-        private RectF mSize;
+        int startOffset;
+        float measuredWidth;
+        float measuredHeight;
 
         LineInfo(int start, float measuredWidth, float measuredHeight) {
-            mStartOffset = start;
-            mMeasuredWidth = measuredWidth;
-            mMeasuredHeight = measuredHeight;
-            //mTop = top;
-            //mSize = size;
+            this.startOffset = start;
+            this.measuredWidth = measuredWidth;
+            this.measuredHeight = measuredHeight;
         }
 
-        int getStartOffset() {
-            return mStartOffset;
-        }
-
-        //int getTop() {
-        //    return mTop;
-        //}
-
-        float getMeasuredWidth() {
-            return mMeasuredWidth;
-        }
-
-        float getMeasuredHeight() {
-            return mMeasuredHeight;
-        }
-
-    }
-
-    private class BreakInfo {
-        private int mStartOffset;
-        private float mLength;
-
-        BreakInfo(int start, float measuredLength) {
-            mStartOffset = start;
-            mLength = measuredLength;
-        }
-
-        int getStartOffset() {
-            return mStartOffset;
-        }
-
-        float getMeasuredLength() {
-            return mLength;
-        }
     }
 }
