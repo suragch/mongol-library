@@ -16,6 +16,9 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.text.style.SubscriptSpan;
+import android.text.style.SuperscriptSpan;
+import android.text.style.TypefaceSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.MongolFont;
 import net.studymongolian.mongollibrary.MongolTextView;
+import net.studymongolian.mongollibrary.MongolTypefaceSpan;
 
 
 public class MongolTextViewActivity extends AppCompatActivity {
@@ -36,7 +40,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
     private static final String TEXT_3 = "ᠨᠢᠭᠡ ᠬᠣᠶᠠᠷ ᠭᠣᠷᠪᠠ ᠳᠥᠷᠪᠡ ᠲᠠᠪᠤ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠳᠣᠯᠣᠭ᠎ᠠ ᠨᠠ\u200dᠢᠮᠠ ᠶᠢᠰᠦ ᠠᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠨᠢᠭᠡ ᠠᠷᠪᠠᠨ ᠬᠣᠶᠠᠷ ᠠᠷᠪᠠᠨ ᠭᠣᠷᠪᠠ ᠠᠷᠪᠠᠨ ᠳᠥᠷᠪᠡ ᠠᠷᠪᠠᠨ ᠲᠠᠪᠤ ᠠᠷᠪᠠᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠠᠷᠪᠠᠨ ᠨᠠ\u200dᠢᠮᠠ ᠠᠷᠪᠠ ᠶᠢᠰᠦ ᠬᠣᠷᠢ \uD83D\uDE42 ᠬᠣᠷᠢᠨ ᠨᠢᠭᠡ ᠬᠣᠷᠢᠨ ᠬᠣᠶᠠᠷ ᠬᠣᠷᠢᠨ ᠭᠣᠷᠪᠠ ᠬᠣᠷᠢᠨ ᠳᠥᠷᠪᠡ ᠬᠣᠷᠢᠨ ᠲᠠᠪᠤ ᠬᠣᠷᠢᠨ ᠵᠢᠷᠭᠤᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠳᠣᠯᠣᠭ᠎ᠠ ᠬᠣᠷᠢᠨ ᠨᠠ\u200dᠢᠮᠠ ᠬᠣᠷᠢ ᠶᠢᠰᠦ  ᠭᠣᠴᠢ one two three four five six seven eight nine ten 一二三四五六七八九十\uD83D\uDE03\uD83D\uDE0A\uD83D\uDE1C\uD83D\uDE01\uD83D\uDE2C\uD83D\uDE2E\uD83D\uDC34\uD83D\uDC02\uD83D\uDC2B\uD83D\uDC11\uD83D\uDC10";
 
     MongolTextView mtvExample;
-    private int mCheckedTextItem = 0;
+    private int mCheckedTextItem = 2;
     private int mCheckedSizeItem = 0;
     private int mCheckedFontItem = 0;
     private int mCheckedColorItem = 0;
@@ -49,6 +53,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mongol_textview);
 
         mtvExample = (MongolTextView) findViewById(R.id.mongol_textview);
+        mtvExample.setText(TEXT_3);
     }
 
     // Button click methods
@@ -194,8 +199,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
     public void onSpanClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Span");
-        final String[] spanTypes = {"HIGHLIGHT", "TEXT COLOR", "SIZE", "FONT"};
+        builder.setTitle("Add span");
+        final String[] spanTypes = {"BackgroundColorSpan", "ForegroundColorSpan", "RelativeSizeSpan", "TypefaceSpan",
+                "ScaleXSpan", "StyleSpan", "SubscriptSpan", "SuperscriptSpan", "UnderlineSpan"};
         final SpannableString spannableString = new SpannableString(mtvExample.getText().toString());
 
         // check boxes
@@ -213,37 +219,128 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
                     case 0: // highlight
 
-                        BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(Color.YELLOW);
                         if (isChecked) {
-                            spannableString.setSpan(backgroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            BackgroundColorSpan span = new BackgroundColorSpan(Color.YELLOW);
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
-                            spannableString.removeSpan(backgroundSpan);
+                            BackgroundColorSpan[] spans = spannableString.getSpans(0, spannableString.length(), BackgroundColorSpan.class);
+                            for (BackgroundColorSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
                         }
                         break;
 
                     case 1: // text color
-                        ForegroundColorSpan foregroundSpan = new ForegroundColorSpan(Color.GREEN);
                         if (isChecked) {
-                            spannableString.setSpan(foregroundSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ForegroundColorSpan span = new ForegroundColorSpan(Color.GREEN);
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
-                            spannableString.removeSpan(foregroundSpan);
+                            ForegroundColorSpan[] spans = spannableString.getSpans(0, spannableString.length(), ForegroundColorSpan.class);
+                            for (ForegroundColorSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
                         }
                         break;
 
                     case 2: // SIZE
-                        // TODO
-                        //Toast.makeText(MongolTextViewActivity.this, "TODO size", Toast.LENGTH_SHORT).show();
-                        RelativeSizeSpan fontSizeSpan = new RelativeSizeSpan(2f);
                         if (isChecked) {
-                            spannableString.setSpan(fontSizeSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            RelativeSizeSpan span = new RelativeSizeSpan(2f);
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
-                            spannableString.removeSpan(fontSizeSpan);
+                            RelativeSizeSpan[] spans = spannableString.getSpans(0, spannableString.length(), RelativeSizeSpan.class);
+                            for (RelativeSizeSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
                         }
                         break;
 
                     case 3: // FONT
+                        // setting a custom font as a span requires the custom MongolTypefaceSpan
+                        if (isChecked) {
+                            Typeface font = MongolFont.get(MongolFont.JCLGQ, getApplicationContext());
+                            MongolTypefaceSpan span = new MongolTypefaceSpan(font);
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            MongolTypefaceSpan[] spans = spannableString.getSpans(0, spannableString.length(), MongolTypefaceSpan.class);
+                            for (MongolTypefaceSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
+                        }
+                        break;
+
+                    case 4: // scale X
+
+                        // TODO rotated characters are scaled correctly
+
+                        if (isChecked) {
+                            ScaleXSpan span = new ScaleXSpan(2f);
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            ScaleXSpan[] spans = spannableString.getSpans(0, spannableString.length(), ScaleXSpan.class);
+                            for (ScaleXSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
+                        }
+                        break;
+
+                    case 5: // bold style
+
+                        if (isChecked) {
+                            // TODO is there a correct way to apply ITALIC to Mongolian text (can adjust paint.setTextSkewX)
+                            // StyleSpan span = new StyleSpan(Typeface.ITALIC);
+                            StyleSpan span = new StyleSpan(Typeface.BOLD);
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            StyleSpan[] spans = spannableString.getSpans(0, spannableString.length(), StyleSpan.class);
+                            for (StyleSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
+                        }
+                        break;
+
+                    case 6: // Subscript
+                        if (isChecked) {
+                            SubscriptSpan span = new SubscriptSpan();
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            SubscriptSpan[] spans = spannableString.getSpans(0, spannableString.length(), SubscriptSpan.class);
+                            for (SubscriptSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
+                        }
+                        break;
+
+                    case 7: // Superscript
+                        if (isChecked) {
+                            SuperscriptSpan span = new SuperscriptSpan();
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            SuperscriptSpan[] spans = spannableString.getSpans(0, spannableString.length(), SuperscriptSpan.class);
+                            for (SuperscriptSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
+                        }
+                        break;
+
+                    case 8: // Underline
+
                         // TODO
-                        Toast.makeText(MongolTextViewActivity.this, "TODO font", Toast.LENGTH_SHORT).show();
+                        // Underline works partially but it draws the line on the left side of the
+                        // characters. It should be the right.
+                        // More importantly, rotated characters are underlined below. They should
+                        // be "underlined" on the side.
+                        // See https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/TextLine.java#741
+                        // for how TextLine does it. Unfortunately TextPaint.underlineColor is hidden.
+
+                        if (isChecked) {
+                            UnderlineSpan span = new UnderlineSpan();
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            UnderlineSpan[] spans = spannableString.getSpans(0, spannableString.length(), UnderlineSpan.class);
+                            for (UnderlineSpan span : spans){
+                                spannableString.removeSpan(span);
+                            }
+                        }
                         break;
                 }
             }
@@ -253,6 +350,13 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+//                SpannableString test = new SpannableString("This is a test.");
+//                //SubscriptSpan span = new SubscriptSpan();
+//                SuperscriptSpan span = new SuperscriptSpan();
+//                test.setSpan(span, 5, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//                mtvExample.setText(test);
                 mtvExample.setText(spannableString);
             }
         });

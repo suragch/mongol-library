@@ -239,8 +239,6 @@ class MongolTextLine {
 
         // top and bottom are the font metrics values in the normal
         // horizontal orientation of a text line.
-        //TextPaint wp = mWorkPaint;
-        //wp.set(mPaint);
 
         boolean hasSpan = mText instanceof Spanned;
         boolean hasHighlight = false;
@@ -261,15 +259,7 @@ class MongolTextLine {
                 wp = mWorkPaint;
                 wp.set(mPaint);
 
-                // draw the highlight (background color) first
-                BackgroundColorSpan[] bgSpans = ((Spanned) mText).getSpans(start, end, BackgroundColorSpan.class);
-                if (bgSpans.length > 0) {
-                    // TODO can highlight paint be combined with paint?
-                    mHighlightPaint.setColor(bgSpans[0].getBackgroundColor());
-                    hasHighlight = true;
-                }
-
-                // set relative size
+                // gets character style spans
                 CharacterStyle[] csSpans = ((Spanned) mText).getSpans(start, end, CharacterStyle.class);
                 for (CharacterStyle span : csSpans) {
                     span.updateDrawState(wp);
@@ -280,9 +270,15 @@ class MongolTextLine {
 
             if (run.isRotated) {
 
-                if (hasHighlight) {
-                    c.drawRect(0, top, run.measuredHeight, bottom, mHighlightPaint);
-                    hasHighlight = false;
+                // background color
+                if (wp.bgColor != 0) {
+                    int previousColor = wp.getColor();
+                    Paint.Style previousStyle = wp.getStyle();
+                    wp.setColor(wp.bgColor);
+                    wp.setStyle(Paint.Style.FILL);
+                    c.drawRect(0, top, run.measuredHeight, bottom, wp);
+                    wp.setStyle(previousStyle);
+                    wp.setColor(previousColor);
                 }
 
                 // move down
@@ -292,19 +288,34 @@ class MongolTextLine {
                 c.save();
                 c.rotate(-90);
                 c.translate(-bottom, -bottom);
-                c.drawText(mText, start, end, 0, 0, wp);
+                c.drawText(mText, start, end, -wp.baselineShift, 0, wp);
                 c.restore();
 
             } else {
 
                 float width = wp.measureText(mText, start, end);
 
-                if (hasHighlight) {
-                    c.drawRect(0, top, width, bottom, mHighlightPaint);
-                    hasHighlight = false;
+                // background color
+                if (wp.bgColor != 0) {
+                    int previousColor = wp.getColor();
+                    Paint.Style previousStyle = wp.getStyle();
+                    wp.setColor(wp.bgColor);
+                    wp.setStyle(Paint.Style.FILL);
+                    c.drawRect(0, top, width, bottom, wp);
+                    wp.setStyle(previousStyle);
+                    wp.setColor(previousColor);
                 }
 
-                c.drawText(mText, start, end, 0, 0, wp);
+                // TODO underline
+                // Underline works partially but it draws the line on the left side of the
+                // characters. It should be the right.
+                // More importantly, rotated characters are underlined below. They should
+                // be "underlined" on the side.
+                // See https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/TextLine.java#741
+                // for how TextLine does it. Unfortunately TextPaint.underlineColor is hidden.
+
+
+                c.drawText(mText, start, end, 0, wp.baselineShift, wp);
                 c.translate(width, 0);
             }
 
