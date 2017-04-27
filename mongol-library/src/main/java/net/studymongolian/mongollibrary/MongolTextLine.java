@@ -241,7 +241,6 @@ class MongolTextLine {
         // horizontal orientation of a text line.
 
         boolean hasSpan = mText instanceof Spanned;
-        boolean hasHighlight = false;
         int start;
         int end;
 
@@ -281,6 +280,8 @@ class MongolTextLine {
                     wp.setColor(previousColor);
                 }
 
+                // TODO draw "underline" (on the right side)
+
                 // move down
                 c.translate(run.measuredHeight, 0);
 
@@ -306,6 +307,7 @@ class MongolTextLine {
                     wp.setColor(previousColor);
                 }
 
+
                 // TODO underline
                 // Underline works partially but it draws the line on the left side of the
                 // characters. It should be the right.
@@ -313,7 +315,8 @@ class MongolTextLine {
                 // be "underlined" on the side.
                 // See https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/TextLine.java#741
                 // for how TextLine does it. Unfortunately TextPaint.underlineColor is hidden.
-
+                // TODO wp.isUnderlineText() to check if underlined
+                // Could also make a MongolTextPaint version of TextPaint
 
                 c.drawText(mText, start, end, 0, wp.baselineShift, wp);
                 c.translate(width, 0);

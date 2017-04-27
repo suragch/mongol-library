@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("Unicode");
         apiDemos.add("Unicode <--> Menksoft");
         apiDemos.add("MongolFont");
-        apiDemos.add("Testing");
+        apiDemos.add("MongolEditText");
+        //apiDemos.add("Testing");
 
 
         // set up the RecyclerView
@@ -43,31 +44,36 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
     @Override
     public void onItemClick(View view, int position) {
 
+        Intent intent;
         switch (position) {
             case 0: // MongolLabel
-                Intent labelIntent = new Intent(this, MongolLabelActivity.class);
-                startActivity(labelIntent);
+                intent = new Intent(this, MongolLabelActivity.class);
+                startActivity(intent);
                 break;
             case 1: // MongolTextView
-                Intent textViewIntent = new Intent(this, MongolTextViewActivity.class);
-                startActivity(textViewIntent);
+                intent = new Intent(this, MongolTextViewActivity.class);
+                startActivity(intent);
                 break;
             case 2: // Unicode
-                Intent unicodeIntent = new Intent(this, UnicodeActivity.class);
-                startActivity(unicodeIntent);
+                intent = new Intent(this, UnicodeActivity.class);
+                startActivity(intent);
                 break;
             case 3: // Unicode <--> Menksoft
-                Intent convertCodeIntent = new Intent(this, ConvertCodeActivity.class);
-                startActivity(convertCodeIntent);
+                intent = new Intent(this, ConvertCodeActivity.class);
+                startActivity(intent);
                 break;
             case 4: // MongolFont
-                Intent fontIntent = new Intent(this, MongolFontActivity.class);
-                startActivity(fontIntent);
+                intent = new Intent(this, MongolFontActivity.class);
+                startActivity(intent);
                 break;
-            case 5: // Testing
-                Intent testingIntent = new Intent(this, TestingActivity.class);
-                startActivity(testingIntent);
+            case 5: // MongolEditText
+                intent = new Intent(this, MongolEditTextActivity.class);
+                startActivity(intent);
                 break;
+//            case 5: // Testing
+//                intent = new Intent(this, TestingActivity.class);
+//                startActivity(testingIntent);
+//                break;
         }
     }
 }

@@ -118,6 +118,90 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         adapterFont.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fontSpinner.setAdapter(adapterFont);
         fontSpinner.setOnItemSelectedListener(this);
+
+    }
+
+    // just some extra code to write tests
+    private String generateAll() {
+        char[] letters = {'\u1820', '\u1821', '\u1822', '\u1823', '\u1824', '\u1825', '\u1826', '\u1827', '\u1828', '\u1829',
+                          '\u182a', '\u182b', '\u182c', '\u182d', '\u182e', '\u182f',
+                          '\u1830', '\u1831', '\u1832', '\u1833', '\u1834', '\u1835', '\u1836', '\u1837', '\u1838', '\u1839',
+                          '\u183a', '\u183b', '\u183c', '\u183d', '\u183e', '\u183f',
+                          '\u1840', '\u1841', '\u1842'};
+        String[] names = {"a", "e", "i", "o", "u", "oe", "ue", "ee", "n", "ng",
+                "b", "p", "q", "g", "m", "l", "s", "sh", "t", "d",
+                "ch", "j", "y", "r", "w", "f", "k", "kh", "ts", "z", "haa", "zr", "lh", "zhi", "chi"};
+
+        String zwj = "\u200d";
+        String it = "";
+        String fvsString = "";
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < letters.length; i++) {
+
+            for (int j = 0; j < 4; j++) {
+                switch (j) {
+                    case 0:
+                        fvsString = "";
+                        break;
+                    case 1:
+                        fvsString = "Fvs1";
+                        break;
+                    case 2:
+                        fvsString = "Fvs2";
+                        break;
+                    case 3:
+                        fvsString = "Fvs3";
+                        break;
+
+                }
+
+                it = String.valueOf(letters[i]);
+
+                builder.append("@Test").append("\n");
+                builder.append("public void ").append(names[i]).append("Isol").append(fvsString).append("() throws Exception {").append("\n");
+                builder.append("String unicode = \"").append(it).append("\";").append("\n");
+                builder.append("String result = convert(unicode);").append("\n");
+                builder.append("String expected = \"").append(renderer.unicodeToMenksoft(it)).append("\";").append("\n");
+                builder.append("assertEquals(expected, result);").append("\n");
+                builder.append("}").append("\n\n");
+
+                it = String.valueOf(letters[i]) + zwj;
+
+                builder.append("@Test").append("\n");
+                builder.append("public void ").append(names[i]).append("Init").append(fvsString).append("() throws Exception {").append("\n");
+                builder.append("String unicode = \"").append(it).append("\";").append("\n");
+                builder.append("String result = convert(unicode);").append("\n");
+                builder.append("String expected = \"").append(renderer.unicodeToMenksoft(it)).append("\";").append("\n");
+                builder.append("assertEquals(expected, result);").append("\n");
+                builder.append("}").append("\n\n");
+
+                it = zwj + String.valueOf(letters[i]) + zwj;
+
+                builder.append("@Test").append("\n");
+                builder.append("public void ").append(names[i]).append("Medi").append(fvsString).append("() throws Exception {").append("\n");
+                builder.append("String unicode = \"").append(it).append("\";").append("\n");
+                builder.append("String result = convert(unicode);").append("\n");
+                builder.append("String expected = \"").append(renderer.unicodeToMenksoft(it)).append("\";").append("\n");
+                builder.append("assertEquals(expected, result);").append("\n");
+                builder.append("}").append("\n\n");
+
+                it = zwj + String.valueOf(letters[i]);
+
+                builder.append("@Test").append("\n");
+                builder.append("public void ").append(names[i]).append("Fina").append(fvsString).append("() throws Exception {").append("\n");
+                builder.append("String unicode = \"").append(it).append("\";").append("\n");
+                builder.append("String result = convert(unicode);").append("\n");
+                builder.append("String expected = \"").append(renderer.unicodeToMenksoft(it)).append("\";").append("\n");
+                builder.append("assertEquals(expected, result);").append("\n");
+                builder.append("}").append("\n\n");
+
+            }
+
+
+        }
+
+        return builder.toString();
     }
 
     private void setStrings(String label, String results) {
@@ -300,7 +384,19 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         // set strings
         setStrings("NNBS", displayString.toString());
         //tvResults.setText(displayString);
+
+//        String[]lines = displayString.toString().split(System.getProperty("line.separator"));
+//        StringBuilder builder = new StringBuilder();
+//        for(String tmpLine : lines){
+//            if (tmpLine.length() > 0) {
+//                builder.append(tmpLine).append("\n");
+//                builder.append(renderer.unicodeToMenksoft(tmpLine)).append("\n");
+//            }
+//        }
+//
+//        builder.append("end");
     }
+
 
     private void updateForMvs() {
         // update label
@@ -614,6 +710,8 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         // set strings
         setStrings("Other", displayString.toString());
 
+
+
         // A file could be specified as an alternate source of test words
         //
         //try {
@@ -628,7 +726,7 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         //}
     }
 
-    public static String readFromAssets(Context context, String filename) throws IOException {
+    private static String readFromAssets(Context context, String filename) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(filename)));
         StringBuilder stringBuilder = new StringBuilder();
         String line = reader.readLine();

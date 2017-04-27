@@ -277,7 +277,7 @@ public class MongolLayout {
         }
 
         // add any last line info
-        if (measuredSum > 0 || mText.charAt(mText.length() - 1) == '\n') {
+        if (measuredSum > 0 || (mText.length() > 0 && mText.charAt(mText.length() - 1) == '\n')) {
             mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
         }
     }

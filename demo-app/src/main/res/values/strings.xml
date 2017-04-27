@@ -2,6 +2,7 @@
     <string name="app_name">MongolLibraryDemo</string>
     <string name="mongol_label_activity_title">MongolLabel</string>
     <string name="mongol_textview_activity_title">MongolTextView</string>
+    <string name="mongol_edittext_activity_title">MongolEditText</string>
     <string name="unicode_activity_title">Unicode Renderer</string>
     <string name="convert_code_activity_title">Unicode &lt;--&gt; Menksoft</string>
     <string name="mongol_font_activity_title">MongolFont</string>

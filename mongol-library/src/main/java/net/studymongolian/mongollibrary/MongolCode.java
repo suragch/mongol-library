@@ -53,15 +53,11 @@ public final class MongolCode {
 
     public String unicodeToMenksoft(String inputString, int[] glyphIndexes) {
 
+        if (inputString == null) {
+            return null;
+        }
 
-
-        //inputString = "\u1830\u1820\u1822\u1828 \u182A\u1820\u1836\u1822\u1828\u180E\u1820 \u1824\u1824\uFE16";
-        //glyphIndexes = new int[inputString.length()];
-
-
-
-
-        if (inputString == null || inputString.length() == 0) {
+        if (inputString.length() == 0) {
             return "";
         }
 
@@ -540,14 +536,6 @@ public final class MongolCode {
     }
 
     private String convertWordToMenksoftCode(String mongolWord, int[] glyphIndexes, int lastUnicodeIndex) {
-
-//        if (mongolWord == null || mongolWord.length() == 0) {
-//            return "";
-//        }
-//        int glyphIndex = 0;
-//        if (glyphIndexes != null && lastUnicodeIndex - mongolWord.length() - 1 > 0) {
-//            glyphIndex = glyphIndexes[lastUnicodeIndex - mongolWord.length() - 1];
-//        }
 
         // TODO would anything bad happen if lastUnicodeIndex were less than zero?
 
@@ -1261,9 +1249,6 @@ public final class MongolCode {
                                         renderedWord.insert(0, Glyph.MEDI_QA_TOOTH);    // normal tooth (masculine double tooth)
                                     }
                                     glyphShapeBelow = Shape.TOOTH;
-//                                } else if (charBelow == Uni.MVS) {
-//                                    renderedWord.insert(0, Glyph.MEDI_QA_FVS3);         // MVS
-//                                    glyphShapeBelow = Shape.TOOTH;
                                 } else { // consonant
                                     // does medial QA before a consonant ever happen
                                     // in a real word?
@@ -1363,9 +1348,6 @@ public final class MongolCode {
                                         renderedWord.insert(0, Glyph.MEDI_GA_FVS1_TOOTH);  // dotted masculine tooth
                                     }
                                     glyphShapeBelow = Shape.TOOTH;
-//                                } else if (charBelow == Uni.MVS) {
-//                                    renderedWord.insert(0, Glyph.MEDI_GA_FVS2);         // MVS
-//                                    glyphShapeBelow = Shape.TOOTH;
                                 } else { // consonant
                                     if (gender == Gender.NEUTER) {
                                         gender = getWordGenderAboveIndex(i, mongolWord);
@@ -1433,9 +1415,6 @@ public final class MongolCode {
                             }
                             break;
                         case MEDIAL:
-//                            if (charBelow == Uni.MVS) {
-//                                renderedWord.insert(0, Glyph.FINA_MA);                   // MVS
-//                            } else
                             if (isRoundLetter(mongolWord.charAt(i - 1)) ||
                                     mongolWord.charAt(i - 1) == Uni.ANG) {
                                 renderedWord.insert(0, Glyph.MEDI_MA_BP);                // tail extended for round letter
@@ -1485,9 +1464,6 @@ public final class MongolCode {
                             }
                             break;
                         case MEDIAL:
-//                            if (charBelow == Uni.MVS) {
-//                                renderedWord.insert(0, Glyph.FINA_LA);                   // MVS
-//                            } else
                             if (isRoundLetter(mongolWord.charAt(i - 1)) ||
                                     mongolWord.charAt(i - 1) == Uni.ANG) {
                                 renderedWord.insert(0, Glyph.MEDI_LA_BP);                // tail extended for round letter
@@ -1763,7 +1739,6 @@ public final class MongolCode {
                                 } else if (isVowel(charAbove)) {
                                     if (charBelow == Uni.I) {
                                         if (i < length - 2) {
-                                            //renderedWord.insert(0, Glyph.MEDI_YA_FVS1);     // no hook
                                             renderedWord.setCharAt(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth replacement
                                         } else {
                                             // omit the Y if YI is at the end of a word
@@ -1801,10 +1776,6 @@ public final class MongolCode {
                             }
                             break;
                         case MEDIAL:
-//                            if (charBelow == Uni.MVS) {
-//                                renderedWord.insert(0, Glyph.FINA_RA);              // MVS
-//                                glyphShapeBelow = Shape.STEM;
-//                            } else
                             if (glyphShapeBelow == Shape.STEM) {
                                 renderedWord.insert(0, Glyph.MEDI_RA_STEM);         // stem
                             } else {
@@ -1831,13 +1802,6 @@ public final class MongolCode {
                             renderedWord.insert(0, Glyph.INIT_WA);                  // normal
                             break;
                         case MEDIAL:
-//                            if (charBelow == Uni.MVS) {
-//                                renderedWord.insert(0, Glyph.FINA_WA_FVS1);         // MVS
-//                                glyphShapeBelow = Shape.STEM;
-//                            } else {
-//                                renderedWord.insert(0, Glyph.MEDI_WA);              // normal
-//                                glyphShapeBelow = Shape.TOOTH;
-//                            }
                             renderedWord.insert(0, Glyph.MEDI_WA);              // normal
                             glyphShapeBelow = Shape.TOOTH;
                             break;
@@ -2127,22 +2091,6 @@ public final class MongolCode {
             fvs = 0;
         }
 
-//        if (glyphIndexes != null) {
-//            //int len = mongolWord.length();
-//            int glyphIndex = 0;
-//            if (lastUnicodeIndex - length - 1 > 0) {
-//                glyphIndex = glyphIndexes[lastUnicodeIndex - mongolWord.length() - 1];
-//            }
-//            for (int i = 0; i < length; i++) {
-//                int thisIndex = lastUnicodeIndex - length + i;
-//                if (thisIndex > 0 ) {
-//                    glyphIndexes[thisIndex] += glyphIndexes[thisIndex - 1] + 1;
-//                } else {
-//
-//                }
-//            }
-//        }
-
         return renderedWord.toString();
     }
 
@@ -2183,11 +2131,11 @@ public final class MongolCode {
                 character == Uni.KA || character == Uni.KHA);
     }
 
-    public static boolean isVowel(char character) {
+    private static boolean isVowel(char character) {
         return (character >= Uni.A && character <= Uni.EE);
     }
 
-    public static boolean isOuVowel(char character) {
+    private static boolean isOuVowel(char character) {
         return (character >= Uni.O && character <= Uni.UE);
     }
 
@@ -2199,7 +2147,7 @@ public final class MongolCode {
         return (character == Uni.E || character == Uni.EE || character == Uni.OE || character == Uni.UE);
     }
 
-    public boolean isConsonant(char character) {
+    private boolean isConsonant(char character) {
         return (character >= Uni.NA && character <= Uni.CHI);
     }
 
@@ -2217,19 +2165,19 @@ public final class MongolCode {
                 (vowel == Uni.UE && fvs == Uni.FVS3);
     }
 
-    public static boolean isMongolian(char character) {
+    private static boolean isMongolian(char character) {
         // Mongolian letters, MVS, FVS1-3, NIRUGU, Uni.ZWJ, (but not NNBS)
         return ((character >= Uni.A && character <= Uni.CHI)
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS) || character == Uni.ZWJ);
     }
 
-    public boolean isBGDRS(char character) {
+    private boolean isBGDRS(char character) {
         // This method is not used internally, only for external use.
         return (character == Uni.BA || character == Uni.GA || character == Uni.DA
                 || character == Uni.RA || character == Uni.SA);
     }
 
-    public static boolean isMongolianAlphabet(char character) {
+    private static boolean isMongolianAlphabet(char character) {
         // This method is not used internally, only for external use.
         return (character >= Uni.A && character <= Uni.CHI);
     }
@@ -2247,39 +2195,6 @@ public final class MongolCode {
         }
         return Gender.NEUTER;
     }
-
-//    public boolean isMasculineWord(String word) {
-//        // This method is not used internally, only for external use.
-//        if (word == null || word.equals("")) {
-//            return false;
-//        }
-//        char[] characters = word.toCharArray();
-//        for (int i = characters.length - 1; i >= 0; i--) {
-//            if (characters[i] == Uni.A || characters[i] == Uni.O || characters[i] == Uni.U) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    public boolean isFeminineWord(String word) {
-//        // This method is not used internally, only for external use.
-//        if (word == null || word.equals("")) {
-//            return false;
-//        }
-//        char[] characters = word.toCharArray();
-//        for (int i = characters.length - 1; i >= 0; i--) {
-//            if (characters[i] == Uni.E || characters[i] == Uni.OE || characters[i] == Uni.UE
-//                    || characters[i] == Uni.EE) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-
-
-
 
     public class Uni {
 
@@ -2348,9 +2263,6 @@ public final class MongolCode {
         public static final char ZHI = '\u1841';
         public static final char CHI = '\u1842';
     };
-
-    //public static final char CURSOR_HOLDER = '\uE359'; // arbitrary unused char
-    //public static final char CURSOR_HOLDER = '|';
 
     private class Glyph {
 
