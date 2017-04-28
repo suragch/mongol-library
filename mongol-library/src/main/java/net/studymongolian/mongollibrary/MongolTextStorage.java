@@ -6,21 +6,26 @@ package net.studymongolian.mongollibrary;
 // about the glyph rendering and indexing.
 //
 // glyph: this is what is displayed by the font and MongolTextView
-// unicode: this is the encoding that the app user and library user works with
+// unicode: this is the encoding that the app user and library user
+//          (app developer) work with
 //
 // TODO: render the unicode to glyphs using MongolCode
 // TODO: maintain Unicode<->Glyph index maps with lazy instantiation
 // TODO: handle spanned text
 // TODO: update changes without needing to render everything again
+//
+// XXX can we keep this class package private?
+// Is it actually needed by app developers?
 
-
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
 
-import java.util.Map;
 
-public class MongolTextStorage {
+class MongolTextStorage implements Editable {
 
     private CharSequence mUnicodeText;
     private CharSequence mGlyphText;
@@ -28,22 +33,22 @@ public class MongolTextStorage {
     private int[] mGlyphArrayWithUnicodeIndexes;
     private int[] mUnicodeArrayWithGlyphIndexes;
 
-    public MongolTextStorage() {
+    MongolTextStorage() {
         mRenderer = MongolCode.INSTANCE;
         mUnicodeText = "";
         mGlyphText = "";
     }
 
-    public MongolTextStorage(CharSequence unicodeText) {
+    MongolTextStorage(CharSequence unicodeText) {
         mRenderer = MongolCode.INSTANCE;
         setText(unicodeText);
     }
 
-    public CharSequence getUnicodeText() {
+    CharSequence getUnicodeText() {
         return mUnicodeText;
     }
 
-    public CharSequence getGlyphText() {
+    CharSequence getGlyphText() {
         return mGlyphText;
     }
 
@@ -56,12 +61,20 @@ public class MongolTextStorage {
 
         mUnicodeText = unicodeText;
         if (unicodeText instanceof Spanned) {
-            mUnicodeArrayWithGlyphIndexes = new int[unicodeText.length()];
-            mGlyphText = mRenderer.unicodeToMenksoft(unicodeText.toString(), mUnicodeArrayWithGlyphIndexes);
-            setSpanOnRenderedText();
+            updateGlyphInfoForSpannedText();
+//            mUnicodeArrayWithGlyphIndexes = new int[unicodeText.length()];
+//            mGlyphText = mRenderer.unicodeToMenksoft(unicodeText.toString(), mUnicodeArrayWithGlyphIndexes);
+//            setSpanOnRenderedText();
         } else {
             mGlyphText = mRenderer.unicodeToMenksoft(unicodeText.toString());
         }
+    }
+
+    // FIXME this is hugely inefitient because it recalculates everything rather than a range
+    private void updateGlyphInfoForSpannedText() {
+        mUnicodeArrayWithGlyphIndexes = new int[mUnicodeText.length()];
+        mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText.toString(), mUnicodeArrayWithGlyphIndexes);
+        setSpanOnRenderedText();
     }
 
     private void setSpanOnRenderedText() {
@@ -72,48 +85,151 @@ public class MongolTextStorage {
         for (CharacterStyle span : spans) {
             int unicodeStart = ((Spanned) mUnicodeText).getSpanStart(span);
             int unicodeEnd = ((Spanned) mUnicodeText).getSpanEnd(span);
-            int glyphStart = getGlyphIndexForUnicodeIndex(unicodeStart);
-            int glyphEnd = getGlyphIndexForUnicodeIndex(unicodeEnd);
+            int glyphStart = mUnicodeArrayWithGlyphIndexes[unicodeStart];
+            int glyphEnd = mUnicodeArrayWithGlyphIndexes[unicodeEnd];
             spannable.setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         mGlyphText = spannable;
     }
 
-    public int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
-//        if (mUnicodeArrayWithGlyphIndexes == null) {
-//
-//            populateIndexArrays();
-//        }
+    private int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
         return mUnicodeArrayWithGlyphIndexes[unicodeIndex];
     }
 
-//    private void populateIndexArrays() {
-//        mUnicodeArrayWithGlyphIndexes = new int[mUnicodeText.length()];
-//        int glyphIndex = 0;
-//        for (int i = 0; i < mUnicodeText.length(); i++) {
-//            if (mUnicodeText.charAt(i) == nonPrintingChar) {
-//                glyphIndex++;
-//                continue;
-//            } else {
-//
-//            }
-//            mUnicodeArrayWithGlyphIndexes[i] = glyphIndex;
-//        }
-//    }
-
-    public int getUnicodeIndexForGlyphIndex(int glyphIndex) {
+    private int getUnicodeIndexForGlyphIndex(int glyphIndex) {
         // TODO
         return -1;
     }
 
-    public char getUnicodeCharAt(int unicodeIndex) {
+    private char getUnicodeCharAt(int unicodeIndex) {
         // TODO
         return 0;
     }
 
-    public char getGlyphCharAt(int glyphIndex) {
+    private char getGlyphCharAt(int glyphIndex) {
         // TODO
         return 0;
     }
 
+    // Editable interface methods
+
+    @Override
+    public Editable replace(int st, int en, CharSequence source, int start, int end) {
+        return null;
+    }
+
+    @Override
+    public Editable replace(int st, int en, CharSequence text) {
+        return null;
+    }
+
+    @Override
+    public Editable insert(int where, CharSequence text, int start, int end) {
+        return null;
+    }
+
+    @Override
+    public Editable insert(int where, CharSequence text) {
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            mUnicodeText = new SpannableStringBuilder(mUnicodeText);
+        }
+        ((SpannableStringBuilder) mUnicodeText).insert(where, text);
+        updateGlyphInfoForSpannedText();
+        return this;
+    }
+
+    @Override
+    public Editable delete(int st, int en) {
+        return null;
+    }
+
+    @Override
+    public Editable append(CharSequence text) {
+        return null;
+    }
+
+    @Override
+    public Editable append(CharSequence text, int start, int end) {
+        return null;
+    }
+
+    @Override
+    public Editable append(char text) {
+        return null;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void clearSpans() {
+
+    }
+
+    @Override
+    public void setFilters(InputFilter[] filters) {
+
+    }
+
+    @Override
+    public InputFilter[] getFilters() {
+        return new InputFilter[0];
+    }
+
+    @Override
+    public void getChars(int start, int end, char[] dest, int destoff) {
+
+    }
+
+    @Override
+    public void setSpan(Object what, int start, int end, int flags) {
+
+    }
+
+    @Override
+    public void removeSpan(Object what) {
+
+    }
+
+    @Override
+    public <T> T[] getSpans(int start, int end, Class<T> type) {
+        return null;
+    }
+
+    @Override
+    public int getSpanStart(Object tag) {
+        return 0;
+    }
+
+    @Override
+    public int getSpanEnd(Object tag) {
+        return 0;
+    }
+
+    @Override
+    public int getSpanFlags(Object tag) {
+        return 0;
+    }
+
+    @Override
+    public int nextSpanTransition(int start, int limit, Class type) {
+        return 0;
+    }
+
+    @Override
+    public int length() {
+        return 0;
+    }
+
+    @Override
+    public char charAt(int index) {
+        return 0;
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return null;
+    }
 }

@@ -31,8 +31,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
     private Paint mPaint;
-    private MongolLayout mLayout;
-    private MongolTextStorage mTextStorage;
+    protected MongolLayout mLayout;
+    protected MongolTextStorage mTextStorage;
 
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
     private int[] mOnMeasureData = new int[6];

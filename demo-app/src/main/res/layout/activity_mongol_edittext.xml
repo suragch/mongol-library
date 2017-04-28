@@ -7,12 +7,46 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin">
-    
-    <net.studymongolian.mongollibrary.MongolEditText
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@android:color/white"
-        />
 
-    
+    <HorizontalScrollView
+        android:id="@+id/hsvEditTextContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <net.studymongolian.mongollibrary.MongolEditText
+            android:id="@+id/metExample"
+            app:textSize="30sp"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:background="@android:color/white"
+            />
+
+    </HorizontalScrollView>
+
+
+
+
+    <LinearLayout
+        android:layout_below="@id/hsvEditTextContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:text="input text"
+            android:onClick="inputTextClick"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="delete"
+            android:onClick="deleteClick"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+
 </RelativeLayout>

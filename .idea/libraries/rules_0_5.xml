@@ -5,8 +5,8 @@
       <root url="jar://$PROJECT_DIR$/mongol-library/build/intermediates/exploded-aar/com.android.support.test/rules/0.5/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/35ece4e3998dc236095387dbffc4bdeb96a99278/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/35ece4e3998dc236095387dbffc4bdeb96a99278/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/1c3c66027ec2e89f62dd501462a026f6f6c744ec/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/1c3c66027ec2e89f62dd501462a026f6f6c744ec/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
