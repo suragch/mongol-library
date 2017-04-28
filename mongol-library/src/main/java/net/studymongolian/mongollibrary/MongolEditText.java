@@ -30,9 +30,20 @@ public class MongolEditText extends MongolTextView {
     // be changed?
 
     public void insertText(CharSequence text) {
+        // TODO handle selection
         super.mTextStorage.insert(mCursorLocation, text);
         super.mLayout.setText(mTextStorage.getGlyphText());
         mCursorLocation += text.length();
+        invalidate();
+        requestLayout();
+    }
+
+    public void backspace() {
+        // TODO handle selection
+        if (mCursorLocation <= 0) return;
+        super.mTextStorage.delete(mCursorLocation - 1, mCursorLocation);
+        super.mLayout.setText(mTextStorage.getGlyphText());
+        mCursorLocation--;
         invalidate();
         requestLayout();
     }

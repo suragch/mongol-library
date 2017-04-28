@@ -34,5 +34,6 @@ public class MongolEditTextActivity extends AppCompatActivity {
     }
 
     public void deleteClick(View view) {
+        metDemoEditText.backspace();
     }
 }

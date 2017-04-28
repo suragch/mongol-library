@@ -74,10 +74,8 @@ class MongolTextStorage implements Editable {
     private void updateGlyphInfoForSpannedText() {
         mUnicodeArrayWithGlyphIndexes = new int[mUnicodeText.length()];
         mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText.toString(), mUnicodeArrayWithGlyphIndexes);
-        setSpanOnRenderedText();
-    }
+        //setSpanOnRenderedText();
 
-    private void setSpanOnRenderedText() {
         if (!(mUnicodeText instanceof Spanned)) return;
 
         SpannableString spannable = new SpannableString(mGlyphText);
@@ -91,6 +89,21 @@ class MongolTextStorage implements Editable {
         }
         mGlyphText = spannable;
     }
+
+//    private void setSpanOnRenderedText() {
+//        if (!(mUnicodeText instanceof Spanned)) return;
+//
+//        SpannableString spannable = new SpannableString(mGlyphText);
+//        CharacterStyle[] spans = ((Spanned) mUnicodeText).getSpans(0, mUnicodeText.length(), CharacterStyle.class);
+//        for (CharacterStyle span : spans) {
+//            int unicodeStart = ((Spanned) mUnicodeText).getSpanStart(span);
+//            int unicodeEnd = ((Spanned) mUnicodeText).getSpanEnd(span);
+//            int glyphStart = mUnicodeArrayWithGlyphIndexes[unicodeStart];
+//            int glyphEnd = mUnicodeArrayWithGlyphIndexes[unicodeEnd];
+//            spannable.setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        }
+//        mGlyphText = spannable;
+//    }
 
     private int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
         return mUnicodeArrayWithGlyphIndexes[unicodeIndex];
@@ -115,121 +128,167 @@ class MongolTextStorage implements Editable {
 
     @Override
     public Editable replace(int st, int en, CharSequence source, int start, int end) {
-        return null;
-    }
-
-    @Override
-    public Editable replace(int st, int en, CharSequence text) {
-        return null;
-    }
-
-    @Override
-    public Editable insert(int where, CharSequence text, int start, int end) {
-        return null;
-    }
-
-    @Override
-    public Editable insert(int where, CharSequence text) {
         if (!(mUnicodeText instanceof SpannableStringBuilder)) {
             mUnicodeText = new SpannableStringBuilder(mUnicodeText);
         }
-        ((SpannableStringBuilder) mUnicodeText).insert(where, text);
+        ((SpannableStringBuilder) mUnicodeText).replace(st, en, source, start, end);
         updateGlyphInfoForSpannedText();
         return this;
     }
 
     @Override
+    public Editable replace(int st, int en, CharSequence text) {
+        return replace(st, en, text, 0, text.length());
+    }
+
+    @Override
+    public Editable insert(int where, CharSequence text, int start, int end) {
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            mUnicodeText = new SpannableStringBuilder(mUnicodeText);
+        }
+        ((SpannableStringBuilder) mUnicodeText).insert(where, text, start, end);
+        updateGlyphInfoForSpannedText();
+        return this;
+    }
+
+    @Override
+    public Editable insert(int where, CharSequence text) {
+        return insert(where, text, 0, text.length());
+    }
+
+    @Override
     public Editable delete(int st, int en) {
-        return null;
+        return replace(st, en, "", 0, 0);
     }
 
     @Override
     public Editable append(CharSequence text) {
-        return null;
+        return replace(length(), length(), text, 0, text.length());
     }
 
     @Override
     public Editable append(CharSequence text, int start, int end) {
-        return null;
+        return replace(length(), length(), text, start, end) ;
     }
 
     @Override
     public Editable append(char text) {
-        return null;
+        return append(String.valueOf(text));
     }
 
     @Override
     public void clear() {
-
+        replace(0, length(), "", 0, 0);
     }
 
     @Override
     public void clearSpans() {
-
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            return;
+        }
+        ((SpannableStringBuilder) mUnicodeText).clearSpans();
+        updateGlyphInfoForSpannedText();
     }
 
     @Override
     public void setFilters(InputFilter[] filters) {
-
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            return;
+        }
+        ((SpannableStringBuilder) mUnicodeText).setFilters(filters);
+        // TODO does mGlyphText need to be updated in any way?
     }
 
     @Override
     public InputFilter[] getFilters() {
-        return new InputFilter[0];
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            return new InputFilter[0];
+        }
+        return ((SpannableStringBuilder) mUnicodeText).getFilters();
     }
 
     @Override
     public void getChars(int start, int end, char[] dest, int destoff) {
-
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            ((String) mUnicodeText).getChars(start, end, dest, destoff);
+        } else {
+            ((SpannableStringBuilder) mUnicodeText).getChars(start, end, dest, destoff);
+        }
     }
 
     @Override
     public void setSpan(Object what, int start, int end, int flags) {
-
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            mUnicodeText = new SpannableStringBuilder(mUnicodeText);
+        }
+        ((SpannableStringBuilder) mUnicodeText).setSpan(what, start, end, flags);
+        updateGlyphInfoForSpannedText();
     }
 
     @Override
     public void removeSpan(Object what) {
-
+        if (!(mUnicodeText instanceof Spanned)) {
+            return;
+        }
+        if (!(mUnicodeText instanceof SpannableStringBuilder)) {
+            mUnicodeText = new SpannableStringBuilder(mUnicodeText);
+        }
+        ((SpannableStringBuilder) mUnicodeText).removeSpan(what);
+        updateGlyphInfoForSpannedText();
     }
 
     @Override
     public <T> T[] getSpans(int start, int end, Class<T> type) {
+        if (mUnicodeText instanceof Spanned) {
+            return ((Spanned) mUnicodeText).getSpans(start, end, type);
+        }
         return null;
     }
 
     @Override
     public int getSpanStart(Object tag) {
+        if (mUnicodeText instanceof Spanned) {
+            return ((Spanned) mUnicodeText).getSpanStart(tag);
+        }
         return 0;
     }
 
     @Override
     public int getSpanEnd(Object tag) {
+        if (mUnicodeText instanceof Spanned) {
+            return ((Spanned) mUnicodeText).getSpanEnd(tag);
+        }
         return 0;
     }
 
     @Override
     public int getSpanFlags(Object tag) {
+        if (mUnicodeText instanceof Spanned) {
+            return ((Spanned) mUnicodeText).getSpanFlags(tag);
+        }
         return 0;
     }
 
     @Override
     public int nextSpanTransition(int start, int limit, Class type) {
+        if (mUnicodeText instanceof Spanned) {
+            return ((Spanned) mUnicodeText).nextSpanTransition(start, limit, type);
+        }
         return 0;
     }
 
     @Override
     public int length() {
-        return 0;
+        return mUnicodeText.length();
     }
 
     @Override
     public char charAt(int index) {
-        return 0;
+        return mUnicodeText.charAt(index);
     }
 
     @Override
     public CharSequence subSequence(int start, int end) {
-        return null;
+        return mUnicodeText.subSequence(start, end);
     }
 }
