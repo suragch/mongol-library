@@ -38,7 +38,7 @@ class MongolTextLine {
     // A text run is a substring of text within the text line. The substring is made up of
     //     (1) a single emoji or CJK character,
     //     (2) a span of styled text, or
-    //     (3) normal Mongolian/Latin/etc. text.
+    //     (3) normal Mongolian/Latin/etc text.
     // A run may contain multiple types of spans covering the whole run but it should never
     // contain a span transition. It should also never contain multiple emoji or CJK characters.
     private class TextRun {

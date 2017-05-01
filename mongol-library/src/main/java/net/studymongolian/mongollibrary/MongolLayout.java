@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -132,10 +133,10 @@ public class MongolLayout {
 
         if (needsLineUpdate) updateLines();
 
-        float ltop;
-        int lbottom = mTextPaint.getFontMetricsInt().bottom;
+        float metricsTop;
+        int metricsBottom = mTextPaint.getFontMetricsInt().bottom;
 
-        int x = lbottom; // start position of each vertical line
+        int x = metricsBottom; // start position of each vertical line
         int y = 0; // baseline
         MongolTextLine tl = MongolTextLine.obtain();
 
@@ -163,10 +164,16 @@ public class MongolLayout {
             }
 
             tl.set(mTextPaint, mText, start, end);
-            ltop = lbottom - mLinesInfo.get(i).measuredHeight;
-            tl.draw(canvas, x, ltop, y + gravityOffset, lbottom);
+            int lineHeight;
+            if (i > 0) {
+                lineHeight = mLinesInfo.get(i).top - mLinesInfo.get(i - 1).top;
+            } else {
+                lineHeight = mLinesInfo.get(i).top;
+            }
+            metricsTop = metricsBottom - lineHeight;
+            tl.draw(canvas, x, metricsTop, y + gravityOffset, metricsBottom);
 
-            x += mLinesInfo.get(i).measuredHeight;
+            x += lineHeight;
         }
 
         MongolTextLine.recycle(tl);
@@ -186,8 +193,13 @@ public class MongolLayout {
         if (mLinesInfo == null || mLinesInfo.size() > 0)
             mLinesInfo = new ArrayList<>();
 
+        if (mText.length() == 0) {
+            int defaultHeight = mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
+            mLinesInfo.add(new LineInfo(0, defaultHeight, 0));
+            return;
+        }
+
         // XXX can we just use a char sequence? BreakIterator is the only thing that needs it.
-        //String tempString = mText.toString();
 
         BreakIterator boundary = BreakIterator.getLineInstance();
         boundary.setText(mText.toString());
@@ -195,6 +207,7 @@ public class MongolLayout {
         int lineStart = start;
         float measuredSum = 0;
         RectF measuredSize;
+        int top = 0; // cummulative sum of line heights
         float lineHeightMax = 0;
         boolean hadToSplitWord = false;
         MongolTextLine tl = MongolTextLine.obtain();
@@ -213,7 +226,8 @@ public class MongolLayout {
 
                 // add previously measured text as a new line
                 if (measuredSum > 0) {
-                    mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+                    top += lineHeightMax;
+                    mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
                     lineHeightMax = 0;
                     measuredSum = 0;
                 }
@@ -222,9 +236,11 @@ public class MongolLayout {
                 // so we have to split the word unnaturally across lines.
                 lineStart = start;
                 float[] measuredWidth = new float[1];
+                // FIXME this doesn't handle spanned text, does it? Should add a breakText method to TextLine.
                 int charactersMeasured = mTextPaint.breakText(mText, lineStart, end, true, mHeight, measuredWidth);
                 if (charactersMeasured > 0) {
-                    mLinesInfo.add(new LineInfo(lineStart, measuredWidth[0], measuredSize.height()));
+                    top += measuredSize.height();
+                    mLinesInfo.add(new LineInfo(lineStart, top, measuredWidth[0]));
                     lineStart += charactersMeasured;
                 } else {
                     // if mHeight is shorter than a single character then just add that char to the line
@@ -235,7 +251,9 @@ public class MongolLayout {
 
             } else if (Math.floor(measuredSum + measuredSize.width()) > mHeight) {
 
-                mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+                top += lineHeightMax;
+                mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+                //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
                 lineHeightMax = measuredSize.height();
                 lineStart = start;
                 measuredSum = measuredSize.width();
@@ -269,7 +287,9 @@ public class MongolLayout {
                     // TODO should be using a different height if there is a span
                     lineHeightMax = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
                 }
-                mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+                top += lineHeightMax;
+                mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+                //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
                 lineHeightMax = 0;
                 measuredSum = 0;
                 lineStart = start;
@@ -278,7 +298,9 @@ public class MongolLayout {
 
         // add any last line info
         if (measuredSum > 0 || (mText.length() > 0 && mText.charAt(mText.length() - 1) == '\n')) {
-            mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
+            top += lineHeightMax;
+            mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+            //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
         }
     }
 
@@ -311,27 +333,192 @@ public class MongolLayout {
     public int getWidth() {
         if (needsLineUpdate) updateLines();
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
-        float width = 0;
-        for (LineInfo line : mLinesInfo) {
-            width += line.measuredHeight;
-        }
-        return (int) width;
+        int lastLine = mLinesInfo.size() - 1;
+        return mLinesInfo.get(lastLine).top;
     }
+
+//    public int getWidth() {
+//        fix this
+//        if (needsLineUpdate) updateLines();
+//        if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
+//        float width = 0;
+//        for (LineInfo line : mLinesInfo) {
+//            width += line.measuredHeight;
+//        }
+//        return (int) width;
+//    }
 
 
     public void setAlignment(int alignment) {
         mAlignment = alignment;
     }
 
+
+
+    // TODO make alignment be an enum like in Android Layout?
+//    public int getAlignment() {
+//        return mAlignment;
+//    }
+
+    // negative value
+    public int getLineAscent (int line) {
+        return getLineBottom(line) - getLineTop(line) + getLineDescent(line);
+    }
+
+    int getLineBaseline (int line) {
+        return getLineBottom(line) + getLineDescent(line);
+    }
+
+    int getLineBottom (int line) {
+        if (line == 0) return 0;
+        return mLinesInfo.get(line - 1).top;
+    }
+
+    int getLineDescent (int line) {
+        // TODO this should probably be based on the actual line
+        // see http://stackoverflow.com/a/43691403
+        return mTextPaint.getFontMetricsInt().descent;
+    }
+
+    int getLineTop (int line) {
+        if (mLinesInfo == null || mLinesInfo.size() == 0) {
+            return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
+        }
+        return mLinesInfo.get(line).top;
+    }
+
+//    int getLineBounds (int line,
+//                       Rect bounds) {
+//
+//    }
+
+    int getLineCount () {
+        return mLinesInfo.size();
+    }
+
+    int getLineEnd (int line) {
+        if (line == mLinesInfo.size() - 1) {
+            return mText.length();
+        } else {
+            return mLinesInfo.get(line + 1).startOffset;
+        }
+    }
+
+//    int getLineForOffset (int offset) {
+//
+//
+//        int line = 0;
+//        for (LineInfo lineInfo : mLinesInfo) {
+//            if (lineInfo.startOffset > offset) line++;
+//
+//        }
+//        return line;
+//    }
+
+    public int getLineForOffset(int offset) {
+        int high = getLineCount();
+        int low = -1;
+        int guess;
+
+        while (high - low > 1) {
+            guess = (high + low) / 2;
+
+            if (getLineStart(guess) > offset)
+                high = guess;
+            else
+                low = guess;
+        }
+
+        if (low < 0)
+            return 0;
+        else
+            return low;
+    }
+
+//    int getLineForVertical (int vertical) {
+//
+//    }
+
+    int getLineStart (int line) {
+        return mLinesInfo.get(line).startOffset;
+    }
+
+
+
+//    float getLineWidth (int line) {
+//
+//    }
+//
+//    int getOffsetForHorizontal (int line,
+//                                float horiz) {
+//
+//    }
+//
+//    int getOffsetToLeftOf (int offset) {
+//
+//    }
+//
+//    int getOffsetToRightOf (int offset) {
+//
+//    }
+
+    float getVertical (int offset) {
+        if (offset < 0) return 0;
+
+        int line = getLineForOffset(offset);
+        int start = getLineStart(line);
+        int end = getLineEnd(line);
+
+        MongolTextLine tl = MongolTextLine.obtain();
+        tl.set(mTextPaint, mText, start, offset);
+        float verticalLineHeight = tl.measure().width();
+        MongolTextLine.recycle(tl);
+
+        return verticalLineHeight;
+    }
+
+//    void getSelectionPath (int start,
+//                           int end,
+//                           Path dest) {
+//
+//    }
+//
+//    float getSpacingAdd () {
+//
+//    }
+//
+//    float getSpacingMultiplier () {
+//
+//    }
+
+
+
     private class LineInfo {
         int startOffset;
-        float measuredWidth;
-        float measuredHeight;
 
-        LineInfo(int start, float measuredWidth, float measuredHeight) {
+        // bottom refers to the bottom of a non-rotated line. Since the line gets rotated
+        // it is the x distance from the left side of the layout to the left side
+        // of the rotated line. The top of each succeeding line increases as a sum
+        // of the previous (rotated) line widths.
+        int top;
+
+        // descent is the same for most lines. It is the distance between the baseline
+        // and the top of the next line (which is the FontMetrics descent). For the last
+        // line though it equals the FontMetrics bottom.
+        int ascent;
+
+        float measuredWidth;
+        //float measuredHeight;
+
+        //LineInfo(int start, int top, int descent, float measuredWidth) {
+        //LineInfo(int start, float measuredWidth, float measuredHeight) {
+        LineInfo(int start, int top, float measuredWidth) {
             this.startOffset = start;
+            this.top = top;
+            //this.descent = descent;
+            //this.bottom = bottom;
             this.measuredWidth = measuredWidth;
-            this.measuredHeight = measuredHeight;
+            //this.measuredHeight = measuredHeight;
         }
 
     }

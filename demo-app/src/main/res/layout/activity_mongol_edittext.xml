@@ -16,7 +16,9 @@
 
         <net.studymongolian.mongollibrary.MongolEditText
             android:id="@+id/metExample"
+            app:text="asdf"
             app:textSize="30sp"
+            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:background="@android:color/white"

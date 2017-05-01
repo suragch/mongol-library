@@ -2,13 +2,17 @@ package net.studymongolian.mongollibrary;
 
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.text.Editable;
 import android.util.AttributeSet;
 
 public class MongolEditText extends MongolTextView {
 
     // This is a text offset based on the unicode (not glyph) position
-    int mCursorLocation;
+    int mCursorOffset = 0;
+    Paint mCursorPaint;
 
     public MongolEditText(Context context) {
         this(context, null);
@@ -21,7 +25,40 @@ public class MongolEditText extends MongolTextView {
     }
 
     private void init() {
-        mCursorLocation = 0; // FIXME should be text length
+        mCursorOffset = super.getText().length();
+
+        mCursorPaint = new Paint();
+        mCursorPaint.setColor(Color.RED);
+        mCursorPaint.setStyle(Paint.Style.FILL);
+        mCursorPaint.setAntiAlias(true);
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+
+        // XXX when selecting text add the highlight to the glyph text so that
+        // any original highlight spans on the unicode text are not lost.
+
+        // draw the cursor (if there is no selection)
+        // get the padding
+        // get the line for the cursor offset
+        // get the x for the line left
+        // get the line width
+        // get the y for the positing in the line
+        // get the default cursor thickness
+        // draw a rectangle on the canvas
+
+        int line = super.mLayout.getLineForOffset(mCursorOffset);
+        int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
+        float x = super.mLayout.getLineBottom(line) + getPaddingLeft();
+        float y = super.mLayout.getVertical(mCursorOffset) + getPaddingTop();
+
+        canvas.drawRect(x, y, x + width, y + 10, mCursorPaint);
+
+
     }
 
     // XXX adding the Editable methods here rather than returning
@@ -31,19 +68,19 @@ public class MongolEditText extends MongolTextView {
 
     public void insertText(CharSequence text) {
         // TODO handle selection
-        super.mTextStorage.insert(mCursorLocation, text);
+        super.mTextStorage.insert(mCursorOffset, text);
         super.mLayout.setText(mTextStorage.getGlyphText());
-        mCursorLocation += text.length();
+        mCursorOffset += text.length();
         invalidate();
         requestLayout();
     }
 
     public void backspace() {
         // TODO handle selection
-        if (mCursorLocation <= 0) return;
-        super.mTextStorage.delete(mCursorLocation - 1, mCursorLocation);
+        if (mCursorOffset <= 0) return;
+        super.mTextStorage.delete(mCursorOffset - 1, mCursorOffset);
         super.mLayout.setText(mTextStorage.getGlyphText());
-        mCursorLocation--;
+        mCursorOffset--;
         invalidate();
         requestLayout();
     }
