@@ -20,6 +20,8 @@ import java.util.List;
 // lines use width/height in horizontal orientation
 // layout uses width/height in vertical orientation
 
+
+
 public class MongolLayout {
 
     private CharSequence mText;
@@ -337,17 +339,6 @@ public class MongolLayout {
         return mLinesInfo.get(lastLine).top;
     }
 
-//    public int getWidth() {
-//        fix this
-//        if (needsLineUpdate) updateLines();
-//        if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
-//        float width = 0;
-//        for (LineInfo line : mLinesInfo) {
-//            width += line.measuredHeight;
-//        }
-//        return (int) width;
-//    }
-
 
     public void setAlignment(int alignment) {
         mAlignment = alignment;
@@ -387,11 +378,6 @@ public class MongolLayout {
         return mLinesInfo.get(line).top;
     }
 
-//    int getLineBounds (int line,
-//                       Rect bounds) {
-//
-//    }
-
     int getLineCount () {
         return mLinesInfo.size();
     }
@@ -403,17 +389,6 @@ public class MongolLayout {
             return mLinesInfo.get(line + 1).startOffset;
         }
     }
-
-//    int getLineForOffset (int offset) {
-//
-//
-//        int line = 0;
-//        for (LineInfo lineInfo : mLinesInfo) {
-//            if (lineInfo.startOffset > offset) line++;
-//
-//        }
-//        return line;
-//    }
 
     public int getLineForOffset(int offset) {
         int high = getLineCount();
@@ -435,25 +410,43 @@ public class MongolLayout {
             return low;
     }
 
-//    int getLineForVertical (int vertical) {
-//
-//    }
+    int getLineForHorizontal (int horizontal) {
+        final int lineCount = mLinesInfo.size();
+        int high = lineCount;
+        int low = -1;
+        int guess;
+        while (high - low > 1) {
+            guess = (high + low) >> 1;
+            if (mLinesInfo.get(guess).top < horizontal){
+                low = guess;
+            } else {
+                high = guess;
+            }
+        }
+        if (high >= lineCount) {
+            return lineCount - 1;
+        } else {
+            return high;
+        }
+    }
 
     int getLineStart (int line) {
         return mLinesInfo.get(line).startOffset;
     }
 
+    public int getOffsetForVertical(int line, float vertical) {
 
+        final int lineStartOffset = getLineStart(line);
+        final int lineEndOffset = getLineEnd(line);
 
-//    float getLineWidth (int line) {
-//
-//    }
-//
-//    int getOffsetForHorizontal (int line,
-//                                float horiz) {
-//
-//    }
-//
+        MongolTextLine tl = MongolTextLine.obtain();
+        tl.set(mTextPaint, mText, lineStartOffset, lineEndOffset);
+        int offset = tl.getOffsetForAdvance(vertical);
+        MongolTextLine.recycle(tl);
+
+        return lineStartOffset + offset;
+    }
+
 //    int getOffsetToLeftOf (int offset) {
 //
 //    }
@@ -462,7 +455,8 @@ public class MongolLayout {
 //
 //    }
 
-    float getVertical (int offset) {
+    float
+    getVertical (int offset) {
         if (offset < 0) return 0;
 
         int line = getLineForOffset(offset);
@@ -496,29 +490,18 @@ public class MongolLayout {
     private class LineInfo {
         int startOffset;
 
-        // bottom refers to the bottom of a non-rotated line. Since the line gets rotated
-        // it is the x distance from the left side of the layout to the left side
+        // top refers to the top of a non-rotated line. Since the line gets rotated
+        // it is the x distance from the left side of the layout to the right side
         // of the rotated line. The top of each succeeding line increases as a sum
         // of the previous (rotated) line widths.
         int top;
 
-        // descent is the same for most lines. It is the distance between the baseline
-        // and the top of the next line (which is the FontMetrics descent). For the last
-        // line though it equals the FontMetrics bottom.
-        int ascent;
-
         float measuredWidth;
-        //float measuredHeight;
 
-        //LineInfo(int start, int top, int descent, float measuredWidth) {
-        //LineInfo(int start, float measuredWidth, float measuredHeight) {
         LineInfo(int start, int top, float measuredWidth) {
             this.startOffset = start;
             this.top = top;
-            //this.descent = descent;
-            //this.bottom = bottom;
             this.measuredWidth = measuredWidth;
-            //this.measuredHeight = measuredHeight;
         }
 
     }

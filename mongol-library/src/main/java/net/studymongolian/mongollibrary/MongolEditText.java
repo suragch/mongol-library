@@ -6,33 +6,134 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 
 public class MongolEditText extends MongolTextView {
 
-    // This is a text offset based on the unicode (not glyph) position
-    int mCursorOffset = 0;
     Paint mCursorPaint;
 
     public MongolEditText(Context context) {
         this(context, null);
-        init();
     }
 
     public MongolEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
+    }
+
+    public MongolEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        mCursorOffset = super.getText().length();
+
+        int textLength = super.getText().length();
+        setSelection(textLength);
 
         mCursorPaint = new Paint();
         mCursorPaint.setColor(Color.RED);
         mCursorPaint.setStyle(Paint.Style.FILL);
         mCursorPaint.setAntiAlias(true);
 
+
+
     }
+
+    @Override
+    protected boolean getDefaultEditable() {
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        int eventaction = event.getAction();
+
+        switch (eventaction) {
+            case MotionEvent.ACTION_DOWN:
+                Log.i("TAG", "ACTION_DOWN AT COORDS "+"X: "+x+" Y: "+y);
+
+                // TODO disable scrolling for some touches
+                // getParent().requestDisallowInterceptTouchEvent(true);
+
+
+
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                Log.i("TAG", "MOVE "+"X: "+x+" Y: "+y);
+                break;
+
+            case MotionEvent.ACTION_UP:
+                Log.i("TAG", "ACTION_UP "+"X: "+x+" Y: "+y);
+
+                // find the position
+                int offset = getOffsetForPosition(x, y);
+
+                // set the selection
+                setSelection(offset);
+                invalidate();
+
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public SpannableStringBuilder getText() {
+        return (SpannableStringBuilder) super.getText();
+    }
+
+    public void setSelection(int start, int stop) {
+        Selection.setSelection(getText(), start, stop);
+    }
+
+    public void setSelection(int index) {
+        Selection.setSelection(getText(), index);
+    }
+
+    public void selectAll() {
+        Selection.selectAll(getText());
+    }
+
+    public void extendSelection(int index) {
+        Selection.extendSelection(getText(), index);
+    }
+
+    public int getSelectionStart() {
+        // returns -1 if no selection
+        return Selection.getSelectionStart(getText());
+    }
+
+    public int getSelectionEnd() {
+        // returns -1 if no selection
+        return Selection.getSelectionEnd(getText());
+    }
+
+    public boolean hasSelection() {
+        final int selectionStart = getSelectionStart();
+        final int selectionEnd = getSelectionEnd();
+
+        return selectionStart >= 0 && selectionStart != selectionEnd;
+    }
+
+    String getSelectedText() {
+        if (!hasSelection()) {
+            return null;
+        }
+
+        final int start = getSelectionStart();
+        final int end = getSelectionEnd();
+        return String.valueOf(
+                start > end ? mTextStorage.subSequence(end, start) : mTextStorage.subSequence(start, end));
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -51,12 +152,26 @@ public class MongolEditText extends MongolTextView {
         // get the default cursor thickness
         // draw a rectangle on the canvas
 
-        int line = super.mLayout.getLineForOffset(mCursorOffset);
-        int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
-        float x = super.mLayout.getLineBottom(line) + getPaddingLeft();
-        float y = super.mLayout.getVertical(mCursorOffset) + getPaddingTop();
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
 
-        canvas.drawRect(x, y, x + width, y + 10, mCursorPaint);
+        // don't draw anything is there is no selection
+        if (start < 0 || end < 0) return;
+
+        if (start == end) {
+
+            int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(start);
+            int line = super.mLayout.getLineForOffset(glyphStart);
+            int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
+            float x = super.mLayout.getLineBottom(line) + getPaddingLeft();
+            float y = super.mLayout.getVertical(glyphStart) + getPaddingTop();
+
+            canvas.drawRect(x, y, x + width, y + 10, mCursorPaint);
+        } else {
+            // TODO draw highlight
+
+        }
+
 
 
     }
@@ -67,20 +182,38 @@ public class MongolEditText extends MongolTextView {
     // be changed?
 
     public void insertText(CharSequence text) {
-        // TODO handle selection
-        super.mTextStorage.insert(mCursorOffset, text);
+
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+
+        // check if there is a selection
+        if (start < 0 || end < 0) return;
+
+        if (start != end) {
+            mTextStorage.delete(start, end);
+        }
+        mTextStorage.insert(start, text);
         super.mLayout.setText(mTextStorage.getGlyphText());
-        mCursorOffset += text.length();
         invalidate();
         requestLayout();
     }
 
     public void backspace() {
-        // TODO handle selection
-        if (mCursorOffset <= 0) return;
-        super.mTextStorage.delete(mCursorOffset - 1, mCursorOffset);
+
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+
+        // check if there is a selection
+        if (start < 0 || end < 0) return;
+
+        if (start == end) {
+            if (start <= 0) return;
+            super.mTextStorage.delete(start - 1, start);
+        } else {
+            // delete highlighted text
+            super.mTextStorage.delete(start, end);
+        }
         super.mLayout.setText(mTextStorage.getGlyphText());
-        mCursorOffset--;
         invalidate();
         requestLayout();
     }

@@ -30,7 +30,7 @@ class MongolTextStorage implements Editable {
     private CharSequence mUnicodeText;
     private CharSequence mGlyphText;
     private MongolCode mRenderer;
-    private int[] mGlyphArrayWithUnicodeIndexes;
+    //private int[] mGlyphArrayWithUnicodeIndexes;
     private int[] mUnicodeArrayWithGlyphIndexes;
 
     MongolTextStorage() {
@@ -62,15 +62,12 @@ class MongolTextStorage implements Editable {
         mUnicodeText = unicodeText;
         if (unicodeText instanceof Spanned) {
             updateGlyphInfoForSpannedText();
-//            mUnicodeArrayWithGlyphIndexes = new int[unicodeText.length()];
-//            mGlyphText = mRenderer.unicodeToMenksoft(unicodeText.toString(), mUnicodeArrayWithGlyphIndexes);
-//            setSpanOnRenderedText();
         } else {
             mGlyphText = mRenderer.unicodeToMenksoft(unicodeText.toString());
         }
     }
 
-    // FIXME this is hugely inefitient because it recalculates everything rather than a range
+    // FIXME this is hugely inefficient because it recalculates everything rather than a range
     private void updateGlyphInfoForSpannedText() {
         mUnicodeArrayWithGlyphIndexes = new int[mUnicodeText.length()];
         mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText.toString(), mUnicodeArrayWithGlyphIndexes);
@@ -90,39 +87,32 @@ class MongolTextStorage implements Editable {
         mGlyphText = spannable;
     }
 
-//    private void setSpanOnRenderedText() {
-//        if (!(mUnicodeText instanceof Spanned)) return;
-//
-//        SpannableString spannable = new SpannableString(mGlyphText);
-//        CharacterStyle[] spans = ((Spanned) mUnicodeText).getSpans(0, mUnicodeText.length(), CharacterStyle.class);
-//        for (CharacterStyle span : spans) {
-//            int unicodeStart = ((Spanned) mUnicodeText).getSpanStart(span);
-//            int unicodeEnd = ((Spanned) mUnicodeText).getSpanEnd(span);
-//            int glyphStart = mUnicodeArrayWithGlyphIndexes[unicodeStart];
-//            int glyphEnd = mUnicodeArrayWithGlyphIndexes[unicodeEnd];
-//            spannable.setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        }
-//        mGlyphText = spannable;
-//    }
-
-    private int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
+    int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
+        // allow an index one past the end to support cursor selection
+        if (unicodeIndex == mUnicodeText.length()) return mGlyphText.length();
         return mUnicodeArrayWithGlyphIndexes[unicodeIndex];
     }
 
-    private int getUnicodeIndexForGlyphIndex(int glyphIndex) {
-        // TODO
-        return -1;
+    int getUnicodeIndexForGlyphIndex(int glyphIndex) {
+        // calculating the glyph index when needed rather than maintaining a second index
+        int index = glyphIndex;
+        int length = mUnicodeArrayWithGlyphIndexes.length;
+        for (int i = glyphIndex; i < length; i++) {
+            if (mUnicodeArrayWithGlyphIndexes[i] > glyphIndex) break;
+            index = i;
+        }
+        return index;
     }
 
-    private char getUnicodeCharAt(int unicodeIndex) {
-        // TODO
-        return 0;
-    }
-
-    private char getGlyphCharAt(int glyphIndex) {
-        // TODO
-        return 0;
-    }
+//    private char getUnicodeCharAt(int unicodeIndex) {
+//        // TODO
+//        return 0;
+//    }
+//
+//    private char getGlyphCharAt(int glyphIndex) {
+//        // TODO
+//        return 0;
+//    }
 
     // Editable interface methods
 

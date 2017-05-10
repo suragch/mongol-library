@@ -342,4 +342,51 @@ class MongolTextLine {
         return new RectF(0, 0, widthSum, maxHeight);
     }
 
+
+    int getOffsetForAdvance (float advance) {
+        boolean hasSpan = mText instanceof Spanned;
+        int offset = 0;
+        float oldWidth = 0;
+        float newWidth = 0;
+        // measure each run and compare sum to advance
+        for (TextRun run : mTextRuns) {
+            final int start = run.offset;
+            final int length = run.length;
+            newWidth += run.measuredWidth;
+            if (advance > newWidth) {
+                oldWidth = newWidth;
+                offset += length;
+            } else { // overshot so break up the run to the nearest offset
+                if (run.isRotated) {
+                    // choose the closer offset
+                    if (advance - oldWidth > newWidth - advance) {
+                        offset++;
+                    }
+                    break;
+                }
+
+                TextPaint wp = mWorkPaint;
+                wp.set(mPaint);
+                if (hasSpan) {
+                    MetricAffectingSpan[] maSpans = ((Spanned) mText).getSpans(start, start + length, MetricAffectingSpan.class);
+                    for (MetricAffectingSpan span : maSpans) {
+                        span.updateDrawState(wp);
+                    }
+                }
+
+                float[] measuredWidth = new float[1];
+                int runOffset = wp.breakText(mText, start, start + length, true, advance, measuredWidth);
+                offset += runOffset;
+                newWidth += measuredWidth[0];
+                float widthOfNextChar = wp.measureText(mText, start + runOffset, start + runOffset + 1);
+                // choose the closer offset
+                if (advance - newWidth > newWidth + widthOfNextChar - advance) {
+                    offset++;
+                }
+                break;
+            }
+        }
+        return offset;
+    }
+
 }

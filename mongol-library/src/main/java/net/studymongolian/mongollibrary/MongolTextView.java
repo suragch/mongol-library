@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,6 +18,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+// TODO how to speed this up
+// use array instead of mLinesInfo list
+// only rerender changed words
+// only redraw changed lines
 
 public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawListener {
 
@@ -37,40 +43,37 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
     private int[] mOnMeasureData = new int[6];
 
-    // programmatic constructor
+
     public MongolTextView(Context context) {
-        super(context);
-
-        mTextStorage = new MongolTextStorage();
-
-        mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
-        mTextColor = Color.BLACK;
-        mGravity = Gravity.TOP;
-
-        mContext = context;
-        init();
+        this(context, null);
     }
 
-    // xml constructor
     public MongolTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
+    }
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs, R.styleable.MongolTextView, 0, 0);
+    public MongolTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
 
-        try {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MongolTextView, defStyleAttr, 0);
+
+        boolean isEditText = getDefaultEditable();
+        if (isEditText) {
+            SpannableStringBuilder ssb = new SpannableStringBuilder(a.getString(R.styleable.MongolTextView_text));
+            mTextStorage = new MongolTextStorage(ssb);
+        } else {
             mTextStorage = new MongolTextStorage(a.getString(R.styleable.MongolTextView_text));
-            mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolTextView_textSize, 0);
-            mTextColor = a.getColor(R.styleable.MongolTextView_textColor, Color.BLACK);
-            mGravity = a.getInteger(R.styleable.MongolTextView_gravity, Gravity.TOP);
-        } finally {
-            a.recycle();
         }
+        mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolTextView_textSize, 0);
+        mTextColor = a.getColor(R.styleable.MongolTextView_textColor, Color.BLACK);
+        mGravity = a.getInteger(R.styleable.MongolTextView_gravity, Gravity.TOP);
+        a.recycle();
 
         mContext = context;
         init();
+
     }
+
 
     private void init() {
         mTextPaint = new TextPaint();
@@ -92,6 +95,11 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         final CharSequence text = mTextStorage.getGlyphText();
         mLayout = new MongolLayout(text, 0, text.length(), mTextPaint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
 
+    }
+
+    // MongolEditText overrides this to return true
+    protected boolean getDefaultEditable() {
+        return false;
     }
 
     @Override
@@ -294,6 +302,40 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         }
     }
 
+    public int getOffsetForPosition (float x, float y) {
+        if (getLayout() == null) return -1;
+        final int line = getLineAtCoordinate(x); // vertical line
+        final int offset = getOffsetAtCoordinate(line, y);
+        return offset;
+    }
+
+    int getLineAtCoordinate(float x) {
+        x -= getTotalPaddingLeft();
+        // Clamp the position to inside of the view.
+        x = Math.max(0.0f, x);
+        x = Math.min(getWidth() - getTotalPaddingRight() - 1, x);
+        x += getScrollX();
+        return getLayout().getLineForHorizontal((int) x);
+    }
+
+    int getOffsetAtCoordinate(int line, float y) {
+        // the layout uses glyphs while the TextView uses Unicode
+        // so the index conversion happens here
+        y = convertToLocalVerticalCoordinate(y);
+        int glyphOffset = getLayout().getOffsetForVertical(line, y);
+        int unicodeOffset = mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
+        return unicodeOffset;
+    }
+
+    float convertToLocalVerticalCoordinate(float y) {
+        y -= getTotalPaddingTop();
+        // Clamp the position to inside of the view.
+        y = Math.max(0.0f, y);
+        y = Math.min(getHeight() - getTotalPaddingBottom() - 1, y);
+        y += getScrollY();
+        return y;
+    }
+
     @Override
     public boolean onPreDraw() {
         // this method helps solve the problem of incorrect width measuring
@@ -304,5 +346,27 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         }
         requestLayout();
         return false;
+    }
+
+    public MongolLayout getLayout() {
+        return mLayout;
+    }
+
+    // currently these only return the normal padding
+    // no gravity is taken into account
+    private int getTotalPaddingLeft() {
+        return getPaddingLeft();
+    }
+
+    private int getTotalPaddingTop() {
+        return getPaddingTop();
+    }
+
+    private int getTotalPaddingRight() {
+        return getPaddingRight();
+    }
+
+    private int getTotalPaddingBottom() {
+        return getPaddingBottom();
     }
 }
