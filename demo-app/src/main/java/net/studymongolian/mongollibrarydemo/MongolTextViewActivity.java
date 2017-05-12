@@ -40,7 +40,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
     MongolTextView mtvExample;
     private int mCheckedTextItem = 2;
-    private int mCheckedSizeItem = 0;
+    private int mCheckedSizeItem = 2;
     private int mCheckedFontItem = 0;
     private int mCheckedColorItem = 0;
     private int mCheckedAlignmentItem = 0;

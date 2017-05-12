@@ -326,7 +326,10 @@ public final class MongolCode {
                         outputString.append(Uni.FVS2);
                         break;
                     case Glyph.FINA_A_MVS:
-                        outputString.append(Uni.MVS);
+                        if (outputString.length() > 0 &&
+                                outputString.charAt(outputString.length() - 1) != Uni.MVS) {
+                            outputString.append(Uni.MVS);
+                        }
                         outputString.append(Uni.A);
                         break;
                     default:
@@ -339,7 +342,10 @@ public final class MongolCode {
                         outputString.append(Uni.FVS1);
                         break;
                     case Glyph.FINA_E_MVS:
-                        outputString.append(Uni.MVS);
+                        if (outputString.length() > 0 &&
+                                outputString.charAt(outputString.length() - 1) != Uni.MVS) {
+                            outputString.append(Uni.MVS);
+                        }
                         outputString.append(Uni.E);
                         break;
                     default:
@@ -404,6 +410,9 @@ public final class MongolCode {
                 } else {
                     outputString.append(Uni.NA);
                     switch (currentChar) {
+                        case Glyph.MEDI_NA_FVS2:
+                            outputString.append(Uni.MVS);
+                            break;
                         case Glyph.INIT_NA_FVS1_TOOTH:
                         case Glyph.INIT_NA_FVS1_STEM:
                             outputString.append(Uni.FVS1);
@@ -448,6 +457,10 @@ public final class MongolCode {
                     case Glyph.INIT_GA_FVS1_TOOTH:
                     case Glyph.INIT_GA_FVS1_STEM:
                         outputString.append(Uni.QA);
+                        break;
+                    case Glyph.MEDI_GA_FVS2:
+                        outputString.append(Uni.GA);
+                        outputString.append(Uni.MVS);
                         break;
                     default:
                         outputString.append(Uni.GA);

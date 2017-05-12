@@ -66,13 +66,10 @@ class MongolTextLine {
                 wp = mPaint;
             }
 
-            if (isRotated) {
-                measuredWidth = wp.getFontMetrics().bottom - wp.getFontMetrics().top;
-                measuredHeight = wp.measureText(mText, offset, offset + length);
-            } else {
-                measuredWidth = wp.measureText(mText, offset, offset + length);
-                measuredHeight = wp.getFontMetrics().bottom - wp.getFontMetrics().top;
-            }
+            // just record the normal non-rotated values here
+            // measure and draw will take rotation into account
+            measuredWidth = wp.measureText(mText, offset, offset + length);
+            measuredHeight = wp.getFontMetrics().bottom - wp.getFontMetrics().top;
         }
     }
 
@@ -119,7 +116,7 @@ class MongolTextLine {
         mPaint = paint;
         mHighlightPaint = new Paint();
         mText = text;
-        mTextRuns = new ArrayList<>(); // TODO recycle and reuse this for multiple lines
+        mTextRuns = new ArrayList<>(); // TODO recycle and reuse this for multiple lines?
         int charCount;
         int currentRunStart = start;
         int currentRunLength = 0;
@@ -231,7 +228,6 @@ class MongolTextLine {
      * @param bottom the bottom of the line
      */
     void draw(Canvas c, float x, float top, float y, int bottom) {
-        // FIXME top parameter is not being used
 
         // (x, y) are the start coordinates of each vertical line
         // where x is the top of the line and y is the baseline running down.
@@ -334,8 +330,13 @@ class MongolTextLine {
         float maxHeight = 0;
 
         for (TextRun run : mTextRuns) {
-            widthSum += run.measuredWidth;
-            maxHeight = Math.max(maxHeight, run.measuredHeight);
+            if (run.isRotated) {
+                widthSum += run.measuredHeight;
+                maxHeight = Math.max(maxHeight, run.measuredWidth);
+            } else {
+                widthSum += run.measuredWidth;
+                maxHeight = Math.max(maxHeight, run.measuredHeight);
+            }
         }
 
         // left, top, right, bottom (for horizontal line orientation)

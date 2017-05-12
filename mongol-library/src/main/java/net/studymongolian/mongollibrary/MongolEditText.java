@@ -166,7 +166,7 @@ public class MongolEditText extends MongolTextView {
             float x = super.mLayout.getLineBottom(line) + getPaddingLeft();
             float y = super.mLayout.getVertical(glyphStart) + getPaddingTop();
 
-            canvas.drawRect(x, y, x + width, y + 10, mCursorPaint);
+            canvas.drawRect(x, y, x + width, y + 2, mCursorPaint);
         } else {
             // TODO draw highlight
 
