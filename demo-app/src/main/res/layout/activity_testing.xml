@@ -11,11 +11,12 @@
         android:layout_height="wrap_content"
         android:onClick="buttonClick"/>
 
-    <net.studymongolian.mongollibrary.MongolTextView
-        android:id="@+id/textingView"
+    <net.studymongolian.mongollibrary.KeyText
+        android:id="@+id/textKey"
         android:layout_below="@id/testingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:padding="10dp"
         android:background="@android:color/white"/>
 
 </RelativeLayout>

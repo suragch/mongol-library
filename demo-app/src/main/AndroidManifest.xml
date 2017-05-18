@@ -29,6 +29,8 @@
                   android:name=".ConvertCodeActivity"/>
         <activity android:label="@string/mongol_font_activity_title"
                   android:name=".MongolFontActivity"/>
+        <activity android:label="@string/keyboard_activity_title"
+                  android:name=".KeyboardActivity"/>
     </application>
 
 </manifest>
