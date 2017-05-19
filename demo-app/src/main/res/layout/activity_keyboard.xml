@@ -16,7 +16,7 @@
     <net.studymongolian.mongollibrary.KeyboardAeiou
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:padding="10dp"
+        android:padding="2dp"
         android:background="@android:color/white"
         android:layout_alignParentBottom="true"/>
 

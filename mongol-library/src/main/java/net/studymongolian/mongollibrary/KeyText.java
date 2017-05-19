@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.support.v4.view.MotionEventCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ public class KeyText extends View {
 
     private static final String DEBUG_TAG = "TAG";
 
+    private MongolCode renderer = MongolCode.INSTANCE;
     private Paint mKeyPaint;
     private Paint mKeyBorderPaint;
     private TextPaint mTextPaint;
@@ -28,9 +30,9 @@ public class KeyText extends View {
     private String mText;
     private int mKeyColor;
     private int mPressedColor;
-    private int mTextColor;
-    private int mBorderColor;
-    private int mBorderWidth;
+//    private int mTextColor;
+//    private int mBorderColor;
+//    private int mBorderWidth;
     private int mBorderRadius;
 
     KeyText(Context context) {
@@ -49,44 +51,44 @@ public class KeyText extends View {
         initPaints();
     }
 
-    public KeyText(Context context, String text, int textColor, int keyColor, int pressedColor,
-                   int borderColor, int borderWidth, int borderRadius) {
-        super(context);
-        mText = text;
-        mTextColor = textColor;
-        mKeyColor = keyColor;
-        mPressedColor = pressedColor;
-        mBorderColor = borderColor;
-        mBorderWidth = borderWidth;
-        mBorderRadius = borderRadius;
-
-        //mSizeRect = new RectF();
-        initPaints();
-    }
+//    public KeyText(Context context, String text, int textColor, int keyColor, int pressedColor,
+//                   int borderColor, int borderWidth, int borderRadius) {
+//        super(context);
+//        mText = text;
+//        mTextColor = textColor;
+//        mKeyColor = keyColor;
+//        mPressedColor = pressedColor;
+//        mBorderColor = borderColor;
+//        mBorderWidth = borderWidth;
+//        mBorderRadius = borderRadius;
+//
+//        //mSizeRect = new RectF();
+//        initPaints();
+//    }
 
     private void initDefault() {
         mText = "abc";
-        mKeyColor = Color.LTGRAY;
+        //mKeyColor = Color.LTGRAY;
         mPressedColor = Color.GRAY;
-        mTextColor = Color.BLACK;
-        mBorderColor = Color.BLACK;
-        mBorderWidth = 10;
-        mBorderRadius = 30;
+        //mTextColor = Color.BLACK;
+        //mBorderColor = Color.BLACK;
+        //mBorderWidth = 10;
+        //mBorderRadius = 30;
     }
 
     private void initPaints() {
         mKeyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mKeyPaint.setStyle(Paint.Style.FILL);
-        mKeyPaint.setColor(mKeyColor);
+        //mKeyPaint.setColor(mKeyColor);
 
         mKeyBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mKeyBorderPaint.setStyle(Paint.Style.STROKE);
-        mKeyBorderPaint.setStrokeWidth(mBorderWidth);
-        mKeyBorderPaint.setColor(mBorderColor);
+        //mKeyBorderPaint.setStrokeWidth(mBorderWidth);
+        //mKeyBorderPaint.setColor(mBorderColor);
 
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(90);
-        mTextPaint.setColor(mTextColor);
+        //mTextPaint.setColor(mTextColor);
 
         mTextBounds = new Rect();
     }
@@ -137,4 +139,51 @@ public class KeyText extends View {
         }
     }
 
+    public void setText(String text) {
+        this.mText = renderer.unicodeToMenksoft(text);
+        invalidate();
+    }
+
+    public void setText(char text) {
+        setText(String.valueOf(text));
+    }
+
+    public void setTypeFace(Typeface typeface) {
+        mTextPaint.setTypeface(typeface);
+        invalidate();
+    }
+
+    public void setTextColor(int textColor) {
+        //this.mTextColor = textColor;
+        mTextPaint.setColor(textColor);
+        invalidate();
+    }
+
+    public void setKeyColor(int keyColor) {
+        mKeyPaint.setColor(keyColor);
+        this.mKeyColor = keyColor;
+        invalidate();
+    }
+
+    public void setPressedColor(int pressedColor) {
+        this.mPressedColor = pressedColor;
+        invalidate();
+    }
+
+    public void setBorderColor (int borderColor) {
+        //this.mBorderColor = borderColor;
+        mKeyBorderPaint.setColor(borderColor);
+        invalidate();
+    }
+
+    public void setBorderWidth (int borderWidth) {
+        //this.mBorderWidth = borderWidth;
+        mKeyBorderPaint.setStrokeWidth(borderWidth);
+        invalidate();
+    }
+
+    public void setBorderRadius (int borderRadius) {
+        this.mBorderRadius = borderRadius;
+        invalidate();
+    }
 }
