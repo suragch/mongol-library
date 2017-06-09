@@ -464,7 +464,7 @@ public class MongolLayout {
         int end = getLineEnd(line);
 
         MongolTextLine tl = MongolTextLine.obtain();
-        tl.set(mTextPaint, mText, start, offset);
+         tl.set(mTextPaint, mText, start, offset);
         float verticalLineHeight = tl.measure().width();
         MongolTextLine.recycle(tl);
 

@@ -64,13 +64,14 @@ public class KeyboardAeiou extends ViewGroup {
     private void init(Context context) {
 
         Typeface typeface = MongolFont.get(MongolFont.QAGAN, context);
+        float textSize = 24;
         int textColor = Color.BLACK;
         int keyColor = Color.LTGRAY;
         int pressedColor = Color.GRAY;
         int borderColor = Color.BLACK;
-        int borderWidth = 2;
-        int borderRadius = 10;
-        int padding = 10;
+        int borderWidth = 0;
+        int borderRadius = 5;
+        int padding = 2;
 
         // Row 1
 
@@ -178,6 +179,7 @@ public class KeyboardAeiou extends ViewGroup {
         for (int i = 0; i < getChildCount(); i++) {
             KeyText child = (KeyText) getChildAt(i);
             child.setTypeFace(typeface);
+            child.setTextSize(textSize);
             child.setTextColor(textColor);
             child.setKeyColor(keyColor);
             child.setPressedColor(pressedColor);

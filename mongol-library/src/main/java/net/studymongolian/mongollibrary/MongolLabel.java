@@ -184,7 +184,7 @@ public class MongolLabel extends View {
     /**
      * @param size in SP units
      */
-    public void setTextSize(int size) {
+    public void setTextSize(float size) {
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(mTextSizePx);

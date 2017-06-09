@@ -30,7 +30,11 @@ public class MongolEditTextActivity extends AppCompatActivity {
         if (mSampleTextIndex >= SAMPLE_TEXT.length) mSampleTextIndex = 0;
 
         // insert text padded with spaces
-        metDemoEditText.insertText(sample + " ");
+        //metDemoEditText.insertText(sample + " ");
+        int start = Math.max(metDemoEditText.getSelectionStart(), 0);
+        int end = Math.max(metDemoEditText.getSelectionEnd(), 0);
+        metDemoEditText.getText().replace(Math.min(start, end), Math.max(start, end),
+                sample, 0, sample.length());
     }
 
     public void deleteClick(View view) {

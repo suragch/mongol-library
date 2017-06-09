@@ -2,15 +2,25 @@ package net.studymongolian.mongollibrary;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 
 public class MongolEditText extends MongolTextView {
 
@@ -32,16 +42,106 @@ public class MongolEditText extends MongolTextView {
     private void init() {
 
         int textLength = super.getText().length();
-        setSelection(textLength);
+        setSelection(textLength); // TODO why did I do this?
 
         mCursorPaint = new Paint();
         mCursorPaint.setColor(Color.RED);
         mCursorPaint.setStyle(Paint.Style.FILL);
         mCursorPaint.setAntiAlias(true);
 
+        // allow system keyboard to show on touch
+        setFocusableInTouchMode(true);
 
+        // get notified of text changes
+        mTextStorage.setOnChangeListener(new MongolTextStorage.OnChangeListener() {
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+                // TODO just update the layout from the start position rather than everything
+                MongolEditText.super.mLayout.setText(mTextStorage.getGlyphText());
+                invalidate();
+                requestLayout();
+            }
+
+            @Override
+            public void onSpanChanged() {
+                // TODO only invalidate region affected by the span
+                invalidate();
+                // FIXME only need to request layout for metric affecting spans
+                requestLayout();
+            }
+        });
+
+        // handle key presses not handled by the InputConnection
+        setOnKeyListener(new OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+
+                    int start = getSelectionStart();
+                    int end = getSelectionEnd();
+
+                    // check if there is a selection
+                    if (start < 0 || end < 0) return false;
+
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {              // key backspace
+                        if (start == end) {
+                            if (start <= 0) return false;
+                            mTextStorage.delete(start - 1, start);
+                        } else {
+                            // delete highlighted text
+                            mTextStorage.delete(start, end);
+                        }
+                    } else if (keyCode == KeyEvent.KEYCODE_ENTER) {     // key enter
+
+                        String text = "\n";
+                        if (start != end) {
+                            mTextStorage.delete(start, end);
+                        }
+                        mTextStorage.insert(start, text);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
 
     }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+
+        //outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+        //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE; // TODO is this right?
+
+        //outAttrs.inputType = InputType.TYPE_CLASS_NUMBER;
+        outAttrs.inputType = InputType.TYPE_CLASS_TEXT;
+        //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
+
+        return new MetInputConnection(this, true);
+    }
+
+
+    public void showSystemKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
+    }
+
+    @Override
+    public boolean onCheckIsTextEditor() {
+        return true;
+    }
+
+//    @Override
+//    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+//        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (focused) {
+//            imm.showSoftInput(this, 0);
+//        } else {
+//            imm.hideSoftInputFromWindow(getWindowToken(), 0);
+//        }
+//    }
 
     @Override
     protected boolean getDefaultEditable() {
@@ -80,15 +180,21 @@ public class MongolEditText extends MongolTextView {
                 setSelection(offset);
                 invalidate();
 
+                showSystemKeyboard();
+
                 break;
         }
         return true;
     }
 
     @Override
-    public SpannableStringBuilder getText() {
-        return (SpannableStringBuilder) super.getText();
+    public Editable getText() {
+        return mTextStorage;
     }
+
+//    public Editable getTextStorage() {
+//        return mTextStorage;
+//    }
 
     public void setSelection(int start, int stop) {
         Selection.setSelection(getText(), start, stop);
@@ -155,7 +261,7 @@ public class MongolEditText extends MongolTextView {
         int start = getSelectionStart();
         int end = getSelectionEnd();
 
-        // don't draw anything is there is no selection
+        // don't draw anything if there is no selection
         if (start < 0 || end < 0) return;
 
         if (start == end) {
@@ -217,4 +323,20 @@ public class MongolEditText extends MongolTextView {
         invalidate();
         requestLayout();
     }
+
+    // allow the input connection to notify of text commits
+    void textChanged() {
+        invalidate();
+        requestLayout();
+    }
+
+//    @Override
+//    public void onFocusChange(View v, boolean hasFocus) {
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (hasFocus) {
+//            imm.showSoftInput(v, 0);
+//        } else {
+//            imm.hideSoftInputFromWindow(getWindowToken(), 0);
+//        }
+//    }
 }

@@ -23,26 +23,41 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
+import android.view.inputmethod.BaseInputConnection;
 
 
-class MongolTextStorage implements Editable {
+public class MongolTextStorage implements Editable {
 
     private CharSequence mUnicodeText;
     private CharSequence mGlyphText;
     private MongolCode mRenderer;
     //private int[] mGlyphArrayWithUnicodeIndexes;
     private int[] mUnicodeArrayWithGlyphIndexes;
+    private OnChangeListener mChangelistener;
 
     MongolTextStorage() {
-        mRenderer = MongolCode.INSTANCE;
-        mUnicodeText = "";
-        mGlyphText = "";
+        this("");
     }
 
     MongolTextStorage(CharSequence unicodeText) {
         mRenderer = MongolCode.INSTANCE;
+        this.mChangelistener = null;
         setText(unicodeText);
     }
+
+    // callback methods to let EditText (or other view) know about changes
+    // to the text here
+    public interface OnChangeListener {
+        void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter);
+        void onSpanChanged();
+        // TODO pass more data into onSpanChanged
+        // void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd);
+    }
+
+    public void setOnChangeListener(OnChangeListener listener) {
+        this.mChangelistener = listener;
+    }
+
 
     CharSequence getUnicodeText() {
         return mUnicodeText;
@@ -54,9 +69,14 @@ class MongolTextStorage implements Editable {
 
     public void setText(CharSequence unicodeText) {
         if (unicodeText == null) {
-            mUnicodeText = "";
-            mGlyphText = "";
-            return;
+            unicodeText = "";
+        }
+
+        int oldLength;
+        if (mUnicodeText == null) {
+            oldLength = 0;
+        } else {
+            oldLength = mUnicodeText.length();
         }
 
         mUnicodeText = unicodeText;
@@ -65,6 +85,9 @@ class MongolTextStorage implements Editable {
         } else {
             mGlyphText = mRenderer.unicodeToMenksoft(unicodeText.toString());
         }
+
+        if (mChangelistener != null)
+            mChangelistener.onTextChanged(mUnicodeText, 0, oldLength, mUnicodeText.length());
     }
 
     // FIXME this is hugely inefficient because it recalculates everything rather than a range
@@ -104,16 +127,6 @@ class MongolTextStorage implements Editable {
         return index;
     }
 
-//    private char getUnicodeCharAt(int unicodeIndex) {
-//        // TODO
-//        return 0;
-//    }
-//
-//    private char getGlyphCharAt(int glyphIndex) {
-//        // TODO
-//        return 0;
-//    }
-
     // Editable interface methods
 
     @Override
@@ -121,8 +134,21 @@ class MongolTextStorage implements Editable {
         if (!(mUnicodeText instanceof SpannableStringBuilder)) {
             mUnicodeText = new SpannableStringBuilder(mUnicodeText);
         }
+
+        int oldLength;
+        if (mUnicodeText == null) {
+            oldLength = 0;
+        } else {
+            oldLength = mUnicodeText.length();
+        }
+
         ((SpannableStringBuilder) mUnicodeText).replace(st, en, source, start, end);
+
         updateGlyphInfoForSpannedText();
+
+        if (mChangelistener != null)
+            mChangelistener.onTextChanged(mUnicodeText, st, oldLength, mUnicodeText.length());
+
         return this;
     }
 
@@ -136,8 +162,20 @@ class MongolTextStorage implements Editable {
         if (!(mUnicodeText instanceof SpannableStringBuilder)) {
             mUnicodeText = new SpannableStringBuilder(mUnicodeText);
         }
+
+        int oldLength;
+        if (mUnicodeText == null) {
+            oldLength = 0;
+        } else {
+            oldLength = mUnicodeText.length();
+        }
+
         ((SpannableStringBuilder) mUnicodeText).insert(where, text, start, end);
         updateGlyphInfoForSpannedText();
+
+        if (mChangelistener != null)
+            mChangelistener.onTextChanged(mUnicodeText, where, oldLength, mUnicodeText.length());
+
         return this;
     }
 
@@ -178,6 +216,9 @@ class MongolTextStorage implements Editable {
         }
         ((SpannableStringBuilder) mUnicodeText).clearSpans();
         updateGlyphInfoForSpannedText();
+
+        if (mChangelistener != null)
+            mChangelistener.onSpanChanged();
     }
 
     @Override
@@ -187,6 +228,7 @@ class MongolTextStorage implements Editable {
         }
         ((SpannableStringBuilder) mUnicodeText).setFilters(filters);
         // TODO does mGlyphText need to be updated in any way?
+        // TODO does mChangelistener need to be notified?
     }
 
     @Override
@@ -213,6 +255,9 @@ class MongolTextStorage implements Editable {
         }
         ((SpannableStringBuilder) mUnicodeText).setSpan(what, start, end, flags);
         updateGlyphInfoForSpannedText();
+
+        if (mChangelistener != null)
+            mChangelistener.onSpanChanged();
     }
 
     @Override
@@ -225,6 +270,9 @@ class MongolTextStorage implements Editable {
         }
         ((SpannableStringBuilder) mUnicodeText).removeSpan(what);
         updateGlyphInfoForSpannedText();
+
+        if (mChangelistener != null)
+            mChangelistener.onSpanChanged();
     }
 
     @Override

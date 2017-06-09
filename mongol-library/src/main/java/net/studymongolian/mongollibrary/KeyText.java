@@ -11,6 +11,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -103,17 +104,32 @@ public class KeyText extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBounds);
-        int textHeight = mTextBounds.height();
-        int textWidth = mTextBounds.width();
 
+        // draw background and border
         canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyPaint);
-        canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyBorderPaint);
+        if (mKeyBorderPaint.getStrokeWidth() > 0) {
+            canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyBorderPaint);
+        }
+
+        // calculate position for centered text
         canvas.rotate(90);
-        float verticalAdjust = (getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth) / 2;
-        float horizontalAdjust = (getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - textHeight) / 2;
-        canvas.drawText(mText, getPaddingTop() + verticalAdjust,
-                -getPaddingLeft() - horizontalAdjust, mTextPaint);
+        mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBounds);
+        int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+        int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        float x = getPaddingTop() + (keyHeight - mTextBounds.right)/2;
+        float y = -getPaddingLeft() - mTextBounds.bottom - (keyWidth - mTextBounds.height())/2;
+
+        // automatically resize text that is too large
+        int threshold = keyHeight * 8 / 10;
+        if (mTextBounds.width() > threshold) {
+            float proportion = 0.8f * keyHeight / mTextBounds.width();
+            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
+            x += mTextBounds.width() * (1 - proportion) / 2;
+            y -= mTextBounds.height() * (1 - proportion) / 2;
+        }
+
+        // draw text
+        canvas.drawText(mText, x, y, mTextPaint);
 
     }
 
@@ -150,6 +166,13 @@ public class KeyText extends View {
 
     public void setTypeFace(Typeface typeface) {
         mTextPaint.setTypeface(typeface);
+        invalidate();
+    }
+
+    public void setTextSize(float sizeSP) {
+        float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                sizeSP, getResources().getDisplayMetrics());
+        mTextPaint.setTextSize(sizePx);
         invalidate();
     }
 
