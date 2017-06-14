@@ -104,7 +104,7 @@ public class MongolTextStorage implements Editable {
             int unicodeStart = ((Spanned) mUnicodeText).getSpanStart(span);
             int unicodeEnd = ((Spanned) mUnicodeText).getSpanEnd(span);
             int glyphStart = mUnicodeArrayWithGlyphIndexes[unicodeStart];
-            int glyphEnd = mUnicodeArrayWithGlyphIndexes[unicodeEnd];
+            int glyphEnd = mUnicodeArrayWithGlyphIndexes[unicodeEnd - 1] + 1;
             spannable.setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         mGlyphText = spannable;
@@ -328,5 +328,10 @@ public class MongolTextStorage implements Editable {
     @Override
     public CharSequence subSequence(int start, int end) {
         return mUnicodeText.subSequence(start, end);
+    }
+
+    @Override
+    public String toString() {
+        return mUnicodeText.toString();
     }
 }

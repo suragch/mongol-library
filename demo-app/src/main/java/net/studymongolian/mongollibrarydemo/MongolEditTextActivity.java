@@ -3,6 +3,7 @@ package net.studymongolian.mongollibrarydemo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import net.studymongolian.mongollibrary.MongolEditText;
 
@@ -38,6 +39,21 @@ public class MongolEditTextActivity extends AppCompatActivity {
     }
 
     public void deleteClick(View view) {
-        metDemoEditText.backspace();
+        int start = Math.max(metDemoEditText.getSelectionStart(), 0);
+        int end = Math.max(metDemoEditText.getSelectionEnd(), 0);
+        if (start == end) {
+            if (start > 0) {
+                metDemoEditText.getText().delete(start - 1, start);
+            }
+        } else {
+            metDemoEditText.getText().delete(start, end);
+        }
     }
+
+    public void keyboardClick(View view) {
+        InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        im.showInputMethodPicker();
+    }
+
+
 }

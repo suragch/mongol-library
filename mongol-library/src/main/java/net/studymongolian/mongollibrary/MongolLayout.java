@@ -187,6 +187,13 @@ public class MongolLayout {
         // TODO
     }
 
+    // adding this because cursor blinking crashes on rotation
+    // because it is trying to get info before line is ready
+    // (this may not be the best way to solve that problem, though)
+    boolean getNeedsLineUpdate() {
+        return needsLineUpdate;
+    }
+
     private void updateLines() {
         needsLineUpdate = false;
         if (mHeight <= 0)
@@ -379,7 +386,8 @@ public class MongolLayout {
     }
 
     int getLineCount () {
-        return mLinesInfo.size();
+        return mLinesInfo != null ? mLinesInfo.size() : 0;
+        //return mLinesInfo.size();
     }
 
     int getLineEnd (int line) {
@@ -455,8 +463,7 @@ public class MongolLayout {
 //
 //    }
 
-    float
-    getVertical (int offset) {
+    float getVertical (int offset) {
         if (offset < 0) return 0;
 
         int line = getLineForOffset(offset);
