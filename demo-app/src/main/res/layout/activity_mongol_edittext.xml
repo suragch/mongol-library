@@ -42,6 +42,13 @@
             android:layout_height="wrap_content"/>
 
         <Button
+            android:text="select"
+            android:onClick="selectTextClick"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <Button
             android:text="delete"
             android:onClick="deleteClick"
             android:layout_width="0dp"

@@ -30,12 +30,15 @@ public class MongolEditTextActivity extends AppCompatActivity {
         mSampleTextIndex++;
         if (mSampleTextIndex >= SAMPLE_TEXT.length) mSampleTextIndex = 0;
 
-        // insert text padded with spaces
-        //metDemoEditText.insertText(sample + " ");
+        // insert text padded with a space
         int start = Math.max(metDemoEditText.getSelectionStart(), 0);
         int end = Math.max(metDemoEditText.getSelectionEnd(), 0);
-        metDemoEditText.getText().replace(Math.min(start, end), Math.max(start, end),
-                sample, 0, sample.length());
+        if (start != end) {
+            metDemoEditText.getText().delete(start, end);
+        }
+        metDemoEditText.getText().insert(start, sample + " ");
+        //metDemoEditText.getText().replace(Math.min(start, end), Math.max(start, end),
+        //        sample + " ", 0, sample.length());
     }
 
     public void deleteClick(View view) {
@@ -56,4 +59,7 @@ public class MongolEditTextActivity extends AppCompatActivity {
     }
 
 
+    public void selectTextClick(View view) {
+        metDemoEditText.selectAll();
+    }
 }
