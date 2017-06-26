@@ -47,11 +47,11 @@ public final class MongolCode {
     // Constructor
     private MongolCode() {}
 
-    public String unicodeToMenksoft(String inputString) {
+    public String unicodeToMenksoft(CharSequence inputString) {
         return unicodeToMenksoft(inputString, null);
     }
 
-    public String unicodeToMenksoft(String inputString, int[] glyphIndexes) {
+    public String unicodeToMenksoft(CharSequence inputString, int[] glyphIndexes) {
 
         if (inputString == null) {
             return null;
@@ -575,9 +575,17 @@ public final class MongolCode {
 
             if (isFVS(currentChar)) {
                 fvs = currentChar;
+                // FIXME this code is not DRY
+                if (glyphIndexes != null) {
+                    glyphIndexes[lastUnicodeIndex - length  + 1 + i] = NON_PRINTING_CHAR; // FIXME
+                }
                 continue;
             } else if (currentChar == Uni.MVS && i != length - 2) {
                 // ignore MVS in all but second to last position
+                // FIXME this code is not DRY
+                if (glyphIndexes != null) {
+                    glyphIndexes[lastUnicodeIndex - length  + 1 + i] = NON_PRINTING_CHAR; // FIXME
+                }
                 continue;
             }
 
@@ -1756,6 +1764,8 @@ public final class MongolCode {
                                         } else {
                                             // omit the Y if YI is at the end of a word
                                         }
+                                        // XXX if changing this then also need to update
+                                        // the glyph indexing in MongolTextStorage
                                         glyphIndexNeedsAdjusting = true;
                                     } else if (isConsonant(charBelow)) {
                                         renderedWord.insert(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
@@ -2144,7 +2154,7 @@ public final class MongolCode {
                 character == Uni.KA || character == Uni.KHA);
     }
 
-    private static boolean isVowel(char character) {
+    static boolean isVowel(char character) {
         return (character >= Uni.A && character <= Uni.EE);
     }
 
@@ -2164,7 +2174,7 @@ public final class MongolCode {
         return (character >= Uni.NA && character <= Uni.CHI);
     }
 
-    private boolean isFVS(char character) {
+    static boolean isFVS(char character) {
         return (character >= Uni.FVS1 && character <= Uni.FVS3);
     }
 
@@ -2178,7 +2188,7 @@ public final class MongolCode {
                 (vowel == Uni.UE && fvs == Uni.FVS3);
     }
 
-    private static boolean isMongolian(char character) {
+    static boolean isMongolian(char character) {
         // Mongolian letters, MVS, FVS1-3, NIRUGU, Uni.ZWJ, (but not NNBS)
         return ((character >= Uni.A && character <= Uni.CHI)
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS) || character == Uni.ZWJ);

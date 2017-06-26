@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/suragch/mongol-library'
     gitUrl = 'https://github.com/suragch/mongol-library.git'
 
-    libraryVersion = '0.1.0'
+    libraryVersion = '0.2.0'
 
     developerId = 'suragch'
     developerName = 'Suragch'

@@ -88,7 +88,7 @@ public class MongolEditText extends MongolTextView {
             }
 
             @Override
-            public void onSpanChanged() {
+            public void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd) {
                 // TODO only invalidate region affected by the span
                 invalidate();
                 // FIXME only need to request layout for metric affecting spans
@@ -223,6 +223,7 @@ public class MongolEditText extends MongolTextView {
             BreakIterator iterator = BreakIterator.getWordInstance();
             iterator.setText(getText().toString());
 
+            // start and end are the word boundaries;
             int start;
             if (iterator.isBoundary(offset)) {
                 start = offset;
@@ -231,12 +232,24 @@ public class MongolEditText extends MongolTextView {
             }
             int end = iterator.following(offset);
 
+            // handle tapping at the very beginning or end.
+            if (end == BreakIterator.DONE) {
+                end = start;
+                start = iterator.preceding(offset);
+                if (start == BreakIterator.DONE) start = end;
+            }
+
             setSelection(start, end);
 
             return super.onDoubleTap(e);
         }
 
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
+            Log.i("TAG", "onScroll: " + e1.getX() + " " + e1.getY() + " "  + e2.getX() + " " + e2.getY() + " " + distanceX + " " + distanceY);
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
     }
 
 

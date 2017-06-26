@@ -8,29 +8,40 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin">
 
-    <HorizontalScrollView
-        android:id="@+id/hsvEditTextContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true">
+    <!--<HorizontalScrollView-->
+        <!--android:id="@+id/hsvEditTextContainer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:fillViewport="true">-->
+
+        <!--<net.studymongolian.mongollibrary.MongolEditText-->
+            <!--android:id="@+id/metExample"-->
+            <!--app:text=""-->
+            <!--app:textSize="30sp"-->
+            <!--android:padding="10dp"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:background="@android:color/white"-->
+            <!--/>-->
+
+    <!--</HorizontalScrollView>-->
+
 
         <net.studymongolian.mongollibrary.MongolEditText
             android:id="@+id/metExample"
             app:text=""
             app:textSize="30sp"
             android:padding="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@android:color/white"
             />
-
-    </HorizontalScrollView>
 
 
 
 
     <LinearLayout
-        android:layout_below="@id/hsvEditTextContainer"
+        android:layout_below="@id/metExample"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
