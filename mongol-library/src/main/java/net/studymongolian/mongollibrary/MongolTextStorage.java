@@ -129,12 +129,12 @@ public class MongolTextStorage implements Editable {
         int glyphIndex = 0;
         if (start > 0) {
             glyphIndex = getGlyphIndexForUnicodeIndex(start - 1);
-            if (glyphIndex > 0 || isVisibleGlyphChar(0, mUnicodeText)) {
+            if (glyphIndex > 0 || MongolCode.isRenderedGlyph(0, mUnicodeText)) {
                 indexingHasStarted = true;
             }
         }
         for (int i = start; i < mUnicodeText.length(); i++) {
-            if (isVisibleGlyphChar(i, mUnicodeText)) {
+            if (MongolCode.isRenderedGlyph(i, mUnicodeText)) {
                 if (indexingHasStarted) {
                     glyphIndex++;
                 }
@@ -215,21 +215,21 @@ public class MongolTextStorage implements Editable {
         return wordEnd;
     }
 
-    // MVS, FVS, and sometimes YA are excluded in the glyph indexing
-    private boolean isVisibleGlyphChar(int index, CharSequence someString) {
-        final char someChar = someString.charAt(index);
-        if (someChar == MongolCode.Uni.MVS) return false;
-        if (MongolCode.isFVS(someChar)) return false;
-        // Y is hidden in Vowel + Y + I
-        if (someChar == MongolCode.Uni.YA) {
-            if (index > 0 && index < someString.length() - 1 &&
-                    MongolCode.isVowel(someString.charAt(index - 1)) &&
-                    someString.charAt(index + 1) == MongolCode.Uni.I) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    // MVS, FVS, and sometimes YA are excluded in the glyph indexing
+//    private boolean isVisibleGlyphChar(int index, CharSequence someString) {
+//        final char someChar = someString.charAt(index);
+//        if (someChar == MongolCode.Uni.MVS) return false;
+//        if (MongolCode.isFVS(someChar)) return false;
+//        // Y is hidden in Vowel + Y + I
+//        if (someChar == MongolCode.Uni.YA) {
+//            if (index > 0 && index < someString.length() - 1 &&
+//                    MongolCode.isVowel(someString.charAt(index - 1)) &&
+//                    someString.charAt(index + 1) == MongolCode.Uni.I) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
 //    private int getGlyphIndex(int unicodeIndex) {
 //        if (unicodeIndex == 0) {

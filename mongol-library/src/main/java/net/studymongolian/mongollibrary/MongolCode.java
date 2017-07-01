@@ -2194,6 +2194,21 @@ public final class MongolCode {
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS) || character == Uni.ZWJ);
     }
 
+    // MVS, FVS, ZWJ and sometimes YA are excluded in the glyph indexing
+    static boolean isRenderedGlyph(int index, CharSequence someString) {
+        final char someChar = someString.charAt(index);
+        if (someChar == Uni.MVS || isFVS(someChar) || someChar == Uni.ZWJ) return false;
+        // Y is hidden in Vowel + Y + I
+        if (someChar == MongolCode.Uni.YA) {
+            if (index > 0 && index < someString.length() - 1 &&
+                    isVowel(someString.charAt(index - 1)) &&
+                    someString.charAt(index + 1) == Uni.I) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean isBGDRS(char character) {
         // This method is not used internally, only for external use.
         return (character == Uni.BA || character == Uni.GA || character == Uni.DA
