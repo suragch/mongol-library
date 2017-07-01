@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="native-lib-loader-2.0.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/caches/modules-2/files-2.1/org.scijava/native-lib-loader/2.0.2/1451fa03954c5e31a358b411147de472b4dab92c/native-lib-loader-2.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/caches/modules-2/files-2.1/org.scijava/native-lib-loader/2.0.2/b1e0fa440cac2b1ba8ee6694f5a70cd4d79ff85b/native-lib-loader-2.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

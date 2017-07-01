@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="junixsocket-native-common-2.0.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/caches/modules-2/files-2.1/com.kohlschutter.junixsocket/junixsocket-native-common/2.0.4/726bd66a934dea39c817382986496fa4eda96411/junixsocket-native-common-2.0.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/caches/modules-2/files-2.1/com.kohlschutter.junixsocket/junixsocket-native-common/2.0.4/c5c3baaf3ca3fe0012ac6826a232e45ffa704c30/junixsocket-native-common-2.0.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

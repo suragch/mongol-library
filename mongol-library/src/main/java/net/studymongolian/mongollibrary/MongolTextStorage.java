@@ -17,12 +17,14 @@ package net.studymongolian.mongollibrary;
 // XXX can we keep this class package private?
 // Is it actually needed by app developers?
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.view.inputmethod.BaseInputConnection;
 
@@ -143,6 +145,8 @@ public class MongolTextStorage implements Editable {
             mGlyphIndexes.set(i, glyphIndex);
         }
 
+        if (!(mUnicodeText instanceof Spanned)) return;
+
         // add spans to glyph string
         CharacterStyle[] spans = ((Spanned) mUnicodeText).getSpans(start, end, CharacterStyle.class);
         int glyphStart = getGlyphIndexForUnicodeIndex(start);
@@ -151,10 +155,6 @@ public class MongolTextStorage implements Editable {
             ((SpannableStringBuilder) mGlyphText).setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
-
-//    private void updateGlyphSpansForUnicodeRange(int start, int end) {
-//
-//    }
 
     int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
         // allow an index one past the end to support cursor selection
