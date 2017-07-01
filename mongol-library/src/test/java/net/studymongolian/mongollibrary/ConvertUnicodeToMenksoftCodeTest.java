@@ -5121,6 +5121,15 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
+    public void chechegmaWord() throws Exception {
+        String unicode = "ᠴᠡᠴᠡᠭᠮ᠎ᠡ"; // CHECHEGM(MVS)A
+        String result = convert(unicode);
+        String expected = "\uE315\uE276\uE317\uE276\uE2F0\uE2F3\uE274";
+        assertEquals(expected, result);
+    }
+
+
+    @Test
     public void sigDefaultWord() throws Exception {
         String unicode = "ᠰᠢᠭ"; // SIG
         String result = convert(unicode);
