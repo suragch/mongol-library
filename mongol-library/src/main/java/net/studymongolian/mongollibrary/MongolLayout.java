@@ -332,11 +332,12 @@ public class MongolLayout {
     public void setHeight(int height) {
         if (height == mHeight)
             return;
-        if (height < 0)
-            throw new IllegalArgumentException("height cannot be less than 0");
-
-        mHeight = height;
-        needsLineUpdate = true;
+        if (height < 0) {
+            mHeight = 0;
+        } else {
+            mHeight = height;
+            needsLineUpdate = true;
+        }
     }
 
     public int getWidth() {

@@ -11,6 +11,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.MetricAffectingSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -354,7 +355,7 @@ class MongolTextLine {
             final int start = run.offset;
             final int length = run.length;
             newWidth += run.measuredWidth;
-            if (advance > newWidth) {
+            if (advance >= newWidth) {
                 oldWidth = newWidth;
                 offset += length;
             } else { // overshot so break up the run to the nearest offset
@@ -379,6 +380,9 @@ class MongolTextLine {
                 int runOffset = wp.breakText(mText, start, start + length, true, advance, measuredWidth);
                 offset += runOffset;
                 newWidth += measuredWidth[0];
+                if (start + runOffset + 1 > mText.length()) {
+                    Log.i("TAG", "getOffsetForAdvance: this is going to throw an error");
+                }
                 float widthOfNextChar = wp.measureText(mText, start + runOffset, start + runOffset + 1);
                 // choose the closer offset
                 if (advance - newWidth > newWidth + widthOfNextChar - advance) {

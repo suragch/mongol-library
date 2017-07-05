@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -82,7 +83,7 @@ public class MongolTextStorage implements Editable {
 
         mUnicodeText = unicodeText;
         mGlyphText = mRenderer.unicodeToMenksoft(unicodeText);
-        if (mUnicodeText instanceof SpannableStringBuilder) {
+        if (mUnicodeText instanceof Spannable) {
             mGlyphText = new SpannableStringBuilder(mGlyphText);
         }
         mGlyphIndexes = new ArrayList<>();
@@ -149,9 +150,11 @@ public class MongolTextStorage implements Editable {
 
         // add spans to glyph string
         CharacterStyle[] spans = ((Spanned) mUnicodeText).getSpans(start, end, CharacterStyle.class);
-        int glyphStart = getGlyphIndexForUnicodeIndex(start);
-        int glyphEnd = getGlyphIndexForUnicodeIndex(end);
         for (CharacterStyle span : spans) {
+            final int unicodeStart = ((Spanned) mUnicodeText).getSpanStart(span);
+            final int unicodeEnd = ((Spanned) mUnicodeText).getSpanEnd(span);
+            final int glyphStart = getGlyphIndexForUnicodeIndex(unicodeStart);
+            final int glyphEnd = getGlyphIndexForUnicodeIndex(unicodeEnd);
             ((SpannableStringBuilder) mGlyphText).setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }

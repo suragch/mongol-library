@@ -43,6 +43,11 @@ public class MongolEditText extends MongolTextView {
     private Path mCursorPath;
     private GestureDetector mDetector;
 
+    private int mSelectionHandle = SCROLLING_UNKNOWN;
+    private static final int SCROLLING_UNKNOWN = 0;
+    private static final int SCROLLING_START = 1;
+    private static final int SCROLLING_END = 2;
+
 
     public MongolEditText(Context context) {
         this(context, null);
@@ -89,18 +94,11 @@ public class MongolEditText extends MongolTextView {
 
             @Override
             public void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd) {
+                Log.i("TAG", "onSpanChanged: ");
                 // TODO only invalidate region affected by the span
                 invalidate();
                 // FIXME only need to request layout for metric affecting spans
                 requestLayout();
-
-                // make cursor blink after inserting text etc
-//                int start = getSelectionStart();
-//                int end = getSelectionEnd();
-//                if (start >= 0 && start == end) MongolEditText.this.startBlinking();
-
-//                Log.i("TAG", "onSpanChanged: jkasdhflkjasdhflkajsdhf");
-//                startBlinking();
             }
         });
 
@@ -189,6 +187,16 @@ public class MongolEditText extends MongolTextView {
     class mListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
+            int x = (int) e.getX();
+            int y = (int) e.getY();
+            int start = getSelectionStart();
+            int end = getSelectionEnd();
+            int offset = getOffsetForPosition(x, y);
+            if (Math.abs(start - offset) <= Math.abs(end - offset)) {
+                mSelectionHandle = SCROLLING_START;
+            } else {
+                mSelectionHandle = SCROLLING_END;
+            }
             return true;
         }
 
@@ -247,7 +255,28 @@ public class MongolEditText extends MongolTextView {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
-            Log.i("TAG", "onScroll: " + e1.getX() + " " + e1.getY() + " "  + e2.getX() + " " + e2.getY() + " " + distanceX + " " + distanceY);
+            // if there is no selection then return
+            int start = getSelectionStart();
+            int end = getSelectionEnd();
+
+
+            //int xDown = (int) e1.getX();
+            //int yDown = (int) e1.getY();
+
+            int xMove = (int) e2.getX();
+            int yMove = (int) e2.getY();
+
+            int moveOffset = getOffsetForPosition(xMove, yMove);
+            if (mSelectionHandle == SCROLLING_START) {
+                start = moveOffset;
+            } else if (mSelectionHandle == SCROLLING_END) {
+                end = moveOffset;
+            }
+
+            setSelection(start, end);
+
+            // todo should end be forbidden from going before start?
+
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
     }
@@ -266,6 +295,7 @@ public class MongolEditText extends MongolTextView {
     }
 
     public void setSelection(int start, int stop) {
+        Log.i("TAG", "setSelection: ");
         Selection.setSelection(getText(), start, stop);
     }
 
@@ -380,7 +410,7 @@ public class MongolEditText extends MongolTextView {
         mCursorPath.reset();
         if (xStart == xEnd) { // one rect on a single line
             mCursorPath.addRect(xStart, yStart, xStart + widthStart, yEnd, Path.Direction.CW);
-        } else if (yStart >= yEnd) { // two rects on two lines
+        } else if (yStart >= yEnd && lineStart == lineEnd + 1) { // two rects on two adjacent lines
             mCursorPath.addRect(xStart, yStart, xStart + widthStart,
                     getPaddingTop() + mLayout.getHeight(), Path.Direction.CW);
             mCursorPath.addRect(xEnd, getPaddingTop(), xEnd + widthEnd, yEnd, Path.Direction.CW);
