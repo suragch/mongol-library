@@ -122,16 +122,17 @@ public class MongolEditText extends MongolTextView {
                             mTextStorage.delete(start, end);
                         }
                         return true;
-                    } else if (keyCode == KeyEvent.KEYCODE_ENTER) {     // key enter
+                        // TODO are there any other control keys that we should handle?
+                    } else if (event.getUnicodeChar() != 0) {          // key enter, numbers, etc
 
-                        String text = "\n";
+                        String text = String.valueOf((char) event.getUnicodeChar());
+                        // TODO Handle dead keys? https://stackoverflow.com/a/44982429
                         if (start != end) {
                             mTextStorage.delete(start, end);
                         }
                         mTextStorage.insert(start, text);
                         return true;
                     }
-
                 }
                 return false;
             }
