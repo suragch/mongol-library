@@ -148,12 +148,11 @@ public class MongolEditText extends MongolTextView {
     @Override
     public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
 
-        //outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+        //outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS; // TODO what are flags?
         //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE; // TODO is this right?
 
         //outAttrs.inputType = InputType.TYPE_CLASS_NUMBER;
-        outAttrs.inputType = InputType.TYPE_CLASS_TEXT;
-        //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
+        outAttrs.inputType = InputType.TYPE_CLASS_TEXT; // TODO allow user to set type class
 
         return new MetInputConnection(this, true);
     }
@@ -433,6 +432,7 @@ public class MongolEditText extends MongolTextView {
 
 
     private boolean shouldBlink() {
+        //Log.i("TAG", "shouldBlink: ");
         if (!mCursorVisible || !isFocused()) return false;
 
         final int start = getSelectionStart();
@@ -444,6 +444,7 @@ public class MongolEditText extends MongolTextView {
         return start == end;
     }
 
+    // FIXME do I need to cancel this when user leaves app? Check logging
     // alternate the view's background color
     Runnable mBlink = new Runnable() {
         @Override
@@ -453,7 +454,9 @@ public class MongolEditText extends MongolTextView {
 
             if (shouldBlink()) {
                 if (mLayout != null && !mLayout.getNeedsLineUpdate()) {
+                    Log.i("TAG", "run: ");
                     MongolEditText.this.invalidateCursorPath();
+                    //MongolEditText.this.invalidate();
                     mIsBlinkOn = !mIsBlinkOn;
                 }
 

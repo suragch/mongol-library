@@ -216,7 +216,7 @@ public class MongolLayout {
         int lineStart = start;
         float measuredSum = 0;
         RectF measuredSize;
-        int top = 0; // cummulative sum of line heights
+        int top = 0; // cumulative sum of line heights
         float lineHeightMax = 0;
         boolean hadToSplitWord = false;
         MongolTextLine tl = MongolTextLine.obtain();
@@ -308,6 +308,11 @@ public class MongolLayout {
 
         // add any last line info
         if (measuredSum > 0 || (mText.length() > 0 && mText.charAt(mText.length() - 1) == '\n')) {
+            if (lineHeightMax == 0) {
+                // using the standard line height
+                // TODO should be using a different height if there is a span
+                lineHeightMax = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
+            }
             top += lineHeightMax;
             mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
             //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
@@ -480,12 +485,7 @@ public class MongolLayout {
         return verticalLineHeight;
     }
 
-//    void getSelectionPath (int start,
-//                           int end,
-//                           Path dest) {
-//
-//    }
-//
+// TODO add spacing
 //    float getSpacingAdd () {
 //
 //    }
