@@ -284,6 +284,7 @@ public class MongolLayout {
                     end = boundary.next();
                 }
                 hadToSplitWord = false;
+                forceNewLine = false;
             } else {
                 start = end;
                 end = boundary.next();
