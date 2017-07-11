@@ -51,7 +51,9 @@ public class MongolLabel extends View {
                 attrs, R.styleable.MongolLabel, 0, 0);
 
         try {
-            mUnicodeText = a.getString(R.styleable.MongolLabel_text);
+            String text = a.getString(R.styleable.MongolLabel_text);
+            if (text == null) text = "";
+            mUnicodeText = text;
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolLabel_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolLabel_textColor, Color.BLACK);
             mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
