@@ -5,13 +5,18 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.util.StringBuilderPrinter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputConnection;
 import android.widget.Button;
 
-public class KeyboardAeiou extends ViewGroup {
+import java.util.HashMap;
+import java.util.Map;
+
+public class KeyboardAeiou extends ViewGroup implements KeyText.OnKeyClickListener {
 
     // Row 1
     private KeyText mKeyA;
@@ -44,6 +49,13 @@ public class KeyboardAeiou extends ViewGroup {
     private KeyText mKeyBackspace;
     private KeyText mKeyReturn;
 
+    // This will map the button resource id to the String value that we want to
+    // input when that key is clicked.
+    //Map<KeyText, String> keyValues = new HashMap<>();
+
+    // Our communication link to the EditText/MongolEditText
+    InputConnection inputConnection;
+
     public KeyboardAeiou(Context context) {
         this(context, null, 0);
     }
@@ -75,104 +87,149 @@ public class KeyboardAeiou extends ViewGroup {
 
         // Row 1
 
+        mKeySuffix = new KeyText(context);
+        mKeySuffix.setText(MongolCode.Uni.NNBS, "ᠶ᠋ᠢ ᠳᠤ ᠤᠤ");
+        mKeySuffix.setOnKeyClickListener(this);
+        addView(mKeySuffix);
+
         mKeyA = new KeyText(context);
         mKeyA.setText(MongolCode.Uni.A);
+        mKeyA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyA, String.valueOf(MongolCode.Uni.A));
         addView(mKeyA);
 
         mKeyE = new KeyText(context);
         mKeyE.setText(MongolCode.Uni.E);
+        mKeyE.setOnKeyClickListener(this);
+        //keyValues.put(mKeyE, String.valueOf(MongolCode.Uni.E));
         addView(mKeyE);
 
         mKeyI = new KeyText(context);
         mKeyI.setText(MongolCode.Uni.I);
+        mKeyI.setOnKeyClickListener(this);
+        //keyValues.put(mKeyI, String.valueOf(MongolCode.Uni.I));
         addView(mKeyI);
 
         mKeyO = new KeyText(context);
-        mKeyO.setText(MongolCode.Uni.O);
+        mKeyO.setText(MongolCode.Uni.U);
+        mKeyO.setOnKeyClickListener(this);
+        //keyValues.put(mKeyO, String.valueOf(MongolCode.Uni.U));
         addView(mKeyO);
 
         mKeyU = new KeyText(context);
-        String displayU = String.valueOf(MongolCode.Uni.UE) + String.valueOf(MongolCode.Uni.ZWJ);
-        mKeyU.setText(displayU);
+        String displayU =
+                String.valueOf(MongolCode.Uni.UE) +
+                String.valueOf(MongolCode.Uni.ZWJ);
+        mKeyU.setText(MongolCode.Uni.UE, displayU);
+        mKeyU.setOnKeyClickListener(this);
+        //keyValues.put(mKeyU, String.valueOf(MongolCode.Uni.UE));
         addView(mKeyU);
-
-        mKeyBackspace = new KeyText(context);
-        mKeyBackspace.setText("del");
-        addView(mKeyBackspace);
 
         // Row 2
 
         mKeyNA = new KeyText(context);
         mKeyNA.setText(MongolCode.Uni.NA);
+        mKeyNA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyNA, String.valueOf(MongolCode.Uni.NA));
         addView(mKeyNA);
 
         mKeyBA = new KeyText(context);
         mKeyBA.setText(MongolCode.Uni.BA);
+        mKeyBA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyBA, String.valueOf(MongolCode.Uni.BA));
         addView(mKeyBA);
 
         mKeyQA = new KeyText(context);
         mKeyQA.setText(MongolCode.Uni.QA);
+        mKeyQA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyQA, String.valueOf(MongolCode.Uni.QA));
         addView(mKeyQA);
 
         mKeyGA = new KeyText(context);
         mKeyGA.setText(MongolCode.Uni.GA);
+        mKeyGA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyGA, String.valueOf(MongolCode.Uni.GA));
         addView(mKeyGA);
 
         mKeyMA = new KeyText(context);
         mKeyMA.setText(MongolCode.Uni.MA);
+        mKeyMA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyMA, String.valueOf(MongolCode.Uni.MA));
         addView(mKeyMA);
 
         mKeyLA = new KeyText(context);
         mKeyLA.setText(MongolCode.Uni.LA);
+        mKeyLA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyLA, String.valueOf(MongolCode.Uni.LA));
         addView(mKeyLA);
 
         // Row 3
 
         mKeySA = new KeyText(context);
         mKeySA.setText(MongolCode.Uni.SA);
+        mKeySA.setOnKeyClickListener(this);
+        //keyValues.put(mKeySA, String.valueOf(MongolCode.Uni.SA));
         addView(mKeySA);
 
         mKeyTADA = new KeyText(context);
         mKeyTADA.setText(MongolCode.Uni.TA);
+        mKeyTADA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyTADA, String.valueOf(MongolCode.Uni.TA));
         addView(mKeyTADA);
 
         mKeyCHA = new KeyText(context);
         mKeyCHA.setText(MongolCode.Uni.CHA);
+        mKeyCHA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyCHA, String.valueOf(MongolCode.Uni.CHA));
         addView(mKeyCHA);
 
         mKeyJA = new KeyText(context);
         mKeyJA.setText(MongolCode.Uni.JA);
+        mKeyJA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyJA, String.valueOf(MongolCode.Uni.JA));
         addView(mKeyJA);
 
         mKeyYA = new KeyText(context);
         mKeyYA.setText(MongolCode.Uni.YA);
+        mKeyYA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyYA, String.valueOf(MongolCode.Uni.YA));
         addView(mKeyYA);
 
         mKeyRA = new KeyText(context);
         mKeyRA.setText(MongolCode.Uni.RA);
+        mKeyRA.setOnKeyClickListener(this);
+        //keyValues.put(mKeyRA, String.valueOf(MongolCode.Uni.RA));
         addView(mKeyRA);
 
         // Row 4
 
         mKeyKeyboard = new KeyText(context);
         mKeyKeyboard.setText("kb");
+        mKeyKeyboard.setOnKeyClickListener(this);
         addView(mKeyKeyboard);
 
         mKeyComma = new KeyText(context);
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
+        mKeyComma.setOnKeyClickListener(this);
+        //keyValues.put(mKeyComma, String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA));
         addView(mKeyComma);
 
         mKeySpace = new KeyText(context);
-        mKeySpace.setText("");
+        mKeySpace.setText(" ");
+        mKeySpace.setOnKeyClickListener(this);
+        //keyValues.put(mKeySpace, " ");
         addView(mKeySpace);
 
-        mKeySuffix = new KeyText(context);
-        mKeySuffix.setText("ᠶ᠋ᠢ ᠳᠤ ᠤᠤ");
-        addView(mKeySuffix);
-
         mKeyReturn = new KeyText(context);
-        mKeyReturn.setText("ret");
+        mKeyReturn.setText("\n", "ret");
+        mKeyReturn.setOnKeyClickListener(this);
+        //keyValues.put(mKeyReturn, "\n");
         addView(mKeyReturn);
+
+        mKeyBackspace = new KeyText(context);
+        mKeyBackspace.setText("del");
+        mKeyBackspace.setOnKeyClickListener(this);
+        addView(mKeyBackspace);
 
 
 
@@ -194,10 +251,10 @@ public class KeyboardAeiou extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-        // |  A |  E | I | O  | U  |    Row 1
+        // | A | E | I | O | U |nbs|    Row 1
         // | N | B | Q | G | M | L |    Row 2
         // | S | D | Ch| J | Y | R |    Row 3
-        // |kb |,|nbs|space|ret|del|    Row 4
+        // |kb | , | space |ret|del|    Row 4
 
         final int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         final int totalHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
@@ -235,5 +292,50 @@ public class KeyboardAeiou extends ViewGroup {
             y += totalHeight / numberOfRows;
         }
 
+    }
+
+    // The activity (or some parent or controller) must give us
+    // a reference to the current EditText's InputConnection
+    public void setInputConnection(InputConnection ic) {
+        this.inputConnection = ic;
+    }
+
+//    @Override
+//    public void onClick(View v) {
+//        // do nothing if the InputConnection has not been set yet
+//        if (inputConnection == null) return;
+//
+//        // Delete text or input key value
+//        // All communication goes through the InputConnection
+//        if (v == mKeySuffix) {
+//
+//        } else if (v == mKeyKeyboard) {
+//
+//        } else if (v == mKeyBackspace) {
+//            inputConnection.deleteSurroundingText(1, 0);
+//        } else {
+//            String value = keyValues.get(v);
+//            inputConnection.commitText(value, 1);
+//        }
+//    }
+
+    @Override
+    public void onKeyClicked(View v, String inputText) {
+        // do nothing if the InputConnection has not been set yet
+        if (inputConnection == null) return;
+
+        // Delete text or input key value
+        // All communication goes through the InputConnection
+//        if (v == mKeySuffix) {
+//
+//        } else
+        if (v == mKeyKeyboard) {
+
+        } else if (v == mKeyBackspace) {
+            inputConnection.deleteSurroundingText(1, 0);
+        } else {
+            //String value = keyValues.get(v);
+            inputConnection.commitText(inputText, 1);
+        }
     }
 }

@@ -28,13 +28,20 @@ public class KeyText extends View {
     private RectF mSizeRect;
     private Rect mTextBounds;
 
-    private String mText;
+    private String mDisplayText;
+    private String mInputText;
     private int mKeyColor;
     private int mPressedColor;
-//    private int mTextColor;
+    //    private int mTextColor;
 //    private int mBorderColor;
 //    private int mBorderWidth;
     private int mBorderRadius;
+
+    private OnKeyClickListener mListener;
+
+    public interface OnKeyClickListener {
+        public void onKeyClicked(View view, String inputText);
+    }
 
     KeyText(Context context) {
         this(context, null);
@@ -52,23 +59,8 @@ public class KeyText extends View {
         initPaints();
     }
 
-//    public KeyText(Context context, String text, int textColor, int keyColor, int pressedColor,
-//                   int borderColor, int borderWidth, int borderRadius) {
-//        super(context);
-//        mText = text;
-//        mTextColor = textColor;
-//        mKeyColor = keyColor;
-//        mPressedColor = pressedColor;
-//        mBorderColor = borderColor;
-//        mBorderWidth = borderWidth;
-//        mBorderRadius = borderRadius;
-//
-//        //mSizeRect = new RectF();
-//        initPaints();
-//    }
-
     private void initDefault() {
-        mText = "abc";
+        //mDisplayText = "abc";
         //mKeyColor = Color.LTGRAY;
         mPressedColor = Color.GRAY;
         //mTextColor = Color.BLACK;
@@ -113,11 +105,11 @@ public class KeyText extends View {
 
         // calculate position for centered text
         canvas.rotate(90);
-        mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBounds);
+        mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
         int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        float x = getPaddingTop() + (keyHeight - mTextBounds.right)/2;
-        float y = -getPaddingLeft() - mTextBounds.bottom - (keyWidth - mTextBounds.height())/2;
+        float x = getPaddingTop() + (keyHeight - mTextBounds.right) / 2;
+        float y = -getPaddingLeft() - mTextBounds.bottom - (keyWidth - mTextBounds.height()) / 2;
 
         // automatically resize text that is too large
         int threshold = keyHeight * 8 / 10;
@@ -129,39 +121,53 @@ public class KeyText extends View {
         }
 
         // draw text
-        canvas.drawText(mText, x, y, mTextPaint);
+        canvas.drawText(mDisplayText, x, y, mTextPaint);
 
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
 
         int action = MotionEventCompat.getActionMasked(event);
 
-        switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
+        switch (action) {
+            case (MotionEvent.ACTION_DOWN):
                 mKeyPaint.setColor(mPressedColor);
                 invalidate();
                 return true;
-            case (MotionEvent.ACTION_CANCEL) :
-            case (MotionEvent.ACTION_OUTSIDE) :
-            case (MotionEvent.ACTION_UP) :
-                Log.d(DEBUG_TAG,"Action was UP");
+            case (MotionEvent.ACTION_CANCEL):
+            case (MotionEvent.ACTION_OUTSIDE):
+            case (MotionEvent.ACTION_UP):
+                //Log.d(DEBUG_TAG, "Action was UP");
                 mKeyPaint.setColor(mKeyColor);
                 invalidate();
+                if (mListener != null) {
+                    mListener.onKeyClicked(this, mInputText);
+                }
                 return true;
-            default :
+            default:
                 return super.onTouchEvent(event);
         }
     }
 
     public void setText(String text) {
-        this.mText = renderer.unicodeToMenksoft(text);
+        this.mInputText = text;
+        this.mDisplayText = renderer.unicodeToMenksoft(text);
+        invalidate();
+    }
+
+    public void setText(String inputText, String displayText) {
+        this.mInputText = inputText;
+        this.mDisplayText = renderer.unicodeToMenksoft(displayText);
         invalidate();
     }
 
     public void setText(char text) {
         setText(String.valueOf(text));
+    }
+
+    public void setText(char text, String displayText) {
+        setText(String.valueOf(text), displayText);
     }
 
     public void setTypeFace(Typeface typeface) {
@@ -193,20 +199,24 @@ public class KeyText extends View {
         invalidate();
     }
 
-    public void setBorderColor (int borderColor) {
+    public void setBorderColor(int borderColor) {
         //this.mBorderColor = borderColor;
         mKeyBorderPaint.setColor(borderColor);
         invalidate();
     }
 
-    public void setBorderWidth (int borderWidth) {
+    public void setBorderWidth(int borderWidth) {
         //this.mBorderWidth = borderWidth;
         mKeyBorderPaint.setStrokeWidth(borderWidth);
         invalidate();
     }
 
-    public void setBorderRadius (int borderRadius) {
+    public void setBorderRadius(int borderRadius) {
         this.mBorderRadius = borderRadius;
         invalidate();
+    }
+
+    public void setOnKeyClickListener(OnKeyClickListener listener) {
+        mListener = listener;
     }
 }

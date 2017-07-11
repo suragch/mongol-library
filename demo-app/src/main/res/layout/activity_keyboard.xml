@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
 
     <EditText
+        android:id="@+id/edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@android:color/white"
+        android:inputType="text"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:textColor="@android:color/black"/>
+
+    <net.studymongolian.mongollibrary.MongolEditText
+        android:id="@+id/mongoledittext"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_margin="20dp"
         android:padding="10dp"
-        android:background="@android:color/white"
-        android:textColor="@android:color/black"
-        android:maxLines="1"
-        android:inputType="text"/>
-    
-    <net.studymongolian.mongollibrary.KeyboardAeiou
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:padding="2dp"
-        android:background="@android:color/white"
-        android:layout_alignParentBottom="true"/>
+        app:textSize="20sp"
+        android:background="@android:color/white"/>
 
-</RelativeLayout>
+    <net.studymongolian.mongollibrary.KeyboardAeiou
+        android:id="@+id/aeiou_keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:padding="2dp"/>
+
+</LinearLayout>

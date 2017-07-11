@@ -58,11 +58,13 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MongolTextView, defStyleAttr, 0);
 
         boolean isEditText = getDefaultEditable();
+        String text = a.getString(R.styleable.MongolTextView_text);
+        if (text == null) text = "";
         if (isEditText) {
-            SpannableStringBuilder ssb = new SpannableStringBuilder(a.getString(R.styleable.MongolTextView_text));
+            SpannableStringBuilder ssb = new SpannableStringBuilder(text);
             mTextStorage = new MongolTextStorage(ssb);
         } else {
-            mTextStorage = new MongolTextStorage(a.getString(R.styleable.MongolTextView_text));
+            mTextStorage = new MongolTextStorage(text);
         }
         mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolTextView_textSize, 0);
         mTextColor = a.getColor(R.styleable.MongolTextView_textColor, Color.BLACK);

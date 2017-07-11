@@ -42,6 +42,7 @@ public class MongolEditText extends MongolTextView {
     static final int CURSOR_WIDTH = 2; // CONVERT TO DP
     private Path mCursorPath;
     private GestureDetector mDetector;
+    private boolean mAllowSystemKeyboard = true;
 
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
@@ -197,6 +198,7 @@ public class MongolEditText extends MongolTextView {
             } else {
                 mSelectionHandle = SCROLLING_END;
             }
+            requestFocus();
             return true;
         }
 
@@ -212,7 +214,9 @@ public class MongolEditText extends MongolTextView {
             setSelection(offset);
             invalidate();
 
-            showSystemKeyboard();
+            if (mAllowSystemKeyboard) {
+                showSystemKeyboard();
+            }
             startBlinking();
 
             return super.onSingleTapConfirmed(e);
@@ -591,6 +595,10 @@ public class MongolEditText extends MongolTextView {
 
     public boolean getFreezesText() {
         return true;
+    }
+
+    public void setAllowSystemKeyboard(boolean whether) {
+        mAllowSystemKeyboard = whether;
     }
 
 
