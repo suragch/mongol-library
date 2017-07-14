@@ -12,6 +12,7 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -21,6 +22,7 @@ public class KeyText extends View {
 
     private static final String DEBUG_TAG = "TAG";
 
+    private boolean mStatePressed = false;
     private MongolCode renderer = MongolCode.INSTANCE;
     private Paint mKeyPaint;
     private Paint mKeyBorderPaint;
@@ -29,7 +31,7 @@ public class KeyText extends View {
     private Rect mTextBounds;
 
     private String mDisplayText;
-    private String mInputText;
+    //private String mInputText;
     private int mKeyColor;
     private int mPressedColor;
     //    private int mTextColor;
@@ -38,6 +40,7 @@ public class KeyText extends View {
     private int mBorderRadius;
 
     private OnKeyClickListener mListener;
+    private GestureDetector mDetector;
 
     public interface OnKeyClickListener {
         public void onKeyClicked(View view, String inputText);
@@ -125,50 +128,69 @@ public class KeyText extends View {
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//
+//        int action = MotionEventCompat.getActionMasked(event);
+//
+//        switch (action) {
+//            case (MotionEvent.ACTION_DOWN):
+//                mKeyPaint.setColor(mPressedColor);
+//                invalidate();
+//                return true;
+//            case (MotionEvent.ACTION_CANCEL):
+//            case (MotionEvent.ACTION_OUTSIDE):
+//            case (MotionEvent.ACTION_UP):
+//                //Log.d(DEBUG_TAG, "Action was UP");
+//                mKeyPaint.setColor(mKeyColor);
+//                invalidate();
+//                if (mListener != null) {
+//                    mListener.onKeyClicked(this, mInputText);
+//                }
+//                return true;
+//            default:
+//                return super.onTouchEvent(event);
+//        }
+//    }
 
-        int action = MotionEventCompat.getActionMasked(event);
 
-        switch (action) {
-            case (MotionEvent.ACTION_DOWN):
-                mKeyPaint.setColor(mPressedColor);
-                invalidate();
-                return true;
-            case (MotionEvent.ACTION_CANCEL):
-            case (MotionEvent.ACTION_OUTSIDE):
-            case (MotionEvent.ACTION_UP):
-                //Log.d(DEBUG_TAG, "Action was UP");
-                mKeyPaint.setColor(mKeyColor);
-                invalidate();
-                if (mListener != null) {
-                    mListener.onKeyClicked(this, mInputText);
-                }
-                return true;
-            default:
-                return super.onTouchEvent(event);
-        }
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event){
+//        this.mDetector.onTouchEvent(event);
+//        return super.onTouchEvent(event);
+//    }
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        if (mDetector == null) return super.onTouchEvent(event);
+//        boolean result = mDetector.onTouchEvent(event);
+//        return result;
+//    }
+//
+//    public void setGestureDetector(GestureDetector detector) {
+//        mDetector = detector;
+//    }
+
 
     public void setText(String text) {
-        this.mInputText = text;
+        //this.mInputText = text;
         this.mDisplayText = renderer.unicodeToMenksoft(text);
         invalidate();
     }
 
-    public void setText(String inputText, String displayText) {
-        this.mInputText = inputText;
-        this.mDisplayText = renderer.unicodeToMenksoft(displayText);
-        invalidate();
-    }
+//    public void setText(String inputText, String displayText) {
+//        this.mInputText = inputText;
+//        this.mDisplayText = renderer.unicodeToMenksoft(displayText);
+//        invalidate();
+//    }
 
     public void setText(char text) {
         setText(String.valueOf(text));
     }
 
-    public void setText(char text, String displayText) {
-        setText(String.valueOf(text), displayText);
-    }
+//    public void setText(char text, String displayText) {
+//        setText(String.valueOf(text), displayText);
+//    }
 
     public void setTypeFace(Typeface typeface) {
         mTextPaint.setTypeface(typeface);
@@ -183,7 +205,6 @@ public class KeyText extends View {
     }
 
     public void setTextColor(int textColor) {
-        //this.mTextColor = textColor;
         mTextPaint.setColor(textColor);
         invalidate();
     }
@@ -216,7 +237,22 @@ public class KeyText extends View {
         invalidate();
     }
 
-    public void setOnKeyClickListener(OnKeyClickListener listener) {
-        mListener = listener;
+    public void setPressedState(boolean pressedState) {
+        mStatePressed = pressedState;
+        if (mStatePressed) {
+            mKeyPaint.setColor(mPressedColor);
+        } else {
+            mKeyPaint.setColor(mKeyColor);
+        }
+        invalidate();
     }
+
+//    public boolean getPressedState() {
+//        return mStatePressed;
+//    }
+
+
+    //public void setOnKeyClickListener(OnKeyClickListener listener) {
+//        mListener = listener;
+//    }
 }

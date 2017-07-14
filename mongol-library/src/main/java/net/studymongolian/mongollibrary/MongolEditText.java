@@ -143,7 +143,7 @@ public class MongolEditText extends MongolTextView {
         mBlinkHandler = new Handler();
 
         // gestures
-        mDetector = new GestureDetector(getContext(), new mListener());
+        mDetector = new GestureDetector(getContext(), new MyListener());
     }
 
     @Override
@@ -185,7 +185,7 @@ public class MongolEditText extends MongolTextView {
         return true;
     }
 
-    class mListener extends GestureDetector.SimpleOnGestureListener {
+    class MyListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
             int x = (int) e.getX();
