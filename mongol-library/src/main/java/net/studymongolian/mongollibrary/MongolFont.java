@@ -10,6 +10,8 @@ import java.util.Hashtable;
 // It is also a central place to organize the included fonts.
 public class MongolFont {
 
+    // TODO add Qimeg tig
+
     public static final String QAGAN = "fonts/MQG8F02.ttf";                 // White (plain)
     public static final String GARQAG = "fonts/MenksoftGarqag.ttf";         // Title
     public static final String HARA = "fonts/MenksoftHara.ttf";             // Bold
