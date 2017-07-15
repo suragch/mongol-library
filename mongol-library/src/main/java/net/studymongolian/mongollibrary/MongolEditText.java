@@ -458,7 +458,7 @@ public class MongolEditText extends MongolTextView {
 
             if (shouldBlink()) {
                 if (mLayout != null && !mLayout.getNeedsLineUpdate()) {
-                    Log.i("TAG", "run: ");
+                    Log.i("TAG", "mBlink: ");
                     MongolEditText.this.invalidateCursorPath();
                     //MongolEditText.this.invalidate();
                     mIsBlinkOn = !mIsBlinkOn;
