@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolFont");
         apiDemos.add("MongolEditText");
         apiDemos.add("Keyboard");
-        apiDemos.add("Testing");
+        //apiDemos.add("Testing");
 
 
         // set up the RecyclerView
@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 intent = new Intent(this, KeyboardActivity.class);
                 startActivity(intent);
                 break;
-            case 7: // Testing
-                intent = new Intent(this, TestingActivity.class);
-                startActivity(intent);
-                break;
+//            case 7: // Testing
+//                intent = new Intent(this, TestingActivity.class);
+//                startActivity(intent);
+//                break;
         }
     }
 }

@@ -70,6 +70,9 @@ public class KeyboardAeiou extends ViewGroup {
     // Our communication link to the EditText/MongolEditText
     InputConnection inputConnection;
 
+    private int mPopupBackgroundColor = Color.WHITE;
+    private int mPopupHighlightColor = Color.GRAY;
+
     public KeyboardAeiou(Context context) {
         this(context, null, 0);
     }
@@ -333,106 +336,6 @@ public class KeyboardAeiou extends ViewGroup {
 
     }
 
-//    private View.OnTouchListener keyTouchListener = new View.OnTouchListener(){
-//        public KeyText key;
-//        Context context = getContext();
-//        public boolean onTouch(View v, MotionEvent event) {
-//            key = (KeyText) v;
-//            int action = event.getActionMasked();
-//
-//            switch(action) {
-//                case (MotionEvent.ACTION_DOWN) :
-//                    key.setPressedState(true);
-//                    break;
-//                case (MotionEvent.ACTION_CANCEL) :
-//                case (MotionEvent.ACTION_OUTSIDE) :
-//                case (MotionEvent.ACTION_UP) :
-//                    key.setPressedState(false);
-//                    break;
-//            }
-//            return gestureDetector.onTouchEvent(event);
-//        }
-//
-//        GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-//
-//            @Override
-//            public boolean onDown(MotionEvent event) {
-//                // triggers first for both single tap and long press
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onSingleTapUp(MotionEvent e) {
-//                Log.i("MYLOG","onSingleTapUp in view: "+key);
-//                if (key == mKeyBackspace) {
-//                    inputConnection.deleteSurroundingText(1, 0);
-//                } else if (key == mKeyKeyboard) {
-//
-//                } else {
-//                    String inputText = keyValues.get(key);
-//                    inputConnection.commitText(inputText, inputText.length());
-//                }
-//
-//                return true;
-//            }
-//
-//            @Override
-//            public void onLongPress(MotionEvent e) {
-//                Log.i("MYLOG","LongPress in view: "+key);
-//
-//                String[] items = {"a", "b", "c"};
-//                View popupView = getPopupView(context, items);
-//                final PopupWindow popupWindow = getPopupWindow(popupView);
-//
-//                // show the popup window
-//                popupWindow.showAtLocation(key, Gravity.CENTER, 0, 0);
-//            }
-//
-//
-//
-//
-//            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//                if (e1.getX()<e2.getX())
-//                    Log.i("MYLOG","Fling Right in view: "+key);
-//                else
-//                    Log.i("MYLOG","Fling Left in view: "+key);
-//                return true;
-//            }
-//        });
-//    };
-//
-//    private View getPopupView(Context context, String[] items) {
-//
-//        LinearLayout parent = new LinearLayout(context);
-//        parent.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//        parent.setOrientation(LinearLayout.HORIZONTAL);
-//        parent.setBackgroundColor(Color.RED);
-//
-//        TextView tv1 = new TextView(context);
-//        TextView tv2 = new TextView(context);
-//        TextView tv3 = new TextView(context);
-//
-//        tv1.setText(items[0]);
-//        tv2.setText(items[1]);
-//        tv3.setText(items[2]);
-//
-//        parent.addView(tv1);
-//        parent.addView(tv2);
-//        parent.addView(tv3);
-//
-//        // TODO
-//        return parent;
-//    }
-//
-//    private PopupWindow getPopupWindow(View popupView) {
-//        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        boolean focusable = true; // lets taps outside the popup also dismiss it
-//        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-//
-//        // TODO
-//        return popupWindow;
-//    }
 
 
     protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
@@ -441,21 +344,17 @@ public class KeyboardAeiou extends ViewGroup {
         final int LONGPRESS_THRESHOLD = 500; // milliseconds
 
 
-        View popupView;
+        PopupKeyCandidates popupView;
         int popupWidth;
         PopupWindow popupWindow;
         //CurrentFvsSelection currentFvsSelection = CurrentFvsSelection.FVS1;
 
 
         @Override
-        public boolean onTouch(View view, MotionEvent event) {
-
-            // show fvs chooser view on touch down
-            // update hilighted on touch move
-            // hide fvs chooser view and send fvs char on touch up
+        public boolean onTouch(View view, final MotionEvent event) {
 
             final KeyText key = (KeyText) view;
-            int action = MotionEventCompat.getActionMasked(event);
+            int action = event.getActionMasked();
 
             switch (action) {
                 case (MotionEvent.ACTION_DOWN):
@@ -463,15 +362,17 @@ public class KeyboardAeiou extends ViewGroup {
                     key.setPressedState(true);
                     handler = new Handler();
 
+
                     Runnable runnableCode = new Runnable() {
                         @Override
                         public void run() {
 
                             // get the popup view
-                            PopupKeyCandidates popupView = new PopupKeyCandidates(getContext());
-                            popupView.setBackgroundColor(Color.BLUE);
+                            popupView = new PopupKeyCandidates(getContext());
+                            popupView.setBackgroundColor(mPopupBackgroundColor);
                             String[] candidates = {"a", "b", "c"};
-                            popupView.init(candidates, 30);
+                            int height = key.getHeight();
+                            popupView.init(candidates, 30, height, mPopupHighlightColor);
 
                             popupWindow = new PopupWindow(popupView,
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -481,8 +382,19 @@ public class KeyboardAeiou extends ViewGroup {
                             int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
                             popupView.measure(measureSpec, measureSpec);
                             popupWidth = popupView.getMeasuredWidth();
-                            popupWindow.showAtLocation(key, Gravity.NO_GRAVITY, location[0], location[1] - popupView.getMeasuredHeight());
+                            int spaceAboveKey = key.getHeight() / 4;
+                            popupWindow.showAtLocation(key, Gravity.NO_GRAVITY,
+                                    location[0], location[1] - popupView.getMeasuredHeight() - spaceAboveKey);
 
+
+                            // highlight current item (after the popup window has loaded)
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int x = (int) event.getX();
+                                    popupView.updateTouchPosition(x);
+                                }
+                            });
 
                         }
                     };
@@ -491,12 +403,14 @@ public class KeyboardAeiou extends ViewGroup {
                     return true;
                 case (MotionEvent.ACTION_MOVE):
 
-                    float x = event.getX();
+                    if (popupView != null) {
+                        int x = (int) event.getRawX();
+                        popupView.updateTouchPosition(x);
+                    }
 
 
                     return true;
                 case (MotionEvent.ACTION_UP):
-                    // allow to fall through to the default (dismiss the popup window)
 
                     if (key == mKeyBackspace) {
                         inputConnection.deleteSurroundingText(1, 0);
@@ -506,11 +420,13 @@ public class KeyboardAeiou extends ViewGroup {
                         String inputText = keyValues.get(key);
                         inputConnection.commitText(inputText, inputText.length());
                     }
+                    // allow to fall through to the default (dismiss the popup window)
                 default:
                     key.setPressedState(false);
                     handler.removeCallbacksAndMessages(null);
                     if (popupWindow != null) {
                         popupWindow.dismiss();
+                        popupView = null;
                     }
                     return false;
             }

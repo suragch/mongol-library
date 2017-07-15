@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MongolLibraryDemo</string>
+    <string name="app_name">mongol-library demo</string>
     <string name="mongol_label_activity_title">MongolLabel</string>
     <string name="mongol_textview_activity_title">MongolTextView</string>
     <string name="mongol_edittext_activity_title">MongolEditText</string>
