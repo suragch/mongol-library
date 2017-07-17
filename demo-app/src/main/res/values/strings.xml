@@ -7,6 +7,7 @@
     <string name="convert_code_activity_title">Unicode &lt;--&gt; Menksoft</string>
     <string name="mongol_font_activity_title">MongolFont</string>
     <string name="keyboard_activity_title">Keyboard</string>
+    <string name="mongol_toast_activity_title">MongolToast</string>
 
     <string name="short_string">ᠮᠣᠩᠭᠣᠯ</string>
     <!--&lt;!&ndash;<string name="medium_string">"An &#128512;awesome &#128515;string with a few &#128521;emojis!"</string>&ndash;&gt;-->

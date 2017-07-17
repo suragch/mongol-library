@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolFont");
         apiDemos.add("MongolEditText");
         apiDemos.add("Keyboard");
+        apiDemos.add("MongolToast");
         //apiDemos.add("Testing");
 
 
@@ -73,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 break;
             case 6: // Keyboard
                 intent = new Intent(this, KeyboardActivity.class);
+                startActivity(intent);
+                break;
+            case 7: // MongolToast
+                intent = new Intent(this, MongolToastActivity.class);
                 startActivity(intent);
                 break;
 //            case 7: // Testing
