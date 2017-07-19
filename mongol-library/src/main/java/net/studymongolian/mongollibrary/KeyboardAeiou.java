@@ -14,6 +14,7 @@ import android.util.SparseArray;
 import android.util.StringBuilderPrinter;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +68,8 @@ public class KeyboardAeiou extends ViewGroup {
     // This will map the button resource id to the String value that we want to
     // input when that key is clicked.
     Map<KeyText, String> keyValues = new HashMap<>();
+    //Map<KeyText, String[]> keyCandidates = new HashMap<>();
+    //Map<KeyText, String[]> keyCandidatesDisplay = new HashMap<>();
 
     // Our communication link to the EditText/MongolEditText
     InputConnection inputConnection;
@@ -103,12 +107,13 @@ public class KeyboardAeiou extends ViewGroup {
 
         // Row 1
 
-        mKeySuffix = new KeyText(context);
-        //mKeySuffix.setText(MongolCode.Uni.NNBS, "ᠶ᠋ᠢ ᠳᠤ ᠤᠤ");
-        mKeySuffix.setText("ᠶ᠋ᠢ ᠳᠤ ᠤᠤ");
-        //mKeySuffix.setOnKeyClickListener(this);
-        mKeySuffix.setOnTouchListener(textKeyTouchListener);
-        addView(mKeySuffix);
+//        mKeySuffix = new KeyText(context);
+//        //mKeySuffix.setText(MongolCode.Uni.NNBS, "ᠶ᠋ᠢ ᠳᠤ ᠤᠤ");
+//        mKeySuffix.setText("ᠶ᠋ᠢ ᠳᠤ ᠤᠤ");
+//        //mKeySuffix.setOnKeyClickListener(this);
+//        mKeySuffix.setOnTouchListener(textKeyTouchListener);
+//        keyValues.put(mKeySuffix, String.valueOf(MongolCode.Uni.NNBS));
+//        addView(mKeySuffix);
 
         mKeyA = new KeyText(context);
         mKeyA.setText(MongolCode.Uni.A);
@@ -207,7 +212,7 @@ public class KeyboardAeiou extends ViewGroup {
         mKeyTADA.setText(MongolCode.Uni.TA);
         //mKeyTADA.setOnKeyClickListener(this);
         mKeyTADA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyTADA, String.valueOf(MongolCode.Uni.TA));
+        keyValues.put(mKeyTADA, String.valueOf(MongolCode.Uni.DA)); // make DA the default
         addView(mKeyTADA);
 
         mKeyCHA = new KeyText(context);
@@ -293,7 +298,7 @@ public class KeyboardAeiou extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-        // | A | E | I | O | U |nbs|    Row 1
+        // | A  | E  | I |  O |  U |    Row 1
         // | N | B | Q | G | M | L |    Row 2
         // | S | D | Ch| J | Y | R |    Row 3
         // |kb | , | space |ret|del|    Row 4
@@ -301,41 +306,40 @@ public class KeyboardAeiou extends ViewGroup {
         final int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         final int totalHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
 
-        int[] numberOfKeysInRow = {6, 6, 6, 5};
-        int weightUnit = 6; // all row weights must sum to this
+        int[] numberOfKeysInRow = {5, 6, 6, 5};
+        // the key weights for each row should sum to 1
         float[] keyWeight = {
-                1, 1, 1, 1, 1, 1,           // row 1
-                1, 1, 1, 1, 1, 1,           // row 2
-                1, 1, 1, 1, 1, 1,           // row 3
-                1, 1, 2.0f, 1, 1};          // row 4
+                1/5f, 1/5f, 1/5f, 1/5f, 1/5f,           // row 0
+                1/6f, 1/6f, 1/6f, 1/6f, 1/6f, 1/6f,     // row 1
+                1/6f, 1/6f, 1/6f, 1/6f, 1/6f, 1/6f,     // row 2
+                1/6f, 1/6f, 2/6f, 1/6f, 1/6f};          // row 3
         int numberOfRows = numberOfKeysInRow.length;
 
-        int x = getPaddingLeft();
-        int y = getPaddingTop();
+        float x = getPaddingLeft();
+        float y = getPaddingTop();
         int keyIndex = 0;
         for (int rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
-
 
             int end = keyIndex + numberOfKeysInRow[rowIndex];
             for (int i = keyIndex; i < end; i++) {
                 View child = getChildAt(keyIndex);
 
-                int keyWidth = (int) ((totalWidth / weightUnit) * keyWeight[keyIndex]);
-                int keyHeight = totalHeight / numberOfRows;
-                child.measure(MeasureSpec.makeMeasureSpec(keyWidth, MeasureSpec.EXACTLY),
-                        MeasureSpec.makeMeasureSpec(keyHeight, MeasureSpec.EXACTLY));
+                float keyWidth = totalWidth * keyWeight[keyIndex];
+                float keyHeight = totalHeight / numberOfRows;
+                child.measure(MeasureSpec.makeMeasureSpec((int) keyWidth, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec((int) keyHeight, MeasureSpec.EXACTLY));
 
-                child.layout(x, y, x + keyWidth, y + keyHeight);
+                child.layout((int) x, (int) y, (int) (x + keyWidth), (int) (y + keyHeight));
+                //x += keyWidth;
                 x += keyWidth;
                 keyIndex++;
             }
 
             x = getPaddingLeft();
-            y += totalHeight / numberOfRows;
+            y += (float) totalHeight / numberOfRows;
         }
 
     }
-
 
 
     protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
@@ -370,9 +374,12 @@ public class KeyboardAeiou extends ViewGroup {
                             // get the popup view
                             popupView = new PopupKeyCandidates(getContext());
                             popupView.setBackgroundColor(mPopupBackgroundColor);
-                            String[] candidates = {"a", "b", "c"};
-                            int height = key.getHeight();
-                            popupView.init(candidates, 30, height, mPopupHighlightColor);
+                            setCandidates(key, popupView);
+                            popupView.setHighlightColor(mPopupHighlightColor);
+                            popupView.setHeight(key.getHeight());
+                            //String[] candidates = getDisplayCandidates(key);
+                            //int height = key.getHeight();
+                            //popupView.init(candidates, 30, height, mPopupHighlightColor);
 
                             popupWindow = new PopupWindow(popupView,
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -412,13 +419,45 @@ public class KeyboardAeiou extends ViewGroup {
                     return true;
                 case (MotionEvent.ACTION_UP):
 
-                    if (key == mKeyBackspace) {
-                        inputConnection.deleteSurroundingText(1, 0);
+                    // handle popups
+                    if (popupView != null) {
+                        int x = (int) event.getRawX();
+
+                        CharSequence selectedItem = popupView.getCurrentItem(x);
+                        if (!selectedItem.equals("")) {
+
+                            inputConnection.commitText(selectedItem, 1);
+                        }
+
+                    }
+
+                    // normal keys
+                    else if (key == mKeyBackspace) {
+                        //inputConnection.deleteSurroundingText(1, 0);
+                        //inputConnection.commitText("", 1);
+                        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
+                        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL));
+
+//                        int start = inputConnection;
+//                        int end = Math.max(metDemoEditText.getSelectionEnd(), 0);
+//                        if (start == end) {
+//                            if (start > 0) {
+//                                metDemoEditText.getText().delete(start - 1, start);
+//                            }
+//                        } else {
+//                            metDemoEditText.getText().delete(start, end);
+//                        }
                     } else if (key == mKeyKeyboard) {
 
                     } else {
                         String inputText = keyValues.get(key);
-                        inputConnection.commitText(inputText, inputText.length());
+                        // TA/DA defaults to DA except in the INITIAL location
+                        char prevChar = getPreviousChar();
+                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))
+                                && !MongolCode.isMongolian(prevChar)) {
+                            inputText = String.valueOf(MongolCode.Uni.TA);
+                        }
+                        inputConnection.commitText(inputText, 1);
                     }
                     // allow to fall through to the default (dismiss the popup window)
                 default:
@@ -433,6 +472,288 @@ public class KeyboardAeiou extends ViewGroup {
         }
     };
 
+    private char getPreviousChar() {
+        CharSequence previous = inputConnection.getTextBeforeCursor(1, 0);
+        if (TextUtils.isEmpty(previous)) return 0;
+        return previous.charAt(0);
+    }
+
+    private void setCandidates(View key, PopupKeyCandidates popupView) {
+
+        // these are the choices to display in the popup (and corresponding unicode values)
+        Candidates candidates = null;
+
+        // get the appropriate candidates based on the key pressed
+        if (key == mKeyA) {
+            candidates = getCandidatesForA(isIsolateOrInitial());
+        } else if (key == mKeyE) {
+            candidates = getCandidatesForE(isIsolateOrInitial());
+        } else if (key == mKeyI) {
+            candidates = getCandidatesForI(isIsolateOrInitial());
+        } else if (key == mKeyO) {
+            candidates = getCandidatesForO(isIsolateOrInitial());
+        } else if (key == mKeyU) {
+            candidates = getCandidatesForU(isIsolateOrInitial());
+        } else if (key == mKeyNA) {
+            candidates = getCandidatesForNA(isIsolateOrInitial());
+        } else if (key == mKeyBA) {
+            candidates = getCandidatesForBA();
+        } else if (key == mKeyQA) {
+            candidates = getCandidatesForQA();
+        } else if (key == mKeyGA) {
+            candidates = getCandidatesForGA(isIsolateOrInitial());
+        } else if (key == mKeyLA) {
+            candidates = getCandidatesForLA();
+        } else if (key == mKeySA) {
+            candidates = getCandidatesForSA();
+        } else if (key == mKeyTADA) {
+            candidates = getCandidatesForTADA(isIsolateOrInitial());
+        } else if (key == mKeyCHA) {
+            candidates = getCandidatesForCHA();
+        } else if (key == mKeyJA) {
+            candidates = getCandidatesForJA();
+        } else if (key == mKeyYA) {
+            candidates = getCandidatesForYA();
+        } else if (key == mKeyRA) {
+            candidates = getCandidatesForRA();
+        } else if (key == mKeyComma) {
+            candidates = getCandidatesForComma();
+        } else if (key == mKeySpace) {
+            candidates = getCandidatesForSpace();
+//        } else {
+//            candidates = new Candidates();
+//            candidates.unicode = new String[]{"a", "b", "c"};
+        }
+
+        // update the popup view with the candidate choices
+        if (candidates == null || candidates.unicode == null) return;
+        popupView.setCandidates(candidates.unicode);
+        if (candidates.display == null) {
+            popupView.setDisplayCandidates(candidates.unicode, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+        } else {
+            popupView.setDisplayCandidates(candidates.display, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+        }
+    }
+
+    private boolean isIsolateOrInitial() {
+        CharSequence before = inputConnection.getTextBeforeCursor(2, 0);
+        CharSequence after = inputConnection.getTextAfterCursor(2, 0);
+        if (before == null || after == null) return true;
+        // get Mongol word location at cursor input
+        MongolCode.Location location = MongolCode.getLocation(before, after);
+        return location == MongolCode.Location.ISOLATE ||
+                        location == MongolCode.Location.INITIAL;
+        //return isIsolateOrInitial;
+    }
+
+    private Candidates getCandidatesForA(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (isIsolateOrInitial) {
+            can.unicode = new String[]{"" + MongolCode.Uni.A + MongolCode.Uni.FVS1};
+        } else { // medial || final
+            char previousChar = getPreviousChar();// inputConnection.getTextBeforeCursor(1, 0).charAt(0);
+            if (MongolCode.isMvsConsonant(previousChar)) {
+                // include MVS
+                can.unicode = new String[]{
+                        "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
+                        "" + MongolCode.Uni.A + MongolCode.Uni.FVS1};
+                can.display = new String[]{
+                        "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+            } else {
+                can.unicode = new String[]{"" + MongolCode.Uni.A + MongolCode.Uni.FVS1};
+                can.display = new String[]{"" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+            }
+
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForE(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (isIsolateOrInitial) {
+            can.unicode = new String[]{"" + MongolCode.Uni.EE};
+        } else { // medial || final
+            char previousChar = getPreviousChar(); //inputConnection.getTextBeforeCursor(1, 0).charAt(0);
+            if (MongolCode.isMvsConsonant(previousChar)
+                    && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
+                // include MVS
+                can.unicode = new String[]{
+                        "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                        "" + MongolCode.Uni.EE};
+                can.display = new String[]{
+                        "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                        "" + MongolCode.Uni.EE};
+            } else {
+                can.unicode = new String[]{"" + MongolCode.Uni.EE};
+            }
+
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForI(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (!isIsolateOrInitial) { // medial/final
+            can.unicode = new String[]{"" + MongolCode.Uni.I + MongolCode.Uni.FVS1};
+            can.display = new String[]{
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForO(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (!isIsolateOrInitial) { // medial/final
+            can.unicode = new String[]{"" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.U + MongolCode.Uni.FVS1};
+            can.display = new String[]{
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1};
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForU(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (!isIsolateOrInitial) { // medial/final
+            can.unicode = new String[]{"" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1};
+            can.display = new String[]{
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1};
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForNA(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (isIsolateOrInitial) {
+            can.unicode = new String[]{"" + MongolCode.Uni.ANG};
+        } else { // medial/final
+            can.unicode = new String[]{"" + MongolCode.Uni.ANG,
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ, // only(?) way to override dotted N before vowel in Unicode 9.0
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1};
+            can.display = new String[]{
+                    "" + MongolCode.Uni.ANG,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForBA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{"" + MongolCode.Uni.PA, "" + MongolCode.Uni.FA};
+        return can;
+    }
+
+    private Candidates getCandidatesForQA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{"" + MongolCode.Uni.HAA};
+        return can;
+    }
+
+    private Candidates getCandidatesForGA(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (isIsolateOrInitial) {
+            can.unicode = new String[]{"" + MongolCode.Uni.KA};
+        } else { // medial/final
+            can.unicode = new String[]{"" + MongolCode.Uni.KA,
+                    "" + MongolCode.Uni.GA + MongolCode.Uni.FVS1, // see note on MongolCode(FINA_GA_FVS1)
+                    "" + MongolCode.Uni.GA + MongolCode.Uni.FVS2}; // see note on MongolCode(FINA_GA_FVS2)
+            can.display = new String[]{
+                    "" + MongolCode.Uni.KA,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2};
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForLA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{"" + MongolCode.Uni.LHA};
+        return can;
+    }
+
+    private Candidates getCandidatesForSA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{"" + MongolCode.Uni.SHA};
+        return can;
+    }
+
+    private Candidates getCandidatesForTADA(boolean isIsolateOrInitial) {
+        Candidates can = new Candidates();
+        if (isIsolateOrInitial) {
+            char prevChar = getPreviousChar();
+            if (prevChar == MongolCode.Uni.NNBS) {
+                can.unicode = new String[]{"" + MongolCode.Uni.DA};
+            } else {
+                can.unicode = new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
+            }
+            can.display = new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+            // TODO if this turns out to be an isolate then the FVS1 should be removed
+        } else { // medial/final
+            can.unicode = new String[]{
+                    "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.TA,
+                    "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
+            can.display = new String[]{
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
+        }
+        return can;
+    }
+
+    private Candidates getCandidatesForCHA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{
+                "" + MongolCode.Uni.TSA,
+                "" + MongolCode.Uni.CHI, };
+        return can;
+    }
+
+    private Candidates getCandidatesForJA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{
+                "" + MongolCode.Uni.ZA,
+                "" + MongolCode.Uni.ZHI};
+        return can;
+    }
+
+    private Candidates getCandidatesForYA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{"" + MongolCode.Uni.WA};
+        return can;
+    }
+
+    private Candidates getCandidatesForRA() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{"" + MongolCode.Uni.ZRA};
+        return can;
+    }
+
+    private Candidates getCandidatesForComma() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{
+                "" + MongolCode.Uni.VERTICAL_QUESTION_MARK,
+                "" + MongolCode.Uni.MONGOLIAN_FULL_STOP,
+                "" + MongolCode.Uni.VERTICAL_EXCLAMATION_MARK};
+        return can;
+    }
+
+    private Candidates getCandidatesForSpace() {
+        Candidates can = new Candidates();
+        can.unicode = new String[]{
+                "" + MongolCode.Uni.NNBS};
+        return can;
+    }
+
+    private class Candidates {
+        String[] unicode;
+        String[] display;
+    }
 
     // The activity (or some parent or controller) must give us
     // a reference to the current EditText's InputConnection

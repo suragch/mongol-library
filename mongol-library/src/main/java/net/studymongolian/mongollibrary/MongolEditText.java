@@ -39,14 +39,16 @@ public class MongolEditText extends MongolTextView {
     private boolean mIsBlinkOn = true;
     private Handler mBlinkHandler;
     static final int BLINK = 500;
-    static final int CURSOR_WIDTH = 2; // CONVERT TO DP
+    static final int CURSOR_WIDTH = 2; // dp
+    private static final int CURSOR_DEFAULT_COLOR = Color.parseColor("#4ac3ff"); // blue
     private Path mCursorPath;
     private GestureDetector mDetector;
-    private boolean mAllowSystemKeyboard = true;
 
+    private boolean mAllowSystemKeyboard = true;
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
     private static final int SCROLLING_START = 1;
+
     private static final int SCROLLING_END = 2;
 
 
@@ -69,7 +71,7 @@ public class MongolEditText extends MongolTextView {
         setSelection(textLength); // TODO why did I do this?
 
         mCursorPaint = new Paint();
-        mCursorPaint.setColor(Color.RED);
+        mCursorPaint.setColor(CURSOR_DEFAULT_COLOR);
         mCursorPaint.setStyle(Paint.Style.FILL);
         mCursorPaint.setAntiAlias(true);
 
@@ -158,6 +160,8 @@ public class MongolEditText extends MongolTextView {
         return new MetInputConnection(this, true);
     }
 
+    // TODO where do I do this? (You need to call updateSelection whenever the cursor moves in your editor.)
+    // https://developer.android.com/reference/android/view/inputmethod/InputMethodManager.html#updateSelection(android.view.View,%20int,%20int,%20int,%20int)
 
     public void showSystemKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext()
@@ -380,7 +384,8 @@ public class MongolEditText extends MongolTextView {
         int x = super.mLayout.getLineBottom(line) + getPaddingLeft();
         int y = (int) super.mLayout.getVertical(glyphStart) + getPaddingTop();
 
-        return new Rect(x, y, x + width, y + CURSOR_WIDTH);
+        int cursorWidthPX = (int) (CURSOR_WIDTH * getResources().getDisplayMetrics().density);
+        return new Rect(x, y, x + width, y + cursorWidthPX);
     }
 
     private Path getSelectionPath(int unicodeStart, int unicodeEnd) {

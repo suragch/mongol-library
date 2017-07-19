@@ -30,6 +30,8 @@ public final class MongolCode {
     private static final int NON_PRINTING_CHAR = -1;
 
 
+
+
     public enum Location {
         ISOLATE, INITIAL, MEDIAL, FINAL
     }
@@ -551,6 +553,8 @@ public final class MongolCode {
     private String convertWordToMenksoftCode(String mongolWord, int[] glyphIndexes, int lastUnicodeIndex) {
 
         // TODO would anything bad happen if lastUnicodeIndex were less than zero?
+
+        // TODO break this method into smaller chunks
 
         boolean glyphIndexNeedsAdjusting = false;
 
@@ -2117,6 +2121,37 @@ public final class MongolCode {
         return renderedWord.toString();
     }
 
+    public static Location getLocation(CharSequence textBefore, CharSequence textAfter) {
+
+        // TODO should we be using this in convertWordToMenksoftCode?
+
+        boolean beforeIsMongolian = false;
+        boolean afterIsMongolian = false;
+
+        int length = textBefore.length();
+        if (length > 0 && isMongolian(textBefore.charAt(length - 1))) {
+            beforeIsMongolian = true;
+        }
+
+        length = textAfter.length();
+        //if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                char currentChar = textAfter.charAt(i);
+                if (isFVS(currentChar) || currentChar == Uni.MVS) {
+                    continue;
+                } else if (isMongolian(currentChar)) {
+                    afterIsMongolian = true;
+                }
+                break;
+            }
+        //}
+
+        if (beforeIsMongolian && afterIsMongolian) return Location.MEDIAL;
+        else if (!beforeIsMongolian && afterIsMongolian) return Location.INITIAL;
+        else if (beforeIsMongolian && !afterIsMongolian) return Location.FINAL;
+        else return Location.ISOLATE;
+    }
+
 
     private boolean needsLongToothU(String word, int uIndex) {
 
@@ -2215,6 +2250,13 @@ public final class MongolCode {
                 || character == Uni.RA || character == Uni.SA);
     }
 
+    public static boolean isMvsConsonant(char character) {
+        // This method is not used internally, only for external use.
+        return (character == Uni.NA || character == Uni.QA || character == Uni.GA
+                || character == Uni.MA || character == Uni.LA || character == Uni.JA
+                || character == Uni.YA || character == Uni.RA || character == Uni.WA);
+    }
+
     private static boolean isMongolianAlphabet(char character) {
         // This method is not used internally, only for external use.
         return (character >= Uni.A && character <= Uni.CHI);
@@ -2239,6 +2281,9 @@ public final class MongolCode {
         public static final char ZWNJ = '\u200C'; // Zero-width non joiner
         public static final char ZWJ = '\u200D'; // Zero-width joiner
         public static final char NNBS = '\u202F'; // Narrow No-Break Space
+        public static final char VERTICAL_EXCLAMATION_MARK = '\uFE15'; // PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK
+        public static final char VERTICAL_QUESTION_MARK = '\uFE16'; // PRESENTATION FORM FOR VERTICAL QUESTION MARK
+
         // Unicode Mongolian Values
         public static final char MONGOLIAN_BIRGA = '\u1800';
         public static final char MONGOLIAN_ELLIPSIS = '\u1801';

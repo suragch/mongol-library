@@ -25,7 +25,7 @@
         android:layout_weight="1"
         android:layout_margin="20dp"
         android:padding="10dp"
-        app:textSize="20sp"
+        app:textSize="30sp"
         android:background="@android:color/white"/>
 
     <net.studymongolian.mongollibrary.KeyboardAeiou

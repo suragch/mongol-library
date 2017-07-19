@@ -9,10 +9,15 @@ import android.view.ViewGroup;
 class PopupKeyCandidates extends ViewGroup {
 
     private static final int LABEL_PADDING = 5; // dp
+    private static final int DEFAULT_KEY_HEIGHT = 60; // dp
+    public static final int DEFAULT_TEXT_SIZE = 30; // sp
+
     private final Context mContext;
 
-    private int mHeight = 0;
-    private int mHighlightColor;
+    private int mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
+    private int mHighlightColor = Color.DKGRAY;
+    private String[] mCandidates;
+    //private String[] mDisplayCandidates;
 
     // this popup view will only be created programmatically
     public PopupKeyCandidates(Context context) {
@@ -20,11 +25,13 @@ class PopupKeyCandidates extends ViewGroup {
         this.mContext = context;
     }
 
-    public void init(String[] candidates, int textSize, int height, int highlightColor) {
+    public void setCandidates(String[] candidates) {
+        mCandidates = candidates;
+    }
+
+    public void setDisplayCandidates(String[] displayCandidates, int textSize) {
         int paddingPX = (int) (LABEL_PADDING * getResources().getDisplayMetrics().density);
-        this.mHeight = height;
-        this.mHighlightColor = highlightColor;
-        for (String candidate : candidates) {
+        for (String candidate : displayCandidates) {
             MongolLabel label = new MongolLabel(mContext);
             label.setText(candidate);
             label.setTextSize(textSize);
@@ -33,6 +40,30 @@ class PopupKeyCandidates extends ViewGroup {
             addView(label);
         }
     }
+
+    public void setHeight(int height) {
+        this.mHeight = height;
+    }
+
+    public void setHighlightColor(int highlightColor) {
+        this.mHighlightColor = highlightColor;
+    }
+
+//    public void isnit(String[] candidates,
+//                     String[] displayCandidates,
+//                     int textSize,
+//                     int height,
+//                     int highlightColor) {
+//
+//        if (candidates.length != displayCandidates.length)
+//            throw new RuntimeException(
+//                    "Popup key candidates must have the same number as the displayed items.");
+//
+//
+//
+//        this.mCandidates = candidates;
+//
+//    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -49,7 +80,7 @@ class PopupKeyCandidates extends ViewGroup {
             View child = getChildAt(i);
             child.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
-            int height = child.getMeasuredHeight();
+            //int height = child.getMeasuredHeight();
             summedWidth += child.getMeasuredWidth();
             //maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
@@ -94,18 +125,26 @@ class PopupKeyCandidates extends ViewGroup {
         }
     }
 
-    private int getHighlightedCandidateIndex(int x) {
+    public int getHighlightedCandidateIndex(int x) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             int location[] = new int[2];
             child.getLocationOnScreen(location);
+
             int leftSide = location[0];
-            if (x < leftSide) return i - 1;
             int rightSide = leftSide + child.getMeasuredWidth();
-            if (x < rightSide) return i;
+
+            if (leftSide < x && x < rightSide) return i;
         }
-        return count;
+        return -1;
     }
 
+    public CharSequence getCurrentItem(int touchPositionX) {
+        int highlightedIndex = getHighlightedCandidateIndex(touchPositionX);
+        if (highlightedIndex >= 0 && mCandidates != null) {
+            return mCandidates[highlightedIndex];
+        }
+        return "";
+    }
 }
