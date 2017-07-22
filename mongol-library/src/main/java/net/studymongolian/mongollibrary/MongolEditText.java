@@ -24,11 +24,14 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import java.text.BreakIterator;
+
+//import static android.view.inputmethod.BaseInputConnection.getComposingSpanStart;
 
 public class MongolEditText extends MongolTextView {
 
@@ -43,6 +46,7 @@ public class MongolEditText extends MongolTextView {
     private static final int CURSOR_DEFAULT_COLOR = Color.parseColor("#4ac3ff"); // blue
     private Path mCursorPath;
     private GestureDetector mDetector;
+    int mBatchEditNesting = 0;
 
     private boolean mAllowSystemKeyboard = true;
     private int mSelectionHandle = SCROLLING_UNKNOWN;
@@ -102,6 +106,11 @@ public class MongolEditText extends MongolTextView {
                 invalidate();
                 // FIXME only need to request layout for metric affecting spans
                 requestLayout();
+
+
+                if (isNonIntermediateSelectionSpan(buf, what)) {
+                    sendUpdateSelection();
+                }
             }
         });
 
@@ -141,6 +150,9 @@ public class MongolEditText extends MongolTextView {
             }
         });
 
+        // for communication to the MongolInputMethodManager
+        this.mMongolImeManager = null;
+
         // init the handler for the blinking cursor
         mBlinkHandler = new Handler();
 
@@ -151,6 +163,8 @@ public class MongolEditText extends MongolTextView {
     @Override
     public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
 
+        outAttrs.initialSelStart = getSelectionStart();
+        outAttrs.initialSelEnd = getSelectionEnd();
         //outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS; // TODO what are flags?
         //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE; // TODO is this right?
 
@@ -160,6 +174,12 @@ public class MongolEditText extends MongolTextView {
         return new MetInputConnection(this, true);
     }
 
+    // TODO need to handle batch edits from the IME
+    // https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#beginBatchEdit()
+    // https://android.googlesource.com/platform/frameworks/base/+/37960c7/core/java/android/widget/Editor.java#984
+    // https://android.googlesource.com/platform/frameworks/base/+/37960c7/core/java/android/widget/Editor.java#3743
+    // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/widget/TextView.java#L9767
+
     // TODO where do I do this? (You need to call updateSelection whenever the cursor moves in your editor.)
     // https://developer.android.com/reference/android/view/inputmethod/InputMethodManager.html#updateSelection(android.view.View,%20int,%20int,%20int,%20int)
 
@@ -168,6 +188,21 @@ public class MongolEditText extends MongolTextView {
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
     }
+
+    //////////// custom listener to send events to the MongolInputMethodManager //////////////////
+
+    public interface OnMongolEditTextInputEventListener {
+        public void updateSelection(View view, int selStart, int selEnd,
+                                    int candidatesStart, int candidatesEnd);
+    }
+
+    private OnMongolEditTextInputEventListener mMongolImeManager;
+
+    public void setOnMongolEditTextUpdateListener(OnMongolEditTextInputEventListener listener) {
+        this.mMongolImeManager = listener;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public boolean onCheckIsTextEditor() {
@@ -439,7 +474,6 @@ public class MongolEditText extends MongolTextView {
     }
 
 
-
     private boolean shouldBlink() {
         //Log.i("TAG", "shouldBlink: ");
         if (!mCursorVisible || !isFocused()) return false;
@@ -570,7 +604,7 @@ public class MongolEditText extends MongolTextView {
             return;
         }
 
-        SavedState ss = (SavedState)state;
+        SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 
         if (ss.text != null) {
@@ -660,4 +694,57 @@ public class MongolEditText extends MongolTextView {
         }
     }
 
+    //////////////////// batch edits from IME ///////////////////////////////
+
+    public void beginBatchEdit() {
+        int nesting = ++mBatchEditNesting;
+    }
+
+    public void endBatchEdit() {
+        int nesting = --mBatchEditNesting;
+        if (nesting == 0) {
+            finishBatchEdit();
+        }
+    }
+
+    void ensureEndedBatchEdit() {
+        if (mBatchEditNesting != 0) {
+            mBatchEditNesting = 0;
+            finishBatchEdit();
+        }
+    }
+
+    void finishBatchEdit() {
+        sendUpdateSelection();
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+
+    private void sendUpdateSelection() {
+        // adapted from Android source Editor#sendUpdateSelection
+        if (mBatchEditNesting <= 0) {
+            // TODO final InputMethodManager imm = InputMethodManager.peekInstance(); also support system keyboards
+
+            if (null != mMongolImeManager) {
+                final int selectionStart = getSelectionStart();
+                final int selectionEnd = getSelectionEnd();
+                int candStart = -1;
+                int candEnd = -1;
+                if (mTextStorage != null) {
+                    //final Spannable sp = getText();
+                    candStart = MetInputConnection.getComposingSpanStart(mTextStorage);
+                    candEnd = MetInputConnection.getComposingSpanEnd(mTextStorage);
+                }
+                // InputMethodManager#updateSelection skips sending the message if
+                // none of the parameters have changed since the last time we called it.
+                mMongolImeManager.updateSelection(this, selectionStart, selectionEnd, candStart, candEnd);
+            }
+        }
+    }
+
+    // from Android source Editor.SpanController#isNonIntermediateSelectionSpan
+    private boolean isNonIntermediateSelectionSpan(final Spanned text, final Object span) {
+        return (Selection.SELECTION_START == span || Selection.SELECTION_END == span)
+                && (text.getSpanFlags(span) & Spanned.SPAN_INTERMEDIATE) == 0;
+    }
 }

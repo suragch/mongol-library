@@ -67,12 +67,13 @@ public class KeyboardAeiou extends ViewGroup {
 
     // This will map the button resource id to the String value that we want to
     // input when that key is clicked.
-    Map<KeyText, String> keyValues = new HashMap<>();
+    private Map<KeyText, String> keyValues = new HashMap<>();
     //Map<KeyText, String[]> keyCandidates = new HashMap<>();
     //Map<KeyText, String[]> keyCandidatesDisplay = new HashMap<>();
 
     // Our communication link to the EditText/MongolEditText
-    InputConnection inputConnection;
+    private InputConnection inputConnection;
+    private StringBuilder mComposing = new StringBuilder();
 
     private int mPopupBackgroundColor = Color.WHITE;
     private int mPopupHighlightColor = Color.GRAY;
@@ -419,60 +420,132 @@ public class KeyboardAeiou extends ViewGroup {
                     return true;
                 case (MotionEvent.ACTION_UP):
 
+                    if (inputConnection == null) {
+                        dismissPopup(key);
+                        return true;
+                    }
+
+
                     // handle popups
                     if (popupView != null) {
                         int x = (int) event.getRawX();
 
                         CharSequence selectedItem = popupView.getCurrentItem(x);
-                        if (!selectedItem.equals("")) {
+                        if (!TextUtils.isEmpty(selectedItem)) {
 
-                            inputConnection.commitText(selectedItem, 1);
+                            if (mComposing.length() > 0) {
+                                inputConnection.commitText(mComposing, 1);
+                                mComposing.setLength(0);
+                            }
+
+                            if (selectedItem.equals("\u1826\u180c")) {
+                                inputConnection.setComposingText("\u1826\u180c\u200d", 1);
+                                Log.i("TAG", "onTouch: composing");
+                                mComposing.append("\u1826\u180c");
+                            } else if (selectedItem.equals("a")) {
+                                inputConnection.setComposingText("a", 1);
+                            }
+                            else {
+                                inputConnection.commitText(selectedItem, 1);
+                            }
+
+
                         }
 
                     }
 
                     // normal keys
                     else if (key == mKeyBackspace) {
-                        //inputConnection.deleteSurroundingText(1, 0);
-                        //inputConnection.commitText("", 1);
-                        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
-                        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL));
 
-//                        int start = inputConnection;
-//                        int end = Math.max(metDemoEditText.getSelectionEnd(), 0);
-//                        if (start == end) {
-//                            if (start > 0) {
-//                                metDemoEditText.getText().delete(start - 1, start);
-//                            }
-//                        } else {
-//                            metDemoEditText.getText().delete(start, end);
-//                        }
+                        if (mComposing.length() > 0) {
+                            inputConnection.commitText("", 1);
+                            mComposing.setLength(0);
+                        } else {
+                            CharSequence selectedText = inputConnection.getSelectedText(0);
+                            if (TextUtils.isEmpty(selectedText)) {
+                                inputConnection.deleteSurroundingText(1, 0);
+                            } else {
+                                inputConnection.commitText("", 1);
+                            }
+                        }
+
+
+
+                        //inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
+                        //inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL));
+
+                        // TODO if previous char is fvs backspace 2
+                        // TODO after backspace if previous char is MVS backspace again
+                        // beware that the first backspace might have been for a selection
+                        // (so maybe this should be handled by the edit text or text storage)
+
                     } else if (key == mKeyKeyboard) {
 
                     } else {
                         String inputText = keyValues.get(key);
+
+                        // handle composing
+                        if (MongolCode.isMongolian(inputText.charAt(0))) {
+                            inputConnection.commitText(mComposing, 1);
+                        } else {
+                            inputConnection.finishComposingText();
+                        }
+                        mComposing.setLength(0);
+
                         // TA/DA defaults to DA except in the INITIAL location
                         char prevChar = getPreviousChar();
                         if (inputText.equals(String.valueOf(MongolCode.Uni.DA))
                                 && !MongolCode.isMongolian(prevChar)) {
                             inputText = String.valueOf(MongolCode.Uni.TA);
                         }
+
+
                         inputConnection.commitText(inputText, 1);
                     }
-                    // allow to fall through to the default (dismiss the popup window)
+
+                    dismissPopup(key);
+                    return true;
                 default:
-                    key.setPressedState(false);
-                    handler.removeCallbacksAndMessages(null);
-                    if (popupWindow != null) {
-                        popupWindow.dismiss();
-                        popupView = null;
-                    }
+                    dismissPopup(key);
                     return false;
+            }
+        }
+
+        private void dismissPopup(KeyText key) {
+            key.setPressedState(false);
+            handler.removeCallbacksAndMessages(null);
+            if (popupWindow != null) {
+                popupWindow.dismiss();
+                popupView = null;
             }
         }
     };
 
+    public void onUpdateSelection(int oldSelStart,
+                                  int oldSelEnd,
+                                  int newSelStart,
+                                  int newSelEnd,
+                                  int candidatesStart,
+                                  int candidatesEnd) {
+
+        // in the Android source InputMethodService also handles Extracted Text here
+        https://android.googlesource.com/platform/frameworks/base/+/fb13abd800cd610c7f46815848545feff83e5748/core/java/android/inputmethodservice/InputMethodService.java#1529
+        // https://android.googlesource.com/platform/development/+/master/samples/SoftKeyboard/src/com/example/android/softkeyboard/SoftKeyboard.java#274
+
+        // currently we are only using composing for popup glyph selection. If we want to be more
+        // like the standard keyboards we could do composing on the whole word.
+        if (mComposing.length() > 0 && (newSelStart != candidatesEnd
+                || newSelEnd != candidatesEnd)) {
+            mComposing.setLength(0);
+            // TODO updateCandidates();
+            if (inputConnection != null) {
+                inputConnection.finishComposingText();
+            }
+        }
+    }
+
     private char getPreviousChar() {
+        if (inputConnection == null) return 0;
         CharSequence previous = inputConnection.getTextBeforeCursor(1, 0);
         if (TextUtils.isEmpty(previous)) return 0;
         return previous.charAt(0);
@@ -520,9 +593,10 @@ public class KeyboardAeiou extends ViewGroup {
             candidates = getCandidatesForComma();
         } else if (key == mKeySpace) {
             candidates = getCandidatesForSpace();
-//        } else {
-//            candidates = new Candidates();
-//            candidates.unicode = new String[]{"a", "b", "c"};
+        } else {
+            candidates = new Candidates();
+            candidates.unicode = new String[]{"A", "a"};
+
         }
 
         // update the popup view with the candidate choices
@@ -536,6 +610,7 @@ public class KeyboardAeiou extends ViewGroup {
     }
 
     private boolean isIsolateOrInitial() {
+        if (inputConnection == null) return true;
         CharSequence before = inputConnection.getTextBeforeCursor(2, 0);
         CharSequence after = inputConnection.getTextAfterCursor(2, 0);
         if (before == null || after == null) return true;
@@ -551,7 +626,7 @@ public class KeyboardAeiou extends ViewGroup {
         if (isIsolateOrInitial) {
             can.unicode = new String[]{"" + MongolCode.Uni.A + MongolCode.Uni.FVS1};
         } else { // medial || final
-            char previousChar = getPreviousChar();// inputConnection.getTextBeforeCursor(1, 0).charAt(0);
+            char previousChar = getPreviousChar();
             if (MongolCode.isMvsConsonant(previousChar)) {
                 // include MVS
                 can.unicode = new String[]{
@@ -574,7 +649,7 @@ public class KeyboardAeiou extends ViewGroup {
         if (isIsolateOrInitial) {
             can.unicode = new String[]{"" + MongolCode.Uni.EE};
         } else { // medial || final
-            char previousChar = getPreviousChar(); //inputConnection.getTextBeforeCursor(1, 0).charAt(0);
+            char previousChar = getPreviousChar();
             if (MongolCode.isMvsConsonant(previousChar)
                     && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
                 // include MVS
@@ -617,10 +692,10 @@ public class KeyboardAeiou extends ViewGroup {
     private Candidates getCandidatesForU(boolean isIsolateOrInitial) {
         Candidates can = new Candidates();
         if (!isIsolateOrInitial) { // medial/final
-            can.unicode = new String[]{"" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
+            can.unicode = new String[]{"" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
                     "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1};
             can.display = new String[]{
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
                     "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1};
         }
         return can;
@@ -699,7 +774,9 @@ public class KeyboardAeiou extends ViewGroup {
                     "" + MongolCode.Uni.TA,
                     "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
             can.display = new String[]{
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    // FIXME nirugu not getting rendered
+                    "" + MongolCode.Uni.MONGOLIAN_NIRUGU + MongolCode.Uni.MONGOLIAN_NIRUGU + MongolCode.Uni.MONGOLIAN_NIRUGU + MongolCode.Uni.MONGOLIAN_NIRUGU +
+                            MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                     "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA,
                     "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
         }

@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.MongolEditText;
+import net.studymongolian.mongollibrary.MongolInputMethodManager;
 
 
 public class KeyboardActivity extends AppCompatActivity {
@@ -27,33 +28,46 @@ public class KeyboardActivity extends AppCompatActivity {
         mongolEditText = (MongolEditText) findViewById(R.id.mongoledittext);
         keyboard = (KeyboardAeiou) findViewById(R.id.aeiou_keyboard);
 
+        MongolInputMethodManager mimm = new MongolInputMethodManager();
+        mimm.addEditor(editText);
+        mimm.addEditor(mongolEditText);
+        mimm.addIme(keyboard);
+        mimm.setAllowSystemKeyboard(false);
+        mimm.startInput();
+
+
+
+
+
         // prevent system keyboard from appearing when EditText is tapped
-        editText.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        editText.setTextIsSelectable(true);
+        //int inputType = editText.getInputType();
+        //editText.setRawInputType(inputType);
+        //editText.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        //editText.setTextIsSelectable(true);
 
         // prevent system keyboard from appearing when MongolEditText is tapped
-        mongolEditText.setAllowSystemKeyboard(false);
+        //mongolEditText.setAllowSystemKeyboard(false);
 
         // get the input connection from the currently focused edit text
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    InputConnection ic = editText.onCreateInputConnection(new EditorInfo());
-                    keyboard.setInputConnection(ic);
-                }
-            }
-        });
-        mongolEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    InputConnection ic = mongolEditText.onCreateInputConnection(new EditorInfo());
-                    keyboard.setInputConnection(ic);
-                }
-            }
-        });
-        // if hiding the keyboard on back button then may need to add a touch listener to edit texts too
+//        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    InputConnection ic = editText.onCreateInputConnection(new EditorInfo());
+//                    keyboard.setInputConnection(ic);
+//                }
+//            }
+//        });
+//        mongolEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    InputConnection ic = mongolEditText.onCreateInputConnection(new EditorInfo());
+//                    keyboard.setInputConnection(ic);
+//                }
+//            }
+//        });
+
 
 
 

@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class MongolTextLine {
+    private static final String TAG = "MongolTextLine";
+    private static final boolean DEBUG = true;
 
     private static final int UNICODE_HANGUL_JAMO_START = 0x1100;
     private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;
@@ -377,13 +379,16 @@ class MongolTextLine {
                 }
 
                 float[] measuredWidth = new float[1];
-                int runOffset = wp.breakText(mText, start, start + length, true, advance, measuredWidth);
-                offset += runOffset;
-                newWidth += measuredWidth[0];
-                if (start + runOffset + 1 > mText.length()) {
-                    Log.i("TAG", "getOffsetForAdvance: this is going to throw an error");
+                float maxWidth = advance - oldWidth;
+                int charactersMeasured = wp.breakText(mText, start, start + length, true, maxWidth, measuredWidth);
+                offset += charactersMeasured;
+                newWidth = oldWidth + measuredWidth[0];
+                int nextCharIndex = start + charactersMeasured;
+                if (nextCharIndex + 1 >= mText.length()) {
+                    Log.e(TAG, "getOffsetForAdvance: Crashing gracefully! This would have been IndexOutOfBoundsException");
+                    //break;
                 }
-                float widthOfNextChar = wp.measureText(mText, start + runOffset, start + runOffset + 1);
+                float widthOfNextChar = wp.measureText(mText, nextCharIndex, nextCharIndex + 1);
                 // choose the closer offset
                 if (advance - newWidth > newWidth + widthOfNextChar - advance) {
                     offset++;
