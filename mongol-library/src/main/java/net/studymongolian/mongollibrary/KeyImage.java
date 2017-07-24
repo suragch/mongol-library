@@ -1,24 +1,22 @@
 package net.studymongolian.mongollibrary;
 
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.support.v4.view.MotionEventCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 
-
-// TODO make class private
-public class KeyText extends View {
+public class KeyImage extends View {
 
     private static final String DEBUG_TAG = "TAG";
 
@@ -26,12 +24,11 @@ public class KeyText extends View {
     private MongolCode renderer = MongolCode.INSTANCE;
     private Paint mKeyPaint;
     private Paint mKeyBorderPaint;
-    private TextPaint mTextPaint;
+    private TextPaint mImagePaint;
     private RectF mSizeRect;
-    private Rect mTextBounds;
+    private Rect mImageBounds;
 
-    private String mDisplayText;
-    //private String mInputText;
+    //private String mDisplayText;
     private int mKeyColor;
     private int mPressedColor;
     //    private int mTextColor;
@@ -39,22 +36,22 @@ public class KeyText extends View {
 //    private int mBorderWidth;
     private int mBorderRadius;
 
-    private OnKeyClickListener mListener;
+    private KeyImage.OnKeyClickListener mListener;
     private GestureDetector mDetector;
 
     public interface OnKeyClickListener {
         public void onKeyClicked(View view, String inputText);
     }
 
-    KeyText(Context context) {
-        this(context, null);
+    KeyImage(Context context) {
+        this(context, null, 0);
     }
 
-    KeyText(Context context, AttributeSet attrs) {
+    KeyImage(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    KeyText(Context context, AttributeSet attrs, int defStyleAttr) {
+    KeyImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // currently ignoring attrs and defStyleAttr
         // if this class is made public then should handle them.
@@ -82,8 +79,8 @@ public class KeyText extends View {
         //mKeyBorderPaint.setStrokeWidth(mBorderWidth);
         //mKeyBorderPaint.setColor(mBorderColor);
 
-        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextSize(90);
+        mImagePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        //mImagePaint.setTextSize(90);
         //mTextPaint.setColor(mTextColor);
 
         mTextBounds = new Rect();
@@ -106,25 +103,21 @@ public class KeyText extends View {
             canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyBorderPaint);
         }
 
-        // calculate position for centered text
-        canvas.rotate(90);
-        mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+        // calculate position for centered image
         int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        float x = getPaddingTop() + (keyHeight - mTextBounds.right) / 2;
-        float y = -getPaddingLeft() - mTextBounds.bottom - (keyWidth - mTextBounds.height()) / 2;
 
-        // automatically resize text that is too large
-        int threshold = keyHeight * 8 / 10;
-        if (mTextBounds.width() > threshold) {
-            float proportion = 0.8f * keyHeight / mTextBounds.width();
-            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
-            x += mTextBounds.width() * (1 - proportion) / 2;
-            y -= mTextBounds.height() * (1 - proportion) / 2;
-        }
 
-        // draw text
-        canvas.drawText(mDisplayText, x, y, mTextPaint);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_);
+//        int left = getPaddingLeft();
+//        int top = getPaddingTop();
+//        int right = getPaddingRight();
+//        int bottom = getPaddingBottom();
+//
+//        Rect dst = new Rect(left, top, right, bottom);
+
+        // draw image
+//        canvas.drawBitmap(bitmap, null, dst, mImagePaint);
 
     }
 
@@ -193,5 +186,4 @@ public class KeyText extends View {
         }
         invalidate();
     }
-
 }

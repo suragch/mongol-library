@@ -62,6 +62,9 @@ public class MongolInputMethodManager {
             if (editor instanceof EditText) {
                 EditText editText = (EditText) editor;
 
+                // TODO this needs to be tested on lower versions!
+                // https://stackoverflow.com/a/45229457
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // api 21+
                     editText.setShowSoftInputOnFocus(allowSystemKeyboard);
                 } else { // api 11+
