@@ -174,15 +174,6 @@ public class MongolEditText extends MongolTextView {
         return new MetInputConnection(this, true);
     }
 
-    // TODO need to handle batch edits from the IME
-    // https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#beginBatchEdit()
-    // https://android.googlesource.com/platform/frameworks/base/+/37960c7/core/java/android/widget/Editor.java#984
-    // https://android.googlesource.com/platform/frameworks/base/+/37960c7/core/java/android/widget/Editor.java#3743
-    // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/widget/TextView.java#L9767
-
-    // TODO where do I do this? (You need to call updateSelection whenever the cursor moves in your editor.)
-    // https://developer.android.com/reference/android/view/inputmethod/InputMethodManager.html#updateSelection(android.view.View,%20int,%20int,%20int,%20int)
-
     public void showSystemKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -696,15 +687,17 @@ public class MongolEditText extends MongolTextView {
 
     //////////////////// batch edits from IME ///////////////////////////////
 
-    public void beginBatchEdit() {
+    public boolean beginBatchEdit() {
         int nesting = ++mBatchEditNesting;
+        return nesting > 0; // should always be true
     }
 
-    public void endBatchEdit() {
+    public boolean endBatchEdit() {
         int nesting = --mBatchEditNesting;
         if (nesting == 0) {
             finishBatchEdit();
         }
+        return nesting > 0;
     }
 
     void ensureEndedBatchEdit() {

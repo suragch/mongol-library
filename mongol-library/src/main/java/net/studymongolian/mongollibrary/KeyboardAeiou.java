@@ -433,6 +433,8 @@ public class KeyboardAeiou extends ViewGroup {
                         CharSequence selectedItem = popupView.getCurrentItem(x);
                         if (!TextUtils.isEmpty(selectedItem)) {
 
+                            inputConnection.beginBatchEdit();
+
                             if (mComposing.length() > 0) {
                                 inputConnection.commitText(mComposing, 1);
                                 mComposing.setLength(0);
@@ -449,6 +451,7 @@ public class KeyboardAeiou extends ViewGroup {
                                 inputConnection.commitText(selectedItem, 1);
                             }
 
+                            inputConnection.endBatchEdit();
 
                         }
 
@@ -461,18 +464,13 @@ public class KeyboardAeiou extends ViewGroup {
                             inputConnection.commitText("", 1);
                             mComposing.setLength(0);
                         } else {
-                            CharSequence selectedText = inputConnection.getSelectedText(0);
-                            if (TextUtils.isEmpty(selectedText)) {
-                                inputConnection.deleteSurroundingText(1, 0);
-                            } else {
-                                inputConnection.commitText("", 1);
-                            }
+                            keyDownUp(KeyEvent.KEYCODE_DEL);
+                            // We could also do this with inputConnection.deleteSurroundingText(1, 0)
+                            // but then we would need to be careful of not deleting too much
+                            // and not deleting half a serogate pair.
+                            // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
+                            // see also https://stackoverflow.com/a/45182401
                         }
-
-
-
-                        //inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
-                        //inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL));
 
                         // TODO if previous char is fvs backspace 2
                         // TODO after backspace if previous char is MVS backspace again
@@ -518,6 +516,11 @@ public class KeyboardAeiou extends ViewGroup {
                 popupWindow.dismiss();
                 popupView = null;
             }
+        }
+
+        private void keyDownUp(int keyEventCode) {
+            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
+            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
         }
     };
 
