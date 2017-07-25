@@ -18,33 +18,14 @@ import android.view.View;
 
 
 // TODO make class private
-public class KeyText extends View {
+public class KeyText extends Key {
 
     private static final String DEBUG_TAG = "TAG";
 
-    private boolean mStatePressed = false;
     private MongolCode renderer = MongolCode.INSTANCE;
-    private Paint mKeyPaint;
-    private Paint mKeyBorderPaint;
     private TextPaint mTextPaint;
-    private RectF mSizeRect;
     private Rect mTextBounds;
-
     private String mDisplayText;
-    //private String mInputText;
-    private int mKeyColor;
-    private int mPressedColor;
-    //    private int mTextColor;
-//    private int mBorderColor;
-//    private int mBorderWidth;
-    private int mBorderRadius;
-
-    private OnKeyClickListener mListener;
-    private GestureDetector mDetector;
-
-    public interface OnKeyClickListener {
-        public void onKeyClicked(View view, String inputText);
-    }
 
     KeyText(Context context) {
         this(context, null);
@@ -56,55 +37,20 @@ public class KeyText extends View {
 
     KeyText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        // currently ignoring attrs and defStyleAttr
-        // if this class is made public then should handle them.
-        initDefault();
-        initPaints();
+        init();
     }
 
-    private void initDefault() {
-        //mDisplayText = "abc";
-        //mKeyColor = Color.LTGRAY;
-        mPressedColor = Color.GRAY;
-        //mTextColor = Color.BLACK;
-        //mBorderColor = Color.BLACK;
-        //mBorderWidth = 10;
-        //mBorderRadius = 30;
-    }
-
-    private void initPaints() {
-        mKeyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mKeyPaint.setStyle(Paint.Style.FILL);
-        //mKeyPaint.setColor(mKeyColor);
-
-        mKeyBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mKeyBorderPaint.setStyle(Paint.Style.STROKE);
-        //mKeyBorderPaint.setStrokeWidth(mBorderWidth);
-        //mKeyBorderPaint.setColor(mBorderColor);
-
+    private void init() {
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(90);
-        //mTextPaint.setColor(mTextColor);
-
         mTextBounds = new Rect();
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mSizeRect = new RectF(getPaddingLeft(), getPaddingTop(),
-                w - getPaddingRight(), h - getPaddingBottom());
-    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
-
-
-        // draw background and border
-        canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyPaint);
-        if (mKeyBorderPaint.getStrokeWidth() > 0) {
-            canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyBorderPaint);
-        }
+        super.onDraw(canvas);
 
         // calculate position for centered text
         canvas.rotate(90);
@@ -153,44 +99,6 @@ public class KeyText extends View {
 
     public void setTextColor(int textColor) {
         mTextPaint.setColor(textColor);
-        invalidate();
-    }
-
-    public void setKeyColor(int keyColor) {
-        mKeyPaint.setColor(keyColor);
-        this.mKeyColor = keyColor;
-        invalidate();
-    }
-
-    public void setPressedColor(int pressedColor) {
-        this.mPressedColor = pressedColor;
-        invalidate();
-    }
-
-    public void setBorderColor(int borderColor) {
-        //this.mBorderColor = borderColor;
-        mKeyBorderPaint.setColor(borderColor);
-        invalidate();
-    }
-
-    public void setBorderWidth(int borderWidth) {
-        //this.mBorderWidth = borderWidth;
-        mKeyBorderPaint.setStrokeWidth(borderWidth);
-        invalidate();
-    }
-
-    public void setBorderRadius(int borderRadius) {
-        this.mBorderRadius = borderRadius;
-        invalidate();
-    }
-
-    public void setPressedState(boolean pressedState) {
-        mStatePressed = pressedState;
-        if (mStatePressed) {
-            mKeyPaint.setColor(mPressedColor);
-        } else {
-            mKeyPaint.setColor(mKeyColor);
-        }
         invalidate();
     }
 

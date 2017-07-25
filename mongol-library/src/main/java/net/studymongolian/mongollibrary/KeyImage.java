@@ -16,32 +16,16 @@ import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.View;
 
-public class KeyImage extends View {
+public class KeyImage extends Key {
 
     private static final String DEBUG_TAG = "TAG";
 
-    private boolean mStatePressed = false;
     private MongolCode renderer = MongolCode.INSTANCE;
-    private Paint mKeyPaint;
-    private Paint mKeyBorderPaint;
     private TextPaint mImagePaint;
-    private RectF mSizeRect;
-    private Rect mImageBounds;
-
-    //private String mDisplayText;
-    private int mKeyColor;
-    private int mPressedColor;
-    //    private int mTextColor;
-//    private int mBorderColor;
-//    private int mBorderWidth;
-    private int mBorderRadius;
-
-    private KeyImage.OnKeyClickListener mListener;
-    private GestureDetector mDetector;
-
-    public interface OnKeyClickListener {
-        public void onKeyClicked(View view, String inputText);
-    }
+    private Bitmap mImage;
+    private Bitmap mImageScaled;
+    private boolean mNeedToScaleImage = false;
+    private RectF mMaxImageRect;
 
     KeyImage(Context context) {
         this(context, null, 0);
@@ -53,137 +37,123 @@ public class KeyImage extends View {
 
     KeyImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        // currently ignoring attrs and defStyleAttr
-        // if this class is made public then should handle them.
-        initDefault();
         initPaints();
     }
 
-    private void initDefault() {
-        //mDisplayText = "abc";
-        //mKeyColor = Color.LTGRAY;
-        mPressedColor = Color.GRAY;
-        //mTextColor = Color.BLACK;
-        //mBorderColor = Color.BLACK;
-        //mBorderWidth = 10;
-        //mBorderRadius = 30;
-    }
-
     private void initPaints() {
-        mKeyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mKeyPaint.setStyle(Paint.Style.FILL);
-        //mKeyPaint.setColor(mKeyColor);
-
-        mKeyBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mKeyBorderPaint.setStyle(Paint.Style.STROKE);
-        //mKeyBorderPaint.setStrokeWidth(mBorderWidth);
-        //mKeyBorderPaint.setColor(mBorderColor);
 
         mImagePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        //mImagePaint.setTextSize(90);
-        //mTextPaint.setColor(mTextColor);
+        mImagePaint.setFilterBitmap(true);
+        mImagePaint.setDither(true);
 
-        mTextBounds = new Rect();
+
+
+        mImagePaint.setColor(Color.YELLOW);
     }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mSizeRect = new RectF(getPaddingLeft(), getPaddingTop(),
-                w - getPaddingRight(), h - getPaddingBottom());
+
+
+
+
+
+        int keyWidth = w - getPaddingLeft() - getPaddingRight();
+        int keyHeight = h - getPaddingTop() - getPaddingBottom();
+        //int min = Math.min(keyWidth, keyHeight);
+        float adjustedMinWidth = keyWidth * MAX_CONTENT_PROPORTION;
+        float adjustedMinHeight = keyHeight * MAX_CONTENT_PROPORTION;
+
+        //mNeedToScaleImage = (keyWidth * MAX_CONTENT_PROPORTION) < mImage.getWidth() ||
+        //        (keyHeight * MAX_CONTENT_PROPORTION) < mImage.getHeight();
+
+        float wDiff =  adjustedMinWidth - mImage.getWidth();
+        float hDiff =  adjustedMinHeight - mImage.getHeight();
+
+        mNeedToScaleImage = wDiff < 0 || hDiff < 0;
+        if (mNeedToScaleImage) {
+
+            //float scale;
+            if (wDiff < hDiff) {
+                int newHeight = (int) (mImage.getHeight() * adjustedMinWidth / mImage.getWidth());
+                mImageScaled = Bitmap.createScaledBitmap(mImage, (int) adjustedMinWidth, newHeight, true);
+            } else {
+                int newWidth = (int) (mImage.getWidth() * adjustedMinHeight / mImage.getHeight());
+                mImageScaled = Bitmap.createScaledBitmap(mImage, newWidth, (int) (adjustedMinHeight), true);
+            }
+        }
+
+//        if (mNeedToScaleImage) {
+//            int newWidth =
+//            mImageScaled = Bitmap.createScaledBitmap(mImage, adjustedMin, adjustedMin, true);
+//        }
+
+
+//        float x = getPaddingLeft() + (keyWidth - mImage.getWidth()) / 2;
+//        float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2;
+//
+//        mMaxImageRect = new RectF(x, y, x + adjustedMin, y + adjustedMin);
     }
+
+//    private boolean needToScaleImage() {
+//
+//
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
-
-        // draw background and border
-        canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyPaint);
-        if (mKeyBorderPaint.getStrokeWidth() > 0) {
-            canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyBorderPaint);
-        }
+        super.onDraw(canvas);
 
         // calculate position for centered image
         int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
 
 
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_);
-//        int left = getPaddingLeft();
-//        int top = getPaddingTop();
-//        int right = getPaddingRight();
-//        int bottom = getPaddingBottom();
-//
-//        Rect dst = new Rect(left, top, right, bottom);
+
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
+        int right = left + keyWidth;
+        int bottom = top + keyHeight;
+
+        //float px = 48 * getResources().getDisplayMetrics().density;
+        //Rect dst = new Rect((int)x, (int)y, (int)x + (int) px, (int)y + (int)px);
+
+        //canvas.drawRect(dst, mImagePaint);
+
+        // automatically resize text that is too large
+        if (mNeedToScaleImage) {
+            float x = getPaddingLeft() + (keyWidth - mImageScaled.getWidth()) / 2;
+            float y = getPaddingTop() + (keyHeight - mImageScaled.getHeight()) / 2;
+            canvas.drawBitmap(mImageScaled, x, y, mImagePaint);
+        } else {
+            float x = getPaddingLeft() + (keyWidth - mImage.getWidth()) / 2;
+            float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2;
+            canvas.drawBitmap(mImage, x, y, mImagePaint);
+        }
+
+        //canvas.drawBitmap(mImage, x, y, mImagePaint);
+
+
+
+//        int widthThreshold = keyWidth * 8 / 10;
+//        int heightThreshold = keyHeight * 8 / 10;
+//        if (mImage.getWidth() > widthThreshold || mImage.getHeight() > heightThreshold) {
+//            float proportion = 0.8f * keyHeight / mTextBounds.width();
+//            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
+//            x += mTextBounds.width() * (1 - proportion) / 2;
+//            y -= mTextBounds.height() * (1 - proportion) / 2;
+//        }
 
         // draw image
-//        canvas.drawBitmap(bitmap, null, dst, mImagePaint);
+        //canvas.drawBitmap(mImage, null, dst, mImagePaint);
+
 
     }
 
-
-
-    public void setText(String text) {
-        this.mDisplayText = renderer.unicodeToMenksoft(text);
-        invalidate();
+    public void setImage (Bitmap bitmap) {
+        mImage = bitmap;
     }
 
-    public void setText(char text) {
-        setText(String.valueOf(text));
-    }
-
-    public void setTypeFace(Typeface typeface) {
-        mTextPaint.setTypeface(typeface);
-        invalidate();
-    }
-
-    public void setTextSize(float sizeSP) {
-        float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                sizeSP, getResources().getDisplayMetrics());
-        mTextPaint.setTextSize(sizePx);
-        invalidate();
-    }
-
-    public void setTextColor(int textColor) {
-        mTextPaint.setColor(textColor);
-        invalidate();
-    }
-
-    public void setKeyColor(int keyColor) {
-        mKeyPaint.setColor(keyColor);
-        this.mKeyColor = keyColor;
-        invalidate();
-    }
-
-    public void setPressedColor(int pressedColor) {
-        this.mPressedColor = pressedColor;
-        invalidate();
-    }
-
-    public void setBorderColor(int borderColor) {
-        //this.mBorderColor = borderColor;
-        mKeyBorderPaint.setColor(borderColor);
-        invalidate();
-    }
-
-    public void setBorderWidth(int borderWidth) {
-        //this.mBorderWidth = borderWidth;
-        mKeyBorderPaint.setStrokeWidth(borderWidth);
-        invalidate();
-    }
-
-    public void setBorderRadius(int borderRadius) {
-        this.mBorderRadius = borderRadius;
-        invalidate();
-    }
-
-    public void setPressedState(boolean pressedState) {
-        mStatePressed = pressedState;
-        if (mStatePressed) {
-            mKeyPaint.setColor(mPressedColor);
-        } else {
-            mKeyPaint.setColor(mKeyColor);
-        }
-        invalidate();
-    }
 }

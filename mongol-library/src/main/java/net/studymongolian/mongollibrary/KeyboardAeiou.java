@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -58,16 +59,16 @@ public class KeyboardAeiou extends ViewGroup {
     private KeyText mKeyRA;
 
     // Row 4
-    private KeyText mKeyKeyboard;
+    private KeyImage mKeyKeyboard;
     private KeyText mKeyComma;
     private KeyText mKeySpace;
     private KeyText mKeySuffix;
-    private KeyText mKeyBackspace;
-    private KeyText mKeyReturn;
+    private KeyImage mKeyBackspace;
+    private KeyImage mKeyReturn;
 
     // This will map the button resource id to the String value that we want to
     // input when that key is clicked.
-    private Map<KeyText, String> keyValues = new HashMap<>();
+    private Map<Key, String> keyValues = new HashMap<>();
     //Map<KeyText, String[]> keyCandidates = new HashMap<>();
     //Map<KeyText, String[]> keyCandidatesDisplay = new HashMap<>();
 
@@ -246,8 +247,9 @@ public class KeyboardAeiou extends ViewGroup {
 
         // Row 4
 
-        mKeyKeyboard = new KeyText(context);
-        mKeyKeyboard.setText("kb");
+        mKeyKeyboard = new KeyImage(context);
+        mKeyKeyboard.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_black_48dp));
+        //mKeyKeyboard.setText("kb");
         //mKeyKeyboard.setOnKeyClickListener(this);
         mKeyKeyboard.setOnTouchListener(textKeyTouchListener);
         addView(mKeyKeyboard);
@@ -266,26 +268,33 @@ public class KeyboardAeiou extends ViewGroup {
         keyValues.put(mKeySpace, " ");
         addView(mKeySpace);
 
-        mKeyReturn = new KeyText(context);
+        mKeyReturn = new KeyImage(context);
+        mKeyReturn.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_return_black_48dp));
         //mKeyReturn.setText("\n", "ret");
-        mKeyReturn.setText("ret");
+        //mKeyReturn.setText("ret");
         //mKeyReturn.setOnKeyClickListener(this);
         mKeyReturn.setOnTouchListener(textKeyTouchListener);
         keyValues.put(mKeyReturn, "\n");
         addView(mKeyReturn);
 
-        mKeyBackspace = new KeyText(context);
-        mKeyBackspace.setText("del");
+        mKeyBackspace = new KeyImage(context);
+        mKeyBackspace.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_backspace_black_48dp));
+        //mKeyBackspace.setText("del");
         //mKeyBackspace.setOnKeyClickListener(this);
         mKeyBackspace.setOnTouchListener(textKeyTouchListener);
         addView(mKeyBackspace);
 
 
         for (int i = 0; i < getChildCount(); i++) {
-            KeyText child = (KeyText) getChildAt(i);
-            child.setTypeFace(typeface);
-            child.setTextSize(textSize);
-            child.setTextColor(textColor);
+            Key child = (Key) getChildAt(i);
+            if (child instanceof KeyText) {
+                ((KeyText) child).setTypeFace(typeface);
+                ((KeyText) child).setTextSize(textSize);
+                ((KeyText) child).setTextColor(textColor);
+            } else if (child instanceof KeyImage) {
+
+            }
+
             child.setKeyColor(keyColor);
             child.setPressedColor(pressedColor);
             child.setBorderColor(borderColor);
@@ -358,7 +367,7 @@ public class KeyboardAeiou extends ViewGroup {
         @Override
         public boolean onTouch(View view, final MotionEvent event) {
 
-            final KeyText key = (KeyText) view;
+            final Key key = (Key) view;
             int action = event.getActionMasked();
 
             switch (action) {
@@ -477,7 +486,7 @@ public class KeyboardAeiou extends ViewGroup {
                         // beware that the first backspace might have been for a selection
                         // (so maybe this should be handled by the edit text or text storage)
 
-                    } else if (key == mKeyKeyboard) {
+                    } else if (view == mKeyKeyboard) {
 
                     } else {
                         String inputText = keyValues.get(key);
@@ -509,7 +518,7 @@ public class KeyboardAeiou extends ViewGroup {
             }
         }
 
-        private void dismissPopup(KeyText key) {
+        private void dismissPopup(Key key) {
             key.setPressedState(false);
             handler.removeCallbacksAndMessages(null);
             if (popupWindow != null) {
