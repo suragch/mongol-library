@@ -2,7 +2,6 @@ package net.studymongolian.mongollibrary;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class ConvertUnicodeToMenksoftCodeTest {
@@ -63,6 +62,16 @@ public class ConvertUnicodeToMenksoftCodeTest {
         String unicode = "\uE2F2\uE291\uE2BC\uE2EC\uE291\uE2F9";
         String result = convert(unicode);
         String expected = "\uE2F2\uE291\uE2BC\uE2EC\uE291\uE2F9";
+        assertEquals(expected, result);
+    }
+
+    // nirugu
+
+    @Test
+    public void niruguChar() throws Exception {
+        String unicode = "\u180A";
+        String result = convert(unicode);
+        String expected = "\uE23E";
         assertEquals(expected, result);
     }
 
