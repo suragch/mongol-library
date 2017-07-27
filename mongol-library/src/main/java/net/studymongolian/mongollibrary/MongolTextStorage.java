@@ -200,6 +200,17 @@ public class MongolTextStorage implements Editable {
             mUnicodeText = new SpannableStringBuilder(mUnicodeText);
             mGlyphText = new SpannableStringBuilder(mGlyphText);
         }
+        // swap start and end if in wrong order
+        if (st > en) {
+            int temp = st;
+            st = en;
+            en = temp;
+        }
+        if (start > end) {
+            int temp = start;
+            start = end;
+            end = temp;
+        }
 
         int oldLength = mUnicodeText.length();
 
