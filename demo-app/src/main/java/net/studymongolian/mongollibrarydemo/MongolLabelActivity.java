@@ -20,8 +20,8 @@ public class MongolLabelActivity extends AppCompatActivity implements AdapterVie
 
 
     private static final String[] fontColors = {"BLACK", "BLUE", "RED", "YELLOW"};
-    private static final String[] fontSizesSP = {"10", "20", "30", "40", "50"};
-    private static final String[] alignments = {"TOP", "CENTER", "BOTTOM"};
+    private static final String[] fontSizesSP = {"10", "20", "30", "50", "150"};
+    //private static final String[] alignments = {"TOP", "CENTER", "BOTTOM"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +49,12 @@ public class MongolLabelActivity extends AppCompatActivity implements AdapterVie
         sizeSpinner.setOnItemSelectedListener(this);
 
         // Alignment choice spinner
-        Spinner alignmentSpinner = (Spinner) findViewById(R.id.alignment_spinner);
-        ArrayAdapter<String> adapterAlignment = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, alignments);
-        adapterAlignment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        alignmentSpinner.setAdapter(adapterAlignment);
-        alignmentSpinner.setOnItemSelectedListener(this);
+//        Spinner alignmentSpinner = (Spinner) findViewById(R.id.alignment_spinner);
+//        ArrayAdapter<String> adapterAlignment = new ArrayAdapter<>(this,
+//                android.R.layout.simple_spinner_item, alignments);
+//        adapterAlignment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        alignmentSpinner.setAdapter(adapterAlignment);
+//        alignmentSpinner.setOnItemSelectedListener(this);
 
     }
 
@@ -83,19 +83,19 @@ public class MongolLabelActivity extends AppCompatActivity implements AdapterVie
             int size = Integer.parseInt(parent.getSelectedItem().toString());
             mMongolLabelMatchParent.setTextSize(size);
             mMongolLabelWrapContent.setTextSize(size);
-        } else if (viewid == R.id.alignment_spinner) {
-            int gravity = Gravity.TOP;
-            String item = String.valueOf(parent.getItemAtPosition(pos));
-            switch (item) {
-                case "CENTER":
-                    gravity = Gravity.CENTER;
-                    break;
-                case "BOTTOM":
-                    gravity = Gravity.BOTTOM;
-                    break;
-            }
-            mMongolLabelMatchParent.setGravity(gravity);
-            mMongolLabelWrapContent.setGravity(gravity);
+//        } else if (viewid == R.id.alignment_spinner) {
+//            int gravity = Gravity.TOP;
+//            String item = String.valueOf(parent.getItemAtPosition(pos));
+//            switch (item) {
+//                case "CENTER":
+//                    gravity = Gravity.CENTER;
+//                    break;
+//                case "BOTTOM":
+//                    gravity = Gravity.BOTTOM;
+//                    break;
+//            }
+//            mMongolLabelMatchParent.setGravity(gravity);
+//            mMongolLabelWrapContent.setGravity(gravity);
         }
     }
 

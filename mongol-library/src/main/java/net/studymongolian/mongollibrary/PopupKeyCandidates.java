@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
@@ -36,7 +37,7 @@ class PopupKeyCandidates extends ViewGroup {
             label.setText(candidate);
             label.setTextSize(textSize);
             label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
-            label.setGravity(Gravity.CENTER);
+            //label.setGravity(Gravity.CENTER);
             addView(label);
         }
     }
@@ -49,45 +50,53 @@ class PopupKeyCandidates extends ViewGroup {
         this.mHighlightColor = highlightColor;
     }
 
-//    public void isnit(String[] candidates,
-//                     String[] displayCandidates,
-//                     int textSize,
-//                     int height,
-//                     int highlightColor) {
-//
-//        if (candidates.length != displayCandidates.length)
-//            throw new RuntimeException(
-//                    "Popup key candidates must have the same number as the displayed items.");
-//
-//
-//
-//        this.mCandidates = candidates;
-//
-//    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         // ignoring measure specs
-        // (assuming that keyboard will give us as much room as needed)
 
         int summedWidth = 0;
-        //int maxHeight = 0;
-
-        //int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             child.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
-            //int height = child.getMeasuredHeight();
             summedWidth += child.getMeasuredWidth();
             //maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
 
-        setMeasuredDimension(
-                summedWidth + getPaddingLeft() + getPaddingRight(),
-                mHeight + getPaddingTop() + getPaddingBottom());
+
+        int desiredWidth = summedWidth + getPaddingLeft() + getPaddingRight();
+        int desiredHeight = mHeight + getPaddingTop() + getPaddingBottom();
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int width;
+        int height;
+
+        //Measure Width
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            width = desiredWidth;
+        }
+
+        //Measure Height
+        if (heightMode == MeasureSpec.EXACTLY) {
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            height = desiredHeight;
+        }
+
+        setMeasuredDimension(width, height);
     }
 
     @Override
@@ -96,11 +105,22 @@ class PopupKeyCandidates extends ViewGroup {
         int leftOffset = this.getPaddingLeft();
         int topOffset = this.getPaddingTop();
 
+//        int widthSize = 0;
+//        int widthMode = MeasureSpec.UNSPECIFIED;
+        int widthSize = getMeasuredWidth() / getChildCount();
+        int widthMode = MeasureSpec.EXACTLY;
+
+        //int availableWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+//        int availableWidth = right - left;
+//        if (getMeasuredWidth() > availableWidth) {
+//            widthSize = availableWidth / getChildCount();
+//            widthMode = MeasureSpec.EXACTLY;
+//        }
+
         int count = getChildCount();
-        //int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            child.measure(View.MeasureSpec.makeMeasureSpec(widthSize, widthMode),
                     View.MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
 
             int rightOffset = leftOffset + child.getMeasuredWidth();

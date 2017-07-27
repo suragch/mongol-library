@@ -10,7 +10,6 @@
         android:id="@+id/mongol_label_matchparent"
         app:text="@string/short_string"
         app:textSize="30sp"
-        app:gravity="center"
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:background="@android:color/white"
@@ -21,7 +20,6 @@
         android:id="@+id/mongol_label_wrapcontent"
         app:text="@string/short_string"
         app:textSize="30sp"
-        android:gravity="bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -49,12 +47,12 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/fontcolor_spinner"/>
 
-    <Spinner
-        android:id="@+id/alignment_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/fontsize_spinner"/>
+    <!--<Spinner-->
+        <!--android:id="@+id/alignment_spinner"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_below="@id/fontsize_spinner"/>-->
 
 </RelativeLayout>

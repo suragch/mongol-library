@@ -5,21 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.View;
 
-/**
- * Created by yonghu on 7/24/17.
- */
 
 public abstract class Key extends View {
 
     public static final float MAX_CONTENT_PROPORTION = 0.8f;
 
     protected boolean mStatePressed = false;
-    //private MongolCode renderer = MongolCode.INSTANCE;
     protected Paint mKeyPaint;
     protected int mKeyColor;
     protected Paint mKeyBorderPaint;
@@ -89,8 +84,9 @@ public abstract class Key extends View {
     }
 
     public void setPressedState(boolean pressedState) {
+        if (mStatePressed == pressedState) return;
         mStatePressed = pressedState;
-        if (mStatePressed) {
+        if (pressedState) {
             mKeyPaint.setColor(mPressedColor);
         } else {
             mKeyPaint.setColor(mKeyColor);
@@ -116,7 +112,6 @@ public abstract class Key extends View {
     }
 
     public void setBorderWidth(int borderWidth) {
-        //this.mBorderWidth = borderWidth;
         mKeyBorderPaint.setStrokeWidth(borderWidth);
         invalidate();
     }

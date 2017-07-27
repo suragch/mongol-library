@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="MongolLabel">
+    <declare-styleable name="MongolTextView">
         <attr name="text" format="string"/>
         <attr name="textSize" format="dimension"/>
         <attr name="textColor" format="color"/>
@@ -13,11 +13,10 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="MongolTextView">
+    <declare-styleable name="MongolLabel">
         <attr name="text"/>
         <attr name="textSize"/>
         <attr name="textColor"/>
-        <attr name="gravity"/>
     </declare-styleable>
 
 </resources>

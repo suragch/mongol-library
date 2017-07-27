@@ -30,7 +30,7 @@ public class MongolLabel extends View {
     private Typeface mTypeface;
     private int mTextColor;
     private float mTextSizePx;
-    private int mGravity = Gravity.TOP;
+    //private int mGravity = Gravity.CENTER_VERTICAL;
     private TextPaint mTextPaint;
     private MongolCode mRenderer;
 
@@ -40,7 +40,7 @@ public class MongolLabel extends View {
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         mTextColor = Color.BLACK;
-        mGravity = Gravity.TOP;
+        //mGravity = Gravity.TOP;
         mContext = context;
         init();
     }
@@ -56,7 +56,7 @@ public class MongolLabel extends View {
             mUnicodeText = text;
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolLabel_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolLabel_textColor, Color.BLACK);
-            mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
+            //mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
         } finally {
             a.recycle();
         }
@@ -132,22 +132,43 @@ public class MongolLabel extends View {
         canvas.save();
         canvas.rotate(90);
 
-        float gravityOffset = 0;
-        if (mGravity != Gravity.TOP) {
-            float textWidth = mTextPaint.measureText(mGlyphText);
-            int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
-            if (verticalGravity == Gravity.CENTER_VERTICAL) {
-                gravityOffset = (getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth) / 2;
-            } else if (verticalGravity == Gravity.BOTTOM) {
-                gravityOffset = getMeasuredHeight() - getPaddingTop() - getPaddingBottom() - textWidth;
+
+        int measuredWidth = getMeasuredWidth();
+        int measuredHeight = getMeasuredHeight();
+        float textHeight = mTextPaint.getFontMetrics().descent - mTextPaint.getFontMetrics().ascent;
+        float textWidth = mTextPaint.measureText(mGlyphText);
+        float paddingLeft = getPaddingLeft();
+        float paddingTop = getPaddingTop();
+        float paddingRight = getPaddingRight();
+        float paddingBottom = getPaddingBottom();
+        float desiredWidth = paddingLeft + getPaddingRight() + textHeight;
+        float desiredHeight = paddingTop + getPaddingBottom();
+
+        // automatically resize text that is too large
+        if (desiredWidth > getMeasuredWidth() || desiredHeight > getMeasuredHeight()) {
+            float proportion;
+            float widthProportion = getMeasuredWidth() / desiredWidth;
+            float heightProportion = getMeasuredHeight() / desiredHeight;
+            if (heightProportion < widthProportion) {
+                proportion = heightProportion;
+            } else {
+                proportion = widthProportion;
             }
-            if (gravityOffset < 0) gravityOffset = 0;
+            paddingLeft *= proportion;
+            paddingTop *= proportion;
+            paddingRight *= proportion;
+            paddingBottom *= proportion;
+            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
+            textWidth = mTextPaint.measureText(mGlyphText);
+            textHeight = mTextPaint.getFontMetrics().descent - mTextPaint.getFontMetrics().ascent;
         }
 
-        canvas.drawText(mGlyphText,
-                getPaddingTop() + gravityOffset,
-                -getPaddingLeft() - mTextPaint.getFontMetrics().descent,
-                mTextPaint);
+        float textAreaHeight = measuredHeight - paddingTop - paddingBottom;
+        float textAreaWidth = measuredWidth - paddingLeft - paddingRight;
+        float x = paddingTop + (textAreaHeight - textWidth) / 2;
+        float y = -mTextPaint.getFontMetrics().descent - paddingLeft - (textAreaWidth - textHeight) / 2;
+        canvas.drawText(mGlyphText, x, y, mTextPaint);
+
         canvas.restore();
     }
 
@@ -205,9 +226,9 @@ public class MongolLabel extends View {
         requestLayout();
     }
 
-    public int getGravity() {
-        return mGravity;
-    }
+//    public int getGravity() {
+//        return mGravity;
+//    }
 
     /**
      *  This sets a custom gravity attribute but uses the same values as Android gravity.
@@ -216,12 +237,12 @@ public class MongolLabel extends View {
      *
      * @param gravity Choices are Gravity.TOP (default), Gravity.CENTER, and Gravity.BOTTOM
      */
-    public void setGravity(int gravity) {
-        if (mGravity != gravity) {
-            mGravity = gravity;
-            invalidate();
-        }
-    }
+//    public void setGravity(int gravity) {
+//        if (mGravity != gravity) {
+//            mGravity = gravity;
+//            invalidate();
+//        }
+//    }
 
 
 }

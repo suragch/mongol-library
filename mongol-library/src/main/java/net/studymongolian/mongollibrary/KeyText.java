@@ -21,11 +21,15 @@ import android.view.View;
 public class KeyText extends Key {
 
     private static final String DEBUG_TAG = "TAG";
+    private static final int SUBTEXT_INDENT = 5; // px
 
     private MongolCode renderer = MongolCode.INSTANCE;
     private TextPaint mTextPaint;
     private Rect mTextBounds;
+    private Rect mSubTextBounds;
     private String mDisplayText;
+    private String mDisplaySubText;
+    private TextPaint mSubTextPaint;
 
     KeyText(Context context) {
         this(context, null);
@@ -44,6 +48,12 @@ public class KeyText extends Key {
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(90);
         mTextBounds = new Rect();
+
+        mSubTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mSubTextPaint.setTextSize(90);
+        mSubTextBounds = new Rect();
+
+        mDisplaySubText = "";
     }
 
 
@@ -52,25 +62,47 @@ public class KeyText extends Key {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // calculate position for centered text
-        canvas.rotate(90);
-        mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
-        int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-        int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        float x = getPaddingTop() + (keyHeight - mTextBounds.right) / 2;
-        float y = -getPaddingLeft() - mTextBounds.bottom - (keyWidth - mTextBounds.height()) / 2;
+        final int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+        final int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        final float threshold = 0.8f * keyHeight;
+        float x;
+        float y;
 
-        // automatically resize text that is too large
-        int threshold = keyHeight * 8 / 10;
-        if (mTextBounds.width() > threshold) {
-            float proportion = 0.8f * keyHeight / mTextBounds.width();
-            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
-            x += mTextBounds.width() * (1 - proportion) / 2;
-            y -= mTextBounds.height() * (1 - proportion) / 2;
+        canvas.save();
+        canvas.rotate(90);
+
+        // draw the subtext on the bottom right
+        if (mDisplaySubText.length() > 0) {
+            float indent = SUBTEXT_INDENT;
+            mSubTextPaint.getTextBounds(mDisplaySubText, 0, mDisplaySubText.length(), mSubTextBounds);
+            if (mSubTextBounds.width() > threshold) {
+                // automatically resize text that is too large
+                float proportion = threshold / mSubTextBounds.width();
+                mSubTextPaint.setTextSize(mSubTextPaint.getTextSize() * proportion);
+                mSubTextPaint.getTextBounds(mDisplaySubText, 0, mDisplaySubText.length(), mSubTextBounds);
+                indent = 0;
+            }
+            x = keyHeight - mSubTextBounds.width();
+            y = - keyWidth - getPaddingRight() + mSubTextBounds.height();
+            // make sure a large border radius doesn't overlap the subtext
+            float radiusAdjustment = (float) (mBorderRadius * ( 1 - (1 / Math.sqrt(2))));
+            indent += radiusAdjustment;
+            canvas.drawText(mDisplaySubText, x - indent, y + indent, mSubTextPaint);
         }
 
-        // draw text
+        // draw the main text in the center
+        mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+        if (mTextBounds.width() > threshold) {
+            // automatically resize text that is too large
+            float proportion = threshold / mTextBounds.width();
+            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
+            mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+        }
+        x = getPaddingTop() + (keyHeight - mTextBounds.right) / 2;
+        y = -getPaddingLeft() - mTextBounds.bottom - (keyWidth - mTextBounds.height()) / 2;
         canvas.drawText(mDisplayText, x, y, mTextPaint);
+
+        canvas.restore();
 
     }
 
@@ -85,8 +117,18 @@ public class KeyText extends Key {
         setText(String.valueOf(text));
     }
 
+    public void setSubText(String text) {
+        this.mDisplaySubText = renderer.unicodeToMenksoft(text);
+        invalidate();
+    }
+
+    public void setSubText(char text) {
+        setSubText(String.valueOf(text));
+    }
+
     public void setTypeFace(Typeface typeface) {
         mTextPaint.setTypeface(typeface);
+        mSubTextPaint.setTypeface(typeface);
         invalidate();
     }
 
@@ -102,4 +144,15 @@ public class KeyText extends Key {
         invalidate();
     }
 
+    public void setSubTextSize(float subTextSize) {
+        float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                subTextSize, getResources().getDisplayMetrics());
+        mSubTextPaint.setTextSize(sizePx);
+        invalidate();
+    }
+
+    public void setSubTextColor(int subTextColor) {
+        mSubTextPaint.setColor(subTextColor);
+        invalidate();
+    }
 }

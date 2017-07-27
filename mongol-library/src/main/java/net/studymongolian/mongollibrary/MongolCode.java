@@ -26,8 +26,6 @@ public final class MongolCode {
 
     // this is a singleton class (should it just be a static class?)
     public final static MongolCode INSTANCE = new MongolCode();
-    private static final int NORMAL_GLYPH = 0;
-    private static final int NON_PRINTING_CHAR = -1;
 
 
 
@@ -47,13 +45,10 @@ public final class MongolCode {
     }
 
     // Constructor
-    private MongolCode() {}
-
-    public String unicodeToMenksoft(CharSequence inputString) {
-        return unicodeToMenksoft(inputString, null);
+    private MongolCode() {
     }
 
-    public String unicodeToMenksoft(CharSequence inputString, int[] glyphIndexes) {
+    public String unicodeToMenksoft(CharSequence inputString) {
 
         if (inputString == null) {
             return null;
@@ -63,35 +58,26 @@ public final class MongolCode {
             return "";
         }
 
-        // the index array must be passed in with the correct size, or else ignore it.
-        int length = inputString.length();
-        //int currentGlyphIndex = 0;
-        if (glyphIndexes != null && glyphIndexes.length != length) {
-            glyphIndexes = null; // TODO reset the glyph indexes to the right length
-        }
-
         StringBuilder outputString = new StringBuilder();
         StringBuilder mongolWord = new StringBuilder();
 
-
         // Loop through characters in string
         //for (char character : inputString.toCharArray()) {
+        int length = inputString.length();
         for (int i = 0; i < length; i++) {
             final char character = inputString.charAt(i);
             if (isMongolian(character)) {
                 mongolWord.append(character);
             } else if (character == Uni.NNBS) {
                 if (mongolWord.length() > 0) {
-                    String renderedWord = convertWordToMenksoftCode(mongolWord.toString(), glyphIndexes, i);
-                    //currentGlyphIndex += renderedWord.length();
+                    String renderedWord = convertWordToMenksoftCode(mongolWord.toString());
                     outputString.append(renderedWord);
                     mongolWord.setLength(0);
                 }
                 mongolWord.append(Uni.NNBS);
             } else { // non-Mongol character
                 if (mongolWord.length() > 0) {
-                    String renderedWord = convertWordToMenksoftCode(mongolWord.toString(), glyphIndexes, i);
-                    //currentGlyphIndex += renderedWord.length();
+                    String renderedWord = convertWordToMenksoftCode(mongolWord.toString());
                     outputString.append(renderedWord);
                     mongolWord.setLength(0);
                 }
@@ -101,23 +87,8 @@ public final class MongolCode {
 
         // Add any final substring
         if (mongolWord.length() > 0) {
-            String renderedWord = convertWordToMenksoftCode(mongolWord.toString(), glyphIndexes, length - 1);
+            String renderedWord = convertWordToMenksoftCode(mongolWord.toString());
             outputString.append(renderedWord);
-        }
-
-        // calculate the glyph indexes
-        if (glyphIndexes != null) {
-            boolean indexingHasStarted = false;
-            int glyphIndex = 0;
-            for (int i = 0; i < length; i++) {
-                if (glyphIndexes[i] == NORMAL_GLYPH) {
-                    if (indexingHasStarted) {
-                        glyphIndex++;
-                    }
-                    indexingHasStarted = true;
-                }
-                glyphIndexes[i] = glyphIndex;
-            }
         }
 
         return outputString.toString();
@@ -508,7 +479,7 @@ public final class MongolCode {
                 outputString.append(Uni.YA);
                 // TODO add FVS1 for dipthongs?
                 if (currentChar == Glyph.INIT_YA_FVS1) {
-                        outputString.append(Uni.FVS1);
+                    outputString.append(Uni.FVS1);
                 }
             } else if (currentChar < Glyph.WA_START) {                 // RA
                 outputString.append(Uni.RA);
@@ -550,13 +521,9 @@ public final class MongolCode {
         return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
     }
 
-    private String convertWordToMenksoftCode(String mongolWord, int[] glyphIndexes, int lastUnicodeIndex) {
-
-        // TODO would anything bad happen if lastUnicodeIndex were less than zero?
+    private String convertWordToMenksoftCode(String mongolWord) {
 
         // TODO break this method into smaller chunks
-
-        boolean glyphIndexNeedsAdjusting = false;
 
         int length = mongolWord.length();
         StringBuilder renderedWord = new StringBuilder();
@@ -579,17 +546,9 @@ public final class MongolCode {
 
             if (isFVS(currentChar)) {
                 fvs = currentChar;
-                // FIXME this code is not DRY
-                if (glyphIndexes != null) {
-                    glyphIndexes[lastUnicodeIndex - length  + 1 + i] = NON_PRINTING_CHAR; // FIXME
-                }
                 continue;
             } else if (currentChar == Uni.MVS && i != length - 2) {
                 // ignore MVS in all but second to last position
-                // FIXME this code is not DRY
-                if (glyphIndexes != null) {
-                    glyphIndexes[lastUnicodeIndex - length  + 1 + i] = NON_PRINTING_CHAR; // FIXME
-                }
                 continue;
             }
 
@@ -609,7 +568,7 @@ public final class MongolCode {
             } else {
                 if (i == 1 && isSuffix) {
                     location = Location.INITIAL;
-                } else if (charBelow == Uni.MVS){
+                } else if (charBelow == Uni.MVS) {
                     // treat character above MVS as a final by default
                     location = Location.FINAL;
                 } else {
@@ -743,17 +702,17 @@ public final class MongolCode {
                                 char charAbove = mongolWord.charAt(i - 1);
                                 if (isRoundLetterIncludingQG(charAbove)) {
                                     renderedWord.insert(0, Glyph.MEDI_I_BP);           // After BPFK
-                                // Disabling diphthongs for now because of NAIMA
+                                    // Disabling diphthongs for now because of NAIMA
                                     // problem. Make diphthongs with Y+FVS1+I.
                                 } else if (
                                         charAbove == Uni.A ||
-                                        charAbove == Uni.E ||
-                                        charAbove == Uni.O ||
-                                        charAbove == Uni.U ||
+                                                charAbove == Uni.E ||
+                                                charAbove == Uni.O ||
+                                                charAbove == Uni.U ||
                                                 // or non long toothed OE/UE
                                                 ((charAbove == Uni.OE ||
                                                         charAbove == Uni.UE) &&
-                                                !needsLongToothU(mongolWord, i - 1)) ) {
+                                                        !needsLongToothU(mongolWord, i - 1))) {
                                     // *** AI, EI, OI, UI, OEI, UEI
                                     // medial double tooth I diphthong rule ***
                                     renderedWord.insert(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
@@ -1021,11 +980,11 @@ public final class MongolCode {
                             if (fvs == Uni.FVS1) {
                                 renderedWord.insert(0, Glyph.INIT_NA_FVS1_STEM);        // non-dotted
                             } else {
-                                 if (glyphShapeBelow == Shape.STEM) {
-                                     renderedWord.insert(0, Glyph.INIT_NA_STEM);        // normal stem
-                                 } else {
-                                     renderedWord.insert(0, Glyph.INIT_NA_TOOTH);       // normal tooth
-                                 }
+                                if (glyphShapeBelow == Shape.STEM) {
+                                    renderedWord.insert(0, Glyph.INIT_NA_STEM);        // normal stem
+                                } else {
+                                    renderedWord.insert(0, Glyph.INIT_NA_TOOTH);       // normal tooth
+                                }
                             }
                             break;
                         case MEDIAL:
@@ -1768,9 +1727,6 @@ public final class MongolCode {
                                         } else {
                                             // omit the Y if YI is at the end of a word
                                         }
-                                        // XXX if changing this then also need to update
-                                        // the glyph indexing in MongolTextStorage
-                                        glyphIndexNeedsAdjusting = true;
                                     } else if (isConsonant(charBelow)) {
                                         renderedWord.insert(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
                                     } else {
@@ -2095,22 +2051,19 @@ public final class MongolCode {
                     break;
 
 
-
                 //////////////////////////////  NNBS  ///////////////////////////////
 
                 case Uni.NNBS:
                     renderedWord.insert(0, Uni.NNBS);
                     break;
+
+                //////////////////////////////  NIRUGU  /////////////////////////////
+
+                case Uni.MONGOLIAN_NIRUGU:
+                    renderedWord.insert(0, Glyph.NIRUGU);
+                    break;
                 default:
                     // any extra FVS and MVS characters are ignored
-                    glyphIndexNeedsAdjusting = true;
-            }
-
-            if (glyphIndexNeedsAdjusting) {
-                if (glyphIndexes != null) {
-                    glyphIndexes[lastUnicodeIndex - length  + 1 + i] = NON_PRINTING_CHAR; // FIXME
-                }
-                glyphIndexNeedsAdjusting = false;
             }
 
             charBelow = currentChar;
@@ -2134,21 +2087,20 @@ public final class MongolCode {
         }
 
         length = textAfter.length();
-        //if (length > 0) {
-            for (int i = 0; i < length; i++) {
-                char currentChar = textAfter.charAt(i);
-                if (isFVS(currentChar) || currentChar == Uni.MVS) {
-                    continue;
-                } else if (isMongolian(currentChar)) {
-                    afterIsMongolian = true;
-                }
-                break;
+
+        for (int i = 0; i < length; i++) {
+            char currentChar = textAfter.charAt(i);
+            if (isFVS(currentChar) || currentChar == Uni.MVS) {
+                continue;
+            } else if (isMongolian(currentChar)) {
+                afterIsMongolian = true;
             }
-        //}
+            break;
+        }
 
         if (beforeIsMongolian && afterIsMongolian) return Location.MEDIAL;
         else if (!beforeIsMongolian && afterIsMongolian) return Location.INITIAL;
-        else if (beforeIsMongolian && !afterIsMongolian) return Location.FINAL;
+        else if (beforeIsMongolian) return Location.FINAL;
         else return Location.ISOLATE;
     }
 
@@ -2197,11 +2149,11 @@ public final class MongolCode {
         return (character >= Uni.O && character <= Uni.UE);
     }
 
-    private boolean isMasculineVowel(char character) {
+    private static boolean isMasculineVowel(char character) {
         return (character == Uni.A || character == Uni.O || character == Uni.U);
     }
 
-    private boolean isFeminineVowel(char character) {
+    private static boolean isFeminineVowel(char character) {
         return (character == Uni.E || character == Uni.EE || character == Uni.OE || character == Uni.UE);
     }
 
@@ -2244,7 +2196,7 @@ public final class MongolCode {
         return true;
     }
 
-    private boolean isBGDRS(char character) {
+    private static boolean isBGDRS(char character) {
         // This method is not used internally, only for external use.
         return (character == Uni.BA || character == Uni.GA || character == Uni.DA
                 || character == Uni.RA || character == Uni.SA);
@@ -2262,10 +2214,141 @@ public final class MongolCode {
         return (character >= Uni.A && character <= Uni.CHI);
     }
 
+    // YIN comes after a vowel, UN comes after a consonant, U comes after N.
+    public static String getSuffixYinUnU(Gender previousWordGender, char previousWordLastChar) {
+        if (isVowel(previousWordLastChar)) {
+            return Suffix.YIN;
+        } else if (previousWordLastChar == Uni.NA) {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.U;
+            } else {
+                return Suffix.UE;
+            }
+        } else {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.UN;
+            } else {
+                return Suffix.UEN;
+            }
+        }
+    }
+
+    // TU after B, G, D, R, S. Others are DU.
+    public static String getSuffixTuDu(Gender previousWordGender, char previousWordLastChar) {
+        if (isBGDRS(previousWordLastChar)) {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.TU;
+            } else {
+                return Suffix.TUE;
+            }
+        } else {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.DU;
+            } else {
+                return Suffix.DUE;
+            }
+        }
+    }
+
+
+    // Yi comes after a vowel, I comes after a consonant.
+    public static String getSuffixYiI(char previousWordLastChar) {
+        if (isVowel(previousWordLastChar)) {
+            return Suffix.YI;
+        }
+        return Suffix.I;
+    }
+
+    // BAR comes after a vowel, IYAR comes after a consonant.
+    public static String getSuffixBarIyar(Gender previousWordGender, char previousWordLastChar) {
+        if (isVowel(previousWordLastChar)) {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.IYAR;
+            } else {
+                return Suffix.IYER;
+            }
+        } else {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.BAR;
+            } else {
+                return Suffix.BER;
+            }
+        }
+    }
+
+    // BAN comes after a vowel, IYAN comes after a consonant.
+    public static String getSuffixBanIyan(Gender previousWordGender, char previousWordLastChar) {
+        if (isVowel(previousWordLastChar)) {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.IYAN;
+            } else {
+                return Suffix.IYEN;
+            }
+        } else {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.BAN;
+            } else {
+                return Suffix.BEN;
+            }
+        }
+    }
+
+    public static String getSuffixAchaEche(Gender previousWordGender) {
+        if (previousWordGender == Gender.MASCULINE) {
+            return Suffix.ACHA;
+        } else {
+            return Suffix.ECHE;
+        }
+    }
+
+    public static String getSuffixTaiTei(Gender previousWordGender) {
+        if (previousWordGender == Gender.MASCULINE) {
+            return Suffix.TAI;
+        } else {
+            return Suffix.TEI;
+        }
+    }
+
+    public static String getSuffixUu(Gender previousWordGender) {
+        if (previousWordGender == Gender.MASCULINE) {
+            return Suffix.UU;
+        } else {
+            return Suffix.UEUE;
+        }
+    }
+
+    public static String getSuffixUd(Gender previousWordGender) {
+        if (previousWordGender == Gender.MASCULINE) {
+            return Suffix.UD;
+        } else {
+            return Suffix.UED;
+        }
+    }
+
+    public static String getSuffixNugud(Gender previousWordGender) {
+        if (previousWordGender == Gender.MASCULINE) {
+            return Suffix.NUGUD;
+        } else {
+            return Suffix.NUEGUED;
+        }
+    }
+
+    // Starts at the end of the word and works up
+    // if mixed genders only reports the first one from the bottom
+    // returns null if word does not end in a valid Mongolian character
+    public static Gender getWordGender(String word) {
+        // check that word is valid mongolian
+        if (word == null || word.length() == 0) return null;
+        int lastIndex = word.length() - 1;
+        if (!isMongolian(word.charAt(lastIndex))) return null;
+        return getWordGenderAboveIndex(lastIndex, word);
+    }
+
+    // assumes that word is valid mongolian
     // this starts at the index and works up
-    // FIXME: If there are mixed genders then only the first will be reported
-    // (could add a MIXED form)
-    private Gender getWordGenderAboveIndex(int index, String word) {
+    // If there are mixed genders then only the first will be reported
+    // (could add a Gender.MIXED form)
+    private static Gender getWordGenderAboveIndex(int index, String word) {
         for (int i = index - 1; i >= 0; i--) {
             if (isMasculineVowel(word.charAt(i))) {
                 return Gender.MASCULINE;
@@ -2345,7 +2428,64 @@ public final class MongolCode {
         public static final char LHA = '\u1840';
         public static final char ZHI = '\u1841';
         public static final char CHI = '\u1842';
-    };
+    }
+
+    public class Suffix {
+        public static final String YIN = "\u202F\u1836\u1822\u1828";
+        public static final String UN = "\u202F\u1824\u1828";
+        public static final String UEN = "\u202F\u1826\u1828";
+        public static final String U = "\u202F\u1824";
+        public static final String UE = "\u202F\u1826";
+        public static final String I = "\u202F\u1822";
+        public static final String YI = "\u202F\u1836\u1822";
+        public static final String DU = "\u202F\u1833\u1824";
+        public static final String DUE = "\u202F\u1833\u1826";
+        public static final String TU = "\u202F\u1832\u1824";
+        public static final String TUE = "\u202F\u1832\u1826";
+        public static final String DUR = "\u202F\u1833\u1824\u1837";
+        public static final String DUER = "\u202F\u1833\u1826\u1837";
+        public static final String TUR = "\u202F\u1832\u1824\u1837";
+        public static final String TUER = "\u202F\u1832\u1826\u1837";
+        public static final String DAQI = "\u202F\u1833\u1820\u182C\u1822";
+        public static final String DEQI = "\u202F\u1833\u1821\u182C\u1822";
+        public static final String ACHA = "\u202F\u1820\u1834\u1820";
+        public static final String ECHE = "\u202F\u1821\u1834\u1821";
+        public static final String BAR = "\u202F\u182A\u1820\u1837";
+        public static final String BER = "\u202F\u182A\u1821\u1837";
+        public static final String IYAR = "\u202F\u1822\u1836\u1820\u1837";
+        public static final String IYER = "\u202F\u1822\u1836\u1821\u1837";
+        public static final String TAI = "\u202F\u1832\u1820\u1822";
+        public static final String TEI = "\u202F\u1832\u1821\u1822";
+        public static final String LUGA = "\u202F\u182F\u1824\u182D\u180E\u1820";
+        public static final String LUEGE = "\u202F\u182F\u1826\u182D\u1821";
+        public static final String BAN = "\u202F\u182A\u1820\u1828";
+        public static final String BEN = "\u202F\u182A\u1821\u1828";
+        public static final String IYAN = "\u202F\u1822\u1836\u1820\u1828";
+        public static final String IYEN = "\u202F\u1822\u1836\u1821\u1828";
+        public static final String YUGAN = "\u202F\u1836\u1824\u182D\u1820\u1828";
+        public static final String YUEGEN = "\u202F\u1836\u1826\u182D\u1821\u1828";
+        public static final String DAGAN = "\u202F\u1833\u1820\u182D\u1820\u1828";
+        public static final String DEGEN = "\u202F\u1833\u1821\u182D\u1821\u1828";
+        public static final String TAGAN = "\u202F\u1832\u1820\u182D\u1820\u1828";
+        public static final String TEGEN = "\u202F\u1832\u1821\u182D\u1821\u1828";
+        public static final String ACHAGAN = "\u202F\u1820\u1834\u1820\u182D\u1820\u1828";
+        public static final String ECHEGEN = "\u202F\u1821\u1834\u1821\u182D\u1821\u1828";
+        public static final String TAIGAN = "\u202F\u1832\u1820\u1822\u182D\u1820\u1828";
+        public static final String TEIGEN = "\u202F\u1832\u1821\u1822\u182D\u1821\u1828";
+        public static final String UD = "\u202F\u1824\u1833";
+        public static final String UED = "\u202F\u1826\u1833";
+        public static final String NUGUD = "\u202F\u1828\u1824\u182D\u1824\u1833";
+        public static final String NUEGUED = "\u202F\u1828\u1826\u182D\u1826\u1833";
+        public static final String NAR = "\u202F\u1828\u1820\u1837";
+        public static final String NER = "\u202F\u1828\u1821\u1837";
+        public static final String UU = "\u202F\u1824\u1824";
+        public static final String UEUE = "\u202F\u1826\u1826";
+        public static final String DA = "\u202F\u1833\u1820";
+        public static final String DE = "\u202F\u1833\u1821";
+
+        // TODO should we add others?
+        // urugu?
+    }
 
     private class Glyph {
 
@@ -2353,8 +2493,6 @@ public final class MongolCode {
         private static final char MENKSOFT_END = '\uE34F';
 
         // Private Use Area glyph values
-        //private static final char NOTDEF = '\uE360';
-        // TODO add these to the MenksoftToUnicode conversion
         private static final char BIRGA = '\uE234';
         private static final char ELLIPSIS = '\uE235';
         private static final char COMMA = '\uE236';
@@ -2757,7 +2895,4 @@ public final class MongolCode {
         private static final char FINA_CHI = '\uE34F';
 
     }
-
-
-
 }
