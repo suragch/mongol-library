@@ -24,6 +24,7 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -31,7 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.text.BreakIterator;
 
-//import static android.view.inputmethod.BaseInputConnection.getComposingSpanStart;
+// TODO handle extracted text
 
 public class MongolEditText extends MongolTextView {
 
@@ -218,6 +219,7 @@ public class MongolEditText extends MongolTextView {
     class MyListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
+
             int x = (int) e.getX();
             int y = (int) e.getY();
             int start = getSelectionStart();
@@ -228,8 +230,53 @@ public class MongolEditText extends MongolTextView {
             } else {
                 mSelectionHandle = SCROLLING_END;
             }
+
+
+            // disable scrolling in parent scrollview in some situations
+            // (1) this EditText width is <= parent width (ie, parent can't scroll anyway)
+            // (2) There is a selection and the down location is close to a cursor handle
+            View parent = (View) getParent();
+            if (parent != null) {
+                // (1)
+                if (getWidth() <= parent.getWidth()) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                // (2)
+                if (touchIsCloseToSelection(x, y, start, end)) {
+                    getParent().requestDisallowInterceptTouchEvent(true);
+                }
+            }
+
             requestFocus();
             return true;
+        }
+
+        // return true if touch is within 40dp of a cursor/selection handle
+        private boolean touchIsCloseToSelection(int x, int y, int start, int end) {
+
+            final int distanceAwayDp = 40; // dp
+            int distanceAwayPx = (int) (distanceAwayDp * getResources().getDisplayMetrics().density);
+
+            // test if near selection start
+            Rect selectionStart = getCursorRect(start);
+            Rect nearbyStart = new Rect(
+                    selectionStart.left - distanceAwayPx,
+                    selectionStart.top - distanceAwayPx,
+                    selectionStart.right + distanceAwayPx,
+                    selectionStart.bottom + distanceAwayPx);
+            if (nearbyStart.contains(x, y)) return true;
+
+            if (end == start) return false;
+
+            // test if near selection end
+            Rect selectionEnd = getCursorRect(end);
+            Rect nearbyEnd = new Rect(
+                    selectionEnd.left - distanceAwayPx,
+                    selectionEnd.top - distanceAwayPx,
+                    selectionEnd.right + distanceAwayPx,
+                    selectionEnd.bottom + distanceAwayPx);
+            if (nearbyEnd.contains(x, y)) return true;
+            return false;
         }
 
         @Override
@@ -318,6 +365,15 @@ public class MongolEditText extends MongolTextView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()) {
+            // onDown in handled in GestureDetector
+            case MotionEvent.ACTION_UP:
+                ViewParent view = this.getParent();
+                view.requestDisallowInterceptTouchEvent(false);
+        }
+
+
         boolean result = mDetector.onTouchEvent(event);
         // <-- if result is false (event not detected) then add custom detection code here
         return result;
@@ -427,7 +483,7 @@ public class MongolEditText extends MongolTextView {
             end = unicodeStart;
         }
 
-        // start cursor
+        // start cursor (could use the getCursorRect() function below)
         int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(start);
         int lineStart = super.mLayout.getLineForOffset(glyphStart);
         int widthStart = super.mLayout.getLineDescent(lineStart) - super.mLayout.getLineAscent(lineStart);
@@ -464,6 +520,15 @@ public class MongolEditText extends MongolTextView {
         return mCursorPath;
     }
 
+    private Rect getCursorRect(int unicodeIndex) {
+        int glyphIndex = mTextStorage.getGlyphIndexForUnicodeIndex(unicodeIndex);
+        int line = super.mLayout.getLineForOffset(glyphIndex);
+        int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
+        int x = super.mLayout.getLineBottom(line) + getPaddingLeft();
+        int y = (int) super.mLayout.getVertical(glyphIndex) + getPaddingTop();
+
+        return new Rect(x, y, x + width, y + CURSOR_WIDTH);
+    }
 
     private boolean shouldBlink() {
         //Log.i("TAG", "shouldBlink: ");
@@ -623,6 +688,7 @@ public class MongolEditText extends MongolTextView {
         }
     }
 
+    // not really using this, just following the standard EditText, could probably delete this for now
     public boolean getFreezesText() {
         return true;
     }
