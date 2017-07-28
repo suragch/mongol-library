@@ -33,7 +33,7 @@ import java.util.Map;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class KeyboardAeiou extends ViewGroup {
+public class KeyboardAeiou extends Keyboard {
 
     // Row 1
     private KeyText mKeyA;
@@ -69,8 +69,6 @@ public class KeyboardAeiou extends ViewGroup {
     // This will map the button resource id to the String value that we want to
     // input when that key is clicked.
     private Map<Key, String> keyValues = new HashMap<>();
-    //Map<KeyText, String[]> keyCandidates = new HashMap<>();
-    //Map<KeyText, String[]> keyCandidatesDisplay = new HashMap<>();
 
     // Our communication link to the EditText/MongolEditText
     private InputConnection inputConnection;
@@ -629,7 +627,7 @@ public class KeyboardAeiou extends ViewGroup {
 
         // in the Android source InputMethodService also handles Extracted Text here
         https:
-//android.googlesource.com/platform/frameworks/base/+/fb13abd800cd610c7f46815848545feff83e5748/core/java/android/inputmethodservice/InputMethodService.java#1529
+        //android.googlesource.com/platform/frameworks/base/+/fb13abd800cd610c7f46815848545feff83e5748/core/java/android/inputmethodservice/InputMethodService.java#1529
         // https://android.googlesource.com/platform/development/+/master/samples/SoftKeyboard/src/com/example/android/softkeyboard/SoftKeyboard.java#274
 
         // currently we are only using composing for popup glyph selection. If we want to be more
@@ -701,19 +699,19 @@ public class KeyboardAeiou extends ViewGroup {
         return candidates;
     }
 
-    private void setCandidates(Key key, PopupKeyCandidates popupView) {
-
-        Candidates candidates = getPopupCandidates(key);
-
-        // update the popup view with the candidate choices
-        if (candidates == null || candidates.unicode == null) return;
-        popupView.setCandidates(candidates.unicode);
-        if (candidates.display == null) {
-            popupView.setDisplayCandidates(candidates.unicode, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-        } else {
-            popupView.setDisplayCandidates(candidates.display, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-        }
-    }
+//    private void setCandidates(Key key, PopupKeyCandidates popupView) {
+//
+//        Candidates candidates = getPopupCandidates(key);
+//
+//        // update the popup view with the candidate choices
+//        if (candidates == null || candidates.unicode == null) return;
+//        popupView.setCandidates(candidates.unicode);
+//        if (candidates.display == null) {
+//            popupView.setDisplayCandidates(candidates.unicode, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+//        } else {
+//            popupView.setDisplayCandidates(candidates.display, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+//        }
+//    }
 
     private boolean isIsolateOrInitial() {
         if (inputConnection == null) return true;
