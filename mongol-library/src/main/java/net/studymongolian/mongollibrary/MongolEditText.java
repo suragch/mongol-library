@@ -10,7 +10,6 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
@@ -25,7 +24,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
-import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
@@ -37,8 +35,6 @@ import java.text.BreakIterator;
 public class MongolEditText extends MongolTextView {
 
     private Paint mCursorPaint;
-    //private long mShowCursor;
-    //private Blink mBlink;
     private boolean mCursorVisible = true;
     private boolean mIsBlinkOn = true;
     private Handler mBlinkHandler;
@@ -166,11 +162,9 @@ public class MongolEditText extends MongolTextView {
 
         outAttrs.initialSelStart = getSelectionStart();
         outAttrs.initialSelEnd = getSelectionEnd();
-        //outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS; // TODO what are flags?
-        //outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE; // TODO is this right?
 
-        //outAttrs.inputType = InputType.TYPE_CLASS_NUMBER;
-        outAttrs.inputType = InputType.TYPE_CLASS_TEXT; // TODO allow user to set type class
+        // TODO allow user to set type class
+        outAttrs.inputType = InputType.TYPE_CLASS_TEXT;
 
         return new MetInputConnection(this, true);
     }
@@ -231,7 +225,6 @@ public class MongolEditText extends MongolTextView {
                 mSelectionHandle = SCROLLING_END;
             }
 
-
             // disable scrolling in parent scrollview in some situations
             // (1) this EditText width is <= parent width (ie, parent can't scroll anyway)
             // (2) There is a selection and the down location is close to a cursor handle
@@ -245,6 +238,7 @@ public class MongolEditText extends MongolTextView {
                 if (touchIsCloseToSelection(x, y, start, end)) {
                     getParent().requestDisallowInterceptTouchEvent(true);
                 }
+                // enabled again in ACTION_UP
             }
 
             requestFocus();
@@ -340,7 +334,6 @@ public class MongolEditText extends MongolTextView {
             int start = getSelectionStart();
             int end = getSelectionEnd();
 
-
             //int xDown = (int) e1.getX();
             //int yDown = (int) e1.getY();
 
@@ -356,8 +349,6 @@ public class MongolEditText extends MongolTextView {
 
             setSelection(start, end);
 
-            // todo should end be forbidden from going before start?
-
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
     }
@@ -367,12 +358,12 @@ public class MongolEditText extends MongolTextView {
     public boolean onTouchEvent(MotionEvent event) {
 
         switch (event.getAction()) {
-            // onDown in handled in GestureDetector
+            // onDown is handled in GestureDetector
             case MotionEvent.ACTION_UP:
+                // re-enable scrolling for parent scrollview
                 ViewParent view = this.getParent();
                 view.requestDisallowInterceptTouchEvent(false);
         }
-
 
         boolean result = mDetector.onTouchEvent(event);
         // <-- if result is false (event not detected) then add custom detection code here
@@ -419,9 +410,7 @@ public class MongolEditText extends MongolTextView {
     }
 
     String getSelectedText() {
-        if (!hasSelection()) {
-            return null;
-        }
+        if (!hasSelection()) return null;
 
         final int start = getSelectionStart();
         final int end = getSelectionEnd();
@@ -531,7 +520,6 @@ public class MongolEditText extends MongolTextView {
     }
 
     private boolean shouldBlink() {
-        //Log.i("TAG", "shouldBlink: ");
         if (!mCursorVisible || !isFocused()) return false;
 
         final int start = getSelectionStart();
@@ -543,7 +531,7 @@ public class MongolEditText extends MongolTextView {
         return start == end;
     }
 
-    // FIXME do I need to cancel this when user leaves app? Check logging
+    // FIXME How do I cancel this when user leaves app? Check logging
     // alternate the view's background color
     Runnable mBlink = new Runnable() {
         @Override

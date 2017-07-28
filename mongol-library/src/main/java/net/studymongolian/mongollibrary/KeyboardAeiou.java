@@ -265,7 +265,7 @@ public class KeyboardAeiou extends ViewGroup {
 
         mKeyBackspace = new KeyImage(context);
         mKeyBackspace.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_backspace_black_48dp));
-        mKeyBackspace.setOnTouchListener(textKeyTouchListener);
+        mKeyBackspace.setOnTouchListener(handleBackspace);
         addView(mKeyBackspace);
 
 
@@ -337,6 +337,68 @@ public class KeyboardAeiou extends ViewGroup {
 
     }
 
+    protected View.OnTouchListener handleBackspace = new View.OnTouchListener() {
+
+        private Handler handler;
+        final int INITIAL_DELAY = 500;
+        final int REPEAT_DELAY = 50;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    view.setPressed(true);
+                    doBackspace();
+                    if (handler != null)
+                        return true;
+                    handler = new Handler();
+                    handler.postDelayed(actionBackspace, INITIAL_DELAY);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                default:
+                    view.setPressed(false);
+                    if (handler == null)
+                        return true;
+                    handler.removeCallbacks(actionBackspace);
+                    handler = null;
+                    break;
+            }
+
+            return true;
+        }
+
+        private void doBackspace(){
+            if (inputConnection == null) return;
+
+            if (mComposing.length() > 0) {
+                inputConnection.commitText("", 1);
+                mComposing.setLength(0);
+            } else {
+
+                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+
+                // We could also do this with inputConnection.deleteSurroundingText(1, 0)
+                // but then we would need to be careful of not deleting too much
+                // and not deleting half a serogate pair.
+                // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
+                // see also https://stackoverflow.com/a/45182401
+            }
+
+
+        }
+
+        Runnable actionBackspace = new Runnable() {
+            @Override
+            public void run() {
+                doBackspace();
+                handler.postDelayed(this, REPEAT_DELAY);
+            }
+        };
+
+    };
 
     protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
 
@@ -361,7 +423,7 @@ public class KeyboardAeiou extends ViewGroup {
             switch (action) {
                 case (MotionEvent.ACTION_DOWN):
 
-                    key.setPressedState(true);
+                    key.setPressed(true);
 
                     Candidates candidates = getPopupCandidates(key);
                     if (candidates != null && candidates.unicode != null
@@ -394,26 +456,8 @@ public class KeyboardAeiou extends ViewGroup {
                         dismissPopup(key, event);
                     }
                     // normal keys
-                    else if (key == mKeyBackspace) {
 
-                        if (mComposing.length() > 0) {
-                            inputConnection.commitText("", 1);
-                            mComposing.setLength(0);
-                        } else {
-                            keyDownUp(KeyEvent.KEYCODE_DEL);
-                            // We could also do this with inputConnection.deleteSurroundingText(1, 0)
-                            // but then we would need to be careful of not deleting too much
-                            // and not deleting half a serogate pair.
-                            // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
-                            // see also https://stackoverflow.com/a/45182401
-                        }
-
-                        // TODO if previous char is fvs backspace 2
-                        // TODO after backspace if previous char is MVS backspace again
-                        // beware that the first backspace might have been for a selection
-                        // (so maybe this should be handled by the edit text or text storage)
-
-                    } else if (view == mKeyKeyboard) {
+                    else if (view == mKeyKeyboard) {
 
                     } else {
                         String inputText = keyValues.get(key);
@@ -437,7 +481,7 @@ public class KeyboardAeiou extends ViewGroup {
                         inputConnection.commitText(inputText, 1);
                     }
 
-                    key.setPressedState(false);
+                    key.setPressed(false);
                     if (handler != null) handler.removeCallbacksAndMessages(null);
                     return true;
                 default:
@@ -511,7 +555,7 @@ public class KeyboardAeiou extends ViewGroup {
 
         private void dismissPopup(Key key, MotionEvent event) {
 
-            key.setPressedState(false);
+            key.setPressed(false);
 
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
@@ -573,10 +617,7 @@ public class KeyboardAeiou extends ViewGroup {
 
         }
 
-        private void keyDownUp(int keyEventCode) {
-            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
-            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
-        }
+
     };
 
     public void onUpdateSelection(int oldSelStart,

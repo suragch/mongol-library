@@ -83,16 +83,28 @@ public abstract class Key extends View {
         }
     }
 
-    public void setPressedState(boolean pressedState) {
-        if (mStatePressed == pressedState) return;
-        mStatePressed = pressedState;
-        if (pressedState) {
+    @Override
+    public void setPressed(boolean pressed) {
+        super.setPressed(pressed);
+        mStatePressed = pressed;
+        if (pressed) {
             mKeyPaint.setColor(mPressedColor);
         } else {
             mKeyPaint.setColor(mKeyColor);
         }
         invalidate();
     }
+
+//    public void setPressedState(boolean pressedState) {
+//        if (mStatePressed == pressedState) return;
+//        mStatePressed = pressedState;
+//        if (pressedState) {
+//            mKeyPaint.setColor(mPressedColor);
+//        } else {
+//            mKeyPaint.setColor(mKeyColor);
+//        }
+//        invalidate();
+//    }
 
     public void setKeyColor(int keyColor) {
         mKeyPaint.setColor(keyColor);
