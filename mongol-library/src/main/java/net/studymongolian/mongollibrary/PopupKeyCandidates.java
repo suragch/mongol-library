@@ -54,8 +54,6 @@ class PopupKeyCandidates extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        // ignoring measure specs
-
         int summedWidth = 0;
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -105,17 +103,8 @@ class PopupKeyCandidates extends ViewGroup {
         int leftOffset = this.getPaddingLeft();
         int topOffset = this.getPaddingTop();
 
-//        int widthSize = 0;
-//        int widthMode = MeasureSpec.UNSPECIFIED;
         int widthSize = getMeasuredWidth() / getChildCount();
         int widthMode = MeasureSpec.EXACTLY;
-
-        //int availableWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-//        int availableWidth = right - left;
-//        if (getMeasuredWidth() > availableWidth) {
-//            widthSize = availableWidth / getChildCount();
-//            widthMode = MeasureSpec.EXACTLY;
-//        }
 
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
