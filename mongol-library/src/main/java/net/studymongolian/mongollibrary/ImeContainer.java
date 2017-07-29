@@ -1,9 +1,13 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputConnection;
+import android.widget.Toast;
 
 /**
  * Input Method Container
@@ -16,8 +20,20 @@ import android.view.ViewGroup;
  * ImeContainer manages switching keyboards and handling communication between the keyboard and the
  * word suggestion candidates list.
  */
-public class ImeContainer extends ViewGroup {
+public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardListener {
 
+
+    // This view group should have up to two children
+    // the child at index 0 is the current keyboard
+    // the child at index 1 is the punctuation keyboard
+    private static final int CURRENT_KEYBOARD_INDEX = 0;
+    private static final int PUNCTUATION_KEYBOARD_INDEX = 1;
+
+    Keyboard mCurrentKeyboard;
+    //Keyboard mCurrentKeyboardPunctuation;
+    private boolean showingPunctuationKeyboard = false;
+
+    // TODO for a custom keyboard let it set a custom pronunciation keyboard itself
 
 
     public ImeContainer(Context context) {
@@ -33,8 +49,43 @@ public class ImeContainer extends ViewGroup {
                          AttributeSet attrs,
                          int defStyle) {
         super(context, attrs, defStyle);
-        //init(context);
+        init(context);
     }
+
+    private void init(Context context) {
+
+        float dpPadding = 2;
+        int pxPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                dpPadding, getResources().getDisplayMetrics());
+
+        Keyboard aeiou = new KeyboardAeiou(context);
+        //Keyboard aeiouPunc = new KeyboardAeiouPunctuation(context);
+        aeiou.setBackgroundColor(Color.WHITE);
+        aeiou.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
+        this.addView(aeiou);
+        mCurrentKeyboard = aeiou;
+    }
+
+//    @Override
+//    protected void onFinishInflate() {
+//        super.onFinishInflate();
+//
+//        // make sure there are children
+//        int count = getChildCount();
+//        if (count < 1) {
+//            throw new RuntimeException("You must add at least one keyboard to the ImeContainer");
+//        }
+//        // make sure that all subviews are Keyboards TODO: will need to update this for Candidate views
+//        for (int i = 0; i < count; i++) {
+//            View view = getChildAt(i);
+//            if (!(view instanceof Keyboard)) {
+//                throw new RuntimeException("The child views of ImeContainer must be Keyboards.");
+//            }
+//        }
+//
+//        Keyboard keyboard = (Keyboard) getChildAt(0);
+//        keyboard.setKeyboardListener(this);
+//    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -57,18 +108,9 @@ public class ImeContainer extends ViewGroup {
 
 
 
-        // make sure there are children
         int count = getChildCount();
-        if (count < 1) {
-            throw new RuntimeException("You must add at least one keyboard to the ImeContainer");
-        }
-        // make sure that all subviews are Keyboards TODO: will need to update this for Candidate views
-        for (int i = 0; i < count; i++) {
-            View view = getChildAt(i);
-            if (!(view instanceof Keyboard)) {
-                throw new RuntimeException("The child views of ImeContainer must be Keyboards.");
-            }
-        }
+        if (count == 0) return;
+
 
 
         final int totalAvailableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
@@ -80,10 +122,49 @@ public class ImeContainer extends ViewGroup {
         int keyboardHeight = totalAvailableHeight;
 
         // just choose the first keyboard for now
-        View child = getChildAt(0);
+        View child;
+        if (showingPunctuationKeyboard) {
+            if (PUNCTUATION_KEYBOARD_INDEX >= count) return;
+            child = getChildAt(PUNCTUATION_KEYBOARD_INDEX);
+        } else {
+            if (CURRENT_KEYBOARD_INDEX >= count) return;
+            child = getChildAt(CURRENT_KEYBOARD_INDEX);
+        }
+
         child.measure(MeasureSpec.makeMeasureSpec(keyboardWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(keyboardHeight, MeasureSpec.EXACTLY));
         child.layout((int) x, (int) y, (int) (x + keyboardWidth), (int) (y + keyboardHeight));
 
+    }
+
+
+
+    @Override
+    public void punctuationSwitch() {
+        Toast.makeText(getContext(), "Keyboard key message", Toast.LENGTH_SHORT).show();
+
+//        if (getChildCount() == 1) {
+//            // add the punctuation keyboard
+//            Keyboard puncKeyboard = new KeyboardAeiouPunctuation(getContext());
+//            addView(puncKeyboard);
+//            showingPunctuationKeyboard = true;
+//            //forceLayout();
+//            //invalidate();
+//        }
+
+    }
+
+    // forward this on to the current keyboard
+    public void setInputConnection(InputConnection inputConnection) {
+        if (mCurrentKeyboard != null) {
+            mCurrentKeyboard.setInputConnection(inputConnection);
+        }
+    }
+
+    // forward this on to the current keyboard
+    public void onUpdateSelection(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
+        if (mCurrentKeyboard != null) {
+            mCurrentKeyboard.onUpdateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
+        }
     }
 }

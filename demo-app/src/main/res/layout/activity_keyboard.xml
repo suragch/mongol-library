@@ -46,18 +46,22 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- TODO Candidates view -->
-        <!-- app:orientation="vertical/horizontal" -->
+        <!-- TODO lets not allow anything here -->
 
-        <!-- ImeContainer ignores the layout width/height attributes -->
-        <net.studymongolian.mongollibrary.KeyboardAeiou
-            android:id="@+id/aeiou_keyboard"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:padding="2dp"/>
+        <!--&lt;!&ndash; only allow one &ndash;&gt;-->
 
-        <!-- TODO add more keyboards -->
+        <!--&lt;!&ndash; TODO Candidates view &ndash;&gt;-->
+        <!--&lt;!&ndash; app:orientation="vertical/horizontal" &ndash;&gt;-->
+
+        <!--&lt;!&ndash; ImeContainer ignores the layout width/height attributes &ndash;&gt;-->
+        <!--<net.studymongolian.mongollibrary.KeyboardAeiou-->
+            <!--android:id="@+id/aeiou_keyboard"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@android:color/white"-->
+            <!--android:padding="2dp"/>-->
+
+        <!--&lt;!&ndash; TODO add more keyboards &ndash;&gt;-->
 
     </net.studymongolian.mongollibrary.ImeContainer>
 

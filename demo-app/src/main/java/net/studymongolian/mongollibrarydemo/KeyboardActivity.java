@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
 
+import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
@@ -15,23 +16,24 @@ import net.studymongolian.mongollibrary.MongolInputMethodManager;
 
 public class KeyboardActivity extends AppCompatActivity {
 
-    EditText editText;
-    MongolEditText mongolEditText;
-    KeyboardAeiou keyboard;
+    //EditText editText;
+    //MongolEditText mongolEditText;
+    //KeyboardAeiou keyboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
 
-        editText = (EditText) findViewById(R.id.edittext);
-        mongolEditText = (MongolEditText) findViewById(R.id.mongoledittext);
-        keyboard = (KeyboardAeiou) findViewById(R.id.aeiou_keyboard);
+        EditText editText = (EditText) findViewById(R.id.edittext);
+        MongolEditText mongolEditText = (MongolEditText) findViewById(R.id.mongoledittext);
+        //keyboard = (KeyboardAeiou) findViewById(R.id.aeiou_keyboard);
+        ImeContainer imeContainer = (ImeContainer) findViewById(R.id.keyboard);
 
         MongolInputMethodManager mimm = new MongolInputMethodManager();
         mimm.addEditor(editText);
         mimm.addEditor(mongolEditText);
-        mimm.addIme(keyboard);
+        mimm.setIme(imeContainer);
         mimm.setAllowSystemKeyboard(false);
         mimm.startInput();
 

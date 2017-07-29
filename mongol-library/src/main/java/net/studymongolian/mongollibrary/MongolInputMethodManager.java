@@ -24,17 +24,16 @@ public class MongolInputMethodManager {
     public MongolInputMethodManager() {
     }
 
-    ;
-
     private List<View> mRegisteredEditors;
-    private List<View> mRegisteredKeyboards;
+    //private List<View> mRegisteredKeyboards;
+    private ImeContainer mImeContainer;
     private boolean mAllowSystemKeyboard = false;
 
     // this is the edit text that is receiving input
-    View mCurrentEditor;
-    KeyboardAeiou mCurrentInputMethod; // TODO change to Keyboard
-    EditorInfo mCurrentEditorInfo;
-    InputConnection mCurrentInputConnection;
+    private View mCurrentEditor;
+    //private KeyboardAeiou mCurrentKeyboard; // TODO change to Keyboard
+    private EditorInfo mCurrentEditorInfo;
+    private InputConnection mCurrentInputConnection;
     // Cursor position on the screen.
     Rect mTmpCursorRect = new Rect();
     Rect mCursorRect = new Rect();
@@ -43,6 +42,8 @@ public class MongolInputMethodManager {
     int mCursorCandStart;
 
     int mCursorCandEnd;
+
+
 
     public enum Ime {
         AEIOU,
@@ -132,13 +133,13 @@ public class MongolInputMethodManager {
 
     public boolean startInput() {
 
-        if (mRegisteredEditors == null || mRegisteredEditors.size() == 0 ||
-                mRegisteredKeyboards == null || mRegisteredKeyboards.size() == 0) {
-            throw new RuntimeException("You must set at least one editor and one keyboard.");
+        if (mRegisteredEditors == null || mRegisteredEditors.size() == 0) {
+            throw new RuntimeException("You must add at least one editor.");
         }
 
-        if (mCurrentInputMethod == null) {
-            mCurrentInputMethod = (KeyboardAeiou) mRegisteredKeyboards.get(0); // TODO change to Keyboard
+        if (mImeContainer == null) {
+            //mCurrentInputMethod = (KeyboardAeiou) mRegisteredKeyboards.get(0);
+            throw new RuntimeException("You must set the IME container.");
         }
 
         // mCurrentEditor will be added when it gets focus
@@ -242,8 +243,8 @@ public class MongolInputMethodManager {
                 tba.fieldId = v.getId();
                 InputConnection ic = v.onCreateInputConnection(tba);
                 mCurrentEditorInfo = tba;
-                if (mCurrentInputMethod != null) {
-                    mCurrentInputMethod.setInputConnection(ic);
+                if (mImeContainer != null) {
+                    mImeContainer.setInputConnection(ic);
                 }
             }
         }
@@ -262,7 +263,7 @@ public class MongolInputMethodManager {
                     //if (mCurrentInputMethod == null) return;
 
                     if ((mCurrentEditor != view && mCurrentEditor == null)
-                            || mCurrentEditorInfo == null || mCurrentInputMethod == null) {
+                            || mCurrentEditorInfo == null || mImeContainer == null) {
                         return;
                     }
 
@@ -270,14 +271,14 @@ public class MongolInputMethodManager {
                             || mCursorCandStart != candidatesStart
                             || mCursorCandEnd != candidatesEnd) {
 
-                        if (DEBUG) Log.v(TAG, "SELECTION CHANGE: " + mCurrentInputMethod);
+                        if (DEBUG) Log.v(TAG, "SELECTION CHANGE: " + mImeContainer);
                         final int oldSelStart = mCursorSelStart;
                         final int oldSelEnd = mCursorSelEnd;
                         mCursorSelStart = selStart;
                         mCursorSelEnd = selEnd;
                         mCursorCandStart = candidatesStart;
                         mCursorCandEnd = candidatesEnd;
-                        mCurrentInputMethod.onUpdateSelection(oldSelStart, oldSelEnd,
+                        mImeContainer.onUpdateSelection(oldSelStart, oldSelEnd,
                                 selStart, selEnd, candidatesStart, candidatesEnd);
                     }
 
@@ -308,17 +309,21 @@ public class MongolInputMethodManager {
         }
     }
 
-    public void addIme(KeyboardAeiou keyboard) { // TODO change this to Keyboard later
-        // TODO let the user add their own keyboard subclass
-        if (mRegisteredKeyboards == null) {
-            mRegisteredKeyboards = new ArrayList<>();
-        }
-        // don't add the same view twice
-        for (View view : mRegisteredKeyboards) {
-            if (view == keyboard) return;
-        }
-        // add keyboard
-        mRegisteredKeyboards.add(keyboard);
+//    public void addIme(KeyboardAeiou keyboard) { // TODO change this to Keyboard later
+//        // TODO let the user add their own keyboard subclass
+//        if (mRegisteredKeyboards == null) {
+//            mRegisteredKeyboards = new ArrayList<>();
+//        }
+//        // don't add the same view twice
+//        for (View view : mRegisteredKeyboards) {
+//            if (view == keyboard) return;
+//        }
+//        // add keyboard
+//        mRegisteredKeyboards.add(keyboard);
+//    }
+
+    public void setIme(ImeContainer imeContainer) {
+        this.mImeContainer = imeContainer;
     }
 
 }
