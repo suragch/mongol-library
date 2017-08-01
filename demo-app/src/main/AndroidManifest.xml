@@ -33,6 +33,8 @@
                   android:name=".KeyboardActivity"/>
         <activity android:label="@string/mongol_toast_activity_title"
                   android:name=".MongolToastActivity"/>
+        <activity android:label="@string/mongol_button_activity_title"
+                  android:name=".MongolButtonActivity"/>
     </application>
 
 </manifest>
