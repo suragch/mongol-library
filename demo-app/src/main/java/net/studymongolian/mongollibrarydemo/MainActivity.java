@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("Keyboard");
         apiDemos.add("MongolToast");
         apiDemos.add("MongolButton");
+        apiDemos.add("MongolAlertDialog");
         //apiDemos.add("Testing");
 
 
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 break;
             case 8: // MongolButton
                 intent = new Intent(this, MongolButtonActivity.class);
+                startActivity(intent);
+                break;
+            case 9: // MongolAlertDialog
+                intent = new Intent(this, MongolAlertDialogActivity.class);
                 startActivity(intent);
                 break;
 //            case 7: // Testing

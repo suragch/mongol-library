@@ -35,6 +35,8 @@
                   android:name=".MongolToastActivity"/>
         <activity android:label="@string/mongol_button_activity_title"
                   android:name=".MongolButtonActivity"/>
+        <activity android:label="@string/mongol_alert_dialog_activity_title"
+                  android:name=".MongolAlertDialogActivity"/>
     </application>
 
 </manifest>

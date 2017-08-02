@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <!-- Title -->
+
+    <FrameLayout
+        android:id="@+id/mongol_dialog_title_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <net.studymongolian.mongollibrary.MongolTextView
+            android:id="@+id/mongol_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <!-- Message -->
+
+    <LinearLayout
+        android:id="@+id/mongol_dialog_content_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/mongol_dialog_titleSpacerNoButtons"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
+
+        <HorizontalScrollView
+            android:id="@+id/mongol_dialog_content_scrollview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <net.studymongolian.mongollibrary.MongolTextView
+                android:id="@+id/mongol_dialog_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/mongol_dialog_textSpacerNoButtons"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <!-- Buttons -->
+
+    <!-- TODO replace this with a custom layout that switches to horizontal if buttons too tall -->
+
+    <LinearLayout
+        android:id="@+id/mongol_dialog_button_panel"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <net.studymongolian.mongollibrary.MongolButton
+            android:id="@+id/mongol_dialog_button_positive"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <net.studymongolian.mongollibrary.MongolButton
+            android:id="@+id/mongol_dialog_button_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <net.studymongolian.mongollibrary.MongolButton
+            android:id="@+id/mongol_dialog_button_neutral"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

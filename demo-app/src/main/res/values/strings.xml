@@ -9,6 +9,7 @@
     <string name="keyboard_activity_title">Keyboard</string>
     <string name="mongol_toast_activity_title">MongolToast</string>
     <string name="mongol_button_activity_title">MongolButton</string>
+    <string name="mongol_alert_dialog_activity_title">MongolAlertDialog</string>
 
     <string name="short_string">ᠮᠣᠩᠭᠣᠯ</string>
     <!--&lt;!&ndash;<string name="medium_string">"An &#128512;awesome &#128515;string with a few &#128521;emojis!"</string>&ndash;&gt;-->
