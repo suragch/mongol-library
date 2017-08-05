@@ -1,22 +1,23 @@
 # Mongol Library
  
 ## Contents 
-- Introduction
-- Installing
-- MongolTextView 
-- MongolLabel
-- MongolEditText
-- Keyboards 
-- MongolToast
-- MongolAlertDialog
-- Unicode 
-- Fonts
-- other
-- TODO
-- Developers
-- Versions 
-- External links
-- Apps that use this library 
+
+* Introduction
+* Installing
+* MongolTextView 
+* MongolLabel
+* MongolEditText
+* Keyboards 
+* MongolToast
+* MongolAlertDialog
+* Unicode 
+* Fonts
+* Other
+* TODO
+* Developers
+* Versions 
+* External links
+* Apps that use this library 
  
 ## Introduction
  
