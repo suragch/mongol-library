@@ -275,7 +275,7 @@ public class MongolLayout {
             // handle spaces at the end of split lines
             // TODO still need to handle spaces at the end of normal lines. They shouldn't even be measured
             if (hadToSplitWord) {
-                if (mText.charAt(lineStart) == CHAR_SPACE) {
+                if (lineStart < mText.length() && mText.charAt(lineStart) == CHAR_SPACE) {
                     // don't let a single trailing space make an empty blank next line
                     lineStart++;
                 }
