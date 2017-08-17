@@ -11,15 +11,22 @@
         android:layout_height="wrap_content"/>
 
     <Button
-        android:text="Show Mongol alert"
-        android:onClick="showMongolAlertClick"
+        android:text="Show Mongol alert (one button)"
+        android:onClick="showMongolAlertOneButtonClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <TextView
-        android:text="The MongolAlertDialog is not finished yet."
-        android:textColor="@android:color/holo_red_light"
+    <Button
+        android:text="Show Mongol alert (two buttons)"
+        android:onClick="showMongolAlertTwoButtonClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <Button
+        android:text="Show Mongol alert (three buttons)"
+        android:onClick="showMongolAlertThreeButtonClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 
 </LinearLayout>

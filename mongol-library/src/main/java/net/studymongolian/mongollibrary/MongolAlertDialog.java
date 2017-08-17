@@ -3,46 +3,29 @@ package net.studymongolian.mongollibrary;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.TypedArray;
-import android.database.Cursor;
-import android.graphics.drawable.Drawable;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.AttrRes;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckedTextView;
-import android.widget.CursorAdapter;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
 
 
+// FIXME acts strangely when button text is too long
+// FIXME doesn't dismiss on orientation change
+// TODO add Theme support or at least color customization
 
 public class MongolAlertDialog extends Dialog implements DialogInterface {
-
-    //protected final Window mWindow;
 
     private CharSequence mTitle;
     private MongolTextView mTitleView;
@@ -51,13 +34,17 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
     protected MongolTextView mMessageView;
     protected HorizontalScrollView mScrollView;
 
-    private MongolButton mButtonPositive;
+    private MongolTextView mButtonPositive;
     private CharSequence mButtonPositiveText;
-    private MongolButton mButtonNegative;
-    private CharSequence mButtonNegativeText;
-    private MongolButton mButtonNeutral;
-    private CharSequence mButtonNeutralText;
+    private Message mButtonPositiveMessage;
 
+    private MongolTextView mButtonNegative;
+    private Message mButtonNegativeMessage;
+    private CharSequence mButtonNegativeText;
+
+    private MongolTextView mButtonNeutral;
+    private CharSequence mButtonNeutralText;
+    private Message mButtonNeutralMessage;
 
     public MongolAlertDialog(@NonNull Context context) {
         this(context, 0);
@@ -65,6 +52,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
 
     public MongolAlertDialog(@NonNull Context context, @StyleRes int themeResId) {
         super(context, themeResId);
+        mHandler = new ButtonHandler(this);
     }
 
     protected MongolAlertDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
@@ -72,6 +60,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
 
         setCancelable(cancelable);
         setOnCancelListener(cancelListener);
+
     }
 
 
@@ -79,82 +68,20 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //installContent();
 
-        //mWindow = getWindow();
 
-        int contentView = R.layout.mongol_alert_dialog_layout;
-        getWindow().setContentView(contentView);
-        setupView();
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.mongol_alert_dialog_layout);
+
+        setupTitle();
+        setupMessage();
+        setupButtons();
     }
 
-//    public void installContent() {
-//        int contentView = mAlertDialogLayout;
-//        mWindow.setContentView(contentView);
-//        setupView();
-//    }
-
-    private void setupView() {
-
-        final Window window = getWindow();
-
-        final ViewGroup titlePanel = (ViewGroup) window.findViewById(R.id.mongol_dialog_title_panel);
-        final ViewGroup contentPanel = (ViewGroup) window.findViewById(R.id.mongol_dialog_content_panel);
-        final ViewGroup buttonPanel = (ViewGroup) window.findViewById(R.id.mongol_dialog_button_panel);
-
-        final MongolTextView title = (MongolTextView) titlePanel.findViewById(R.id.mongol_dialog_title);
-        mTitle = title.getText();
-
-        final MongolTextView content = (MongolTextView) window.findViewById(R.id.mongol_dialog_content);
 
 
-        //final View parentPanel = mWindow.findViewById(R.id.parentPanel);
-        //final View defaultTopPanel = parentPanel.findViewById(R.id.topPanel);
-        //final View defaultContentPanel = parentPanel.findViewById(R.id.contentPanel);
-        //final View defaultButtonPanel = parentPanel.findViewById(R.id.buttonPanel);
-
-        // Install custom content before setting up the title or buttons so
-        // that we can handle panel overrides.
-        //final ViewGroup customPanel = (ViewGroup) parentPanel.findViewById(R.id.customPanel);
-        //setupCustomContent(customPanel);
-
-        //final View customTopPanel = customPanel.findViewById(R.id.topPanel);
-        //final View customContentPanel = customPanel.findViewById(R.id.contentPanel);
-        //final View customButtonPanel = customPanel.findViewById(R.id.buttonPanel);
-
-        // Resolve the correct panels and remove the defaults, if needed.
-        //final ViewGroup topPanel = resolvePanel(customTopPanel, defaultTopPanel);
-        //final ViewGroup contentPanel = resolvePanel(customContentPanel, defaultContentPanel);
-        //final ViewGroup buttonPanel = resolvePanel(customButtonPanel, defaultButtonPanel);
-
-        setupTitle(titlePanel);
-        setupContent(contentPanel);
-        setupButtons(buttonPanel);
-
-        final boolean hasContentPanel = contentPanel != null
-                && contentPanel.getVisibility() != View.GONE;
-        final boolean hasTitlePanel = titlePanel != null
-                && titlePanel.getVisibility() != View.GONE;
-        final boolean hasButtonPanel = buttonPanel != null
-                && buttonPanel.getVisibility() != View.GONE;
-
-        // Only display the text spacer if we don't have buttons.
-        if (!hasButtonPanel) {
-            if (contentPanel != null) {
-                final View spacer = contentPanel.findViewById(R.id.textSpacerNoButtons);
-                if (spacer != null) {
-                    spacer.setVisibility(View.VISIBLE);
-                }
-            }
-
-            // FIXME don't have access to this method
-            //mWindow.setCloseOnTouchOutsideIfNotSet(true);
-        }
-
-
-    }
-
-    protected void setupTitle(ViewGroup titlePanel) {
+    protected void setupTitle() {
 
         final boolean hasTextTitle = !TextUtils.isEmpty(mTitle);
         if (hasTextTitle) {
@@ -162,17 +89,19 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             mTitleView = (MongolTextView) getWindow().findViewById(R.id.mongol_dialog_title);
             mTitleView.setText(mTitle);
         } else {
+            final ViewGroup titlePanel = (ViewGroup) getWindow().findViewById(R.id.mongol_dialog_title_panel);
             titlePanel.setVisibility(View.GONE);
         }
 
     }
 
-    protected void setupContent(ViewGroup contentPanel) {
+    protected void setupMessage() {
+        final ViewGroup contentPanel = (ViewGroup) getWindow().findViewById(R.id.mongol_dialog_content_panel);
         mScrollView = (HorizontalScrollView) contentPanel.findViewById(R.id.mongol_dialog_content_scrollview);
         mScrollView.setFocusable(false);
-        mMessageView = (MongolTextView) getWindow().findViewById(R.id.mongol_dialog_title);
-        mMessage = mMessageView.getText();
-        if (mMessage != null) {
+        mMessageView = (MongolTextView) getWindow().findViewById(R.id.mongol_dialog_message);
+        final boolean hasTextTitle = !TextUtils.isEmpty(mMessage);
+        if (hasTextTitle) {
             mMessageView.setText(mMessage);
         } else {
             mMessageView.setVisibility(View.GONE);
@@ -180,26 +109,15 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
         }
     }
 
+    protected void setupButtons() {
 
-//    public MongolButton getButton(int whichButton) {
-//        switch (whichButton) {
-//            case DialogInterface.BUTTON_POSITIVE:
-//                return mButtonPositive;
-//            case DialogInterface.BUTTON_NEGATIVE:
-//                return mButtonNegative;
-//            case DialogInterface.BUTTON_NEUTRAL:
-//                return mButtonNeutral;
-//            default:
-//                return null;
-//        }
-//    }
-
-    protected void setupButtons(ViewGroup buttonPanel) {
         int BIT_BUTTON_POSITIVE = 1;
         int BIT_BUTTON_NEGATIVE = 2;
         int BIT_BUTTON_NEUTRAL = 4;
         int whichButtons = 0;
-        mButtonPositive = (MongolButton) buttonPanel.findViewById(R.id.mongol_dialog_button_positive);
+
+        ViewGroup buttonPanel = (ViewGroup) getWindow().findViewById(R.id.mongol_dialog_button_panel);
+        mButtonPositive = (MongolTextView) buttonPanel.findViewById(R.id.mongol_dialog_button_positive);
         mButtonPositive.setOnClickListener(mButtonHandler);
 
         if (TextUtils.isEmpty(mButtonPositiveText)) {
@@ -210,7 +128,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             whichButtons = whichButtons | BIT_BUTTON_POSITIVE;
         }
 
-        mButtonNegative = (MongolButton) buttonPanel.findViewById(R.id.mongol_dialog_button_negative);
+        mButtonNegative = (MongolTextView) buttonPanel.findViewById(R.id.mongol_dialog_button_negative);
         mButtonNegative.setOnClickListener(mButtonHandler);
 
         if (TextUtils.isEmpty(mButtonNegativeText)) {
@@ -222,7 +140,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             whichButtons = whichButtons | BIT_BUTTON_NEGATIVE;
         }
 
-        mButtonNeutral = (MongolButton) buttonPanel.findViewById(R.id.mongol_dialog_button_neutral);
+        mButtonNeutral = (MongolTextView) buttonPanel.findViewById(R.id.mongol_dialog_button_neutral);
         mButtonNeutral.setOnClickListener(mButtonHandler);
 
         if (TextUtils.isEmpty(mButtonNeutralText)) {
@@ -234,91 +152,121 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             whichButtons = whichButtons | BIT_BUTTON_NEUTRAL;
         }
 
-            /*
-             * If we only have 1 button it should be centered on the layout and
-             * expand to fill 50% of the available space.
-             */
-        if (whichButtons == BIT_BUTTON_POSITIVE) {
-            centerButton(mButtonPositive);
-        } else if (whichButtons == BIT_BUTTON_NEGATIVE) {
-            centerButton(mButtonNegative);
-        } else if (whichButtons == BIT_BUTTON_NEUTRAL) {
-            centerButton(mButtonNeutral);
-        }
-
         final boolean hasButtons = whichButtons != 0;
         if (!hasButtons) {
             buttonPanel.setVisibility(View.GONE);
         }
     }
 
-    private void centerButton(MongolButton button) {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) button.getLayoutParams();
-        params.gravity = Gravity.CENTER_VERTICAL;
-        params.weight = 0.5f;
-        button.setLayoutParams(params);
-//        View leftSpacer = mWindow.findViewById(R.id.leftSpacer); // TODO topSpacer
-//        if (leftSpacer != null) {
-//            leftSpacer.setVisibility(View.VISIBLE);
-//        }
-//        View rightSpacer = mWindow.findViewById(R.id.rightSpacer);  // TODO bottom spacer
-//        if (rightSpacer != null) {
-//            rightSpacer.setVisibility(View.VISIBLE);
-//        }
-    }
-
-    private final View.OnClickListener mButtonHandler = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v == mButtonPositive) {
-                Log.i("TAG", "MongolAlertDialog onClick: positive button clicked");
-            } else if (v == mButtonNegative) {
-                Log.i("TAG", "MongolAlertDialog onClick: negative button clicked");
-            } else if (v == mButtonNeutral) {
-                Log.i("TAG", "MongolAlertDialog onClick: neutral button clicked");
-            } else {
-
-            }
-        }
-    };
 
     @Override
     public void setTitle(CharSequence title) {
-        super.setTitle(title);
-
         mTitle = title;
-        if (mTitleView != null) {
-            mTitleView.setText(title);
-        }
-
     }
 
     public void setMessage(CharSequence message) {
         mMessage = message;
-        if (mMessageView != null) {
-            mMessageView.setText(message);
-        }
     }
 
-    public void setButton(int whichButton, CharSequence text, OnClickListener listener) {
+    public void setButton(int whichButton, CharSequence text,
+                          DialogInterface.OnClickListener listener, Message msg) {
+
+        if (msg == null && listener != null) {
+            msg = mHandler.obtainMessage(whichButton, listener);
+        }
 
         switch (whichButton) {
 
             case DialogInterface.BUTTON_POSITIVE:
                 mButtonPositiveText = text;
+                mButtonPositiveMessage = msg;
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
                 mButtonNegativeText = text;
+                mButtonNegativeMessage = msg;
                 break;
 
             case DialogInterface.BUTTON_NEUTRAL:
                 mButtonNeutralText = text;
+                mButtonNeutralMessage = msg;
                 break;
 
             default:
                 throw new IllegalArgumentException("Button does not exist");
         }
+    }
+
+
+    Handler mHandler;
+
+    private final View.OnClickListener mButtonHandler = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final Message m;
+            if (v == mButtonPositive && mButtonPositiveMessage != null) {
+                m = Message.obtain(mButtonPositiveMessage);
+            } else if (v == mButtonNegative && mButtonNegativeMessage != null) {
+                m = Message.obtain(mButtonNegativeMessage);
+            } else if (v == mButtonNeutral && mButtonNeutralMessage != null) {
+                m = Message.obtain(mButtonNeutralMessage);
+            } else {
+                m = null;
+            }
+
+            if (m != null) {
+                m.sendToTarget();
+            }
+
+            // Post a message so we dismiss after the above handlers are executed
+            mHandler.obtainMessage(ButtonHandler.MSG_DISMISS_DIALOG, MongolAlertDialog.this)
+                    .sendToTarget();
+        }
+    };
+
+    private static final class ButtonHandler extends Handler {
+        // Button clicks have Message.what as the BUTTON{1,2,3} constant
+        private static final int MSG_DISMISS_DIALOG = 1;
+
+        private WeakReference<DialogInterface> mDialog;
+
+        public ButtonHandler(DialogInterface dialog) {
+            mDialog = new WeakReference<>(dialog);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+
+                case DialogInterface.BUTTON_POSITIVE:
+                case DialogInterface.BUTTON_NEGATIVE:
+                case DialogInterface.BUTTON_NEUTRAL:
+                    ((DialogInterface.OnClickListener) msg.obj).onClick(mDialog.get(), msg.what);
+                    break;
+
+                case MSG_DISMISS_DIALOG:
+                    ((DialogInterface) msg.obj).dismiss();
+            }
+        }
+    }
+
+
+
+    @Override
+    public void show() {
+        super.show();
+
+        float dp = 500;
+        int dialogHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getContext().getResources().getDisplayMetrics());
+
+        Rect displayRectangle = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        int windowHeight = displayRectangle.height();
+
+        dialogHeight = Math.min(dialogHeight, (int) (0.9 * windowHeight));
+
+        getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, dialogHeight);
     }
 
     static int resolveDialogTheme(Context context, int themeResId) {
@@ -332,7 +280,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
     }
 
     public static class Builder {
-        //private final AlertParams P;
+
         public final Context context;
         public final LayoutInflater inflater;
 
@@ -352,9 +300,6 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
 
 
         public Builder(Context context, int themeResId) {
-            //P = new AlertParams(new ContextThemeWrapper(
-            //
-            //        context, resolveDialogTheme(context, themeResId)));
 
             // TODO apply themeResId
 
@@ -396,11 +341,8 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
 
 
         public MongolAlertDialog create() {
-            // Context has already been wrapped with the appropriate theme.
-            //final MongolAlertDialog dialog = new MongolAlertDialog(P.mContext, 0, false);
-            final MongolAlertDialog dialog = new MongolAlertDialog(this.context, 0);
 
-            // FIXME where do I inflate this?
+            final MongolAlertDialog dialog = new MongolAlertDialog(this.context, 0);
 
             if (title != null) {
                 dialog.setTitle(title);
@@ -409,19 +351,21 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             if (message != null) {
                 dialog.setMessage(message);
             }
+
             if (positiveButtonText != null) {
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, positiveButtonText,
-                        positiveButtonListener);
-            }
-            if (negativeButtonText != null) {
-                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, negativeButtonText,
-                        negativeButtonListener);
-            }
-            if (neutralButtonText != null) {
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, neutralButtonText,
-                        neutralButtonListener);
+                        positiveButtonListener, null);
             }
 
+            if (negativeButtonText != null) {
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, negativeButtonText,
+                        negativeButtonListener, null);
+            }
+
+            if (neutralButtonText != null) {
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, neutralButtonText,
+                        neutralButtonListener, null);
+            }
 
             return dialog;
         }

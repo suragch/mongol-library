@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="horizontal">
 
     <!-- Title -->
 
@@ -15,7 +17,9 @@
             android:id="@+id/mongol_dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="top"
+            android:layout_margin="10dp"
+            app:textSize="24sp"/>
     </FrameLayout>
 
     <!-- Message -->
@@ -25,20 +29,22 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/mongol_dialog_titleSpacerNoButtons"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"/>
+        <!--<View-->
+        <!--android:id="@+id/mongol_dialog_titleSpacerNoButtons"-->
+        <!--android:layout_width="10dp"-->
+        <!--android:layout_height="wrap_content"/>-->
 
         <HorizontalScrollView
             android:id="@+id/mongol_dialog_content_scrollview"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
 
             <net.studymongolian.mongollibrary.MongolTextView
-                android:id="@+id/mongol_dialog_content"
+                android:id="@+id/mongol_dialog_message"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                app:textSize="20sp"/>
         </HorizontalScrollView>
 
         <View
@@ -52,29 +58,50 @@
 
     <!-- TODO replace this with a custom layout that switches to horizontal if buttons too tall -->
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/mongol_dialog_button_panel"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <net.studymongolian.mongollibrary.MongolButton
+
+        <net.studymongolian.mongollibrary.MongolTextView
             android:id="@+id/mongol_dialog_button_positive"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="10dp"
+            app:gravity="bottom"
+            app:textSize="20sp"
+            android:clickable="true"
+            android:focusable="true"
+            />
 
-        <net.studymongolian.mongollibrary.MongolButton
+        <net.studymongolian.mongollibrary.MongolTextView
             android:id="@+id/mongol_dialog_button_negative"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:layout_above="@id/mongol_dialog_button_positive"
+            android:padding="10dp"
+            app:gravity="bottom"
+            app:textSize="20sp"
+            android:clickable="true"
+            android:focusable="true"
+            />
 
-        <net.studymongolian.mongollibrary.MongolButton
+        <net.studymongolian.mongollibrary.MongolTextView
             android:id="@+id/mongol_dialog_button_neutral"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/mongol_dialog_button_negative"
+            android:padding="10dp"
+            app:gravity="top"
+            app:textSize="20sp"
+            android:clickable="true"
+            android:focusable="true"
+            />
+
+    </RelativeLayout>
 
 </LinearLayout>

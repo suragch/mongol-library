@@ -41,7 +41,7 @@ dependencies {
 
 TODO: update the jCenter version
 
-##MongolTextView 
+## MongolTextView 
 
 The `MongolTextView` is a vertical text replacement for the standard Android `TextView`. It measures and lays out text from top to bottom and lines are laid out from left to right. No mirroring is done internally so mirrored fonts are not required if you want to change the font. As much as possible the API (_TODO add API docs_) seeks to follow the standard `TextView` API.
 
@@ -71,7 +71,7 @@ Emoji support
 CJK orientation support  
 Unicode support  
 
-##MongolLabel 
+## MongolLabel 
 
 This is a light weight `MongolTextView`. It is less expensive because it does not have to calculate multi-line, emoji rotation, or spans. If you need a large number of MongolTextViews and are experiencing performance problems, then this may be a solution. 
 
@@ -92,7 +92,7 @@ Does support
 
 The `MongolEditText` is a vertical text replacement for the standard Android `EditText`. As much as possible the API (TODO add API docs) seeks to follow the standard `EditText` API. It subclasses `MongolTextView`. In addition to allowing cursor location and text selection, it also adds the API elements needed to communicate with both custom in-app keyboards and system keyboard. 
 
-####Basic usage
+#### Basic usage
 
 XML  
 code  
@@ -112,7 +112,7 @@ code
 
 It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delhi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include this in-app keyboard. 
 
-####Basic usage
+#### Basic usage
 
 Single keyboard -- single MongolEditText  
 Multiple keyboards -- multiple edittexts
@@ -131,11 +131,11 @@ Multiple keyboards -- multiple edittexts
 
 `MongolToast` is a vertical version of Android `Toast`.
 
-####Basic usage
+#### Basic usage
 
 * code
 
-####Features
+#### Features
 
 * set text
 * set location 
@@ -146,7 +146,7 @@ Multiple keyboards -- multiple edittexts
 
 `MongolAlertDialog` is a vertical version of Android `AlertDialog`. It currently only supports a title, message, and up to 3 buttons. 
 
-####Basic usage
+#### Basic usage
 
 * code
 
