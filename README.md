@@ -132,20 +132,27 @@ These can be further explored with the [Demo App](demo-app).
 
 ### MongolLabel 
 
-This is a light weight `MongolTextView`. It is less expensive because it does not have to calculate multi-line, emoji rotation, or spans. If you need a large number of MongolTextViews and are experiencing performance problems, then this may be a solution. 
+`MongolLabel` is a light weight view similar to `MongolTextView`. It is less expensive because it does not have to calculate multi-line, emoji rotation, or spans. If you need a large number of MongolTextViews and are experiencing performance problems, then this may be a solution.
 
-Simple implementation 
-
-* single line only
-* no CJK/emoji rotation 
-* no spans 
-
-Does support 
+Supports:
 
 * Unicode 
 * text color
 * text size
-* font? 
+* fonts (typeface)
+* centered in view
+* auto text resizing if font too big for view size
+
+Does not support:
+
+* multi-line text
+* CJK/emoji rotation 
+* text spans
+
+Here is an image of the [Demo App](demo-app):
+
+![MongolLabel (Demo App)](docs/images/ml-demo.png)
+
 
 ### MongolEditText 
 
