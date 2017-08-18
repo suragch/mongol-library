@@ -129,7 +129,6 @@ These can be further explored with the [Demo App](demo-app).
 ![MongolTextView (Demo App)](docs/images/mtv-demo.png)
 
 
-
 ### MongolLabel 
 
 `MongolLabel` is a light weight view similar to `MongolTextView`. It is less expensive because it does not have to calculate multi-line, emoji rotation, or spans. If you need a large number of MongolTextViews and are experiencing performance problems, then this may be a solution.
@@ -156,12 +155,51 @@ Here is an image of the [Demo App](demo-app):
 
 ### MongolEditText 
 
-The `MongolEditText` is a vertical text replacement for the standard Android `EditText`. As much as possible the API (TODO add API docs) seeks to follow the standard `EditText` API. It subclasses `MongolTextView`. In addition to allowing cursor location and text selection, it also adds the API elements needed to communicate with both custom in-app keyboards and system keyboard. 
+The `MongolEditText` is a vertical text replacement for the standard Android `EditText`. As much as possible the [API](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/MongolEditText.java) seeks to follow the standard `EditText` [API](https://developer.android.com/reference/android/widget/EditText.html). It subclasses `MongolTextView`. In addition to allowing cursor location and text selection, it also adds the API elements needed to communicate with both custom in-app keyboards and system keyboards. 
 
 #### Basic usage
 
-XML  
-code  
+The following image shows `MongolEditText` receiving text input from the Menksoft and Delehi system keyboards.
+
+![MongolLabel (Demo App)](docs/images/met-example.png)
+
+###### XML example
+
+```xml
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp">
+
+    <HorizontalScrollView
+        android:id="@+id/hsvEditTextContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <net.studymongolian.mongollibrary.MongolEditText
+            android:id="@+id/metExample"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:padding="10dp"
+            android:background="@android:color/white"
+            app:text=""
+            app:textSize="30sp"/>
+
+    </HorizontalScrollView>
+
+</RelativeLayout>
+```
+
+Note that since `MongolEditText does not support scrolling itself yet, it is good to wrap it in a `HorizontalScrollView`. 
+
+###### Code example
+
+```java
+MongolEditText mongolEditText = (MongolEditText) findViewById(R.id.metExample);
+String text = mongolEditText.getText().toString();
+```
 
 #### Features
 
@@ -172,7 +210,6 @@ code
 * conforms to the Editable protocol 
 * Unicode indexing (handles glyph indexing internally) 
 * also supports Menksoft code
-* copy/paste
 
 ### Keyboard
 
@@ -310,11 +347,11 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 ## External links 
 
 * Orhon open source
-* Menksoft
+* [Menksoft](http://www.menksoft.com/)
 * Unicode
 * Unicode discussion site 
-* Delhi
-* Mongol online writing 
+* [Delehi](http://www.delehi.com)
+* [Mongol online editor](http://mongol-bichig.top/editor)
 * Mongolian code conversion tool 
 * Unicode-Menksoft code conversion tool
 * code conversion tool 
