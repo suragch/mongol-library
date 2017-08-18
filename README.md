@@ -192,7 +192,7 @@ The following image shows `MongolEditText` receiving text input from the Menksof
 </RelativeLayout>
 ```
 
-Note that since `MongolEditText does not support scrolling itself yet, it is good to wrap it in a `HorizontalScrollView`. 
+Note that since `MongolEditText` does not support scrolling itself yet, it is good to wrap it in a `HorizontalScrollView`. 
 
 ###### Code example
 
