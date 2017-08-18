@@ -52,35 +52,83 @@ dependencies {
 
 ## UI Componants
 
+The following are the primary UI componants in the library. If you don't understand how to use any of them, open an issue and I will improve the documentation. See also the [Demo App](../tree/master/demo-app). 
+
 ### MongolTextView 
 
-The `MongolTextView` is a vertical text replacement for the standard Android `TextView`. It measures and lays out text from top to bottom and lines are laid out from left to right. No mirroring is done internally so mirrored fonts are not required if you want to change the font. As much as possible the API (_TODO add API docs_) seeks to follow the standard `TextView` API.
+The `MongolTextView` is a vertical text replacement for the standard Android `TextView`. It measures and lays out text from top to bottom and vertical lines are laid out from left to right. No mirroring is done internally so mirrored fonts are not required (if you want to add additional fonts). As much as possible the [API](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/MongolTextView.java) seeks to follow the standard `TextView` [API](https://developer.android.com/reference/android/widget/TextView.html).
 
 #### Basic usage
 
+You can create a `MongolTextView` exclusively in XML or in code.
+
+![MongolTextView example](docs/images/mtv-example.png)
+
 XML example
 
-Code example 
+```xml
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+    
+    <net.studymongolian.mongollibrary.MongolTextView
+        android:id="@+id/mongol_text_view_id"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:text="ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖"
+        app:textSize="24sp"
+        app:textColor="@android:color/black"/>
+    
+</LinearLayout>
+```
+
+Code example
+
+```java
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        MongolTextView mongolTextView = (MongolTextView) findViewById(R.id.mongol_text_view_id);
+        mongolTextView.setText("ᠮᠣᠩᠭᠣᠯ");
+        mongolTextView.setTextColor(Color.BLUE);
+    }
+}
+```
 
 #### Features
 
-Text color  
-Text size  
-Font  
-Alignment  
-Padding  
-Spans  
-    Background color  
-    Foreground color  
-    Relative size  
-    Typeface  
-    Style  
-    Subscript  
-    TODO underline  
-TODO line spacing  
-Emoji support  
-CJK orientation support  
-Unicode support  
+Other features of MongolTextView include the following:
+
+* Text color
+* Text size
+* Font
+* Alignment
+* Padding
+* Spans
+    * Background color
+    * Foreground color
+    * Relative size
+    * Typeface
+    * Style
+    * Subscript
+    * (TODO underline)
+* (TODO line spacing)
+* Emoji support
+* CJK orientation support
+* Unicode support
+
+These can be further explored with the [Demo App](demo-app).
+
+![MongolTextView (Demo App)](docs/images/mtv-demo.png)
+
+
 
 ### MongolLabel 
 
