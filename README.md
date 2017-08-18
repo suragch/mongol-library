@@ -1,23 +1,26 @@
 # Mongol Library
- 
-## Contents 
 
-* Introduction
-* Installing
-* MongolTextView 
-* MongolLabel
-* MongolEditText
-* Keyboards 
-* MongolToast
-* MongolAlertDialog
-* Unicode 
-* Fonts
-* Other
-* TODO
-* Developers
-* Versions 
-* External links
-* Apps that use this library 
+Android UI components for vertical Mongolian text 
+
+## Table of Contents 
+
+* [Introduction](https://github.com/suragch/mongol-library#introduction)
+* [Installing](https://github.com/suragch/mongol-library#installing)
+* [UI Componants](https://github.com/suragch/mongol-library#uicomponants)
+    * [MongolTextView](https://github.com/suragch/mongol-library#mongoltextview) 
+    * [MongolLabel](https://github.com/suragch/mongol-library#mongollabel)
+    * [MongolEditText](https://github.com/suragch/mongol-library#mongoledittext)
+    * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
+    * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
+    * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
+* [Unicode](https://github.com/suragch/mongol-library#unicode)
+* [Fonts](https://github.com/suragch/mongol-library#fonts)
+* [Other](https://github.com/suragch/mongol-library#other)
+* [TODO](https://github.com/suragch/mongol-library#todo)
+* [How to contribute](https://github.com/suragch/mongol-library#how-to-contribute)
+* [Versions](https://github.com/suragch/mongol-library#version-changes)
+* [External links](https://github.com/suragch/mongol-library#external-links)
+* [Apps that use this library](https://github.com/suragch/mongol-library#apps-that-use-this-library)
  
 ## Introduction
 
@@ -41,7 +44,9 @@ dependencies {
 
 TODO: update the jCenter version
 
-## MongolTextView 
+## UI Componants
+
+### MongolTextView 
 
 The `MongolTextView` is a vertical text replacement for the standard Android `TextView`. It measures and lays out text from top to bottom and lines are laid out from left to right. No mirroring is done internally so mirrored fonts are not required if you want to change the font. As much as possible the API (_TODO add API docs_) seeks to follow the standard `TextView` API.
 
@@ -71,7 +76,7 @@ Emoji support
 CJK orientation support  
 Unicode support  
 
-## MongolLabel 
+### MongolLabel 
 
 This is a light weight `MongolTextView`. It is less expensive because it does not have to calculate multi-line, emoji rotation, or spans. If you need a large number of MongolTextViews and are experiencing performance problems, then this may be a solution. 
 
@@ -108,7 +113,7 @@ code
 * also supports Menksoft code
 * copy/paste
 
-## Keyboard
+### Keyboard
 
 It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delhi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include this in-app keyboard. 
 
@@ -127,7 +132,7 @@ Multiple keyboards -- multiple edittexts
 * set key colors, borders, and corner radius 
 * TODO set candidates 
 
-## MongolToast 
+### MongolToast 
 
 `MongolToast` is a vertical version of Android `Toast`.
 
@@ -142,7 +147,7 @@ Multiple keyboards -- multiple edittexts
 * set time length 
 
 
-## MongolAlertDialog
+### MongolAlertDialog
 
 `MongolAlertDialog` is a vertical version of Android `AlertDialog`. It currently only supports a title, message, and up to 3 buttons. 
 
