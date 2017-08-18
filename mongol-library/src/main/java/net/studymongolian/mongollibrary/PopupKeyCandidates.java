@@ -18,7 +18,6 @@ class PopupKeyCandidates extends ViewGroup {
     private int mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
     private int mHighlightColor = Color.DKGRAY;
     private String[] mCandidates;
-    //private String[] mDisplayCandidates;
 
     // this popup view will only be created programmatically
     public PopupKeyCandidates(Context context) {
@@ -37,7 +36,6 @@ class PopupKeyCandidates extends ViewGroup {
             label.setText(candidate);
             label.setTextSize(textSize);
             label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
-            //label.setGravity(Gravity.CENTER);
             addView(label);
         }
     }
@@ -61,7 +59,6 @@ class PopupKeyCandidates extends ViewGroup {
             child.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
             summedWidth += child.getMeasuredWidth();
-            //maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
 
 

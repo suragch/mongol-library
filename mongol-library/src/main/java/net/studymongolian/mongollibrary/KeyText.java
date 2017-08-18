@@ -16,8 +16,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-// TODO make class private
 public class KeyText extends Key {
 
     private static final String DEBUG_TAG = "TAG";

@@ -70,7 +70,6 @@ public class MongolToast {
         textView.setText(text);
         textView.setTextSize(DEFAULT_TEXT_SIZE);
         textView.setTextColor(DEFAULT_TEXT_COLOR);
-        //textView.setMaxLines(4);
         return textView;
     }
 

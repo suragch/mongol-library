@@ -66,26 +66,6 @@ public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardLis
         mCurrentKeyboard = aeiou;
     }
 
-//    @Override
-//    protected void onFinishInflate() {
-//        super.onFinishInflate();
-//
-//        // make sure there are children
-//        int count = getChildCount();
-//        if (count < 1) {
-//            throw new RuntimeException("You must add at least one keyboard to the ImeContainer");
-//        }
-//        // make sure that all subviews are Keyboards TODO: will need to update this for Candidate views
-//        for (int i = 0; i < count; i++) {
-//            View view = getChildAt(i);
-//            if (!(view instanceof Keyboard)) {
-//                throw new RuntimeException("The child views of ImeContainer must be Keyboards.");
-//            }
-//        }
-//
-//        Keyboard keyboard = (Keyboard) getChildAt(0);
-//        keyboard.setKeyboardListener(this);
-//    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {

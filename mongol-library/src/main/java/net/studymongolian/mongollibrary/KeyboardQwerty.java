@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 
 
 
-public class KeyboardQwerty extends Keyboard {
+class KeyboardQwerty extends Keyboard {
 
     // Row 1
     protected KeyText mKeyQ;

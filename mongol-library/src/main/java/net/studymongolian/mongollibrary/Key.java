@@ -95,17 +95,6 @@ public abstract class Key extends View {
         invalidate();
     }
 
-//    public void setPressedState(boolean pressedState) {
-//        if (mStatePressed == pressedState) return;
-//        mStatePressed = pressedState;
-//        if (pressedState) {
-//            mKeyPaint.setColor(mPressedColor);
-//        } else {
-//            mKeyPaint.setColor(mKeyColor);
-//        }
-//        invalidate();
-//    }
-
     public void setKeyColor(int keyColor) {
         mKeyPaint.setColor(keyColor);
         this.mKeyColor = keyColor;

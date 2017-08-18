@@ -7,9 +7,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -46,16 +43,16 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
     private CharSequence mButtonNeutralText;
     private Message mButtonNeutralMessage;
 
-    public MongolAlertDialog(@NonNull Context context) {
+    public MongolAlertDialog(Context context) {
         this(context, 0);
     }
 
-    public MongolAlertDialog(@NonNull Context context, @StyleRes int themeResId) {
+    public MongolAlertDialog(Context context, int themeResId) {
         super(context, themeResId);
         mHandler = new ButtonHandler(this);
     }
 
-    protected MongolAlertDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+    protected MongolAlertDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         this(context, 0);
 
         setCancelable(cancelable);

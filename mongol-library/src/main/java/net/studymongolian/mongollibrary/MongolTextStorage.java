@@ -17,20 +17,14 @@ package net.studymongolian.mongollibrary;
 // XXX can we keep this class package private?
 // Is it actually needed by app developers?
 
-import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
-import android.view.inputmethod.BaseInputConnection;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MongolTextStorage implements Editable {
@@ -402,7 +396,6 @@ public class MongolTextStorage implements Editable {
     }
 
     @Override
-    @NonNull
     public String toString() {
         return (mUnicodeText != null) ? mUnicodeText.toString() : "";
     }

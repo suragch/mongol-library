@@ -153,50 +153,35 @@ public class MongolInputMethodManager {
         mCurrentEditorInfo = null;
     }
 
-    public void windowDismissed() {
+//    public void windowDismissed() {
+//
+//
+//        // todo
+//
+//
+//    }
 
-
-        // todo
-
-
-    }
-
-    /**
-     * Call this when a view receives focus.
-     *
-     * @hide
-     */
-    public void focusIn(View view) {
-        // TODO
-        // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/inputmethod/InputMethodManager.java#L1345
-    }
-
-    /**
-     * Call this when a view loses focus.
-     *
-     * @hide
-     */
-    public void focusOut(View view) {
-        // TODO
-        // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/inputmethod/InputMethodManager.java#L1369
-    }
-
-    /**
-     * Call this when a view is being detached from a {@link android.view.Window}.
-     *
-     * @hide
-     */
-    public void onViewDetachedFromWindow(View view) {
-        // TODO
-        // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/inputmethod/InputMethodManager.java#L1392
-    }
-
-    /**
-     * Notify the event when the user tapped or clicked the text view.
-     */
-    public void viewClicked(View view) {
-        // TODO
-    }
+//    public void focusIn(View view) {
+//        // TODO
+//        // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/inputmethod/InputMethodManager.java#L1345
+//    }
+//
+//    public void focusOut(View view) {
+//        // TODO
+//        // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/inputmethod/InputMethodManager.java#L1369
+//    }
+//
+//    public void onViewDetachedFromWindow(View view) {
+//        // TODO
+//        // https://github.com/android/platform_frameworks_base/blob/master/core/java/android/view/inputmethod/InputMethodManager.java#L1392
+//    }
+//
+//    /**
+//     * Notify the event when the user tapped or clicked the text view.
+//     */
+//    public void viewClicked(View view) {
+//        // TODO
+//    }
 
     public void addEditor(View editor) {
 

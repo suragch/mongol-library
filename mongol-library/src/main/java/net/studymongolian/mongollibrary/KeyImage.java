@@ -20,12 +20,10 @@ public class KeyImage extends Key {
 
     private static final String DEBUG_TAG = "TAG";
 
-    private MongolCode renderer = MongolCode.INSTANCE;
     private TextPaint mImagePaint;
     private Bitmap mImage;
     private Bitmap mImageScaled;
     private boolean mNeedToScaleImage = false;
-    private RectF mMaxImageRect;
 
     KeyImage(Context context) {
         this(context, null, 0);
@@ -56,18 +54,10 @@ public class KeyImage extends Key {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-
-
-
-
         int keyWidth = w - getPaddingLeft() - getPaddingRight();
         int keyHeight = h - getPaddingTop() - getPaddingBottom();
-        //int min = Math.min(keyWidth, keyHeight);
         float adjustedMinWidth = keyWidth * MAX_CONTENT_PROPORTION;
         float adjustedMinHeight = keyHeight * MAX_CONTENT_PROPORTION;
-
-        //mNeedToScaleImage = (keyWidth * MAX_CONTENT_PROPORTION) < mImage.getWidth() ||
-        //        (keyHeight * MAX_CONTENT_PROPORTION) < mImage.getHeight();
 
         float wDiff =  adjustedMinWidth - mImage.getWidth();
         float hDiff =  adjustedMinHeight - mImage.getHeight();
@@ -85,22 +75,7 @@ public class KeyImage extends Key {
             }
         }
 
-//        if (mNeedToScaleImage) {
-//            int newWidth =
-//            mImageScaled = Bitmap.createScaledBitmap(mImage, adjustedMin, adjustedMin, true);
-//        }
-
-
-//        float x = getPaddingLeft() + (keyWidth - mImage.getWidth()) / 2;
-//        float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2;
-//
-//        mMaxImageRect = new RectF(x, y, x + adjustedMin, y + adjustedMin);
     }
-
-//    private boolean needToScaleImage() {
-//
-//
-//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -117,11 +92,6 @@ public class KeyImage extends Key {
         int right = left + keyWidth;
         int bottom = top + keyHeight;
 
-        //float px = 48 * getResources().getDisplayMetrics().density;
-        //Rect dst = new Rect((int)x, (int)y, (int)x + (int) px, (int)y + (int)px);
-
-        //canvas.drawRect(dst, mImagePaint);
-
         // automatically resize text that is too large
         if (mNeedToScaleImage) {
             float x = getPaddingLeft() + (keyWidth - mImageScaled.getWidth()) / 2;
@@ -132,23 +102,6 @@ public class KeyImage extends Key {
             float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2;
             canvas.drawBitmap(mImage, x, y, mImagePaint);
         }
-
-        //canvas.drawBitmap(mImage, x, y, mImagePaint);
-
-
-
-//        int widthThreshold = keyWidth * 8 / 10;
-//        int heightThreshold = keyHeight * 8 / 10;
-//        if (mImage.getWidth() > widthThreshold || mImage.getHeight() > heightThreshold) {
-//            float proportion = 0.8f * keyHeight / mTextBounds.width();
-//            mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
-//            x += mTextBounds.width() * (1 - proportion) / 2;
-//            y -= mTextBounds.height() * (1 - proportion) / 2;
-//        }
-
-        // draw image
-        //canvas.drawBitmap(mImage, null, dst, mImagePaint);
-
 
     }
 

@@ -226,23 +226,4 @@ public class MongolLabel extends View {
         requestLayout();
     }
 
-//    public int getGravity() {
-//        return mGravity;
-//    }
-
-    /**
-     *  This sets a custom gravity attribute but uses the same values as Android gravity.
-     *  The gravity values are used as integers and not flags. Thus, combining two
-     *  flags with | will not work.
-     *
-     * @param gravity Choices are Gravity.TOP (default), Gravity.CENTER, and Gravity.BOTTOM
-     */
-//    public void setGravity(int gravity) {
-//        if (mGravity != gravity) {
-//            mGravity = gravity;
-//            invalidate();
-//        }
-//    }
-
-
 }
