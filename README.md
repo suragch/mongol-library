@@ -24,13 +24,13 @@ Android UI components for vertical Mongolian text
  
 ## Introduction
 
-This Android library is a connection of UI components that support vertical Mongolian text. 
+This Android library is a collection of UI components that support vertical Mongolian text. 
 
-All of the native Android UI components only support horizontal text. In addition to this, Android support for Mongolian Unicode rendering is inadequate. These challenges at a big hurdle for new Mongolian app developers to overcome. Since most of the established Mongolian tech companies understandably do not share their source code, developers must reinvent all the basic UI text components from scratch. This makes the Mongolian app development process very slow. 
+All of the native Android UI components only support horizontal text. In addition to this, Android support for Mongolian Unicode rendering is inadequate. These challenges at a big hurdle for new Mongolian app developers to overcome. Most of the established Mongolian tech companies do not share their source code. While this is understandable since they must make a profit, new developers must reinvent all the basic UI text components from scratch. This makes the Mongolian app development process very slow. 
 
-The purpose of this library is to remove the obstacle of developing vertical text UI components Unicode and rendering. Developers can simply import the mongol-library module and then just focus on the content of their app. 
+The purpose of this library is to make it easy to include vetical Mongolian Unicode text in your app. Developers can simply import the mongol-library module and then just focus on the content of their project.
 
-Although this library is currently usable, there are still many improvements which need to be made. It is hoped that experienced developers will contribute with issue notifications and pull requests. Or fork your own version.
+Although this library is currently usable, there are still many improvements which need to be made. It is hoped that both novice and experienced developers will contribute with issue notifications and pull requests. Feel free to fork your own version, too. This library is desctibuted under the most permissive licence that I could find: the MIT licence. I believe that freely sharing information and source code will benefit everyone and help to make ancient Mongolian relevant in the modern world.
  
 ## Installing
 
