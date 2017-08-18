@@ -34,15 +34,21 @@ Although this library is currently usable, there are still many improvements whi
  
 ## Installing
 
-You can import the library in your project from jCenter by adding the following line to your dependencies in your module's `build.gradle` file:
+This library is a part of the jCenter repository, which is the default in Android Studio. You should see this in your project's `build.gradle` file:
 
-```
-dependencies {
-    compile 'net.studymongolian:mongol-library:0.2.0'
+```java
+repositories {
+    jcenter()
 }
 ```
 
-TODO: update the jCenter version
+You can import `mongol-library` into your project from jCenter by adding the following line to your dependencies in your app module's `build.gradle` file:
+
+```java
+dependencies {
+    compile 'net.studymongolian:mongol-library:0.8.0'
+}
+```
 
 ## UI Componants
 
