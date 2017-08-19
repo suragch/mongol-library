@@ -300,6 +300,8 @@ This will produce the following setup.
 MongolToast.makeText(getApplicationContext(), "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖", MongolToast.LENGTH_LONG).show();
 ```
 
+This produces the following result:
+
 ![MongolToast example](docs/images/mt-example.png)
 
 ### MongolAlertDialog
@@ -308,15 +310,27 @@ MongolToast.makeText(getApplicationContext(), "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ�
 
 #### Basic usage
 
-* code
+```java
+// setup the alert builder
+MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);
+builder.setMessage("ᠵᠠᠮᠤᠭ ᠰᠠᠢᠲᠠᠢ ᠨᠠᠭᠤᠷ ᠲᠤ ᠵᠢᠭᠠᠰᠤ ᠤᠯᠠᠨ᠂\nᠵᠠᠩ ᠰᠠᠢᠲᠠᠢ ᠬᠦᠮᠦᠨ ᠳᠦ ᠨᠦᠬᠦᠷ ᠤᠯᠠᠨ᠃");
 
-####Features
+// add the button
+builder.setPositiveButton("ᠮᠡᠳᠡᠯ᠎ᠡ", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        // do sth
+    }
+});
 
-* set title 
-* set message 
-* set buttons 
-* set actions
-* TODO check box, radio button, list
+// create and show the alert dialog
+ MongolAlertDialog dialog = builder.create();
+ dialog.show();
+ ```
+
+This produces the following result:
+
+![MongolToast example](docs/images/mad-example.png)
 
 ## Unicode 
 
@@ -382,7 +396,7 @@ Code examples.
 * `RecyclerView` example. 
 * underline span 
 * `MongolTextView` line spacing
-* more `MongolAlertDialog` types
+* more `MongolAlertDialog` types (check box, radio button, list)
 * add lots more jUnit and instrumentation tests 
 
 ## How to contribute 
