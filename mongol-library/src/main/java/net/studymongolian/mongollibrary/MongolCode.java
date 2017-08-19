@@ -171,7 +171,7 @@ public final class MongolCode {
                         outputString.append(Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER);
                         break;
                     case Glyph.MANCH_COMMA:
-                        outputString.append(Uni.MONGOLIAN_MANCH_COMMA);
+                        outputString.append(Uni.MONGOLIAN_MANCHU_COMMA);
                         break;
                     case Glyph.MANCHU_FULL_STOP:
                         outputString.append(Uni.MONGOLIAN_MANCHU_FULL_STOP);
@@ -192,7 +192,7 @@ public final class MongolCode {
                         outputString.append("\uD805\uDE63"); // U+11663
                         break;
                     case Glyph.MIDDLE_DOT:
-                        outputString.append('\u00B7');
+                        outputString.append(Uni.MIDDLE_DOT);
                         break;
                     case Glyph.ZERO:
                         outputString.append(Uni.MONGOLIAN_DIGIT_ZERO);
@@ -225,64 +225,64 @@ public final class MongolCode {
                         outputString.append(Uni.MONGOLIAN_DIGIT_NINE);
                         break;
                     case Glyph.QUESTION_EXCLAMATION:
-                        outputString.append('\u2048');
+                        outputString.append(Uni.QUESTION_EXCLAMATION_MARK);
                         break;
                     case Glyph.EXCLAMATION_QUESTION:
-                        outputString.append('\u2049');
+                        outputString.append(Uni.EXCLAMATION_QUESTION_MARK);
                         break;
                     case Glyph.EXCLAMATION:
-                        outputString.append('!');
+                        outputString.append(Uni.VERTICAL_EXCLAMATION_MARK);
                         break;
                     case Glyph.QUESTION:
-                        outputString.append('?');
+                        outputString.append(Uni.VERTICAL_QUESTION_MARK);
                         break;
                     case Glyph.SEMICOLON:
-                        outputString.append(';');
+                        outputString.append(Uni.VERTICAL_SEMICOLON);
                         break;
                     case Glyph.LEFT_PARENTHESIS:
-                        outputString.append('\uFF08'); // full width
+                        outputString.append(Uni.VERTICAL_LEFT_PARENTHESIS);
                         break;
                     case Glyph.RIGHT_PARENTHESIS:
-                        outputString.append('\uFF09'); // full width
+                        outputString.append(Uni.VERTICAL_RIGHT_PARENTHESIS);
                         break;
                     case Glyph.LEFT_ANGLE_BRACKET:
-                        outputString.append('\u3008');
+                        outputString.append(Uni.VERTICAL_LEFT_ANGLE_BRACKET);
                         break;
                     case Glyph.RIGHT_ANGLE_BRACKET:
-                        outputString.append('\u3009');
+                        outputString.append(Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
                         break;
                     case Glyph.LEFT_BRACKET:
-                        outputString.append('[');
+                        outputString.append(Uni.VERTICAL_LEFT_SQUARE_BRACKET);
                         break;
                     case Glyph.RIGHT_BRACKET:
-                        outputString.append(']');
+                        outputString.append(Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
                         break;
                     case Glyph.LEFT_DOUBLE_ANGLE_BRACKET:
-                        outputString.append('\u00AB');
+                        outputString.append(Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
                         break;
                     case Glyph.RIGHT_DOUBLE_ANGLE_BRACKET:
-                        outputString.append('\u00BB');
+                        outputString.append(Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
                         break;
                     case Glyph.LEFT_WHITE_CORNER_BRACKET:
-                        outputString.append('\u300E');
+                        outputString.append(Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET);
                         break;
                     case Glyph.RIGHT_WHITE_CORNER_BRACKET:
-                        outputString.append('\u300F');
+                        outputString.append(Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET);
                         break;
                     case Glyph.FULLWIDTH_COMMA:
-                        outputString.append('\uFF0C');
+                        outputString.append(Uni.VERTICAL_COMMA);
                         break;
                     case Glyph.X:
                         outputString.append('\u00D7'); // FIXME using the multiplication sign?
                         break;
                     case Glyph.REFERENCE_MARK:
-                        outputString.append('\u203B');
+                        outputString.append(Uni.REFERENCE_MARK);
+                        break;
+                    case Glyph.EN_DASH:
+                        outputString.append(Uni.VERTICAL_EN_DASH);
                         break;
                     case Glyph.EM_DASH:
-                        outputString.append('\u2014');
-                        break;
-                    case Glyph.TWO_EM_DASH:
-                        outputString.append('\u2e3a');
+                        outputString.append(Uni.VERTICAL_EM_DASH);
                         break;
                     default:
                         outputString.append(currentChar);
@@ -2364,8 +2364,50 @@ public final class MongolCode {
         public static final char ZWNJ = '\u200C'; // Zero-width non joiner
         public static final char ZWJ = '\u200D'; // Zero-width joiner
         public static final char NNBS = '\u202F'; // Narrow No-Break Space
-        public static final char VERTICAL_EXCLAMATION_MARK = '\uFE15'; // PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK
-        public static final char VERTICAL_QUESTION_MARK = '\uFE16'; // PRESENTATION FORM FOR VERTICAL QUESTION MARK
+
+        // vertical presentation forms
+        public static final char VERTICAL_COMMA = '\uFE10';
+        public static final char VERTICAL_IDEOGRAPHIC_COMMA = '\uFE11';
+        public static final char VERTICAL_IDEOGRAPHIC_FULL_STOP = '\uFE12';
+        public static final char VERTICAL_COLON = '\uFE13';
+        public static final char VERTICAL_SEMICOLON = '\uFE14';
+        public static final char VERTICAL_EXCLAMATION_MARK = '\uFE15';
+        public static final char VERTICAL_QUESTION_MARK = '\uFE16';
+        public static final char VERTICAL_LEFT_WHITE_LENTICULAR_BRACKET = '\uFE17';
+        public static final char VERTICAL_RIGHT_WHITE_LENTICULAR_BRAKCET = '\uFE18';
+        public static final char VERTICAL_HORIZONTAL_ELLIPSIS = '\uFE19';
+        public static final char VERTICAL_TWO_DOT_LEADER = '\uFE30';
+        public static final char VERTICAL_EM_DASH = '\uFE31';
+        public static final char VERTICAL_EN_DASH = '\uFE32';
+        public static final char VERTICAL_LOW_LINE = '\uFE33';
+        public static final char VERTICAL_WAVY_LOW_LINE = '\uFE34';
+        public static final char VERTICAL_LEFT_PARENTHESIS = '\uFE35';
+        public static final char VERTICAL_RIGHT_PARENTHESIS = '\uFE36';
+        public static final char VERTICAL_LEFT_CURLY_BRACKET = '\uFE37';
+        public static final char VERTICAL_RIGHT_CURLY_BRACKET = '\uFE38';
+        public static final char VERTICAL_LEFT_TORTOISE_SHELL_BRACKET = '\uFE39';
+        public static final char VERTICAL_RIGHT_TORTOISE_SHELL_BRACKET = '\uFE3A';
+        public static final char VERTICAL_LEFT_BLACK_LENTICULAR_BRACKET = '\uFE3B';
+        public static final char VERTICAL_RIGHT_BLACK_LENTICULAR_BRACKET = '\uFE3C';
+        public static final char VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET = '\uFE3D';
+        public static final char VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET = '\uFE3E';
+        public static final char VERTICAL_LEFT_ANGLE_BRACKET = '\uFE3F';
+        public static final char VERTICAL_RIGHT_ANGLE_BRACKET = '\uFE40';
+        public static final char VERTICAL_LEFT_CORNER_BRACKET = '\uFE41';
+        public static final char VERTICAL_RIGHT_CORNER_BRACKET = '\uFE42';
+        public static final char VERTICAL_LEFT_WHITE_CORNER_BRACKET = '\uFE43';
+        public static final char VERTICAL_RIGHT_WHITE_CORNER_BRACKET = '\uFE44';
+        public static final char VERTICAL_LEFT_SQUARE_BRACKET = '\uFE47';
+        public static final char VERTICAL_RIGHT_SQUARE_BRACKET = '\uFE48';
+
+        // Other
+        public static final char MIDDLE_DOT = '\u00B7';
+        public static final char REFERENCE_MARK = '\u203B';
+        public static final char DOUBLE_EXCLAMATION_MARK = '\u203C';
+        public static final char DOUBLE_QUESTION_MARK = '\u2047';
+        public static final char QUESTION_EXCLAMATION_MARK = '\u2048';
+        public static final char EXCLAMATION_QUESTION_MARK = '\u2049';
+
 
         // Unicode Mongolian Values
         public static final char MONGOLIAN_BIRGA = '\u1800';
@@ -2376,7 +2418,7 @@ public final class MongolCode {
         public static final char MONGOLIAN_FOUR_DOTS = '\u1805';
         public static final char MONGOLIAN_TODO_SOFT_HYPHEN = '\u1806';
         public static final char MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER = '\u1807';
-        public static final char MONGOLIAN_MANCH_COMMA = '\u1808';
+        public static final char MONGOLIAN_MANCHU_COMMA = '\u1808';
         public static final char MONGOLIAN_MANCHU_FULL_STOP = '\u1809';
         public static final char MONGOLIAN_NIRUGU = '\u180a';
         public static final char FVS1 = '\u180b';
@@ -2537,8 +2579,8 @@ public final class MongolCode {
         private static final char FULLWIDTH_COMMA = '\uE25D';
         private static final char X = '\uE25E';
         private static final char REFERENCE_MARK = '\uE25F';                   // 0x203b
-        private static final char EM_DASH = '\uE260';
-        private static final char TWO_EM_DASH = '\uE261';
+        private static final char EN_DASH = '\uE260'; // TODO is that what this is?
+        private static final char EM_DASH = '\uE261'; // TODO is that what this is?
 
         // These are in the order of the Unicode 9 specs sheet
         // BP = looks better after B, P (and other rounded like Q, G, F, K, KH)

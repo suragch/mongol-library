@@ -133,6 +133,7 @@ class MongolTextLine {
             charCount = Character.charCount(codepoint);
 
             // Rotate Chinese, emoji, etc
+            // TODO optimization: most chars are mongol or latin so check those first
             Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
             if (isCJK(block) ||
                     isJapaneseKana(block) ||
@@ -176,13 +177,14 @@ class MongolTextLine {
     private static boolean isCJK(Character.UnicodeBlock block) {
         // TODO add hardcoded ranges for api 19 (and EXTENSION_E?)
         return (
+                // TODO test all of these to make sure they really should be rotated because of Menksoft font
                 Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(block)||
                 Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(block) ||
                 Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(block) ||
                 //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C.equals(block) || // api 19
                 //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D.equals(block) || // api 19
                 Character.UnicodeBlock.CJK_COMPATIBILITY.equals(block) ||
-                Character.UnicodeBlock.CJK_COMPATIBILITY_FORMS.equals(block) ||
+                // Character.UnicodeBlock.CJK_COMPATIBILITY_FORMS.equals(block) || // don't include this because Menksoft font rotates it
                 Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(block) ||
                 Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT.equals(block) ||
                 Character.UnicodeBlock.CJK_RADICALS_SUPPLEMENT.equals(block) ||

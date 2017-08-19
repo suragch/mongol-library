@@ -52,13 +52,7 @@ public class KeyboardAeiou extends Keyboard {
 
     private int mPopupBackgroundColor = Color.WHITE;
     private int mPopupHighlightColor = Color.GRAY;
-    private static final char MONGOLIAN_DOT = '\u00b7';
-    private static final char MONGOLIAN_DASH = '\ufe31';
-    private static final char PUNCTUATION_QUESTION_EXCLAMATION = '\u2048';
-    private static final char PUNCTUATION_EXCLAMATION_QUESTION = '\u2049';
-    private static final char PUNCTUATION_EXCLAMATION_EXCLAMATION = '\u203c';
-    private static final char PUNCTUATION_DOUBLEQUOTE_TOP = '\u00ab';
-    private static final char PUNCTUATION_DOUBLEQUOTE_BOTTOM = '\u00bb';
+    //private static final char MONGOLIAN_DOT = '\u00b7';
 
     // These are all input values (some display values are different)
     private static final String KEY_A = String.valueOf(MongolCode.Uni.A);
@@ -97,28 +91,28 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_YA_SUB = String.valueOf(MongolCode.Uni.WA);
     private static final String KEY_RA_SUB = String.valueOf(MongolCode.Uni.ZRA);
 
-    private static final String KEY_A_PUNCT = "(";
-    private static final String KEY_E_PUNCT = ")";
-    private static final String KEY_I_PUNCT = String.valueOf(PUNCTUATION_DOUBLEQUOTE_TOP);
-    private static final String KEY_O_PUNCT = String.valueOf(PUNCTUATION_DOUBLEQUOTE_BOTTOM);
-    private static final String KEY_U_PUNCT = String.valueOf(MONGOLIAN_DOT);
+    private static final String KEY_A_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
+    private static final String KEY_E_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
+    private static final String KEY_I_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
+    private static final String KEY_O_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
+    private static final String KEY_U_PUNCT = String.valueOf(MongolCode.Uni.MIDDLE_DOT);
     private static final String KEY_NA_PUNCT = "1";
     private static final String KEY_BA_PUNCT = "2";
     private static final String KEY_QA_PUNCT = "3";
     private static final String KEY_GA_PUNCT = "4";
     private static final String KEY_MA_PUNCT = "5";
-    private static final String KEY_LA_PUNCT = String.valueOf(MONGOLIAN_DASH);
+    private static final String KEY_LA_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_EM_DASH);
     private static final String KEY_SA_PUNCT = "6";
     private static final String KEY_TA_PUNCT = "7";
     private static final String KEY_CHA_PUNCT = "8";
     private static final String KEY_JA_PUNCT = "9";
     private static final String KEY_YA_PUNCT = "0";
-    private static final String KEY_RA_PUNCT = String.valueOf(PUNCTUATION_QUESTION_EXCLAMATION);
+    private static final String KEY_RA_PUNCT = String.valueOf(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
 
-    private static final String KEY_A_PUNCT_SUB = "[";
-    private static final String KEY_E_PUNCT_SUB = "]";
-    private static final String KEY_I_PUNCT_SUB = "<";
-    private static final String KEY_O_PUNCT_SUB = ">";
+    private static final String KEY_A_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
+    private static final String KEY_E_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
+    private static final String KEY_I_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
+    private static final String KEY_O_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
     private static final String KEY_U_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
     private static final String KEY_NA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
     private static final String KEY_BA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
@@ -1165,12 +1159,15 @@ public class KeyboardAeiou extends Keyboard {
     }
 
     private Candidates getCandidatesForKeyboard() {
-        Candidates can = new Candidates();
-        can.unicode = new String[]{
-                "English",
-                "Computer",
-                "Cyrillic"};
-        return can;
+        return null;
+
+        // TODO add other candidates after keyboards are finished
+//        Candidates can = new Candidates();
+//        can.unicode = new String[]{
+//                "English",
+//                "Computer",
+//                "Cyrillic"};
+//        return can;
     }
 
     private Candidates getCandidatesForComma() {
