@@ -213,22 +213,82 @@ String text = mongolEditText.getText().toString();
 
 ### Keyboard
 
-It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delhi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include this in-app keyboard. 
+It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delehi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include an in-app keyboard. 
+
+Currently only the AEIOU keyboard layout is finished, but a QWERTY layout will also be added. Additionally, Cyrillic and English keyboards will be added for convenient language switching options.
+
+![AEIOU keyboard](docs/images/keyboard-aeiou.png)
+
+The philosophy behind the AEIOU keyboard is to make input as easy as possible. The general arrangement follows the order of the Mongolian alphabet. The buttons are large by making infrequently used letters only available as longpress popups. The Unicode distinctions between O/U, OE/UE, and T/D are hidden from the user. It has been reported that countryside Mongols who have less interaction with computer keyboards prefer this layout. Users who want more controll over the Unicode input characters can use the QWERTY keyboard layout when it is finished.
 
 #### Basic usage
 
-Single keyboard -- single MongolEditText  
-Multiple keyboards -- multiple edittexts
+In the future keyboards will be wrapped in an `ImeContainer` to allow for keyboard switching and candidate word suggestions. However, since that functionality is not finished yet, this example shows how to just use a single keyboard (`KeyboardAeiou`) directly connected to a `MongolEditText`.
 
-#### Features
+XML layout
 
-* keyboards
-    * AEIOU - the philosophy behind this keyboard is to make input as easy as possible. The general arrangement follows the order of the Mongolian alphabet. The buttons are large by making infrequently used letters only available as longpress popups. The Unicode distinctions between O/U, OE/UE, and T/D are hidden from the user. It has been reported that countryside Mongols who have less interaction with computer keyboards prefer this layout. 
-    * QWERTY 
-    * Cyrillic 
-    * Latin 
-* set key colors, borders, and corner radius 
-* TODO set candidates 
+```xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/hsvEditTextContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_margin="20dp"
+        android:fillViewport="true">
+
+        <net.studymongolian.mongollibrary.MongolEditText
+            android:id="@+id/mongoledittext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            app:textSize="30sp"
+            android:background="@android:color/white"/>
+
+    </HorizontalScrollView>
+
+
+    <net.studymongolian.mongollibrary.KeyboardAeiou
+        android:id="@+id/keyboard_aeiou"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"/>
+
+</LinearLayout>
+```
+
+Code
+
+```java
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        MongolEditText mongolEditText = (MongolEditText) findViewById(R.id.mongoledittext);
+        KeyboardAeiou keyboard = (KeyboardAeiou) findViewById(R.id.keyboard_aeiou);
+
+        // prevent system keyboard from appearing when MongolEditText is tapped
+        mongolEditText.setAllowSystemKeyboard(false);
+
+        // send the keyboard input to the MongolEditText
+        InputConnection ic = mongolEditText.onCreateInputConnection(new EditorInfo());
+        keyboard.setInputConnection(ic);
+
+    }
+}
+```
+
+This will produce the following setup.
+
+![AEIOU keyboard example](docs/images/keyboard-example.png)
 
 ### MongolToast 
 
