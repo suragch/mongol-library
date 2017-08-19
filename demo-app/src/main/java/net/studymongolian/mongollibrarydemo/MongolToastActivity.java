@@ -24,8 +24,7 @@ public class MongolToastActivity extends AppCompatActivity {
 
     public void mongolToastClick(View view) {
 
-        // FIXME question mark should be rotated also
-        String text = "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ?";
+        String text = "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖";
         MongolToast mongolToast = MongolToast.makeText(getApplicationContext(), text, MongolToast.LENGTH_LONG);
         mongolToast.show();
 

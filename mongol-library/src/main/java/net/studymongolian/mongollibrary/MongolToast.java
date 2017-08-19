@@ -16,7 +16,7 @@ public class MongolToast {
 
     private static final int DEFAULT_BACKGROUND = Color.parseColor("#555555");
     private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
-    private static final int DEFAULT_TEXT_SIZE = 16;
+    private static final int DEFAULT_TEXT_SIZE = 20;
     private static final int DEFAULT_CORNER_RADIUS = 24;
     private static final float DEFAULT_HORIZONTAL_PADDING = 11;
     private static final float DEFAULT_VERTICAL_PADDING = 25;
