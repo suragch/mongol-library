@@ -296,14 +296,11 @@ This will produce the following setup.
 
 #### Basic usage
 
-* code
+```java
+MongolToast.makeText(getApplicationContext(), "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖", MongolToast.LENGTH_LONG).show();
+```
 
-#### Features
-
-* set text
-* set location 
-* set time length 
-
+![MongolToast example](docs/images/mt-example.png)
 
 ### MongolAlertDialog
 
