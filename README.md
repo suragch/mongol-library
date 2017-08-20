@@ -46,7 +46,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.8.1'
+    compile 'net.studymongolian:mongol-library:0.8.2'
 }
 ```
 
@@ -412,6 +412,8 @@ The following explanation shows how the library works internally.
 The keyboards are embedded in the keyboard container, which acts as a controller switching between the in-app keyboards. It also handles communication with the candidate view (TODO). 
 
 ## Version changes 
+
+* `0.8.2`: Updated to Unicode 10.0 
 
 ## External links 
 
