@@ -615,6 +615,8 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
                 .append("\u1830\u1820\u1836\u200d\u1822\u182C\u1820\u1828").append("\n")
                 .append("SAY(ZWJ)IHAN").append("\n\n")
 
+                // FIXME update these (Replace ZWJ)
+
                 // sayi (recently), Using ZWJ to break context rule
                 .append("\u1830\u1820\u1836\u200d\u1822").append("\n")
                 .append("SAY(ZWJ)I").append("\n\n")

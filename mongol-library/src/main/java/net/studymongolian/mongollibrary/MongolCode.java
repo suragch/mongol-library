@@ -3,14 +3,14 @@ package net.studymongolian.mongollibrary;
 
 /*
  * Mongol Code
- * Version 1.0.0
+ * Version 1.1.0
  *
- * Updated for Unicode 9.0 standards
+ * Updated for Unicode 10.0 standards
  * http://unicode.org/charts/PDF/U1800.pdf
- * Deviating from Unicode 9.0 for
- *    - MONGOLIAN LETTER A second form medial (mistake in Unicode 9.0)
- *    - MONGOLIAN LETTER GA feminine form final (matching DS01, needed to
-  *     break context)
+ * Deviating from Unicode 10.0 for
+ *    - MONGOLIAN LETTER GA first and second form final (matching DS01, needed to
+  *     break context) (So words with only I default to feminine. Menksoft also
+  *     does this.)
  *
  * The purpose of this class is to render Unicode text into glyphs
  * that can be displayed on all versions of Android. It solves the
@@ -1695,7 +1695,7 @@ public final class MongolCode {
                             break;
                         case INITIAL:
                             if (isSuffix && charBelow == Uni.I) {
-                                renderedWord.insert(0, Glyph.MEDI_YA_FVS1);         // suffix
+                                renderedWord.insert(0, Glyph.MEDI_YA);         // suffix - no hook
                             } else if (fvs == Uni.FVS1) {
                                 renderedWord.insert(0, Glyph.INIT_YA_FVS1);         // no hook
                             } else {
@@ -1704,10 +1704,10 @@ public final class MongolCode {
                             break;
                         case MEDIAL:
                             if (fvs == Uni.FVS1) {
-                                renderedWord.insert(0, Glyph.MEDI_YA_FVS1);         // no hook
+                                renderedWord.insert(0, Glyph.MEDI_YA_FVS1);         // hook
                             } else if (isSuffix && mongolWord.charAt(i - 1) == Uni.I) {
                                 // *** no hook after Y (as in IYEN and IYER) ***
-                                renderedWord.insert(0, Glyph.MEDI_YA_FVS1);         // suffix
+                                renderedWord.insert(0, Glyph.MEDI_YA);             // suffix - no hook
                             } else {
                                 char charAbove = mongolWord.charAt(i - 1);
 
@@ -1716,24 +1716,26 @@ public final class MongolCode {
                                 // Also do this for consonant below.
                                 if (needsLongToothU(mongolWord, i - 1) || charAbove == Uni.I) {
                                     if (charBelow == Uni.I || isConsonant(charBelow)) {
-                                        renderedWord.insert(0, Glyph.MEDI_YA_FVS1);     // no hook
+                                        renderedWord.insert(0, Glyph.MEDI_YA);           // no hook
                                     } else {
-                                        renderedWord.insert(0, Glyph.MEDI_YA);          // hook
+                                        renderedWord.insert(0, Glyph.MEDI_YA_FVS1);      // hook
                                     }
                                 } else if (isVowel(charAbove)) {
                                     if (charBelow == Uni.I) {
-                                        if (i < length - 2) {
-                                            renderedWord.setCharAt(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth replacement
-                                        } else {
-                                            // omit the Y if YI is at the end of a word
-                                        }
+                                        // FIXME don't forget to update the cursor counting
+                                        //if (i < length - 2) {
+                                        //    renderedWord.setCharAt(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth replacement
+                                        //} else {
+                                        //    // omit the Y if YI is at the end of a word
+                                        //}
+                                        renderedWord.insert(0, Glyph.MEDI_YA);          // no hook
                                     } else if (isConsonant(charBelow)) {
                                         renderedWord.insert(0, Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
                                     } else {
-                                        renderedWord.insert(0, Glyph.MEDI_YA);          // hook
+                                        renderedWord.insert(0, Glyph.MEDI_YA_FVS1);          // hook
                                     }
                                 } else {
-                                    renderedWord.insert(0, Glyph.MEDI_YA);          // hook
+                                    renderedWord.insert(0, Glyph.MEDI_YA_FVS1);          // hook
                                 }
                             }
                             break;
@@ -2181,19 +2183,10 @@ public final class MongolCode {
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS) || character == Uni.ZWJ);
     }
 
-    // MVS, FVS, ZWJ and sometimes YA are excluded in the glyph indexing
+    // MVS, FVS, ZWJ
     static boolean isRenderedGlyph(int index, CharSequence someString) {
         final char someChar = someString.charAt(index);
-        if (someChar == Uni.MVS || isFVS(someChar) || someChar == Uni.ZWJ) return false;
-        // Y is hidden in Vowel + Y + I
-        if (someChar == MongolCode.Uni.YA) {
-            if (index > 0 && index < someString.length() - 1 &&
-                    isVowel(someString.charAt(index - 1)) &&
-                    someString.charAt(index + 1) == Uni.I) {
-                return false;
-            }
-        }
-        return true;
+        return !(someChar == Uni.MVS || isFVS(someChar) || someChar == Uni.ZWJ);
     }
 
     private static boolean isBGDRS(char character) {
@@ -2597,7 +2590,7 @@ public final class MongolCode {
         private static final char FINA_A = '\uE268';
         private static final char FINA_A_BP = '\uE26B'; // final A following BPKF
         private static final char ISOL_A_FVS1 = '\uE265';
-        private static final char MEDI_A_FVS1 = '\uE26E'; //    TODO check difference from specs
+        private static final char MEDI_A_FVS1 = '\uE26E';
         private static final char FINA_A_FVS1 = '\uE269';
         private static final char FINA_A_MVS = '\uE26A'; // gv for MVS + A
         private static final char MEDI_A_FVS2 = '\uE267'; // A of ACHA suffix
@@ -2643,7 +2636,7 @@ public final class MongolCode {
         private static final char FINA_U = '\uE28D';
         private static final char FINA_U_BP = '\uE28F'; // gv
         private static final char MEDI_U_FVS1 = '\uE290';
-        private static final char FINA_U_FVS1 = '\uE28E';  // FIXME not defined in Unicode 9.0
+        private static final char FINA_U_FVS1 = '\uE28E';  // FIXME not defined in Unicode 10.0
 
         private static final char OE_START = '\uE293';
         private static final char ISOL_OE = '\uE293';
@@ -2765,8 +2758,8 @@ public final class MongolCode {
         private static final char MEDI_GA_FVS1_STEM = '\uE2EC';
         // This deviation is necessary to override context rules.
         // This follows the WG2 decision: https://r12a.github.io/mongolian-variants/
-        private static final char FINA_GA_FVS1 = '\uE2E7'; // masculine context override FIXME Deviating from Unicode 9.0 !!!
-        private static final char FINA_GA_FVS2 = '\uE2E8'; // feminine final form FIXME Deviating from Unicode 9.0 !!!
+        private static final char FINA_GA_FVS1 = '\uE2E7'; // masculine context override FIXME Deviating from Unicode 10.0 !!!
+        private static final char FINA_GA_FVS2 = '\uE2E8'; // feminine final form FIXME Deviating from Unicode 10.0 !!!
         private static final char MEDI_GA_FVS2 = '\uE2E9';
         private static final char MEDI_GA_FVS3_TOOTH = '\uE2EF';
         private static final char MEDI_GA_FVS3_STEM = '\uE2F0';
@@ -2843,10 +2836,12 @@ public final class MongolCode {
         private static final char YA_START = '\uE31E';
         private static final char ISOL_YA = '\uE31E';
         private static final char INIT_YA = '\uE31E';
-        private static final char MEDI_YA = '\uE320';
+        //private static final char MEDI_YA = '\uE320'; // hooked (Unicode 9.0)
+        private static final char MEDI_YA = '\uE321'; // straight (Unicode 10.0)
         private static final char FINA_YA = '\uE31F';
         private static final char INIT_YA_FVS1 = '\uE321';
-        private static final char MEDI_YA_FVS1 = '\uE321';
+        //private static final char MEDI_YA_FVS1 = '\uE321'; // straight (Unicode 9.0)
+        private static final char MEDI_YA_FVS1 = '\uE320'; // hooked (Unicode 10.0)
         private static final char MEDI_YA_FVS2 = '\uE31F';
 
         private static final char RA_START = '\uE322';

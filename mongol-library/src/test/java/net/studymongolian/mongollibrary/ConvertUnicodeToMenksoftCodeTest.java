@@ -4693,7 +4693,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tsementWord() throws Exception {
         String unicode = "ᠼᠧᠮᠧᠨᠲ ᠲᠠᠶᠢᠭᠠᠨ"; // TSEMENT (NNBSP) TAYIGAN
         String result = convert(unicode);
-        String expected = "\uE33F\uE2B0\uE2F4\uE2B0\uE2BA\uE30A \uE308\uE26C\uE281\uE2EA\uE26C\uE2B5";
+        String expected = "\uE33F\uE2B0\uE2F4\uE2B0\uE2BA\uE30A \uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4701,7 +4701,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uniyeWord() throws Exception {
         String unicode = "ᠦᠨᠢᠶ᠎ᠡ ᠲᠡᠶᠢᠭᠡᠨ"; // UNIY(MVS)E (NNBSP) TEYIGEN
         String result = convert(unicode);
-        String expected = "\uE2A2\uE2B7\uE27E\uE31F\uE274 \uE308\uE276\uE281\uE2EB\uE277\uE2B5";
+        String expected = "\uE2A2\uE2B7\uE27E\uE31F\uE274 \uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4709,7 +4709,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void qoyinaWord() throws Exception {
         String unicode = "ᠬᠣᠶᠢᠨ᠎ᠠ"; // QOYIN(MVS)A
         String result = convert(unicode);
-        String expected = "\uE2D2\uE289\uE281\uE2B6\uE26A";
+        String expected = "\uE2D2\uE289\uE321\uE27E\uE2B6\uE26A";
         assertEquals(expected, result);
     }
 
@@ -4805,7 +4805,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void bayigulquWord() throws Exception {
         String unicode = "ᠪᠠᠶᠢᠭᠤᠯᠬᠤ"; // BAYIGULQU
         String result = convert(unicode);
-        String expected = "\uE2C1\uE26D\uE281\uE2EC\uE291\uE2FA\uE2DC\uE28D";
+        String expected = "\uE2C1\uE26D\uE321\uE27E\uE2EC\uE291\uE2FA\uE2DC\uE28D";
         assertEquals(expected, result);
     }
 
@@ -4829,7 +4829,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void neigemligWord() throws Exception {
         String unicode = "ᠨᠡᠶᠢᠭᠡᠮᠯᠢᠭ"; // NEYIGEMLIG
         String result = convert(unicode);
-        String expected = "\uE2B1\uE276\uE281\uE2EB\uE277\uE2F5\uE2FA\uE27E\uE2E8";
+        String expected = "\uE2B1\uE276\uE321\uE27E\uE2EB\uE277\uE2F5\uE2FA\uE27E\uE2E8";
         assertEquals(expected, result);
     }
 
@@ -4933,7 +4933,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void nayijaWord() throws Exception {
         String unicode = "ᠨᠠᠶᠢᠵᠠ"; // NAYIJA
         String result = convert(unicode);
-        String expected = "\uE2B1\uE26C\uE281\uE31D\uE268";
+        String expected = "\uE2B1\uE26C\uE321\uE27E\uE31D\uE268";
         assertEquals(expected, result);
     }
 
@@ -4949,7 +4949,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void baiyinaWord() throws Exception {
         String unicode = "ᠪᠠᠶᠢᠨ᠎ᠠ"; // BAYIN(MVS)A
         String result = convert(unicode);
-        String expected = "\uE2C1\uE26D\uE281\uE2B6\uE26A";
+        String expected = "\uE2C1\uE26D\uE321\uE27E\uE2B6\uE26A";
         assertEquals(expected, result);
     }
 
@@ -4957,13 +4957,13 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void saihanWord() throws Exception {
         String unicode = "ᠰᠠᠶᠢᠬᠠᠨ"; // SAYIHAN
         String result = convert(unicode);
-        String expected = "\uE2FD\uE26C\uE281\uE2D8\uE26C\uE2B5";
+        String expected = "\uE2FD\uE26C\uE321\uE27E\uE2D8\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
     @Test
     public void sayihanWord() throws Exception {
-        String unicode = "ᠰᠠᠶ\u200Dᠢᠬᠠᠨ"; // SAY(ZWJ)IHAN
+        String unicode = "ᠰᠠᠶ\u180Bᠢᠬᠠᠨ"; // SAY(FVS1)IHAN
         String result = convert(unicode);
         String expected = "\uE2FD\uE26C\uE320\uE27E\uE2D8\uE26C\uE2B5";
         assertEquals(expected, result);
@@ -4971,7 +4971,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
     @Test
     public void sayiWord() throws Exception {
-        String unicode = "ᠰᠠᠶ\u200Dᠢ"; // SAY(ZWJ)I
+        String unicode = "ᠰᠠᠶ\u180Bᠢ"; // SAY(FVS1)I
         String result = convert(unicode);
         String expected = "\uE2FD\uE26C\uE320\uE27B";
         assertEquals(expected, result);
@@ -4985,17 +4985,18 @@ public class ConvertUnicodeToMenksoftCodeTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    public void tayiWord() throws Exception {
-        String unicode = "ᠲᠠᠶᠢ"; // TAYI
-        String result = convert(unicode);
-        String expected = "\uE308\uE26C\uE27B";
-        assertEquals(expected, result);
-    }
+    // no longer supporting
+    //@Test
+    //public void tayiWord() throws Exception {
+    //    String unicode = "ᠲᠠᠶᠢ"; // TAYI
+    //    String result = convert(unicode);
+    //    String expected = "\uE308\uE26C\uE27B";
+    //    assertEquals(expected, result);
+    //}
 
     @Test
     public void namayiWord() throws Exception {
-        String unicode = "ᠨᠠᠮᠠᠶ᠋ᠢ"; // NAMAY(FVS1)I
+        String unicode = "ᠨᠠᠮᠠᠶᠢ"; // NAMAYI
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\uE2F4\uE26C\uE321\uE27B";
         assertEquals(expected, result);
@@ -5005,7 +5006,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void eyimuWord() throws Exception {
         String unicode = "ᠡᠶᠢᠮᠦ"; // EYIMU
         String result = convert(unicode);
-        String expected = "\uE271\uE281\uE2F5\uE2A3";
+        String expected = "\uE271\uE321\uE27E\uE2F5\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -5045,7 +5046,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void qeduyinWord() throws Exception {
         String unicode = "ᠬᠡᠳᠦᠶᠢᠨ"; // QEDUYIN
         String result = convert(unicode);
-        String expected = "\uE2D0\uE277\uE313\uE2AB\uE281\uE2B5";
+        String expected = "\uE2D0\uE277\uE313\uE2AB\uE321\uE27E\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5350,13 +5351,14 @@ public class ConvertUnicodeToMenksoftCodeTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    public void tayiSuffix() throws Exception {
-        String unicode = " ᠲᠠᠶᠢ"; //
-        String result = convert(unicode);
-        String expected = " \uE308\uE26C\uE27B";
-        assertEquals(expected, result);
-    }
+    // no longer supporting this
+    //@Test
+    //public void tayiSuffix() throws Exception {
+    //    String unicode = " ᠲᠠᠶᠢ"; //
+    //    String result = convert(unicode);
+    //    String expected = " \uE308\uE26C\uE27B";
+    //    assertEquals(expected, result);
+    //}
 
     @Test
     public void teiSuffix() throws Exception {
@@ -5366,13 +5368,14 @@ public class ConvertUnicodeToMenksoftCodeTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    public void teyiSuffix() throws Exception {
-        String unicode = " ᠲᠡᠶᠢ"; //
-        String result = convert(unicode);
-        String expected = " \uE308\uE276\uE27B";
-        assertEquals(expected, result);
-    }
+    // no longer supporting this
+    //@Test
+    //public void teyiSuffix() throws Exception {
+    //    String unicode = " ᠲᠡᠶᠢ"; //
+    //    String result = convert(unicode);
+    //    String expected = " \uE308\uE276\uE27B";
+    //    assertEquals(expected, result);
+    //}
 
     @Test
     public void lugaSuffix() throws Exception {
@@ -5498,7 +5501,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tayiganSuffix() throws Exception {
         String unicode = " ᠲᠠᠶᠢᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE26C\uE281\uE2EA\uE26C\uE2B5";
+        String expected = " \uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5514,7 +5517,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void teyigenSuffix() throws Exception {
         String unicode = " ᠲᠡᠶᠢᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE276\uE281\uE2EB\uE277\uE2B5";
+        String expected = " \uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
