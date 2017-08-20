@@ -300,6 +300,8 @@ This will produce the following setup.
 MongolToast.makeText(getApplicationContext(), "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖", MongolToast.LENGTH_LONG).show();
 ```
 
+This produces the following result:
+
 ![MongolToast example](docs/images/mt-example.png)
 
 ### MongolAlertDialog
@@ -308,34 +310,44 @@ MongolToast.makeText(getApplicationContext(), "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ�
 
 #### Basic usage
 
-* code
+```java
+// setup the alert builder
+MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);
+builder.setMessage("ᠵᠠᠮᠤᠭ ᠰᠠᠢᠲᠠᠢ ᠨᠠᠭᠤᠷ ᠲᠤ ᠵᠢᠭᠠᠰᠤ ᠤᠯᠠᠨ᠂\nᠵᠠᠩ ᠰᠠᠢᠲᠠᠢ ᠬᠦᠮᠦᠨ ᠳᠦ ᠨᠦᠬᠦᠷ ᠤᠯᠠᠨ᠃");
 
-####Features
+// add the button
+builder.setPositiveButton("ᠮᠡᠳᠡᠯ᠎ᠡ", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        // do sth
+    }
+});
 
-* set title 
-* set message 
-* set buttons 
-* set actions
-* TODO check box, radio button, list
+// create and show the alert dialog
+ MongolAlertDialog dialog = builder.create();
+ dialog.show();
+ ```
+
+This produces the following result:
+
+![MongolToast example](docs/images/mad-example.png)
 
 ## Unicode 
 
 All of the UI components in this library are designed to use Unicode for all input and output. (However, since glyph rendering internally uses Menksoft code, you can also use Menksoft code for input. This is not recommended, though.) 
 
-The rendering engine conforms to the Unicode 9.0 standard. However, we deviated from the standard in the following two cases:
+The rendering engine conforms to the [Unicode 10.0 standard](http://unicode.org/versions/Unicode10.0.0/). However, the standard was deviated from in the following case:
 
-* medial A second(?) form. This appears to be a simple typo in the standard. The original stated ______
-* final GA. this is needed to override the masculine GA in words like SHIG. This deviation conforms to the xxx proposal. 
+* MONGOLIAN LETTER GA, second final form. The Unicode 10.0 standard second final form is the feminine form. However, there is no way to override a feminine GA in words like SHIG to make it masculine and the only solution is to explicitly specify a feminine GA in every single neuter word (example: BICHIG(FVS1)). However, none of the major font players do that ([source](https://r12a.github.io/mongolian-variants/#char182D)). They use FVS1 as a masculine override and FVS2 to specify the feminine form. This was also the proposal in [DS01](https://w3c.github.io/mlreq/variants/ds01.pdf). It is much more natural to default to a feminine final GA in neuter words and only override to a masculine GA when necessary. Thus, the rendering engine in this library also follows the DS01 recomendation for final GA.
 
-#### Other issues
 
-The Unicode standard does not specify how diphthongs should be encoded (or whether diphthongs exist at all in written Mongolian). For example, the AI of SAIN is sometimes encoded as AI (\u1820\u1821) and sometimes encoded as AYI (\u1820\u1836\u1821). For this reason, both of these encodings are supported. However, this creates a problem for rendering a hooked Y when in AYI as in the word SAYIHAN. (TODO add image). 
+###### Other issues
 
-To get around this difficulty, a ZWJ may be inserted after the Y. This overrides the context and produces the hooked Y. (The keyboard IME uses this method.) However, this is not a standard documented use of ZWJ. Therefore it is hoped that the Unicode standard will introduce an additional control character that could be used similarly to the FVS characters. This new control character would always override the context and make the default form be shown. 
+The Unicode standard does not specify how diphthongs should be encoded (or whether diphthongs exist at all in written Mongolian). For example, the AI of SAIN is sometimes encoded as AI (`\u1820\u1821`) and sometimes encoded as AYI (`\u1820\u1836\u1821`). For this reason, both of these encodings are supported. However, this creates a problem for rendering the AI of NAIMA (eight). To get around this difficulty, a `ZWJ` may be inserted between the A and I (`NA(ZWJ)IMA`). The same trick can be used to override the dotted N context in names like CHOLMONODO (CHOLMON(ZWJ)O(FVS1)DO). However, this is not a standard documented use of `ZWJ`. Therefore it is hoped that the Unicode standard will introduce an additional control character that could be used similarly to the FVS characters. This new control character would always override the context and make the default form be shown. (This would also solve the final GA problem discussed above.)
 
 See the demo app or the tests for examples of how words are rendered. If you discover any rendering errors then please report them. This is a high priority issue. 
 
-The MongolCode class is the rendering engine. Generally you won't need to use this class directly, but you can use it to covert between Menksoft code and Unicode. 
+The `MongolCode` class is the rendering engine. Generally you won't need to use this class directly, but you can use it to covert between Menksoft code and Unicode. The `MongolCode.Uni` and `MongolCode.Suffix` inner classes may also be useful for references to get Unicode characters and strings. There are also some static methods that may be useful.
 
 * code example 
 
@@ -382,7 +394,7 @@ Code examples.
 * `RecyclerView` example. 
 * underline span 
 * `MongolTextView` line spacing
-* more `MongolAlertDialog` types
+* more `MongolAlertDialog` types (check box, radio button, list)
 * add lots more jUnit and instrumentation tests 
 
 ## How to contribute 
