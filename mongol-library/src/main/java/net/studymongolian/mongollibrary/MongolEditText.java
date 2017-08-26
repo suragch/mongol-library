@@ -92,13 +92,12 @@ public class MongolEditText extends MongolTextView {
                 invalidate();
                 requestLayout();
 
-                Log.i("TAG", "onTextChanged: ");
                 startBlinking();
             }
 
             @Override
             public void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd) {
-                Log.i("TAG", "onSpanChanged: ");
+
                 // TODO only invalidate region affected by the span
                 invalidate();
                 // FIXME only need to request layout for metric affecting spans
@@ -376,7 +375,6 @@ public class MongolEditText extends MongolTextView {
     }
 
     public void setSelection(int start, int stop) {
-        Log.i("TAG", "setSelection: ");
         Selection.setSelection(getText(), start, stop);
     }
 
@@ -421,7 +419,6 @@ public class MongolEditText extends MongolTextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.i("TAG", "onDraw: ");
 
         int start = getSelectionStart();
         int end = getSelectionEnd();
@@ -541,7 +538,7 @@ public class MongolEditText extends MongolTextView {
 
             if (shouldBlink()) {
                 if (mLayout != null && !mLayout.getNeedsLineUpdate()) {
-                    Log.i("TAG", "mBlink: ");
+                    //Log.i("TAG", "mBlink: ");
                     MongolEditText.this.invalidateCursorPath();
                     //MongolEditText.this.invalidate();
                     mIsBlinkOn = !mIsBlinkOn;
