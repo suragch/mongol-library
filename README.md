@@ -46,7 +46,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.8.2'
+    compile 'net.studymongolian:mongol-library:0.9.0'
 }
 ```
 
@@ -360,15 +360,37 @@ TODO add Xinjiang Tod Mongol script support.
 
 ## Fonts
 
-In order to keep the library size as small as possible, only one font is included by default. This is the Menksoft Qagan font. However, you may include any of the other Menksoft fonts in your project. Either TrueType or OpenType are fine. In fact, the TrueType fonts are smaller and since the OpenType rendering code is not used in this library, the TrueType version of the font may be better when available. 
+In order to keep the library size as small as possible, only one font is included by default. This is the [Menksoft Qagan font](http://www.menksoft.com/mdls/am/amview.aspx?pid=0&alias=menkcms&iid=168137&mid=15302&wv=U). However, you may include any of the other [Menksoft fonts](http://www.menksoft.com/site/alias__menkcms/2805/Default.aspx) in your project. Either TrueType or OpenType are fine. In fact, the TrueType fonts are smaller and since the OpenType rendering code is not used in this library, the TrueType version of the font may be better when available. 
 
-Some of the Menksoft fonts contain ligature errors for Latin letter combinations like `fi`. See this stack overflow question. It is hoped that Menksoft will correct these errors by removing the ligature encoding from the affected fonts. 
+Some of the Menksoft fonts contain ligature errors for Latin letter combinations like `fi`. See [this Stack Overflow question](https://stackoverflow.com/questions/43315957/how-to-remove-ligatures-from-a-font-using-fontforge). It is hoped that Menksoft will correct these errors by removing the ligature encoding from the affected fonts. 
 
-Code examples
+#### Code example
 
-* Adding extra fonts 
-* Set font on `MongolTextView`. 
-* Set font on span. 
+Use `MongolFont` to create a `TypeFace`. The `MongolFont` class will take care of caching fonts so that you can reuse them on multiple views. You should [create an assets folder](https://stackoverflow.com/questions/26706843/adding-an-assets-folder-in-android-studio) and add the Menksoft font that you want to use (optionally in a `fonts` subfolder).
+
+
+![custom font example](docs/images/custom-font-example.png)
+
+```java
+public class MainActivity extends AppCompatActivity {
+
+    // custom font is stored in the app's assets/fonts folder
+    public static final String AMGLANG = "fonts/MAM8102.ttf";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        MongolTextView mongolTextView = (MongolTextView) findViewById(R.id.mongol_text_view_id);
+        mongolTextView.setText("ᠮᠣᠩᠭᠣᠯ");
+
+        // set the custom font
+        Typeface customFont = MongolFont.get(AMGLANG, getApplicationContext());
+        mongolTextView.setTypeface(customFont);
+    }
+}
+```
 
 ## Other
 
@@ -413,6 +435,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 ## Version changes 
 
+* `0.9.0`: Removed extra font and resource files to make as small as possible
 * `0.8.2`: Updated to Unicode 10.0 
 
 ## External links 
