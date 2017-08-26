@@ -239,46 +239,46 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
                     fontChoice = MongolFont.QAGAN;
                     break;
                 case "GARQAG":
-                    fontChoice = MongolFont.GARQAG;
+                    fontChoice = MongolFontActivity.GARQAG;
                     break;
                 case "HARA":
-                    fontChoice = MongolFont.HARA;
+                    fontChoice = MongolFontActivity.HARA;
                     break;
                 case "SCNIN":
-                    fontChoice = MongolFont.SCNIN;
+                    fontChoice = MongolFontActivity.SCNIN;
                     break;
                 case "HAWANG":
-                    fontChoice = MongolFont.HAWANG;
+                    fontChoice = MongolFontActivity.HAWANG;
                     break;
                 case "QIMED":
-                    fontChoice = MongolFont.QIMED;
+                    fontChoice = MongolFontActivity.QIMED;
                     break;
                 case "NARIN":
-                    fontChoice = MongolFont.NARIN;
+                    fontChoice = MongolFontActivity.NARIN;
                     break;
                 case "MCDVNBAR":
-                    fontChoice = MongolFont.MCDVNBAR;
+                    fontChoice = MongolFontActivity.MCDVNBAR;
                     break;
                 case "AMGLANG":
-                    fontChoice = MongolFont.AMGLANG;
+                    fontChoice = MongolFontActivity.AMGLANG;
                     break;
                 case "SIDAM":
-                    fontChoice = MongolFont.SIDAM;
+                    fontChoice = MongolFontActivity.SIDAM;
                     break;
                 case "QINGMING":
-                    fontChoice = MongolFont.QINGMING;
+                    fontChoice = MongolFontActivity.QINGMING;
                     break;
                 case "ONQA_HARA":
-                    fontChoice = MongolFont.ONQA_HARA;
+                    fontChoice = MongolFontActivity.ONQA_HARA;
                     break;
                 case "SVGVNAG":
-                    fontChoice = MongolFont.SVGVNAG;
+                    fontChoice = MongolFontActivity.SVGVNAG;
                     break;
                 case "SVLBIYA":
-                    fontChoice = MongolFont.SVLBIYA;
+                    fontChoice = MongolFontActivity.SVLBIYA;
                     break;
                 case "JCLGQ":
-                    fontChoice = MongolFont.JCLGQ;
+                    fontChoice = MongolFontActivity.JCLGQ;
                     break;
                 default:
                     Log.e("TAG", "onItemSelected: Font doesn't exist. Defaulting to QAGAN.");

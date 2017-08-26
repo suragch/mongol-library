@@ -10,23 +10,21 @@ import java.util.Hashtable;
 // It is also a central place to organize the included fonts.
 public class MongolFont {
 
-    // TODO add Qimeg tig
-
     public static final String QAGAN = "fonts/MQG8F02.ttf";                 // White (plain)
-    public static final String GARQAG = "fonts/MenksoftGarqag.ttf";         // Title
-    public static final String HARA = "fonts/MenksoftHara.ttf";             // Bold
-    public static final String SCNIN = "fonts/MenksoftScnin.ttf";           // News
-    public static final String HAWANG = "fonts/MenksoftHawang.ttf";         // Handwriting
-    public static final String QIMED = "fonts/MenksoftQimed.ttf";           // Handwriting pen
-    public static final String NARIN = "fonts/MenksoftNarin.ttf";           // Thin
-    public static final String MCDVNBAR = "fonts/MenksoftMcdvnbar.ttf";     // Wood carving
-    public static final String AMGLANG = "fonts/MAM8102.ttf";               // Brush
-    public static final String SIDAM = "fonts/MBN8102.ttf";                 // Fat round
-    public static final String QINGMING = "fonts/MQI8102.ttf";              // Qing Ming style
-    public static final String ONQA_HARA = "fonts/MTH8102.ttf";             // Thick stem
-    public static final String SVGVNAG = "fonts/MSO8102.ttf";               // Thick stem thin lines
-    public static final String SVLBIYA = "fonts/MBJ8102.ttf";               // Double stem
-    public static final String JCLGQ = "fonts/MenksoftJclgq.ttf";           // Computer
+    //public static final String GARQAG = "fonts/MenksoftGarqag.ttf";         // Title
+    //public static final String HARA = "fonts/MenksoftHara.ttf";             // Bold
+    //public static final String SCNIN = "fonts/MenksoftScnin.ttf";           // News
+    //public static final String HAWANG = "fonts/MenksoftHawang.ttf";         // Handwriting
+    //public static final String QIMED = "fonts/MenksoftQimed.ttf";           // Handwriting pen
+    //public static final String NARIN = "fonts/MenksoftNarin.ttf";           // Thin
+    //public static final String MCDVNBAR = "fonts/MenksoftMcdvnbar.ttf";     // Wood carving
+    //public static final String AMGLANG = "fonts/MAM8102.ttf";               // Brush
+    //public static final String SIDAM = "fonts/MBN8102.ttf";                 // Fat round
+    //public static final String QINGMING = "fonts/MQI8102.ttf";              // Qing Ming style
+    //public static final String ONQA_HARA = "fonts/MTH8102.ttf";             // Thick stem
+    //public static final String SVGVNAG = "fonts/MSO8102.ttf";               // Thick stem thin lines
+    //public static final String SVLBIYA = "fonts/MBJ8102.ttf";               // Double stem
+    //public static final String JCLGQ = "fonts/MenksoftJclgq.ttf";           // Computer
 
     private static Hashtable<String, Typeface> fontCache = new Hashtable<>();
 

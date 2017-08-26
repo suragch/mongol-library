@@ -142,16 +142,16 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         tf = MongolFont.get(MongolFont.QAGAN, getApplicationContext());
                         break;
                     case 1:
-                        tf = MongolFont.get(MongolFont.SCNIN, getApplicationContext());
+                        tf = MongolFont.get(MongolFontActivity.SCNIN, getApplicationContext());
                         break;
                     case 2:
-                        tf = MongolFont.get(MongolFont.HAWANG, getApplicationContext());
+                        tf = MongolFont.get(MongolFontActivity.HAWANG, getApplicationContext());
                         break;
                     case 3:
-                        tf = MongolFont.get(MongolFont.AMGLANG, getApplicationContext());
+                        tf = MongolFont.get(MongolFontActivity.AMGLANG, getApplicationContext());
                         break;
                     case 4:
-                        tf = MongolFont.get(MongolFont.JCLGQ, getApplicationContext());
+                        tf = MongolFont.get(MongolFontActivity.JCLGQ, getApplicationContext());
                         break;
                 }
                 mtvExample.setTypeface(tf);
@@ -256,7 +256,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                     case 3: // FONT
                         // setting a custom font as a span requires the custom MongolTypefaceSpan
                         if (isChecked) {
-                            Typeface font = MongolFont.get(MongolFont.JCLGQ, getApplicationContext());
+                            Typeface font = MongolFont.get(MongolFontActivity.JCLGQ, getApplicationContext());
                             MongolTypefaceSpan span = new MongolTypefaceSpan(font);
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {

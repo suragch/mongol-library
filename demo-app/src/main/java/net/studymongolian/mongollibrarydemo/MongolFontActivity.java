@@ -10,6 +10,21 @@ import net.studymongolian.mongollibrary.MongolLabel;
 
 public class MongolFontActivity extends AppCompatActivity {
 
+    public static final String GARQAG = "fonts/MenksoftGarqag.ttf";         // Title
+    public static final String HARA = "fonts/MenksoftHara.ttf";             // Bold
+    public static final String SCNIN = "fonts/MenksoftScnin.ttf";           // News
+    public static final String HAWANG = "fonts/MenksoftHawang.ttf";         // Handwriting
+    public static final String QIMED = "fonts/MenksoftQimed.ttf";           // Handwriting pen
+    public static final String NARIN = "fonts/MenksoftNarin.ttf";           // Thin
+    public static final String MCDVNBAR = "fonts/MenksoftMcdvnbar.ttf";     // Wood carving
+    public static final String AMGLANG = "fonts/MAM8102.ttf";               // Brush
+    public static final String SIDAM = "fonts/MBN8102.ttf";                 // Fat round
+    public static final String QINGMING = "fonts/MQI8102.ttf";              // Qing Ming style
+    public static final String ONQA_HARA = "fonts/MTH8102.ttf";             // Thick stem
+    public static final String SVGVNAG = "fonts/MSO8102.ttf";               // Thick stem thin lines
+    public static final String SVLBIYA = "fonts/MBJ8102.ttf";               // Double stem
+    public static final String JCLGQ = "fonts/MenksoftJclgq.ttf";           // Computer
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,21 +46,24 @@ public class MongolFontActivity extends AppCompatActivity {
         MongolLabel label14 = (MongolLabel) findViewById(R.id.mongolLabel14);
         MongolLabel label15 = (MongolLabel) findViewById(R.id.mongolLabel15);
 
+        // library font (this is the default so specifying the font is not actually necessary)
         label1.setTypeface(MongolFont.get(MongolFont.QAGAN, this));
-        label2.setTypeface(MongolFont.get(MongolFont.GARQAG, this));
-        label3.setTypeface(MongolFont.get(MongolFont.HARA, this));
-        label4.setTypeface(MongolFont.get(MongolFont.SCNIN, this));
-        label5.setTypeface(MongolFont.get(MongolFont.HAWANG, this));
-        label6.setTypeface(MongolFont.get(MongolFont.QIMED, this));
-        label7.setTypeface(MongolFont.get(MongolFont.NARIN, this));
-        label8.setTypeface(MongolFont.get(MongolFont.MCDVNBAR, this));
-        label9.setTypeface(MongolFont.get(MongolFont.AMGLANG, this));
-        label10.setTypeface(MongolFont.get(MongolFont.SIDAM, this));
-        label11.setTypeface(MongolFont.get(MongolFont.QINGMING, this));
-        label12.setTypeface(MongolFont.get(MongolFont.ONQA_HARA, this));
-        label13.setTypeface(MongolFont.get(MongolFont.SVGVNAG, this));
-        label14.setTypeface(MongolFont.get(MongolFont.SVLBIYA, this));
-        label15.setTypeface(MongolFont.get(MongolFont.JCLGQ, this));
+
+        // additional fonts just added in this app
+        label2.setTypeface(MongolFont.get(GARQAG, this));
+        label3.setTypeface(MongolFont.get(HARA, this));
+        label4.setTypeface(MongolFont.get(SCNIN, this));
+        label5.setTypeface(MongolFont.get(HAWANG, this));
+        label6.setTypeface(MongolFont.get(QIMED, this));
+        label7.setTypeface(MongolFont.get(NARIN, this));
+        label8.setTypeface(MongolFont.get(MCDVNBAR, this));
+        label9.setTypeface(MongolFont.get(AMGLANG, this));
+        label10.setTypeface(MongolFont.get(SIDAM, this));
+        label11.setTypeface(MongolFont.get(QINGMING, this));
+        label12.setTypeface(MongolFont.get(ONQA_HARA, this));
+        label13.setTypeface(MongolFont.get(SVGVNAG, this));
+        label14.setTypeface(MongolFont.get(SVLBIYA, this));
+        label15.setTypeface(MongolFont.get(JCLGQ, this));
 
     }
 }
