@@ -13,7 +13,7 @@ Android UI components for vertical Mongolian text
     * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
-* [Horizontal RecyclerView]
+* [Horizontal RecyclerView](https://github.com/suragch/mongol-library/blob/master/README.md#horizontal-recyclerview)
 * [Unicode](https://github.com/suragch/mongol-library#unicode)
 * [Fonts](https://github.com/suragch/mongol-library#fonts)
 * [Other](https://github.com/suragch/mongol-library#other)
@@ -341,7 +341,7 @@ This produces the following result:
 
 No special UI componants are needed from the library to create a horizontal `RecyclerView`. However, since it is a common need for Mongolian apps, I will include a code example.
 
-![Horizontal RecyclerView example](docs/images/horizontal=recyclerview-example.png)
+![Horizontal RecyclerView example](docs/images/horizontal-recyclerview-example.png)
 
 **gradle.build**
 
