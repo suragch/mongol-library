@@ -584,12 +584,13 @@ Code examples.
 
 ## TODO 
 
-* translate this documentation into Mongolian and Chinese
-* `RecyclerView` example. 
-* underline span 
-* `MongolTextView` line spacing
-* more `MongolAlertDialog` types (check box, radio button, list)
-* add lots more jUnit and instrumentation tests 
+* [ ] translate this documentation into Mongolian and Chinese
+* [ ] `RecyclerView` example. 
+* [ ] underline span 
+* [ ] `MongolTextView` line spacing
+* [ ] more `MongolAlertDialog` types (check box, radio button, list)
+* [ ] add lots more jUnit and instrumentation tests 
+* [ ] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
 
 ## How to contribute 
 
