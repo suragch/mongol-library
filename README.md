@@ -13,6 +13,7 @@ Android UI components for vertical Mongolian text
     * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
+* [Horizontal RecyclerView]
 * [Unicode](https://github.com/suragch/mongol-library#unicode)
 * [Fonts](https://github.com/suragch/mongol-library#fonts)
 * [Other](https://github.com/suragch/mongol-library#other)
@@ -335,6 +336,171 @@ builder.setPositiveButton("ᠮᠡᠳᠡᠯ᠎ᠡ", new DialogInterface.OnClickLi
 This produces the following result:
 
 ![MongolToast example](docs/images/mad-example.png)
+
+### Horizontal RecyclerView
+
+No special UI componants are needed from the library to create a horizontal `RecyclerView`. However, since it is a common need for Mongolian apps, I will include a code example.
+
+![Horizontal RecyclerView example](docs/images/horizontal=recyclerview-example.png)
+
+**gradle.build**
+
+Add the following dependancy (or whatever version is the most current) to your app `gradle.build` file.
+
+```java
+compile 'com.android.support:recyclerview-v7:26.+'
+```
+
+**activity_main.xml**
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvAnimals"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>
+```
+
+**recyclerview_item.xml**
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <net.studymongolian.mongollibrary.MongolTextView
+        android:id="@+id/mongol_textview"
+        app:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
+```
+
+**MyRecyclerViewAdapter.java**
+
+```java
+public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+
+    private List<String> mNumbers = Collections.emptyList();
+    private LayoutInflater mInflater;
+    private ItemClickListener mClickListener;
+
+    // data is passed into the constructor
+    public MyRecyclerViewAdapter(Context context, List<String> numbers) {
+        this.mInflater = LayoutInflater.from(context);
+        this.mNumbers = numbers;
+    }
+
+    // inflates the row layout from xml when needed
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.recyclerview_item, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
+    }
+
+    // binds the data to the view and textview in each row
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String number = mNumbers.get(position);
+        holder.mongolTextView.setText(number);
+    }
+
+    // total number of rows
+    @Override
+    public int getItemCount() {
+        return mNumbers.size();
+    }
+
+    // stores and recycles views as they are scrolled off screen
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public MongolTextView mongolTextView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            mongolTextView = itemView.findViewById(R.id.mongol_textview);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+        }
+    }
+
+    // convenience method for getting data at click position
+    public String getItem(int id) {
+        return mNumbers.get(id);
+    }
+
+    // allows clicks events to be caught
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
+}
+```
+
+**MainActivity.java**
+
+```java
+public class MainActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
+
+    private MyRecyclerViewAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ArrayList<String> numbers = new ArrayList<>();
+        numbers.add("ᠨᠢᠭᠡ");
+        numbers.add("ᠬᠣᠶᠠᠷ");
+        numbers.add("ᠭᠣᠷᠪᠠ");
+        numbers.add("ᠳᠥᠷᠪᠡ");
+        numbers.add("ᠲᠠᠪᠤ");
+        numbers.add("ᠵᠢᠷᠭᠤᠭ᠎ᠠ");
+        numbers.add("ᠳᠣᠯᠣᠭ᠎ᠠ");
+        numbers.add("ᠨᠠ‍ᠢᠮᠠ");
+        numbers.add("ᠶᠢᠰᠦ");
+        numbers.add("ᠠᠷᠪᠠ");
+
+        // set up the RecyclerView
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvAnimals);
+        LinearLayoutManager horizontalLayoutManagaer
+                = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(horizontalLayoutManagaer);
+        adapter = new MyRecyclerViewAdapter(this, numbers);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on item position " + position, Toast.LENGTH_SHORT).show();
+    }
+}
+```
+
+** TODO: move this to the Demo app
+
 
 ## Unicode 
 
