@@ -13,7 +13,7 @@ Android UI components for vertical Mongolian text
     * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
-* [Horizontal RecyclerView](https://github.com/suragch/mongol-library/blob/master/README.md#horizontal-recyclerview)
+    * [Horizontal RecyclerView](https://github.com/suragch/mongol-library/blob/master/README.md#horizontal-recyclerview)
 * [Unicode](https://github.com/suragch/mongol-library#unicode)
 * [Fonts](https://github.com/suragch/mongol-library#fonts)
 * [Other](https://github.com/suragch/mongol-library#other)
@@ -343,7 +343,7 @@ No special UI componants are needed from the library to create a horizontal `Rec
 
 ![Horizontal RecyclerView example](docs/images/horizontal-recyclerview-example.png)
 
-**gradle.build**
+*gradle.build*
 
 Add the following dependancy (or whatever version is the most current) to your app `gradle.build` file.
 
@@ -351,7 +351,7 @@ Add the following dependancy (or whatever version is the most current) to your a
 compile 'com.android.support:recyclerview-v7:26.+'
 ```
 
-**activity_main.xml**
+*activity_main.xml*
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -361,14 +361,14 @@ compile 'com.android.support:recyclerview-v7:26.+'
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvAnimals"
+        android:id="@+id/rvNumbers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
 </RelativeLayout>
 ```
 
-**recyclerview_item.xml**
+*recyclerview_item.xml*
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -389,7 +389,7 @@ compile 'com.android.support:recyclerview-v7:26.+'
 </LinearLayout>
 ```
 
-**MyRecyclerViewAdapter.java**
+*MyRecyclerViewAdapter.java*
 
 ```java
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
@@ -458,7 +458,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 }
 ```
 
-**MainActivity.java**
+*MainActivity.java*
 
 ```java
 public class MainActivity extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerViewAda
         numbers.add("ᠠᠷᠪᠠ");
 
         // set up the RecyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvAnimals);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvNumbers);
         LinearLayoutManager horizontalLayoutManagaer
                 = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(horizontalLayoutManagaer);
@@ -499,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements MyRecyclerViewAda
 }
 ```
 
-** TODO: move this to the Demo app
+TODO: move this code to the Demo app and just include a summary here.
 
 
 ## Unicode 
