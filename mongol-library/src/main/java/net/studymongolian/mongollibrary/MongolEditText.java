@@ -592,6 +592,7 @@ public class MongolEditText extends MongolTextView {
         stopBlinking();
     }
 
+    // FIXME a crash is happening here for NPE getting length
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();

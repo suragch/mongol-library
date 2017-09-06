@@ -69,23 +69,31 @@ public class MongolTextStorage implements Editable {
     }
 
     public void setText(CharSequence unicodeText) {
-        if (unicodeText == null) {
-            unicodeText = "";
-        }
 
-        int oldLength = (mUnicodeText == null) ? 0 : mUnicodeText.length();
+        if (unicodeText == null) unicodeText = "";
+        if (mUnicodeText == null) mUnicodeText = "";
+        if (mGlyphText == null) mGlyphText = "";
 
-        mUnicodeText = unicodeText;
-        mGlyphText = mRenderer.unicodeToMenksoft(unicodeText);
-        if (mUnicodeText instanceof Spannable) {
-            mGlyphText = new SpannableStringBuilder(mGlyphText);
-        }
-        mGlyphIndexes = new ArrayList<>();
-        updateGlyphTextForUnicodeRange(0, mUnicodeText.length());
+        // just using the Editable interface method in order to keep all the logic in one place
+        replace(0, mUnicodeText.length(), unicodeText, 0, unicodeText.length());
 
-
-        if (mChangelistener != null)
-            mChangelistener.onTextChanged(mUnicodeText, 0, oldLength, mUnicodeText.length());
+//        if (unicodeText == null) {
+//            unicodeText = "";
+//        }
+//
+//        int oldLength = (mUnicodeText == null) ? 0 : mUnicodeText.length();
+//
+//        mUnicodeText = unicodeText;
+//        mGlyphText = mRenderer.unicodeToMenksoft(unicodeText);
+//        if (mUnicodeText instanceof Spannable) {
+//            mGlyphText = new SpannableStringBuilder(mGlyphText);
+//        }
+//        mGlyphIndexes = new ArrayList<>();
+//        updateGlyphTextForUnicodeRange(0, mUnicodeText.length());
+//
+//
+//        if (mChangelistener != null)
+//            mChangelistener.onTextChanged(mUnicodeText, 0, oldLength, mUnicodeText.length());
     }
 
     private void updateGlyphTextForUnicodeRange(int start, int end) {
@@ -188,6 +196,17 @@ public class MongolTextStorage implements Editable {
 
     ////////////////////////////// Editable interface methods ///////////////////////////
 
+    /**
+     * Replaces the Unicode range (st…en) in this MongolTextStorage Editable with
+     * the slice (start…end) from source.
+     *
+     * @param st The Unicode start index of the range in this Editable that will be replaced
+     * @param en The Unicode end index of the range in this Editable that will be replaced
+     * @param source The CharSequence that will replace the (st…en) range
+     * @param start The Unicode start index of the range in the source that will be used to replace
+     * @param end The Unicode end index of the range in the source that will be used to replace
+     * @return this MongolTextStorage editable
+     */
     @Override
     public Editable replace(int st, int en, CharSequence source, int start, int end) {
         if (!(mUnicodeText instanceof SpannableStringBuilder)) {

@@ -16,6 +16,13 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+
+    // TODO write a test that does
+    //     editText.setText("asdf");
+    // and then check to make sure the cursor is at the end of the selection
+
+
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.

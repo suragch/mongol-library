@@ -18,6 +18,9 @@ import static org.junit.Assert.assertEquals;
 
 public class MongolTextStorageTest {
 
+    // FIXME these tests don't work because SpannableStringBuilder not mocked
+    // But I don't know how to mock it. Help me write some tests if you know how.
+
     @Test
     public void setText_emptyString() throws Exception {
         CharSequence unicode = "";
@@ -44,19 +47,6 @@ public class MongolTextStorageTest {
         CharSequence expected = unicode;
         assertEquals(expected, result);
     }
-
-//    @Test
-//    public void setText_spanned() throws Exception {
-//        SpannableStringBuilder unicode = mock(SpannableStringBuilder.class);
-//        BackgroundColorSpan span = new BackgroundColorSpan(Color.BLUE);
-//        doNothing().when(unicode).setSpan(any(BackgroundColorSpan.class), eq(0), eq(0), eq(0));
-//        when(unicode.length()).thenReturn(8);
-//        //Spanned unicode = new SpannedString("abc");
-//        MongolTextStorage storage = new MongolTextStorage(unicode);
-//        CharSequence result = storage.getUnicodeText();
-//        CharSequence expected = unicode;
-//        assertEquals(expected, result);
-//    }
 
     @Test
     // learning how to use Mockito
