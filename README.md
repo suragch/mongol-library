@@ -591,6 +591,7 @@ Code examples.
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
 * [ ] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
+* [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 
 ## How to contribute 
 
