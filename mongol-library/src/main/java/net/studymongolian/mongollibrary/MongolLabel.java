@@ -158,6 +158,7 @@ public class MongolLabel extends View {
             paddingTop *= proportion;
             paddingRight *= proportion;
             paddingBottom *= proportion;
+            // FIXME: if the text is resized and then changed to something shorter, the textsize stays small
             mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
             textWidth = mTextPaint.measureText(mGlyphText);
             textHeight = mTextPaint.getFontMetrics().descent - mTextPaint.getFontMetrics().ascent;
