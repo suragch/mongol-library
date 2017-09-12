@@ -142,7 +142,7 @@ public class MongolLabel extends View {
         float paddingRight = getPaddingRight();
         float paddingBottom = getPaddingBottom();
         float desiredWidth = paddingLeft + getPaddingRight() + textHeight;
-        float desiredHeight = paddingTop + getPaddingBottom();
+        float desiredHeight = paddingTop + getPaddingBottom() + textWidth;
 
         // automatically resize text that is too large
         if (desiredWidth > getMeasuredWidth() || desiredHeight > getMeasuredHeight()) {
