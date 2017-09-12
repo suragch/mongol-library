@@ -5,8 +5,8 @@
       <root url="jar://$PROJECT_DIR$/mongol-library/build/intermediates/exploded-aar/com.android.support.test/runner/0.5/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/cfbea54ac8207fd777f0eaa0c77374ba2b2585e6/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/cfbea54ac8207fd777f0eaa0c77374ba2b2585e6/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/caches/transforms-1/files-1.1/runner-0.5.aar/63e1f833bacc70317a5000e1cda78e6d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/caches/transforms-1/files-1.1/runner-0.5.aar/63e1f833bacc70317a5000e1cda78e6d/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

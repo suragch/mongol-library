@@ -60,7 +60,7 @@ public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardLis
 
         Keyboard aeiou = new KeyboardAeiou(context);
         //Keyboard aeiouPunc = new KeyboardAeiouPunctuation(context);
-        aeiou.setBackgroundColor(Color.WHITE);
+        //aeiou.setBackgroundColor(Color.WHITE);
         aeiou.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
         this.addView(aeiou);
         mCurrentKeyboard = aeiou;
