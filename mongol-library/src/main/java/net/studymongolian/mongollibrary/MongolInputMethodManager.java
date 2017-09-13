@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 
+import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,6 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MongolInputMethodManager {
+
+    public static final int NO_EDITORS = 0;
+    public static final int ALL_EDITORS = 1;
+    public static final int SYSTEM_EDITOR_ONLY = 2;
+    public static final int MONGOL_EDITOR_ONLY = 3;
+
     private static final boolean DEBUG = true;
     private static final String TAG = "MongolImeManager";
 
@@ -27,7 +35,7 @@ public class MongolInputMethodManager {
     private List<View> mRegisteredEditors;
     //private List<View> mRegisteredKeyboards;
     private ImeContainer mImeContainer;
-    private boolean mAllowSystemKeyboard = false;
+    private int mAllowSystemKeyboard = NO_EDITORS;
 
     // this is the edit text that is receiving input
     private View mCurrentEditor;
@@ -54,7 +62,7 @@ public class MongolInputMethodManager {
     }
 
 
-    public void setAllowSystemKeyboard(boolean allowSystemKeyboard) {
+    public void setAllowSystemSoftInput(int allowSystemKeyboard) {
         this.mAllowSystemKeyboard = allowSystemKeyboard;
 
         if (mRegisteredEditors == null || mRegisteredEditors.size() == 0) return;
@@ -66,11 +74,14 @@ public class MongolInputMethodManager {
                 // TODO this needs to be tested on lower versions!
                 // https://stackoverflow.com/a/45229457
 
+                boolean showSystemSoftIme = allowSystemKeyboard == ALL_EDITORS ||
+                        allowSystemKeyboard == SYSTEM_EDITOR_ONLY;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // api 21+
-                    editText.setShowSoftInputOnFocus(allowSystemKeyboard);
+                    editText.setShowSoftInputOnFocus(showSystemSoftIme);
                 } else { // api 11+
-                    if (allowSystemKeyboard) {
+                    if (showSystemSoftIme) {
                         // re-enable keyboard (see https://stackoverflow.com/a/45228867)
+                        // FIXME this does not necessarily always work
                         editText.setTextIsSelectable(false);
                         editText.setFocusable(true);
                         editText.setFocusableInTouchMode(true);
@@ -84,7 +95,10 @@ public class MongolInputMethodManager {
                     }
                 }
             } else if (editor instanceof MongolEditText) {
-                ((MongolEditText) editor).setAllowSystemKeyboard(allowSystemKeyboard);
+                boolean showSystemSoftIme =
+                        allowSystemKeyboard == ALL_EDITORS ||
+                        allowSystemKeyboard == MONGOL_EDITOR_ONLY;
+                ((MongolEditText) editor).setAllowSystemKeyboard(showSystemSoftIme);
             }
         }
     }
@@ -230,6 +244,13 @@ public class MongolInputMethodManager {
                 mCurrentEditorInfo = tba;
                 if (mImeContainer != null) {
                     mImeContainer.setInputConnection(ic);
+                }
+
+                if (mAllowSystemKeyboard == SYSTEM_EDITOR_ONLY
+                        && v instanceof MongolEditText) {
+                    InputMethodManager imm = (InputMethodManager)
+                            v.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             }
         }

@@ -31,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import java.text.BreakIterator;
 
 // TODO handle extracted text
+// FIXME crash if setting on OnFocusChangeListener
 
 public class MongolEditText extends MongolTextView {
 

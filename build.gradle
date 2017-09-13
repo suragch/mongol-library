@@ -31,6 +31,4 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 26
     //supportLibraryVersion = "25.3.0"
-
-    //junitVersion = "4.12"
 }

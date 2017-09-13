@@ -30,7 +30,7 @@ public class MongolLayout {
     private int mAlignment; // Use Gravity for now
     private float mSpacingMult; // TODO
     private float mSpacingAdd; // TODO
-    private List<LineInfo> mLinesInfo;
+    private List<LineInfo> mLinesInfo; // = new ArrayList<>();
     private boolean needsLineUpdate = true;
 
     private static final char CHAR_SPACE = ' ';
@@ -51,9 +51,9 @@ public class MongolLayout {
         mSpacingMult = spacingMult;
         mSpacingAdd = spacingAdd;
 
-        if (height > 0) {
+        //if (height > 0) {
             needsLineUpdate = true;
-        }
+        //}
     }
 
 
@@ -89,6 +89,10 @@ public class MongolLayout {
         }
 
         MongolTextLine.recycle(tl);
+
+        if (heightSum == 0) {
+            heightSum = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
+        }
 
         // returning the size as a vertical line orientation (swapping width and height)
         return new Rect(0, 0, (int) heightSum, (int) longestWidth);
@@ -195,9 +199,10 @@ public class MongolLayout {
     }
 
     private void updateLines() {
+//        if (mHeight <= 0) {
+//            return;
+//        }
         needsLineUpdate = false;
-        if (mHeight <= 0)
-            return;
 
         if (mLinesInfo == null || mLinesInfo.size() > 0)
             mLinesInfo = new ArrayList<>();
@@ -375,7 +380,7 @@ public class MongolLayout {
     }
 
     int getLineBottom (int line) {
-        if (line == 0) return 0;
+        if (line <= 0) return 0;
         return mLinesInfo.get(line - 1).top;
     }
 
@@ -397,7 +402,13 @@ public class MongolLayout {
         //return mLinesInfo.size();
     }
 
+    int getLineStart (int line) {
+        if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
+        return mLinesInfo.get(line).startOffset;
+    }
+
     int getLineEnd (int line) {
+        if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         if (line == mLinesInfo.size() - 1) {
             return mText.length();
         } else {
@@ -425,7 +436,12 @@ public class MongolLayout {
             return low;
     }
 
+    // Get the line number corresponding to the specified horizontal position.
+    // If you ask for a position before 0, you get 0; if you ask for a position
+    // to the right of the last line of the text, you get the last line.
     int getLineForHorizontal (int horizontal) {
+        if (horizontal <= 0) return 0;
+        if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         final int lineCount = mLinesInfo.size();
         int high = lineCount;
         int low = -1;
@@ -443,10 +459,6 @@ public class MongolLayout {
         } else {
             return high;
         }
-    }
-
-    int getLineStart (int line) {
-        return mLinesInfo.get(line).startOffset;
     }
 
     public int getOffsetForVertical(int line, float vertical) {
@@ -475,7 +487,7 @@ public class MongolLayout {
 
         int line = getLineForOffset(offset);
         int start = getLineStart(line);
-        int end = getLineEnd(line);
+        //int end = getLineEnd(line);
 
         MongolTextLine tl = MongolTextLine.obtain();
          tl.set(mTextPaint, mText, start, offset);
