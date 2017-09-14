@@ -504,15 +504,23 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 ## External links 
 
-* Orhon open source
-* [Menksoft](http://www.menksoft.com/)
+* Groups
+    * [Orhon open source community](http://www.openmgl.org/)
+    * [Menksoft](http://www.menksoft.com/)
+        * [fonts](http://www.menksoft.com/site/alias__menkcms/2805/Default.aspx)
+    * [Inner Mongolia University](http://mglip.com/)
+    * [Delehi](http://www.delehi.com)
+    * [Almas](http://www.mongolfont.com/en/android/index.html)
 * Unicode
-* Unicode discussion site 
-* [Delehi](http://www.delehi.com)
-* [Mongol online editor](http://mongol-bichig.top/editor)
-* Mongolian code conversion tool 
-* Unicode-Menksoft code conversion tool
-* code conversion tool 
+    * [Unicode: Mongolian block](http://unicode.org/charts/PDF/U1800.pdf)
+    * [Mongolian variant forms ](https://r12a.github.io/mongolian-variants/)
+    * [DS01 document](https://w3c.github.io/mlreq/variants/ds01.pdf)
+* Tools
+    * [Code analyzer](http://r12a.github.io/apps/conversion/)
+    * [Mongol online editor](http://mongol-bichig.top/editor)
+    * [Unicode - Menksoft code online converter](http://mtg.mglip.com/)
+    * [Cyrillic - Tradional script online converter](http://trans.mglip.com/)
+    * [Code analyzer](http://r12a.github.io/apps/conversion/)
 
 ## Apps that use this library
 
