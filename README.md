@@ -19,7 +19,7 @@ Android UI components for vertical Mongolian text
 * [Fonts](https://github.com/suragch/mongol-library#fonts)
 * [How to contribute](https://github.com/suragch/mongol-library#how-to-contribute)
     * [TODO](https://github.com/suragch/mongol-library#todo)
-    * [Versions](https://github.com/suragch/mongol-library#version-changes)
+    * [Version changes](https://github.com/suragch/mongol-library#version-changes)
 * [External links](https://github.com/suragch/mongol-library#external-links)
 * [Apps that use this library](https://github.com/suragch/mongol-library#apps-that-use-this-library)
  
@@ -365,7 +365,7 @@ Also see the example in the Demo App. Here is the relevant code:
 In the past I displayed Mongolian by rotating and mirroring the standard Android views (mainly `TextView`). There are a number of disadvantages with this method, which is why I no longer do it. However, I am including the following two views (but omitting `RotatedEditText`) in the library. This is partly for historical/reference purposes and partly because they could be used if `MongolTextView` is lacking some fuctionality that you need. 
 
 * [RotatedTextView](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedTextView.java)
-* [RotatedLayout](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedViewGroup.java)
+* [RotatedViewGroup](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedViewGroup.java)
 
 These views are deprecated. In the future they may be dropped from the library. If you plan to use them long term, it is recommended that you just copy the code into your project. 
 
