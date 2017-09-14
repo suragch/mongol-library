@@ -61,7 +61,7 @@ dependencies {
 
 #### Note
 
-**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O will also only cover down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be to difficult to support down to API 9 or perhaps lower.
+**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O will also only cover down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be too difficult to support down to API 9 or perhaps lower.
 
 ## UI Componants
 
@@ -525,14 +525,46 @@ The Unicode standard does not specify how diphthongs should be encoded (or wheth
 
 See the demo app or the tests for examples of how words are rendered. If you discover any rendering errors then please report them. This is a high priority issue. 
 
-The `MongolCode` class is the rendering engine. Generally you won't need to use this class directly, but you can use it to covert between Menksoft code and Unicode. The `MongolCode.Uni` and `MongolCode.Suffix` inner classes may also be useful for references to get Unicode characters and strings. There are also some static methods that may be useful.
+#### Code examples
 
-* code example 
+The `MongolCode` class is the Unicode rendering engine. Generally you won't need to use this class directly, but you can use it to covert between Menksoft code and Unicode if needed. The `MongolCode.Uni` and `MongolCode.Suffix` inner classes may also be useful for references to get Unicode characters and strings. 
 
-MongolCode also includes some static methods and cook constants that may be useful. 
+###### Unicode <--> Menksoft code conversion
 
-* Uni class
-* isMongol, etc. 
+```java
+MongolCode converter = MongolCode.INSTANCE;
+String unicode;
+String menksoftCode;
+        
+// Unicode -> Menksoft code
+unicode = "ᠮᠣᠩᠭᠣᠯ";
+menksoftCode = converter.unicodeToMenksoft(unicode);
+        
+// Menksoft code -> Unicode
+menksoftCode = "\uE2F2\uE289\uE2BC\uE2EC\uE289\uE2F9";
+unicode = converter.menksoftToUnicode(menksoftCode);
+```
+
+###### Mongolian letters and suffixes
+
+```java
+char unicodeLetter = MongolCode.Uni.MA;                         // '\u182E'
+char unicodePunctuation = MongolCode.Uni.MONGOLIAN_FULL_STOP;   // '\u1803'
+String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822\u1836\u1821\u1837"
+```
+
+###### Static classes
+
+There are a number of static methods that are currently `private`. If these would be useful in other projects, then we could make them `public`. These are a sample:
+
+* `boolean isMongolian(char character)`
+* `boolean isConsonant(char character)`
+* `boolean isVowel(char character)`
+* `boolean isMasculineVowel(char character)`
+* `boolean isFeminineVowel(char character)`
+* `boolean isFVS(char character)`
+* `boolean isMvsConsonant(char character)`
+* `boolean isMenksoft(char character)`
 
 TODO add Xinjiang Tod Mongol script support. 
 
