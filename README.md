@@ -13,13 +13,13 @@ Android UI components for vertical Mongolian text
     * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
-    * [Horizontal RecyclerView](https://github.com/suragch/mongol-library/blob/master/README.md#horizontal-recyclerview)
+    * [Horizontal RecyclerView](https://github.com/suragch/mongol-library#horizontal-recyclerview)
+    * [Deprecated views](https://github.com/suragch/mongol-library#deprecated-views)
 * [Unicode](https://github.com/suragch/mongol-library#unicode)
 * [Fonts](https://github.com/suragch/mongol-library#fonts)
-* [Other](https://github.com/suragch/mongol-library#other)
-* [TODO](https://github.com/suragch/mongol-library#todo)
 * [How to contribute](https://github.com/suragch/mongol-library#how-to-contribute)
-* [Versions](https://github.com/suragch/mongol-library#version-changes)
+    * [TODO](https://github.com/suragch/mongol-library#todo)
+    * [Versions](https://github.com/suragch/mongol-library#version-changes)
 * [External links](https://github.com/suragch/mongol-library#external-links)
 * [Apps that use this library](https://github.com/suragch/mongol-library#apps-that-use-this-library)
  
@@ -360,6 +360,21 @@ Also see the example in the Demo App. Here is the relevant code:
 * [activity_horizontal_recyclerview.xml](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/res/layout/activity_horizontal_recyclerview.xml)
 * [horizontal_recyclerview_item.xml](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/res/layout/horizontal_recyclerview_item.xml)
 
+### Deprecated views
+
+In the past I displayed Mongolian by rotating and mirroring the standard Android views (mainly `TextView`). There are a number of disadvantages with this method, which is why I no longer do it. However, I am including the following two views (but omitting `RotatedEditText`) in the library. This is partly for historical/reference purposes and partly because they could be used if `MongolTextView` is lacking some fuctionality that you need. 
+
+* [RotatedTextView](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedTextView.java)
+* [RotatedLayout](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedViewGroup.java)
+
+These views are deprecated. In the future they may be dropped from the library. If you plan to use them long term, it is recommended that you just copy the code into your project. 
+
+Disadvantages of using these views:
+
+* Since correct text orientation is achieved by rotating and mirroring the entire view, a vertically mirrored font must be used with them. This font is not included with this library. However, you may [download them from Menksoft](http://www.menksoft.com/site/alias__menkcms/2805/Default.aspx) (Choose the Photoshop mirrored fonts). 
+* It is very difficult to disable the popup menu to replace it with a Mongolian one. (This was the primary reason that this library was started.) 
+* Any glyphs not included in the mirrored font will be backwards. That includes all Chinese and other CJK characters. Also, emoji will not be correctly rotated. 
+
 ## Unicode 
 
 All of the UI components in this library are designed to use Unicode for all input and output. (However, since glyph rendering internally uses Menksoft code, you can also use Menksoft code for input. This is not recommended, though.) 
@@ -454,35 +469,6 @@ public class MainActivity extends AppCompatActivity {
 
 Custom fonts can also be added to spans.
 
-## Other
-
-* RotatedTextView
-* RotatedEditText
-* RotatedLayout
-
-These views are subclasses of the standard Android views. They are included in this library for now in case MongolTextView and MongolEditText do not yet have some standard functionality that you need. 
-
-These views are deprecated. In the future they may be dropped from the library. If you plan to use them long term, it is recommended that you just copy the code into your own class. 
-
-Disadvantages of using these views:
-
-* Since correct text orientation is achieved by rotating and mirroring the entire view, a vertically mirrored font must be used with them. This font is not included with this library. However, you may download them from Menksoft. 
-* It is very difficult to disable the popup menu to replace it with a Mongolian one. (This was the primary reason that this library was started.) 
-* Any glyphs not included in the mirrored font will be backwards. That includes all Chinese and other CJK characters. Also, emoji will not be correctly rotated. 
-
-Code examples. 
-
-## TODO 
-
-* [ ] translate this documentation into Mongolian and Chinese
-* [ ] `RecyclerView` example. 
-* [ ] underline span 
-* [ ] `MongolTextView` line spacing
-* [ ] more `MongolAlertDialog` types (check box, radio button, list)
-* [ ] add lots more jUnit and instrumentation tests 
-* [x] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
-* [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
-
 ## How to contribute 
 
 For this library to be used widely, more testing and development is needed from other developers. 
@@ -497,7 +483,18 @@ The following explanation shows how the library works internally.
 
 The keyboards are embedded in the keyboard container, which acts as a controller switching between the in-app keyboards. It also handles communication with the candidate view (TODO). 
 
-## Version changes 
+#### TODO 
+
+* [ ] translate this documentation into Mongolian and Chinese
+* [ ] `RecyclerView` example. 
+* [ ] underline span 
+* [ ] `MongolTextView` line spacing
+* [ ] more `MongolAlertDialog` types (check box, radio button, list)
+* [ ] add lots more jUnit and instrumentation tests 
+* [x] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
+* [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
+
+#### Version changes 
 
 * `0.9.3`: `MongolEditText` crash fix, automatic keyboard switching
 * `0.9.2`: Android Oreo updates. `MongolLabel` vertical auto-resizing bug fix
