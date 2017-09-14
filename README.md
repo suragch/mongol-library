@@ -347,11 +347,11 @@ This produces the following result:
 
 ### Horizontal RecyclerView
 
-No special UI componants are needed from the library to create a horizontal `RecyclerView`. However, since it is a common need for Mongolian apps, so an example is included here.
+No special UI componants are needed from the library to create a horizontal `RecyclerView`. However, it is a common need for Mongolian apps, so an example is included here.
 
 ![Horizontal RecyclerView example](docs/images/horizontal-recyclerview-example.png)
 
-The only thing you really need to do differently from a normal RecyclerView list is to use `LinearLayoutManager.HORIZONTAL` for the orientation. Check out [this Stack Overflow answer](https://stackoverflow.com/a/45953855/3681880) for more detailed instructions. 
+The only thing you really need to do differently from a normal `RecyclerView` list is to use `LinearLayoutManager.HORIZONTAL` for the orientation. Check out [this Stack Overflow answer](https://stackoverflow.com/a/45953855/3681880) for more detailed instructions. 
 
 Also see the example in the Demo App. Here is the relevant code:
 
