@@ -47,13 +47,21 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.9.1'
+    compile 'net.studymongolian:mongol-library:0.9.3'
+}
+```
+
+Beginning with Android Studio 3.0, you should use `implementation` rather than `compile`.
+
+```java
+dependencies {
+    implementation 'net.studymongolian:mongol-library:0.9.3'
 }
 ```
 
 #### Note
 
-**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O will also only cover down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be to difficult to support down to API 9 or perhaps lower.
+**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O will also only cover down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be too difficult to support down to API 9 or perhaps lower.
 
 ## UI Componants
 
@@ -517,14 +525,46 @@ The Unicode standard does not specify how diphthongs should be encoded (or wheth
 
 See the demo app or the tests for examples of how words are rendered. If you discover any rendering errors then please report them. This is a high priority issue. 
 
-The `MongolCode` class is the rendering engine. Generally you won't need to use this class directly, but you can use it to covert between Menksoft code and Unicode. The `MongolCode.Uni` and `MongolCode.Suffix` inner classes may also be useful for references to get Unicode characters and strings. There are also some static methods that may be useful.
+#### Code examples
 
-* code example 
+The `MongolCode` class is the Unicode rendering engine. Generally you won't need to use this class directly, but you can use it to covert between Menksoft code and Unicode if needed. The `MongolCode.Uni` and `MongolCode.Suffix` inner classes may also be useful for references to get Unicode characters and strings. 
 
-MongolCode also includes some static methods and cook constants that may be useful. 
+###### Unicode <--> Menksoft code conversion
 
-* Uni class
-* isMongol, etc. 
+```java
+MongolCode converter = MongolCode.INSTANCE;
+String unicode;
+String menksoftCode;
+        
+// Unicode -> Menksoft code
+unicode = "ᠮᠣᠩᠭᠣᠯ";
+menksoftCode = converter.unicodeToMenksoft(unicode);
+        
+// Menksoft code -> Unicode
+menksoftCode = "\uE2F2\uE289\uE2BC\uE2EC\uE289\uE2F9";
+unicode = converter.menksoftToUnicode(menksoftCode);
+```
+
+###### Mongolian letters and suffixes
+
+```java
+char unicodeLetter = MongolCode.Uni.MA;                         // '\u182E'
+char unicodePunctuation = MongolCode.Uni.MONGOLIAN_FULL_STOP;   // '\u1803'
+String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822\u1836\u1821\u1837"
+```
+
+###### Static classes
+
+There are a number of static methods that are currently `private`. If these would be useful in other projects, then we could make them `public`. These are a sample:
+
+* `boolean isMongolian(char character)`
+* `boolean isConsonant(char character)`
+* `boolean isVowel(char character)`
+* `boolean isMasculineVowel(char character)`
+* `boolean isFeminineVowel(char character)`
+* `boolean isFVS(char character)`
+* `boolean isMvsConsonant(char character)`
+* `boolean isMenksoft(char character)`
 
 TODO add Xinjiang Tod Mongol script support. 
 
@@ -590,7 +630,7 @@ Code examples.
 * [ ] `MongolTextView` line spacing
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
-* [ ] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
+* [x] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 
 ## How to contribute 
@@ -609,6 +649,8 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 ## Version changes 
 
+* `0.9.3`: `MongolEditText` crash fix, automatic keyboard switching
+* `0.9.2`: Android Oreo updates. `MongolLabel` vertical auto-resizing bug fix
 * `0.9.1`: Bug fix that was causing crashes for `setText` on `MongolEditText`
 * `0.9.0`: Removed extra font and resource files to make as small as possible
 * `0.8.2`: Updated to Unicode 10.0 
@@ -625,6 +667,6 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * Unicode-Menksoft code conversion tool
 * code conversion tool 
 
-## apps that use this library
+## Apps that use this library
 
-* TODO 
+* [Suryaa](https://github.com/suragch/Suryaa) 
