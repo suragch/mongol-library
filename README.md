@@ -51,6 +51,14 @@ dependencies {
 }
 ```
 
+Beginning with Android Studio 3.0, you should use `implementation` rather than `compile`.
+
+```java
+dependencies {
+    implementation 'net.studymongolian:mongol-library:0.9.3'
+}
+```
+
 #### Note
 
 **The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O will also only cover down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be to difficult to support down to API 9 or perhaps lower.
