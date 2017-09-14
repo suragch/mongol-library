@@ -38,6 +38,8 @@
                   android:name=".MongolButtonActivity"/>
         <activity android:label="@string/mongol_alert_dialog_activity_title"
                   android:name=".MongolAlertDialogActivity"/>
+        <activity android:label="@string/horizontal_recyclerview_activity_title"
+                  android:name=".HorizontalRecyclerViewActivity"/>
     </application>
 
 </manifest>
