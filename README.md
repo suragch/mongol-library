@@ -47,7 +47,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.9.1'
+    compile 'net.studymongolian:mongol-library:0.9.3'
 }
 ```
 
@@ -590,7 +590,7 @@ Code examples.
 * [ ] `MongolTextView` line spacing
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
-* [ ] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
+* [x] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 
 ## How to contribute 
@@ -609,6 +609,8 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 ## Version changes 
 
+* `0.9.3`: `MongolEditText` crash fix, automatic keyboard switching
+* `0.9.2`: Android Oreo updates. `MongolLabel` vertical auto-resizing bug fix
 * `0.9.1`: Bug fix that was causing crashes for `setText` on `MongolEditText`
 * `0.9.0`: Removed extra font and resource files to make as small as possible
 * `0.8.2`: Updated to Unicode 10.0 
@@ -625,6 +627,6 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * Unicode-Menksoft code conversion tool
 * code conversion tool 
 
-## apps that use this library
+## Apps that use this library
 
-* TODO 
+* [Suryaa](https://github.com/suragch/Suryaa) 
