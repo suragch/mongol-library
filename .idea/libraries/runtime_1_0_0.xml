@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="runtime-1.0.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/caches/transforms-1/files-1.1/runtime-1.0.0.aar/29c6326f365ac7196d3b8ba50e8f3dd6/res" />
+      <root url="jar://$USER_HOME$/caches/transforms-1/files-1.1/runtime-1.0.0.aar/29c6326f365ac7196d3b8ba50e8f3dd6/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/caches/modules-2/files-2.1/android.arch.lifecycle/runtime/1.0.0/1dd0298d8c45d8dfa4d038270247327f23df7a3a/runtime-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

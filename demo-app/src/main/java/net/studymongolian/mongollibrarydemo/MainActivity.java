@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolButton");
         apiDemos.add("MongolAlertDialog");
         apiDemos.add("Horizontal RecyclerView");
-        //apiDemos.add("Testing");
+        apiDemos.add("Testing");
 
 
         // set up the RecyclerView
@@ -95,10 +95,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 intent = new Intent(this, HorizontalRecyclerViewActivity.class);
                 startActivity(intent);
                 break;
-//            case 10: // Testing
-//                intent = new Intent(this, TestingActivity.class);
-//                startActivity(intent);
-//                break;
+            case 11: // Testing
+                intent = new Intent(this, TestingActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

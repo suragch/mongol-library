@@ -9,17 +9,11 @@ package net.studymongolian.mongollibrary;
 // unicode: this is the encoding that the app user and library user
 //          (app developer) work with
 //
-// TODO: render the unicode to glyphs using MongolCode
-// TODO: maintain Unicode<->Glyph index maps with lazy instantiation
-// TODO: handle spanned text
-// TODO: update changes without needing to render everything again
-//
 // XXX can we keep this class package private?
 // Is it actually needed by app developers?
 
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
@@ -32,8 +26,6 @@ public class MongolTextStorage implements Editable {
     private CharSequence mUnicodeText;
     private CharSequence mGlyphText;
     private MongolCode mRenderer;
-    //private int[] mGlyphArrayWithUnicodeIndexes;
-    //private int[] mUnicodeArrayWithGlyphIndexes;
     private ArrayList<Integer> mGlyphIndexes; // item number is unicode index, value is glyph index
     private OnChangeListener mChangelistener;
 
@@ -51,7 +43,6 @@ public class MongolTextStorage implements Editable {
     // to the text here
     public interface OnChangeListener {
         void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter);
-        //void onSpanChanged();
         void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd);
     }
 
@@ -77,34 +68,19 @@ public class MongolTextStorage implements Editable {
         // just using the Editable interface method in order to keep all the logic in one place
         replace(0, mUnicodeText.length(), unicodeText, 0, unicodeText.length());
 
-//        if (unicodeText == null) {
-//            unicodeText = "";
-//        }
-//
-//        int oldLength = (mUnicodeText == null) ? 0 : mUnicodeText.length();
-//
-//        mUnicodeText = unicodeText;
-//        mGlyphText = mRenderer.unicodeToMenksoft(unicodeText);
-//        if (mUnicodeText instanceof Spannable) {
-//            mGlyphText = new SpannableStringBuilder(mGlyphText);
-//        }
-//        mGlyphIndexes = new ArrayList<>();
-//        updateGlyphTextForUnicodeRange(0, mUnicodeText.length());
-//
-//
-//        if (mChangelistener != null)
-//            mChangelistener.onTextChanged(mUnicodeText, 0, oldLength, mUnicodeText.length());
     }
 
     private void updateGlyphTextForUnicodeRange(int start, int end) {
-        //if (start == end) return;
-        //if (mUnicodeText == null || mUnicodeText.length() == 0) return;
+        // initialize glyph indexes
+        final int lengthUnicode = mUnicodeText.length();
         if (mGlyphIndexes == null) {
-            mGlyphIndexes = new ArrayList<>();
-        } else if (mGlyphIndexes.size() < mUnicodeText.length()) {
+            mGlyphIndexes = new ArrayList<>(lengthUnicode);
+            for (int i = 0; i < lengthUnicode; i++) {
+                mGlyphIndexes.add(i, i);
+            }
+        } else if (mGlyphIndexes.size() < lengthUnicode) {
             final int size = mGlyphIndexes.size();
-            final int length = mUnicodeText.length();
-            for (int i = size; i < length; i++) {
+            for (int i = size; i < lengthUnicode; i++) {
                 mGlyphIndexes.add(i, i);
             }
         }
@@ -118,7 +94,7 @@ public class MongolTextStorage implements Editable {
                 indexingHasStarted = true;
             }
         }
-        for (int i = start; i < mUnicodeText.length(); i++) {
+        for (int i = start; i < lengthUnicode; i++) {
             if (MongolCode.isRenderedGlyph(i, mUnicodeText)) {
                 if (indexingHasStarted) {
                     glyphIndex++;
@@ -143,9 +119,6 @@ public class MongolTextStorage implements Editable {
 
     int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
         // allow an index one past the end to support cursor selection
-        //if (unicodeIndex == mUnicodeText.length()) return mGlyphText.length();
-        //return mUnicodeArrayWithGlyphIndexes[unicodeIndex];
-        //return getGlyphIndex(unicodeIndex);
         if (unicodeIndex == 0) {
             return 0;
         } else if (unicodeIndex == mUnicodeText.length()) {

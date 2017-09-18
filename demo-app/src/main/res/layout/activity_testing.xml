@@ -1,167 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-
-    <ScrollView
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="64dp"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_red_dark"
-        android:layout_height="0dp"
-        android:layout_weight="0.6">
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/primary_text_dark"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    </android.support.v7.widget.Toolbar>
 
 
-        <RelativeLayout
-            android:background="@android:color/holo_blue_bright"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <net.studymongolian.mongollibrary.MongolEditText
-                android:id="@+id/metMongolWord"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:background="@android:color/white"
-                android:padding="10dp"
-                app:textSize="24sp"/>
-
-            <EditText
-                android:id="@+id/etDefinition"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@id/metMongolWord"
-                android:hint="definition"/>
-
-            <EditText
-                android:id="@+id/etPronunciation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/etDefinition"
-                android:layout_toRightOf="@id/metMongolWord"
-                android:hint="pronunciation"/>
-
-            <!-- TODO replace these temp buttons with an IPA keyboard -->
-
-            <LinearLayout
-                android:id="@+id/tempIpaButtonPanelOne"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/etPronunciation"
-                android:layout_toRightOf="@id/metMongolWord"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ə"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ɔ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ʊ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="æ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ɛ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="œ"
-                    android:textAllCaps="false"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/tempIpaButtonPanelTwo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tempIpaButtonPanelOne"
-                android:layout_toRightOf="@id/metMongolWord"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ʃ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ʧ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ʤ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ŋ"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onIpaButtonClick"
-                    android:text="ː"
-                    android:textAllCaps="false"/>
-            </LinearLayout>
+    <net.studymongolian.mongollibrary.MongolTextView
+        app:text="asdf"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 
 
-
-        </RelativeLayout>
-
-    </ScrollView>
-
-    <net.studymongolian.mongollibrary.ImeContainer
-        android:id="@+id/keyboard_container"
+    <LinearLayout
+        android:id="@+id/bottom_navigation_view"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.4"/>
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        >
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/action_search"
+            android:onClick="onNavItemClick"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/action_bookmarks"
+            android:onClick="onNavItemClick"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/action_notes"
+            android:onClick="onNavItemClick"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/action_settings"
+            android:onClick="onNavItemClick"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/action_about"
+            android:onClick="onNavItemClick"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
