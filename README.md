@@ -491,8 +491,9 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] `MongolTextView` line spacing
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
-* [x] make an option so that when switching between MongolEditText and EditText, the correct keyboard pops up automatically.
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
+* [ ] add MongolToolbar with vertical menu. (Toolbar can be vertical or horizontal orientation.)
+* [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 
 #### Version changes 
 
