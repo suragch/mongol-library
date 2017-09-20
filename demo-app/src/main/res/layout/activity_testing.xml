@@ -6,81 +6,82 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:minHeight="64dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:titleTextColor="@android:color/primary_text_dark"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/toolbar"-->
+        <!--android:minHeight="64dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:titleTextColor="@android:color/primary_text_dark"-->
+        <!--android:background="?attr/colorPrimary"-->
+        <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light">-->
 
-    </android.support.v7.widget.Toolbar>
+    <!--</android.support.v7.widget.Toolbar>-->
 
 
     <net.studymongolian.mongollibrary.MongolTextView
         app:text="asdf"
-        android:layout_below="@id/toolbar"
+        android:background="@android:color/white"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
 
-    <LinearLayout
-        android:id="@+id/bottom_navigation_view"
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        >
+    <!--<LinearLayout-->
+        <!--android:id="@+id/bottom_navigation_view"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:orientation="horizontal"-->
+        <!--&gt;-->
 
-        <ImageButton
-            android:id="@+id/action_search"
-            android:onClick="onNavItemClick"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/action_search"-->
+            <!--android:onClick="onNavItemClick"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="match_parent"/>-->
 
-        <ImageButton
-            android:id="@+id/action_bookmarks"
-            android:onClick="onNavItemClick"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/action_bookmarks"-->
+            <!--android:onClick="onNavItemClick"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="match_parent"/>-->
 
-        <ImageButton
-            android:id="@+id/action_notes"
-            android:onClick="onNavItemClick"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/action_notes"-->
+            <!--android:onClick="onNavItemClick"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="match_parent"/>-->
 
-        <ImageButton
-            android:id="@+id/action_settings"
-            android:onClick="onNavItemClick"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/action_settings"-->
+            <!--android:onClick="onNavItemClick"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="match_parent"/>-->
 
-        <ImageButton
-            android:id="@+id/action_about"
-            android:onClick="onNavItemClick"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/action_about"-->
+            <!--android:onClick="onNavItemClick"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="match_parent"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

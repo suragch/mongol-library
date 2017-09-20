@@ -1179,7 +1179,7 @@ public class KeyboardAeiou extends Keyboard {
         return can;
     }
 
-    private Candidates getCandidatesForSpace() {
+    Candidates getCandidatesForSpace() {
         Candidates can = new Candidates();
         String previousWord = getPreviousMongolWord();
         if (TextUtils.isEmpty(previousWord)) {
@@ -1232,7 +1232,7 @@ public class KeyboardAeiou extends Keyboard {
         for (int i = startIndex; i >= 0; i--) {
             charAtIndex = previous.charAt(i);
             if (MongolCode.isMongolian(charAtIndex)) {
-                mongolWord.append(charAtIndex);
+                mongolWord.insert(0, charAtIndex);
             } else if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) {
                 break;
             }
