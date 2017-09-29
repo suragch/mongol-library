@@ -505,6 +505,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 * [ ] add MongolToolbar with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
+* [ ] The vertical punctuation characters shouldn't be rotated.
 
 #### Version changes 
 
