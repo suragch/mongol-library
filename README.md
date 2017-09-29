@@ -98,6 +98,18 @@ XML example
 </LinearLayout>
 ```
 
+If you are defining a style in xml, then don't use the `android` or `app` namespace for any of the custom attributes:
+
+```xml
+<style name="AppTheme.MongolTextStyle">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="textColor">@color/my_text_color</item>
+    <item name="textSize">24sp</item>
+</style>
+```
+
 Code example
 
 ```java
