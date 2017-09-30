@@ -18,14 +18,12 @@ import java.util.List;
 
 class MongolTextLine {
     private static final String TAG = "MongolTextLine";
-    private static final boolean DEBUG = true;
 
-    private static final int UNICODE_HANGUL_JAMO_START = 0x1100;
-    private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;
-    private static final int UNICODE_CJK_START = 0x11FF;
-    private static final int UNICODE_EMOJI_START = 0x1F000;
-    private static final int MENKSOFT_START = 0xE234;
-    private static final int MENKSOFT_END = 0xE34F;
+//    private static final int UNICODE_HANGUL_JAMO_START = 0x1100;
+//    private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;
+//    private static final int UNICODE_CJK_START = 0x11FF;
+//    private static final int MENKSOFT_START = 0xE234;
+//    private static final int MENKSOFT_END = 0xE34F;
 
 
     private TextPaint mPaint;
@@ -133,12 +131,8 @@ class MongolTextLine {
             charCount = Character.charCount(codepoint);
 
             // Rotate Chinese, emoji, etc
-            // TODO optimization: most chars are mongol or latin so check those first
-            Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
-            if (isCJK(block) ||
-                    isJapaneseKana(block) ||
-                    isKoreanHangul(block) ||
-                    isEmoji(codepoint)) {
+            //Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
+            if (isRotated(codepoint)) {
                 // save any old normal (nonrotated) runs
                 if (currentRunLength > 0) {
                     mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
@@ -170,58 +164,112 @@ class MongolTextLine {
         }
     }
 
-    private boolean isMenksoft(int codepoint) {
-        return codepoint >= MENKSOFT_START && codepoint <= MENKSOFT_END;
+    private final static int MONGOL_QUICKCHECK_START = 0x1800;
+    private final static int MONGOL_QUICKCHECK_END = 0x2060;
+    private final static int KOREAN_JAMO_START = 0x1100;
+    private final static int KOREAN_JAMO_END = 0x11FF;
+    private final static int CJK_RADICAL_SUPPLEMENT_START = 0x2E80;
+    private final static int CJK_SYMBOLS_AND_PUNCTUATION_START = 0x3000;
+    private final static int CJK_SYMBOLS_AND_PUNCTUATION_MENKSOFT_END = 0x301C;
+    private final static int CIRCLE_NUMBER_21 = 0x3251;
+    private final static int CIRCLE_NUMBER_35 = 0x325F;
+    private final static int CIRCLE_NUMBER_36 = 0x32B1;
+    private final static int CIRCLE_NUMBER_50 = 0x32BF;
+    private final static int CJK_UNIFIED_IDEOGRAPHS_END = 0x9FFF;
+    private final static int HANGUL_SYLLABLES_START = 0xAC00;
+    private final static int HANGUL_JAMO_EXTENDED_B_END = 0xD7FF;
+    private final static int CJK_COMPATIBILITY_IDEOGRAPHS_START = 0xF900;
+    private final static int CJK_COMPATIBILITY_IDEOGRAPHS_END = 0xFAFF;
+    private static final int UNICODE_EMOJI_START = 0x1F000;
+
+    private static boolean isRotated(int codepoint) {
+
+        // Quick return: most Mongol chars should be in this range
+        if (codepoint >= MONGOL_QUICKCHECK_START && codepoint < MONGOL_QUICKCHECK_END) return false;
+
+        // Korean Jamo
+        if (codepoint < KOREAN_JAMO_START) return false; // latin, etc
+        if (codepoint <= KOREAN_JAMO_END) return true;
+
+        // Chinese and Japanese
+        if (codepoint >= CJK_RADICAL_SUPPLEMENT_START && codepoint <= CJK_UNIFIED_IDEOGRAPHS_END) {
+            // exceptions for font handled punctuation
+            if (codepoint >= CJK_SYMBOLS_AND_PUNCTUATION_START
+                    && codepoint <= CJK_SYMBOLS_AND_PUNCTUATION_MENKSOFT_END) return false;
+            if (codepoint >= CIRCLE_NUMBER_21 && codepoint <= CIRCLE_NUMBER_35) return false;
+            if (codepoint >= CIRCLE_NUMBER_36 && codepoint <= CIRCLE_NUMBER_50) return false;
+            return true;
+        }
+
+        // Korean Hangul
+        if (codepoint >= HANGUL_SYLLABLES_START && codepoint <= HANGUL_JAMO_EXTENDED_B_END)
+            return true;
+
+        // More Chinese
+        if (codepoint >= CJK_COMPATIBILITY_IDEOGRAPHS_START
+                && codepoint <= CJK_COMPATIBILITY_IDEOGRAPHS_END)
+            return true;
+
+        // TODO the Halfwidth and Fullwidth Forms (0xFF00--0xFFEF) might be worth rotating
+        // The problem is the Menksoft font already rotated a few (but not all) of them.
+
+        // Emoji
+        if (codepoint > UNICODE_EMOJI_START) return true;
+        // FIXME this will rotate some things that maybe shouldn't be rotated
+        // TODO there are a few other random emoji in other places as well
+
+        // all other codepoints
+        return false;
     }
 
-    private static boolean isCJK(Character.UnicodeBlock block) {
-        // TODO add hardcoded ranges for api 19 (and EXTENSION_E?)
-        return (
-                // TODO test all of these to make sure they really should be rotated because of Menksoft font
-                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(block)||
-                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(block) ||
-                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(block) ||
-                //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C.equals(block) || // api 19
-                //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D.equals(block) || // api 19
-                Character.UnicodeBlock.CJK_COMPATIBILITY.equals(block) ||
-                // Character.UnicodeBlock.CJK_COMPATIBILITY_FORMS.equals(block) || // don't include this because Menksoft font rotates it
-                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(block) ||
-                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT.equals(block) ||
-                Character.UnicodeBlock.CJK_RADICALS_SUPPLEMENT.equals(block) ||
-                //Character.UnicodeBlock.CJK_STROKES.equals(block) ||                        // api 19
-                Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION.equals(block) ||
-                Character.UnicodeBlock.ENCLOSED_CJK_LETTERS_AND_MONTHS.equals(block) ||
-                //Character.UnicodeBlock.ENCLOSED_IDEOGRAPHIC_SUPPLEMENT.equals(block) ||    // api 19
-                Character.UnicodeBlock.KANGXI_RADICALS.equals(block) ||
-                Character.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS.equals(block));
-    }
+//    private static boolean isCJK(Character.UnicodeBlock block) {
+//        // TODO add hardcoded ranges for api 19 (and EXTENSION_E?)
+//        return (
+//                // TODO test all of these to make sure they really should be rotated because of Menksoft font
+//                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(block)||
+//                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(block) ||
+//                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(block) ||
+//                //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C.equals(block) || // api 19
+//                //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D.equals(block) || // api 19
+//                Character.UnicodeBlock.CJK_COMPATIBILITY.equals(block) ||
+//                // Character.UnicodeBlock.CJK_COMPATIBILITY_FORMS.equals(block) || // don't include this because Menksoft font rotates it
+//                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(block) ||
+//                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT.equals(block) ||
+//                Character.UnicodeBlock.CJK_RADICALS_SUPPLEMENT.equals(block) ||
+//                //Character.UnicodeBlock.CJK_STROKES.equals(block) ||                        // api 19
+//                Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION.equals(block) ||
+//                Character.UnicodeBlock.ENCLOSED_CJK_LETTERS_AND_MONTHS.equals(block) ||
+//                //Character.UnicodeBlock.ENCLOSED_IDEOGRAPHIC_SUPPLEMENT.equals(block) ||    // api 19
+//                Character.UnicodeBlock.KANGXI_RADICALS.equals(block) ||
+//                Character.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS.equals(block));
+//    }
+//
+//
+//    private static boolean isJapaneseKana(Character.UnicodeBlock block) {
+//        return (
+//                Character.UnicodeBlock.HIRAGANA.equals(block) ||
+//                Character.UnicodeBlock.KATAKANA.equals(block) ||
+//                Character.UnicodeBlock.KATAKANA_PHONETIC_EXTENSIONS.equals(block));
+//    }
+//
+//
+//
+//    private static boolean isKoreanHangul(Character.UnicodeBlock block) {
+//        // TODO add hardcoded ranges for api 19
+//        return (Character.UnicodeBlock.HANGUL_JAMO.equals(block) ||
+//                //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_A.equals(block) ||    // api 19
+//                //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_B.equals(block) ||    // api 19
+//                Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals(block) ||
+//                Character.UnicodeBlock.HANGUL_SYLLABLES.equals(block));
+//    }
 
 
-    private static boolean isJapaneseKana(Character.UnicodeBlock block) {
-        return (
-                Character.UnicodeBlock.HIRAGANA.equals(block) ||
-                Character.UnicodeBlock.KATAKANA.equals(block) ||
-                Character.UnicodeBlock.KATAKANA_PHONETIC_EXTENSIONS.equals(block));
-    }
 
-
-
-    private static boolean isKoreanHangul(Character.UnicodeBlock block) {
-        // TODO add hardcoded ranges for api 19
-        return (Character.UnicodeBlock.HANGUL_JAMO.equals(block) ||
-                //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_A.equals(block) ||    // api 19
-                //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_B.equals(block) ||    // api 19
-                Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals(block) ||
-                Character.UnicodeBlock.HANGUL_SYLLABLES.equals(block));
-    }
-
-
-
-
-    private static boolean isEmoji(int codepoint) {
-        // XXX later may want to check specific code blocks, for now this is ok.
-        return (codepoint >= UNICODE_EMOJI_START);
-    }
+//
+//    private static boolean isEmoji(int codepoint) {
+//        // XXX later may want to check specific code blocks, for now this is ok.
+//        return (codepoint >= UNICODE_EMOJI_START);
+//    }
 
     /**
      * Renders the TextLine.
