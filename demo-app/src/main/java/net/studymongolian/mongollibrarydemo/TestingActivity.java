@@ -31,17 +31,28 @@ import java.io.File;
 
 public class TestingActivity extends AppCompatActivity {
 
-
+    MongolTextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testing);
 
-
-
-
+        textView = findViewById(R.id.test_mtv);
+        textView.setText(" asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf" +
+                "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf " +
+                "asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf" +
+                " asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf " +
+                "asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf " +
+                "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf" +
+                " asdf asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf" +
+                " asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf " +
+                "asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd " +
+                "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd");
     }
 
 
+    public void onButtonClick(View view) {
+        textView.setTextSize(56);
+    }
 }

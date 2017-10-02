@@ -262,6 +262,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(mTextSizePx);
+        mLayout.reflowLines();
         invalidate();
         requestLayout();
     }
@@ -273,6 +274,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public void setTypeface(Typeface typeface) {
         mTypeface = typeface;
         mTextPaint.setTypeface(mTypeface);
+        mLayout.reflowLines();
         invalidate();
         requestLayout();
     }
