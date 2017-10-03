@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,14 +15,23 @@
         android:layout_height="wrap_content"
         android:onClick="onButtonClick"/>
 
-    <net.studymongolian.mongollibrary.MongolTextView
+    <net.studymongolian.mongollibrary.MongolEditText
         android:id="@+id/test_mtv"
         app:text="asdf"
         android:background="@android:color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_below="@id/test_button"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+
+    <net.studymongolian.mongollibrary.ImeContainer
+        android:id="@+id/keyboard"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+    </net.studymongolian.mongollibrary.ImeContainer>
 
 
 
 
-</LinearLayout>
+</RelativeLayout>

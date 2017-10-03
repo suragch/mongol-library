@@ -17,6 +17,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -29,6 +30,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import java.text.BreakIterator;
+import java.util.ArrayList;
 
 // TODO handle extracted text
 // FIXME crash if setting on OnFocusChangeListener
@@ -45,6 +47,7 @@ public class MongolEditText extends MongolTextView {
     private Path mCursorPath;
     private GestureDetector mDetector;
     int mBatchEditNesting = 0;
+    private ArrayList<TextWatcher> mListeners;
 
     private boolean mAllowSystemKeyboard = true;
     private int mSelectionHandle = SCROLLING_UNKNOWN;
@@ -94,6 +97,13 @@ public class MongolEditText extends MongolTextView {
                 requestLayout();
 
                 startBlinking();
+
+                // notify any listeners the user may have added
+                if (mListeners != null && mListeners.size() > 0) {
+                    for (TextWatcher watcher : mListeners) {
+                        watcher.onTextChanged(text, start, lengthBefore, lengthAfter);
+                    }
+                }
             }
 
             @Override
@@ -416,6 +426,41 @@ public class MongolEditText extends MongolTextView {
         return String.valueOf(
                 start > end ? mTextStorage.subSequence(end, start) : mTextStorage.subSequence(start, end));
     }
+
+    /**
+     * Adds a TextWatcher to the list of those whose methods are called
+     * whenever this MongolEditText's text changes. Currently only TextWatcher.onTextChanged
+     * is called. TextWatcher.beforeTextChanged and TextWatcher.afterTextChanged have
+     * no effect.
+     */
+    public void addTextChangedListener(TextWatcher watcher) {
+        if (mListeners == null) {
+            mListeners = new ArrayList<TextWatcher>();
+        }
+
+        mListeners.add(watcher);
+    }
+
+    /**
+     * Removes the specified TextWatcher from the list of those whose
+     * methods are called
+     * whenever this TextView's text changes.
+     */
+    public void removeTextChangedListener(TextWatcher watcher) {
+        if (mListeners != null) {
+            int i = mListeners.indexOf(watcher);
+
+            if (i >= 0) {
+                mListeners.remove(i);
+            }
+        }
+    }
+
+//    @Override
+//    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+//        // TODO start blinking here? Then don't need to call start blinking elsewhere.
+//        return super.requestFocus(direction, previouslyFocusedRect);
+//    }
 
 
     @Override

@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -31,28 +33,42 @@ import java.io.File;
 
 public class TestingActivity extends AppCompatActivity {
 
-    MongolTextView textView;
+    MongolEditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testing);
 
-        textView = findViewById(R.id.test_mtv);
-        textView.setText(" asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf" +
-                "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf " +
-                "asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf" +
-                " asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf " +
-                "asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf " +
-                "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf" +
-                " asdf asdf asdf asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf" +
-                " asdf asdf asdf asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf " +
-                "asdf asdf asd asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd " +
-                "asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asd");
+        ImeContainer imeContainer = (ImeContainer) findViewById(R.id.keyboard);
+        editText = findViewById(R.id.test_mtv);
+
+        MongolInputMethodManager mimm = new MongolInputMethodManager();
+        mimm.addEditor(editText);
+        mimm.setIme(imeContainer);
+        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
+        mimm.startInput();
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.i("TAG", "onTextChanged: " + charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
 
     public void onButtonClick(View view) {
-        textView.setTextSize(56);
+        //textView.setTextSize(56);
     }
 }

@@ -25,7 +25,7 @@ public class MongolInputMethodManager {
     public static final int SYSTEM_EDITOR_ONLY = 2;
     public static final int MONGOL_EDITOR_ONLY = 3;
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String TAG = "MongolImeManager";
 
     //public final static MongolInputMethodManager INSTANCE = new MongolInputMethodManager();
