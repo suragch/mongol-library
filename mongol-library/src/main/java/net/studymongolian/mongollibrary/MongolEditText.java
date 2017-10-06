@@ -385,48 +385,6 @@ public class MongolEditText extends MongolTextView {
         return mTextStorage;
     }
 
-    public void setSelection(int start, int stop) {
-        Selection.setSelection(getText(), start, stop);
-    }
-
-    public void setSelection(int index) {
-        Selection.setSelection(getText(), index);
-    }
-
-    public void selectAll() {
-        Selection.selectAll(getText());
-    }
-
-    public void extendSelection(int index) {
-        Selection.extendSelection(getText(), index);
-    }
-
-    public int getSelectionStart() {
-        // returns -1 if no selection
-        return Selection.getSelectionStart(getText());
-    }
-
-    public int getSelectionEnd() {
-        // returns -1 if no selection
-        return Selection.getSelectionEnd(getText());
-    }
-
-    public boolean hasSelection() {
-        final int selectionStart = getSelectionStart();
-        final int selectionEnd = getSelectionEnd();
-
-        return selectionStart >= 0 && selectionStart != selectionEnd;
-    }
-
-    String getSelectedText() {
-        if (!hasSelection()) return null;
-
-        final int start = getSelectionStart();
-        final int end = getSelectionEnd();
-        return String.valueOf(
-                start > end ? mTextStorage.subSequence(end, start) : mTextStorage.subSequence(start, end));
-    }
-
     /**
      * Adds a TextWatcher to the list of those whose methods are called
      * whenever this MongolEditText's text changes. Currently only TextWatcher.onTextChanged

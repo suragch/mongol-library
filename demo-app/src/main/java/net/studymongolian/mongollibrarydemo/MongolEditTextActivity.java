@@ -20,7 +20,7 @@ public class MongolEditTextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mongol_edittext);
 
-        metDemoEditText = (MongolEditText) findViewById(R.id.metExample);
+        metDemoEditText = findViewById(R.id.metExample);
     }
 
     public void inputTextClick(View view) {
@@ -37,8 +37,6 @@ public class MongolEditTextActivity extends AppCompatActivity {
             metDemoEditText.getText().delete(start, end);
         }
         metDemoEditText.getText().insert(start, sample + " ");
-        //metDemoEditText.getText().replace(Math.min(start, end), Math.max(start, end),
-        //        sample + " ", 0, sample.length());
     }
 
     public void deleteClick(View view) {
@@ -55,6 +53,7 @@ public class MongolEditTextActivity extends AppCompatActivity {
 
     public void keyboardClick(View view) {
         InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (im == null) return;
         im.showInputMethodPicker();
     }
 

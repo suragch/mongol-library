@@ -8,14 +8,20 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.method.MovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 
 // TODO how to speed this up
@@ -25,10 +31,9 @@ import android.view.ViewTreeObserver;
 
 public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawListener {
 
-    private final static int DEFAULT_FONT_SIZE_SP = 17;
+    private final static int DEFAULT_FONT_SIZE_SP = 20;
     private static final int STICKY_WIDTH_UNDEFINED = -1;
     private static final String TAG = "MongolTextView";
-
 
     private Context mContext;
     private int mTextColor;
@@ -36,12 +41,12 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private Typeface mTypeface;
     private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
-    //private Paint mPaint;
     protected MongolLayout mLayout;
     protected MongolTextStorage mTextStorage;
 
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
     private int[] mOnMeasureData = new int[6];
+    private MovementMethod mMovementMethod;
 
 
     public MongolTextView(Context context) {
@@ -73,9 +78,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
         mContext = context;
         init();
-
     }
-
 
     private void init() {
         mTextPaint = new TextPaint();
@@ -89,10 +92,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTypeface = MongolFont.get(MongolFont.QAGAN, mContext);
         mTextPaint.setTypeface(mTypeface);
         mTextPaint.linkColor = Color.BLUE;
-
-//        mPaint = new Paint();
-//        mPaint.setColor(Color.WHITE);
-//        mPaint.setStyle(Paint.Style.FILL);
 
         // initialize the layout, but the height still needs to be set
         final CharSequence text = mTextStorage.getGlyphText();
@@ -227,6 +226,29 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         canvas.restore();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        // this method is currently only for detecting a ClickableSpan
+        if (mMovementMethod == null) return super.onTouchEvent(event);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+                int offset = getOffsetForPosition(x, y);
+
+                final ClickableSpan[] links = mTextStorage.getSpans(offset, offset, ClickableSpan.class);
+
+                if (links.length > 0) {
+                    links[0].onClick(this);
+                }
+                break;
+        }
+
+        return true;
+    }
 
     public CharSequence getText() {
         return mTextStorage.getUnicodeText();
@@ -328,7 +350,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         // so the index conversion happens here
         y = convertToLocalVerticalCoordinate(y);
         int glyphOffset = getLayout().getOffsetForVertical(line, y);
-        //int unicodeOffset = mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
         return mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
     }
 
@@ -373,5 +394,51 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
     private int getTotalPaddingBottom() {
         return getPaddingBottom();
+    }
+
+    public void setMovementMethod(MovementMethod movementMethod) {
+        this.mMovementMethod = movementMethod;
+    }
+
+    public void setSelection(int start, int stop) {
+        Selection.setSelection(mTextStorage, start, stop);
+    }
+
+    public void setSelection(int index) {
+        Selection.setSelection(mTextStorage, index);
+    }
+
+    public void selectAll() {
+        Selection.selectAll(mTextStorage);
+    }
+
+    public void extendSelection(int index) {
+        Selection.extendSelection(mTextStorage, index);
+    }
+
+    public int getSelectionStart() {
+        // returns -1 if no selection
+        return Selection.getSelectionStart(mTextStorage);
+    }
+
+    public int getSelectionEnd() {
+        // returns -1 if no selection
+        return Selection.getSelectionEnd(mTextStorage);
+    }
+
+    public boolean hasSelection() {
+        final int selectionStart = getSelectionStart();
+        final int selectionEnd = getSelectionEnd();
+
+        return selectionStart >= 0 && selectionStart != selectionEnd;
+    }
+
+    String getSelectedText() {
+        if (!hasSelection()) return null;
+
+        final int start = getSelectionStart();
+        final int end = getSelectionEnd();
+        return String.valueOf(
+                start > end ? mTextStorage.subSequence(end, start) : mTextStorage.subSequence(start, end));
     }
 }

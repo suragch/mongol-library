@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
@@ -326,14 +327,6 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
                     case 8: // Underline
 
-                        // TODO
-                        // Underline works partially but it draws the line on the left side of the
-                        // characters. It should be the right.
-                        // More importantly, rotated characters are underlined below. They should
-                        // be "underlined" on the side.
-                        // See https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/TextLine.java#741
-                        // for how TextLine does it. Unfortunately TextPaint.underlineColor is hidden.
-
                         if (isChecked) {
                             UnderlineSpan span = new UnderlineSpan();
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -345,7 +338,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         }
                         break;
 
-                    case 9: // Click
+                    case 9: // Clickable
 
                         if (isChecked) {
                             ClickableSpan span = new ClickableSpan() {
@@ -353,15 +346,9 @@ public class MongolTextViewActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     Toast.makeText(MongolTextViewActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                                 }
-
-//                                @Override
-//                                public void updateDrawState(TextPaint ds) {
-//                                    //ds.linkColor = Color.RED;
-//                                    super.updateDrawState(ds);
-//
-//                                }
                             };
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            mtvExample.setMovementMethod(LinkMovementMethod.getInstance());
                         } else {
                             ClickableSpan[] spans = spannableString.getSpans(0, spannableString.length(), ClickableSpan.class);
                             for (ClickableSpan span : spans) {
@@ -372,17 +359,10 @@ public class MongolTextViewActivity extends AppCompatActivity {
             }
         });
 
-        // dialog OK and Cancel buttons
+        // dialog buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-//                SpannableString test = new SpannableString("This is a test.");
-//                //SubscriptSpan span = new SubscriptSpan();
-//                SuperscriptSpan span = new SuperscriptSpan();
-//                test.setSpan(span, 5, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//                mtvExample.setText(test);
                 mtvExample.setText(spannableString);
             }
         });
