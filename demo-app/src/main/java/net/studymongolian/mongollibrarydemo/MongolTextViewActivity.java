@@ -9,8 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
@@ -88,7 +91,6 @@ public class MongolTextViewActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 
 
     public void onSizeClick(View view) {
@@ -201,7 +203,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
         builder.setTitle("Add span");
         final String[] spanTypes = {"BackgroundColorSpan", "ForegroundColorSpan", "RelativeSizeSpan", "TypefaceSpan",
-                "ScaleXSpan", "StyleSpan", "SubscriptSpan", "SuperscriptSpan", "UnderlineSpan"};
+                "ScaleXSpan", "StyleSpan", "SubscriptSpan", "SuperscriptSpan", "UnderlineSpan", "ClickableSpan"};
         final SpannableString spannableString = new SpannableString(mtvExample.getText().toString());
 
         // check boxes
@@ -212,8 +214,8 @@ public class MongolTextViewActivity extends AppCompatActivity {
                 // user checked or unchecked a box
 
                 // select the middle third
-                int start = mtvExample.getText().length()/3;
-                int end = mtvExample.getText().length()*2/3;
+                int start = mtvExample.getText().length() / 3;
+                int end = mtvExample.getText().length() * 2 / 3;
 
                 switch (which) {
 
@@ -224,7 +226,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             BackgroundColorSpan[] spans = spannableString.getSpans(0, spannableString.length(), BackgroundColorSpan.class);
-                            for (BackgroundColorSpan span : spans){
+                            for (BackgroundColorSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -236,7 +238,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             ForegroundColorSpan[] spans = spannableString.getSpans(0, spannableString.length(), ForegroundColorSpan.class);
-                            for (ForegroundColorSpan span : spans){
+                            for (ForegroundColorSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -248,7 +250,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             RelativeSizeSpan[] spans = spannableString.getSpans(0, spannableString.length(), RelativeSizeSpan.class);
-                            for (RelativeSizeSpan span : spans){
+                            for (RelativeSizeSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -262,7 +264,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             MongolTypefaceSpan[] spans = spannableString.getSpans(0, spannableString.length(), MongolTypefaceSpan.class);
-                            for (MongolTypefaceSpan span : spans){
+                            for (MongolTypefaceSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -277,7 +279,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             ScaleXSpan[] spans = spannableString.getSpans(0, spannableString.length(), ScaleXSpan.class);
-                            for (ScaleXSpan span : spans){
+                            for (ScaleXSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -292,7 +294,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             StyleSpan[] spans = spannableString.getSpans(0, spannableString.length(), StyleSpan.class);
-                            for (StyleSpan span : spans){
+                            for (StyleSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -304,7 +306,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             SubscriptSpan[] spans = spannableString.getSpans(0, spannableString.length(), SubscriptSpan.class);
-                            for (SubscriptSpan span : spans){
+                            for (SubscriptSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -316,7 +318,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             SuperscriptSpan[] spans = spannableString.getSpans(0, spannableString.length(), SuperscriptSpan.class);
-                            for (SuperscriptSpan span : spans){
+                            for (SuperscriptSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
@@ -337,11 +339,35 @@ public class MongolTextViewActivity extends AppCompatActivity {
                             spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         } else {
                             UnderlineSpan[] spans = spannableString.getSpans(0, spannableString.length(), UnderlineSpan.class);
-                            for (UnderlineSpan span : spans){
+                            for (UnderlineSpan span : spans) {
                                 spannableString.removeSpan(span);
                             }
                         }
                         break;
+
+                    case 9: // Click
+
+                        if (isChecked) {
+                            ClickableSpan span = new ClickableSpan() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(MongolTextViewActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+                                }
+
+//                                @Override
+//                                public void updateDrawState(TextPaint ds) {
+//                                    //ds.linkColor = Color.RED;
+//                                    super.updateDrawState(ds);
+//
+//                                }
+                            };
+                            spannableString.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else {
+                            ClickableSpan[] spans = spannableString.getSpans(0, spannableString.length(), ClickableSpan.class);
+                            for (ClickableSpan span : spans) {
+                                spannableString.removeSpan(span);
+                            }
+                        }
                 }
             }
         });

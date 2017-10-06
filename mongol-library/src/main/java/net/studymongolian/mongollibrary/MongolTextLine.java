@@ -6,11 +6,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.MetricAffectingSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -18,9 +15,9 @@ import java.util.List;
 
 class MongolTextLine {
     private static final String TAG = "MongolTextLine";
+    private static final float UNDERLINE_THICKNESS_PROPORTION = 1 / 16f;
 
     private TextPaint mPaint;
-    //private Paint mHighlightPaint;
     private CharSequence mText;
     private List<TextRun> mTextRuns;
 
@@ -108,7 +105,6 @@ class MongolTextLine {
         int nextSpanTransition = 0;
         boolean isSpanned = text instanceof Spanned;
         mPaint = paint;
-        //mHighlightPaint = new Paint();
         mText = text;
         mTextRuns = new ArrayList<>(); // TODO recycle and reuse this for multiple lines?
         int charCount;
@@ -214,54 +210,6 @@ class MongolTextLine {
         return false;
     }
 
-//    private static boolean isCJK(Character.UnicodeBlock block) {
-//        // TODO add hardcoded ranges for api 19 (and EXTENSION_E?)
-//        return (
-//                // TODO test all of these to make sure they really should be rotated because of Menksoft font
-//                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS.equals(block)||
-//                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A.equals(block) ||
-//                Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B.equals(block) ||
-//                //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C.equals(block) || // api 19
-//                //Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D.equals(block) || // api 19
-//                Character.UnicodeBlock.CJK_COMPATIBILITY.equals(block) ||
-//                // Character.UnicodeBlock.CJK_COMPATIBILITY_FORMS.equals(block) || // don't include this because Menksoft font rotates it
-//                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS.equals(block) ||
-//                Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT.equals(block) ||
-//                Character.UnicodeBlock.CJK_RADICALS_SUPPLEMENT.equals(block) ||
-//                //Character.UnicodeBlock.CJK_STROKES.equals(block) ||                        // api 19
-//                Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION.equals(block) ||
-//                Character.UnicodeBlock.ENCLOSED_CJK_LETTERS_AND_MONTHS.equals(block) ||
-//                //Character.UnicodeBlock.ENCLOSED_IDEOGRAPHIC_SUPPLEMENT.equals(block) ||    // api 19
-//                Character.UnicodeBlock.KANGXI_RADICALS.equals(block) ||
-//                Character.UnicodeBlock.IDEOGRAPHIC_DESCRIPTION_CHARACTERS.equals(block));
-//    }
-//
-//
-//    private static boolean isJapaneseKana(Character.UnicodeBlock block) {
-//        return (
-//                Character.UnicodeBlock.HIRAGANA.equals(block) ||
-//                Character.UnicodeBlock.KATAKANA.equals(block) ||
-//                Character.UnicodeBlock.KATAKANA_PHONETIC_EXTENSIONS.equals(block));
-//    }
-//
-//
-//
-//    private static boolean isKoreanHangul(Character.UnicodeBlock block) {
-//        // TODO add hardcoded ranges for api 19
-//        return (Character.UnicodeBlock.HANGUL_JAMO.equals(block) ||
-//                //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_A.equals(block) ||    // api 19
-//                //Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_B.equals(block) ||    // api 19
-//                Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO.equals(block) ||
-//                Character.UnicodeBlock.HANGUL_SYLLABLES.equals(block));
-//    }
-
-
-
-//
-//    private static boolean isEmoji(int codepoint) {
-//        // XXX later may want to check specific code blocks, for now this is ok.
-//        return (codepoint >= UNICODE_EMOJI_START);
-//    }
 
     /**
      * Renders the TextLine.
@@ -282,8 +230,6 @@ class MongolTextLine {
         // horizontal orientation of a text line.
 
         boolean hasSpan = mText instanceof Spanned;
-        int start;
-        int end;
 
         c.save();
         c.translate(x, y);
@@ -291,15 +237,13 @@ class MongolTextLine {
 
         for (TextRun run : mTextRuns) {
 
-            start = run.offset;
-            end = run.offset + run.length;
+            int start = run.offset;
+            int end = run.offset + run.length;
 
             TextPaint wp;
             if (hasSpan) {
                 wp = mWorkPaint;
                 wp.set(mPaint);
-
-                // gets character style spans
                 CharacterStyle[] csSpans = ((Spanned) mText).getSpans(start, end, CharacterStyle.class);
                 for (CharacterStyle span : csSpans) {
                     span.updateDrawState(wp);
@@ -308,66 +252,47 @@ class MongolTextLine {
                 wp = mPaint;
             }
 
-            if (run.isRotated) {
+            float width = (run.isRotated) ? run.measuredHeight : wp.measureText(mText, start, end);
 
-                // background color
-                if (wp.bgColor != 0) {
-                    int previousColor = wp.getColor();
-                    Paint.Style previousStyle = wp.getStyle();
-                    wp.setColor(wp.bgColor);
-                    wp.setStyle(Paint.Style.FILL);
-                    c.drawRect(0, top, run.measuredHeight, bottom, wp);
-                    wp.setStyle(previousStyle);
-                    wp.setColor(previousColor);
-                }
-
-                // TODO draw "underline" (on the right side)
-
-                // move down
-                c.translate(run.measuredHeight, 0);
-
-                // then rotate and draw
-                c.save();
-                c.rotate(-90);
-                c.translate(-bottom, -bottom);
-                c.drawText(mText, start, end, -wp.baselineShift, 0, wp);
-                c.restore();
-
-            } else {
-
-                float width = wp.measureText(mText, start, end);
-
-                // background color
-                if (wp.bgColor != 0) {
-                    int previousColor = wp.getColor();
-                    Paint.Style previousStyle = wp.getStyle();
-                    wp.setColor(wp.bgColor);
-                    wp.setStyle(Paint.Style.FILL);
-                    c.drawRect(0, top, width, bottom, wp);
-                    wp.setStyle(previousStyle);
-                    wp.setColor(previousColor);
-                }
-
-
-                // TODO underline
-                // Underline works partially but it draws the line on the left side of the
-                // characters. It should be the right.
-                // More importantly, rotated characters are underlined below. They should
-                // be "underlined" on the side.
-                // See https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/text/TextLine.java#741
-                // for how TextLine does it. Unfortunately TextPaint.underlineColor is hidden.
-                // TODO wp.isUnderlineText() to check if underlined
-                // Could also make a MongolTextPaint version of TextPaint
-
-                c.drawText(mText, start, end, 0, wp.baselineShift, wp);
-                c.translate(width, 0);
+            // background color
+            if (wp.bgColor != 0) {
+                int previousColor = wp.getColor();
+                Paint.Style previousStyle = wp.getStyle();
+                wp.setColor(wp.bgColor);
+                wp.setStyle(Paint.Style.FILL);
+                c.drawRect(0, top, width, bottom, wp);
+                wp.setStyle(previousStyle);
+                wp.setColor(previousColor);
             }
 
+            // "underline" (to the right of vertical text)
+            if (wp.isUnderlineText()) {
+                wp.setUnderlineText(false);
+
+                Paint.Style previousStyle = wp.getStyle();
+                wp.setStyle(Paint.Style.FILL);
+                float underlineThickness = (top - bottom) * UNDERLINE_THICKNESS_PROPORTION;
+                c.drawRect(0, top, width, top - underlineThickness, wp);
+                wp.setStyle(previousStyle);
+            }
+
+            // text
+            if (run.isRotated) {
+                c.save();
+                c.rotate(-90);
+                c.translate(-bottom, width - bottom);
+                c.drawText(mText, start, end, -wp.baselineShift, 0, wp);
+                c.restore();
+            } else {
+                c.drawText(mText, start, end, 0, wp.baselineShift, wp);
+            }
+
+            // move into position for next text run
+            c.translate(width, 0);
         }
 
         c.restore();
     }
-
 
     RectF measure() {
 
@@ -440,5 +365,4 @@ class MongolTextLine {
         }
         return offset;
     }
-
 }

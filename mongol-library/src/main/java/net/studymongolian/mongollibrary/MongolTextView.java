@@ -36,7 +36,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private Typeface mTypeface;
     private int mGravity = Gravity.TOP;
     private TextPaint mTextPaint;
-    private Paint mPaint;
+    //private Paint mPaint;
     protected MongolLayout mLayout;
     protected MongolTextStorage mTextStorage;
 
@@ -88,10 +88,11 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTextPaint.setTextSize(mTextSizePx);
         mTypeface = MongolFont.get(MongolFont.QAGAN, mContext);
         mTextPaint.setTypeface(mTypeface);
+        mTextPaint.linkColor = Color.BLUE;
 
-        mPaint = new Paint();
-        mPaint.setColor(Color.WHITE);
-        mPaint.setStyle(Paint.Style.FILL);
+//        mPaint = new Paint();
+//        mPaint.setColor(Color.WHITE);
+//        mPaint.setStyle(Paint.Style.FILL);
 
         // initialize the layout, but the height still needs to be set
         final CharSequence text = mTextStorage.getGlyphText();
@@ -327,8 +328,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         // so the index conversion happens here
         y = convertToLocalVerticalCoordinate(y);
         int glyphOffset = getLayout().getOffsetForVertical(line, y);
-        int unicodeOffset = mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
-        return unicodeOffset;
+        //int unicodeOffset = mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
+        return mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
     }
 
     float convertToLocalVerticalCoordinate(float y) {

@@ -21,7 +21,6 @@ import java.util.List;
 // layout uses width/height in vertical orientation
 
 
-
 public class MongolLayout {
 
     private CharSequence mText;
@@ -51,9 +50,7 @@ public class MongolLayout {
         mSpacingMult = spacingMult;
         mSpacingAdd = spacingAdd;
 
-        //if (height > 0) {
-            needsLineUpdate = true;
-        //}
+        needsLineUpdate = true;
     }
 
 
@@ -124,12 +121,12 @@ public class MongolLayout {
 
         // TODO for now draw all the lines. Should we only draw the visible lines?
         // (see Layout source code)
-        int firstLine = 0;
+        //int firstLine = 0;
         int lastLine = mLinesInfo.size() - 1;
         if (lastLine < 0) return;
 
-        drawBackground(canvas, highlight, highlightPaint, cursorOffsetVertical,
-                firstLine, lastLine);
+//        drawBackground(canvas, highlight, highlightPaint, cursorOffsetVertical,
+//                firstLine, lastLine);
         drawText(canvas);
     }
 
@@ -186,10 +183,10 @@ public class MongolLayout {
     }
 
 
-    public void drawBackground(Canvas canvas, Path highlight, Paint highlightPaint,
-                               int cursorOffsetVertical, int firstLine, int lastLine) {
-        // TODO
-    }
+//    public void drawBackground(Canvas canvas, Path highlight, Paint highlightPaint,
+//                               int cursorOffsetVertical, int firstLine, int lastLine) {
+//        // TODO
+//    }
 
     // adding this because cursor blinking crashes on rotation
     // because it is trying to get info before line is ready
@@ -199,9 +196,7 @@ public class MongolLayout {
     }
 
     private void updateLines() {
-//        if (mHeight <= 0) {
-//            return;
-//        }
+
         needsLineUpdate = false;
 
         if (mLinesInfo == null || mLinesInfo.size() > 0)
@@ -213,7 +208,7 @@ public class MongolLayout {
             return;
         }
 
-        // XXX can we just use a char sequence? BreakIterator is the only thing that needs it.
+        // XXX can we just use a char sequence? BreakIterator is the only thing that needs a String.
 
         BreakIterator boundary = BreakIterator.getLineInstance();
         boundary.setText(mText.toString());
@@ -267,7 +262,6 @@ public class MongolLayout {
 
                 top += lineHeightMax;
                 mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
-                //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
                 lineHeightMax = measuredSize.height();
                 lineStart = start;
                 measuredSum = measuredSize.width();
@@ -304,7 +298,6 @@ public class MongolLayout {
                 }
                 top += lineHeightMax;
                 mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
-                //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
                 lineHeightMax = 0;
                 measuredSum = 0;
                 lineStart = start;
@@ -320,7 +313,6 @@ public class MongolLayout {
             }
             top += lineHeightMax;
             mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
-            //mLinesInfo.add(new LineInfo(lineStart, measuredSum, lineHeightMax));
         }
     }
 
@@ -364,50 +356,49 @@ public class MongolLayout {
     }
 
 
-
     // TODO make alignment be an enum like in Android Layout?
 //    public int getAlignment() {
 //        return mAlignment;
 //    }
 
     // negative value
-    public int getLineAscent (int line) {
+    public int getLineAscent(int line) {
         return getLineBottom(line) - getLineTop(line) + getLineDescent(line);
     }
 
-    int getLineBaseline (int line) {
+    int getLineBaseline(int line) {
         return getLineBottom(line) + getLineDescent(line);
     }
 
-    int getLineBottom (int line) {
+    int getLineBottom(int line) {
         if (line <= 0) return 0;
         return mLinesInfo.get(line - 1).top;
     }
 
-    int getLineDescent (int line) {
+    int getLineDescent(int line) {
         // TODO this should probably be based on the actual line
         // see http://stackoverflow.com/a/43691403
         return mTextPaint.getFontMetricsInt().descent;
     }
 
-    int getLineTop (int line) {
+    int getLineTop(int line) {
         if (mLinesInfo == null || mLinesInfo.size() == 0) {
             return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
         }
         return mLinesInfo.get(line).top;
     }
 
-    int getLineCount () {
+    int getLineCount() {
         return mLinesInfo != null ? mLinesInfo.size() : 0;
         //return mLinesInfo.size();
     }
 
-    int getLineStart (int line) {
+    int getLineStart(int line) {
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         return mLinesInfo.get(line).startOffset;
     }
 
-    int getLineEnd (int line) {
+    int getLineEnd(int line) {
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         if (line == mLinesInfo.size() - 1) {
             return mText.length();
@@ -439,7 +430,7 @@ public class MongolLayout {
     // Get the line number corresponding to the specified horizontal position.
     // If you ask for a position before 0, you get 0; if you ask for a position
     // to the right of the last line of the text, you get the last line.
-    int getLineForHorizontal (int horizontal) {
+    int getLineForHorizontal(int horizontal) {
         if (horizontal <= 0) return 0;
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         final int lineCount = mLinesInfo.size();
@@ -448,7 +439,7 @@ public class MongolLayout {
         int guess;
         while (high - low > 1) {
             guess = (high + low) >> 1;
-            if (mLinesInfo.get(guess).top < horizontal){
+            if (mLinesInfo.get(guess).top < horizontal) {
                 low = guess;
             } else {
                 high = guess;
@@ -482,7 +473,7 @@ public class MongolLayout {
 //
 //    }
 
-    float getVertical (int offset) {
+    float getVertical(int offset) {
         if (offset < 0) return 0;
 
         int line = getLineForOffset(offset);
@@ -490,7 +481,7 @@ public class MongolLayout {
         //int end = getLineEnd(line);
 
         MongolTextLine tl = MongolTextLine.obtain();
-         tl.set(mTextPaint, mText, start, offset);
+        tl.set(mTextPaint, mText, start, offset);
         float verticalLineHeight = tl.measure().width();
         MongolTextLine.recycle(tl);
 
@@ -505,7 +496,6 @@ public class MongolLayout {
 //    float getSpacingMultiplier () {
 //
 //    }
-
 
 
     private class LineInfo {
