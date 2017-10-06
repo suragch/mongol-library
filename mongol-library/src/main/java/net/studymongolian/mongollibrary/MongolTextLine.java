@@ -19,15 +19,8 @@ import java.util.List;
 class MongolTextLine {
     private static final String TAG = "MongolTextLine";
 
-//    private static final int UNICODE_HANGUL_JAMO_START = 0x1100;
-//    private static final int UNICODE_HANGUL_JAMO_END = 0x11FF;
-//    private static final int UNICODE_CJK_START = 0x11FF;
-//    private static final int MENKSOFT_START = 0xE234;
-//    private static final int MENKSOFT_END = 0xE34F;
-
-
     private TextPaint mPaint;
-    private Paint mHighlightPaint;
+    //private Paint mHighlightPaint;
     private CharSequence mText;
     private List<TextRun> mTextRuns;
 
@@ -95,7 +88,7 @@ class MongolTextLine {
     static MongolTextLine recycle(MongolTextLine tl) {
         tl.mText = null;
         tl.mPaint = null;
-        tl.mHighlightPaint = null;
+        //tl.mHighlightPaint = null;
         tl.mTextRuns = null;
         synchronized(sCached) {
             for (int i = 0; i < sCached.length; ++i) {
@@ -115,7 +108,7 @@ class MongolTextLine {
         int nextSpanTransition = 0;
         boolean isSpanned = text instanceof Spanned;
         mPaint = paint;
-        mHighlightPaint = new Paint();
+        //mHighlightPaint = new Paint();
         mText = text;
         mTextRuns = new ArrayList<>(); // TODO recycle and reuse this for multiple lines?
         int charCount;
@@ -131,7 +124,6 @@ class MongolTextLine {
             charCount = Character.charCount(codepoint);
 
             // Rotate Chinese, emoji, etc
-            //Character.UnicodeBlock block = Character.UnicodeBlock.of(codepoint);
             if (isRotated(codepoint)) {
                 // save any old normal (nonrotated) runs
                 if (currentRunLength > 0) {
