@@ -248,6 +248,13 @@ The philosophy behind the AEIOU keyboard is to make input as easy as possible. T
 
 #### Basic usage
 
+The system keyboard can be hidden by default by adding the following to your AndroidManifest for the activity that you are using your keyboard in. After that keyboard switching (including for the system keyboard) will be handled by `MongolInputMethodManager`. 
+
+```xml
+<activity ...
+          android:windowSoftInputMode="stateHidden"/>
+```
+
 In the future keyboards will be wrapped in an `ImeContainer` to allow for keyboard switching and candidate word suggestions. However, since that functionality is not finished yet, this example shows how to just use a single keyboard (`KeyboardAeiou`) directly connected to a `MongolEditText`.
 
 XML layout
