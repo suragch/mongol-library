@@ -1,1 +1,1 @@
-include ':demo-app', ':mongol-library'
+include ':demo-app', ':mongol-library', ':testing-app'

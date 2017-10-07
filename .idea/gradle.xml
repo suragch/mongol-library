@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/demo-app" />
             <option value="$PROJECT_DIR$/mongol-library" />
+            <option value="$PROJECT_DIR$/testing-app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
