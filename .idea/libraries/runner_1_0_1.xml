@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="runner-1.0.1">
     <CLASSES>
-      <root url="file://$USER_HOME$/caches/transforms-1/files-1.1/runner-1.0.1.aar/cfebbbce5b498cf66e3a29c5ab30ecaa/res" />
-      <root url="jar://$USER_HOME$/caches/transforms-1/files-1.1/runner-1.0.1.aar/cfebbbce5b498cf66e3a29c5ab30ecaa/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/caches/transforms-1/files-1.1/runner-1.0.1.aar/680741f9d662dcf737cac57412b8c1be/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/caches/transforms-1/files-1.1/runner-1.0.1.aar/680741f9d662dcf737cac57412b8c1be/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

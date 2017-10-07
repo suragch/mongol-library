@@ -80,6 +80,17 @@ public class MongolAlertDialogActivity extends AppCompatActivity {
 
     }
 
+
+    public void showMongolAlertZeroButtonClick(View view) {
+        // setup the alert builder
+        MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);
+        builder.setMessage("This is a no-button MongolAlertDialog.");
+
+        // create and show the alert dialog
+        MongolAlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     public void showMongolAlertOneButtonClick(View view) {
         // setup the alert builder
         MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);
@@ -156,4 +167,5 @@ public class MongolAlertDialogActivity extends AppCompatActivity {
         MongolAlertDialog dialog = builder.create();
         dialog.show();
     }
+
 }

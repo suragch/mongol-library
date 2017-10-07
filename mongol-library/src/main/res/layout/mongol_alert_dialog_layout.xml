@@ -29,10 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-        <!--<View-->
-        <!--android:id="@+id/mongol_dialog_titleSpacerNoButtons"-->
-        <!--android:layout_width="10dp"-->
-        <!--android:layout_height="wrap_content"/>-->
+        <View
+            android:id="@+id/mongol_dialog_titleSpacer"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"/>
 
         <HorizontalScrollView
             android:id="@+id/mongol_dialog_content_scrollview"
