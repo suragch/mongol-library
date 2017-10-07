@@ -47,7 +47,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.9.6'
+    compile 'net.studymongolian:mongol-library:0.9.7'
 }
 ```
 
@@ -55,7 +55,7 @@ Beginning with Android Studio 3.0, you should use `implementation` rather than `
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.6'
+    implementation 'net.studymongolian:mongol-library:0.9.7'
 }
 ```
 
@@ -143,7 +143,9 @@ Other features of MongolTextView include the following:
     * Typeface
     * Style
     * Subscript
-    * (TODO underline)
+    * Underline
+    * Clickable
+    * (and any other span that implements `CharacterStyle` should also work)
 * (TODO line spacing)
 * Emoji support
 * CJK orientation support
@@ -505,7 +507,6 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 #### TODO 
 
 * [ ] translate this documentation into Mongolian and Chinese
-* [ ] underline span 
 * [ ] `MongolTextView` line spacing
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
@@ -516,6 +517,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `0.9.7`: Added support for `UnderlineSpan` and `ClickableSpan`
 * `0.9.6`: fixed resizing bug, added text change listener to `MongolEditText`
 * `0.9.5`: fixed rotation for vertical presentation forms
 * `0.9.4`: Started adding intrumentation tests for `MongolTextStorage`; crash fix in `MongolTextStorage`
@@ -548,3 +550,5 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 ## Apps that use this library
 
 * [Suryaa](https://github.com/suragch/Suryaa) 
+
+If your app uses this library, you can add it here, especially if it is open source.
