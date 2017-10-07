@@ -230,24 +230,38 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public boolean onTouchEvent(MotionEvent event) {
 
         // this method is currently only for detecting a ClickableSpan
-        if (mMovementMethod == null) return super.onTouchEvent(event);
+        if (mMovementMethod != null && event.getAction() == MotionEvent.ACTION_UP) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            int offset = getOffsetForPosition(x, y);
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
+            final ClickableSpan[] links = mTextStorage.getSpans(offset, offset, ClickableSpan.class);
 
-                int x = (int) event.getX();
-                int y = (int) event.getY();
-                int offset = getOffsetForPosition(x, y);
-
-                final ClickableSpan[] links = mTextStorage.getSpans(offset, offset, ClickableSpan.class);
-
-                if (links.length > 0) {
-                    links[0].onClick(this);
-                }
-                break;
+            if (links.length > 0) {
+                links[0].onClick(this);
+                return true;
+            }
         }
 
-        return true;
+        return super.onTouchEvent(event);
+
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_UP:
+//
+//                int x = (int) event.getX();
+//                int y = (int) event.getY();
+//                int offset = getOffsetForPosition(x, y);
+//
+//                final ClickableSpan[] links = mTextStorage.getSpans(offset, offset, ClickableSpan.class);
+//
+//                if (links.length > 0) {
+//                    links[0].onClick(this);
+//                    return true;
+//                }
+//                break;
+//        }
+//
+//        return true;
     }
 
     public CharSequence getText() {
