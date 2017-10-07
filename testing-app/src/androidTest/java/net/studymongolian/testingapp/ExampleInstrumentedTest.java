@@ -23,4 +23,5 @@ public class ExampleInstrumentedTest {
 
         assertEquals("net.studymongolian.testingapp", appContext.getPackageName());
     }
+
 }

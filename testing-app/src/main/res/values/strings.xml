@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Testing App</string>
+    <string name="mongol_textview_activity_title">MongolTextView tests</string>
 </resources>
