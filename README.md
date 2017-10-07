@@ -47,7 +47,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.9.7'
+    compile 'net.studymongolian:mongol-library:0.9.8'
 }
 ```
 
@@ -55,7 +55,7 @@ Beginning with Android Studio 3.0, you should use `implementation` rather than `
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.7'
+    implementation 'net.studymongolian:mongol-library:0.9.8'
 }
 ```
 
@@ -517,6 +517,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `0.9.8`: Allow both touch events and click events on `MongolEditText`; fixed spacing on `MongolAlertView` with no buttons 
 * `0.9.7`: Added support for `UnderlineSpan` and `ClickableSpan`
 * `0.9.6`: fixed resizing bug, added text change listener to `MongolEditText`
 * `0.9.5`: fixed rotation for vertical presentation forms
