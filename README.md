@@ -550,6 +550,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 ## Apps that use this library
 
+* [Demo app](https://github.com/suragch/mongol-library/tree/master/demo-app)
 * [Suryaa](https://github.com/suragch/Suryaa) 
 
-If your app uses this library, you can add it here, especially if it is open source.
+If your app uses this library, you can notify me or add it here, especially if it is open source.
