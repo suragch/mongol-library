@@ -508,6 +508,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 * [ ] translate this documentation into Mongolian and Chinese
 * [ ] `MongolTextView` line spacing
+* [ ] `MongolTextView` or its helper classes need optimization. Slow rendering time for long text strings.
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
