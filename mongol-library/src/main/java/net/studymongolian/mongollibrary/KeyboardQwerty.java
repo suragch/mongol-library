@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-class KeyboardQwerty extends Keyboard {
+public class KeyboardQwerty extends Keyboard {
 
     // Row 1
     protected KeyText mKeyQ;

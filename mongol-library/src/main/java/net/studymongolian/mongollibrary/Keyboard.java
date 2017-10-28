@@ -157,7 +157,7 @@ public abstract class Keyboard extends ViewGroup {
     }
 
     public interface KeyboardListener {
-        public void punctuationSwitch();
+        public void onRequestNewKeyboard(int keyboardId);
 
     }
 

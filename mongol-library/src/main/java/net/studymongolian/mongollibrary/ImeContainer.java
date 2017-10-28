@@ -7,7 +7,11 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
+import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Input Method Container
@@ -20,21 +24,20 @@ import android.widget.Toast;
  * ImeContainer manages switching keyboards and handling communication between the keyboard and the
  * word suggestion candidates list.
  */
-public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardListener {
+public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener {
 
 
-    // This view group should have up to two children
-    // the child at index 0 is the current keyboard
-    // the child at index 1 is the punctuation keyboard
-    private static final int CURRENT_KEYBOARD_INDEX = 0;
-    private static final int PUNCTUATION_KEYBOARD_INDEX = 1;
+//    // This view group should have up to two children
+//    // the child at index 0 is the current keyboard
+//    // the child at index 1 is the punctuation keyboard
+//    private static final int CURRENT_KEYBOARD_INDEX = 0;
+//    private static final int PUNCTUATION_KEYBOARD_INDEX = 1;
 
+    List<Keyboard> keyboardCandidates;
     Keyboard mCurrentKeyboard;
-    //Keyboard mCurrentKeyboardPunctuation;
-    private boolean showingPunctuationKeyboard = false;
+    //private boolean showingPunctuationKeyboard = false;
 
     // TODO for a custom keyboard let it set a custom pronunciation keyboard itself
-
 
     public ImeContainer(Context context) {
         this(context, null, 0);
@@ -45,26 +48,26 @@ public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardLis
         this(context, attrs, 0);
     }
 
-    public ImeContainer(Context context,
-                         AttributeSet attrs,
-                         int defStyle) {
+    public ImeContainer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
 
+
+
     private void init(Context context) {
 
-        float dpPadding = 2;
-        int pxPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                dpPadding, getResources().getDisplayMetrics());
-
-        Keyboard aeiou = new KeyboardAeiou(context);
-        Keyboard qwerty = new KeyboardQwerty(context);
-        //Keyboard aeiouPunc = new KeyboardAeiouPunctuation(context);
-        //aeiou.setBackgroundColor(Color.WHITE);
-        qwerty.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
-        this.addView(qwerty);
-        mCurrentKeyboard = qwerty;
+//        float dpPadding = 2;
+//        int pxPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//                dpPadding, getResources().getDisplayMetrics());
+//
+//        Keyboard aeiou = new KeyboardAeiou(context);
+//        Keyboard qwerty = new KeyboardQwerty(context);
+//        //Keyboard aeiouPunc = new KeyboardAeiouPunctuation(context);
+//        //aeiou.setBackgroundColor(Color.WHITE);
+//        qwerty.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
+//        this.addView(qwerty);
+//        mCurrentKeyboard = qwerty;
     }
 
 
@@ -103,35 +106,18 @@ public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardLis
         int keyboardHeight = totalAvailableHeight;
 
         // just choose the first keyboard for now
-        View child;
-        if (showingPunctuationKeyboard) {
-            if (PUNCTUATION_KEYBOARD_INDEX >= count) return;
-            child = getChildAt(PUNCTUATION_KEYBOARD_INDEX);
-        } else {
-            if (CURRENT_KEYBOARD_INDEX >= count) return;
-            child = getChildAt(CURRENT_KEYBOARD_INDEX);
-        }
+        View child = getChildAt(0);
+//        if (showingPunctuationKeyboard) {
+//            if (PUNCTUATION_KEYBOARD_INDEX >= count) return;
+//            child = getChildAt(PUNCTUATION_KEYBOARD_INDEX);
+//        } else {
+//            if (CURRENT_KEYBOARD_INDEX >= count) return;
+//            child = getChildAt(CURRENT_KEYBOARD_INDEX);
+//        }
 
         child.measure(MeasureSpec.makeMeasureSpec(keyboardWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(keyboardHeight, MeasureSpec.EXACTLY));
         child.layout((int) x, (int) y, (int) (x + keyboardWidth), (int) (y + keyboardHeight));
-
-    }
-
-
-
-    @Override
-    public void punctuationSwitch() {
-        Toast.makeText(getContext(), "Keyboard key message", Toast.LENGTH_SHORT).show();
-
-//        if (getChildCount() == 1) {
-//            // add the punctuation keyboard
-//            Keyboard puncKeyboard = new KeyboardAeiouPunctuation(getContext());
-//            addView(puncKeyboard);
-//            showingPunctuationKeyboard = true;
-//            //forceLayout();
-//            //invalidate();
-//        }
 
     }
 
@@ -147,5 +133,53 @@ public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardLis
         if (mCurrentKeyboard != null) {
             mCurrentKeyboard.onUpdateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
         }
+    }
+
+    @Override
+    public void onRequestNewKeyboard(int keyboardId) {
+        // error checking
+        if (keyboardId > keyboardCandidates.size() - 1) {
+            // TODO
+        }
+
+        this.removeView(mCurrentKeyboard);
+        Keyboard keyboard = keyboardCandidates.get(keyboardId);
+        this.addView(keyboard);
+        mCurrentKeyboard = keyboard;
+    }
+//
+//    public void addIme(Keyboard keyboard) {
+//        if (keyboardCandidates == null) {
+//            keyboardCandidates = new ArrayList<>();
+//        }
+//        keyboardCandidates.add(keyboard);
+//
+//    }
+
+    public void apply(Builder builder) {
+        this.keyboardCandidates = builder.keyboardCandidates;
+        Keyboard defaultKeyboard = keyboardCandidates.get(0);
+        this.addView(defaultKeyboard);
+        mCurrentKeyboard = defaultKeyboard;
+    }
+
+    public static class Builder {
+        //private final Context context;
+        //private final Keyboard defaultKeyboard;
+        private final List<Keyboard> keyboardCandidates;
+
+        public Builder(Context context, Keyboard defaultKeyboard) {
+            //this.context = context;
+            //this.defaultKeyboard = defaultKeyboard;
+            this.keyboardCandidates = new ArrayList<>();
+            this.keyboardCandidates.add(defaultKeyboard);
+        }
+
+        public Builder addKeyboard(Keyboard keyboard) {
+            this.keyboardCandidates.add(keyboard);
+            return this;
+        }
+
+
     }
 }
