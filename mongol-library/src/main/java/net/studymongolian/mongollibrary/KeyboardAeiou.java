@@ -44,15 +44,11 @@ public class KeyboardAeiou extends Keyboard {
     protected KeyText mKeyRA;
 
     // Row 4
-    protected KeyImage mKeyKeyboard;
+    //protected KeyImage mKeyKeyboard; // defined in super class
     protected KeyText mKeyComma;
     protected KeyText mKeySpace;
     protected KeyImage mKeyBackspace;
     protected KeyImage mKeyReturn;
-
-    private int mPopupBackgroundColor = Color.WHITE;
-    private int mPopupHighlightColor = Color.GRAY;
-    //private static final char MONGOLIAN_DOT = '\u00b7';
 
     // These are all input values (some display values are different)
     private static final String KEY_A = String.valueOf(MongolCode.Uni.A);
@@ -67,11 +63,12 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_MA = String.valueOf(MongolCode.Uni.MA);
     private static final String KEY_LA = String.valueOf(MongolCode.Uni.LA);
     private static final String KEY_SA = String.valueOf(MongolCode.Uni.SA);
-    private static final String KEY_TA = String.valueOf(MongolCode.Uni.TA);
+    private static final String KEY_DA = String.valueOf(MongolCode.Uni.DA);
     private static final String KEY_CHA = String.valueOf(MongolCode.Uni.CHA);
     private static final String KEY_JA = String.valueOf(MongolCode.Uni.JA);
     private static final String KEY_YA = String.valueOf(MongolCode.Uni.YA);
     private static final String KEY_RA = String.valueOf(MongolCode.Uni.RA);
+    private static final String KEY_COMMA = String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA);
 
     private static final String KEY_A_SUB = "";
     private static final String KEY_E_SUB = String.valueOf(MongolCode.Uni.EE);
@@ -85,7 +82,7 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_MA_SUB = "";
     private static final String KEY_LA_SUB = String.valueOf(MongolCode.Uni.LHA);
     private static final String KEY_SA_SUB = String.valueOf(MongolCode.Uni.SHA);
-    private static final String KEY_TA_SUB = String.valueOf(MongolCode.Uni.DA); // DA is default
+    private static final String KEY_DA_SUB = String.valueOf(MongolCode.Uni.DA); // DA is default
     private static final String KEY_CHA_SUB = String.valueOf(MongolCode.Uni.TSA);
     private static final String KEY_JA_SUB = String.valueOf(MongolCode.Uni.ZA);
     private static final String KEY_YA_SUB = String.valueOf(MongolCode.Uni.WA);
@@ -103,7 +100,7 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_MA_PUNCT = "5";
     private static final String KEY_LA_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_EM_DASH);
     private static final String KEY_SA_PUNCT = "6";
-    private static final String KEY_TA_PUNCT = "7";
+    private static final String KEY_DA_PUNCT = "7";
     private static final String KEY_CHA_PUNCT = "8";
     private static final String KEY_JA_PUNCT = "9";
     private static final String KEY_YA_PUNCT = "0";
@@ -121,24 +118,11 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_MA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
     private static final String KEY_LA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_BIRGA);
     private static final String KEY_SA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
-    private static final String KEY_TA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
+    private static final String KEY_DA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
     private static final String KEY_CHA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
     private static final String KEY_JA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
     private static final String KEY_YA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
     private static final String KEY_RA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
-
-    // This will map the button resource id to the String value that we want to
-    // input when that key is clicked.
-    protected Map<Key, String> keyValues = new HashMap<>();
-    protected Map<Key, String> keyPunctuationValues = new HashMap<>();
-
-
-    private boolean mIsShowingPunctuation = false;
-
-
-
-
-
 
     public KeyboardAeiou(Context context) {
         this(context, null, 0);
@@ -148,136 +132,87 @@ public class KeyboardAeiou extends Keyboard {
         this(context, attrs, 0);
     }
 
-    public KeyboardAeiou(Context context,
-                         AttributeSet attrs,
-                         int defStyle) {
+    public KeyboardAeiou(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
 
 
-    private void init(Context context) {
+    @Override
+    protected void init(Context context) {
+        super.init(context);
 
-        Typeface typeface = MongolFont.get(MongolFont.QAGAN, context);
-        float textSize = 24;
-        float subTextSize = textSize / 2;
-        int textColor = Color.BLACK;
-        int subTextColor = Color.parseColor("#61000000"); // alpha black
-        int keyColor = Color.LTGRAY;
-        int pressedColor = Color.GRAY;
-        int borderColor = Color.BLACK;
-        int borderWidth = 0;
-        int borderRadius = 5;
-        int padding = 2;
+        // | A  | E  | I |  O |  U |    Row 1
+        // | N | B | Q | G | M | L |    Row 2
+        // | S | D | Ch| J | Y | R |    Row 3
+        // |kb | , | space |ret|del|    Row 4
+
+        // actual layout work is done by Keyboard superclass's onLayout
+        mNumberOfKeysInRow = new int[]{5, 6, 6, 5};
+        // the key weights for each row should sum to 1
+        mKeyWeights = new float[]{
+                1 / 5f, 1 / 5f, 1 / 5f, 1 / 5f, 1 / 5f,           // row 0
+                1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f,   // row 1
+                1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f,   // row 2
+                1 / 6f, 1 / 6f, 2 / 6f, 1 / 6f, 1 / 6f};          // row 3
 
 
         // Row 1
 
         mKeyA = new KeyText(context);
-        mKeyA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyA, KEY_A);
-        keyPunctuationValues.put(mKeyA, KEY_A_PUNCT);
-        addView(mKeyA);
+        initTextKey(mKeyA, KEY_A, KEY_A_PUNCT);
 
         mKeyE = new KeyText(context);
-        mKeyE.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyE, KEY_E);
-        keyPunctuationValues.put(mKeyE, KEY_E_PUNCT);
-        addView(mKeyE);
+        initTextKey(mKeyE, KEY_E, KEY_E_PUNCT);
 
         mKeyI = new KeyText(context);
-        mKeyI.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyI, KEY_I);
-        keyPunctuationValues.put(mKeyI, KEY_I_PUNCT);
-        addView(mKeyI);
+        initTextKey(mKeyI, KEY_I, KEY_I_PUNCT);
 
         mKeyO = new KeyText(context);
-        mKeyO.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyO, KEY_O);
-        keyPunctuationValues.put(mKeyO, KEY_O_PUNCT);
-        addView(mKeyO);
+        initTextKey(mKeyO, KEY_O, KEY_O_PUNCT);
 
         mKeyU = new KeyText(context);
-        mKeyU.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyU, KEY_U);
-        keyPunctuationValues.put(mKeyU, KEY_U_PUNCT);
-        addView(mKeyU);
+        initTextKey(mKeyU, KEY_U, KEY_U_PUNCT);
 
         // Row 2
 
         mKeyNA = new KeyText(context);
-        mKeyNA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyNA, KEY_NA);
-        keyPunctuationValues.put(mKeyNA, KEY_NA_PUNCT);
-        addView(mKeyNA);
+        initTextKey(mKeyNA, KEY_NA, KEY_NA_PUNCT);
 
         mKeyBA = new KeyText(context);
-        mKeyBA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyBA, KEY_BA);
-        keyPunctuationValues.put(mKeyBA, KEY_BA_PUNCT);
-        addView(mKeyBA);
+        initTextKey(mKeyBA, KEY_BA, KEY_BA_PUNCT);
 
         mKeyQA = new KeyText(context);
-        mKeyQA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyQA, KEY_QA);
-        keyPunctuationValues.put(mKeyQA, KEY_QA_PUNCT);
-        addView(mKeyQA);
+        initTextKey(mKeyQA, KEY_QA, KEY_QA_PUNCT);
 
         mKeyGA = new KeyText(context);
-        mKeyGA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyGA, KEY_GA);
-        keyPunctuationValues.put(mKeyGA, KEY_GA_PUNCT);
-        addView(mKeyGA);
+        initTextKey(mKeyGA, KEY_GA, KEY_GA_PUNCT);
 
         mKeyMA = new KeyText(context);
-        mKeyMA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyMA, KEY_MA);
-        keyPunctuationValues.put(mKeyMA, KEY_MA_PUNCT);
-        addView(mKeyMA);
+        initTextKey(mKeyMA, KEY_MA, KEY_MA_PUNCT);
 
         mKeyLA = new KeyText(context);
-        mKeyLA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyLA, KEY_LA);
-        keyPunctuationValues.put(mKeyLA, KEY_LA_PUNCT);
-        addView(mKeyLA);
+        initTextKey(mKeyLA, KEY_LA, KEY_LA_PUNCT);
 
         // Row 3
 
         mKeySA = new KeyText(context);
-        mKeySA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeySA, KEY_SA);
-        keyPunctuationValues.put(mKeySA, KEY_SA_PUNCT);
-        addView(mKeySA);
+        initTextKey(mKeySA, KEY_SA, KEY_SA_PUNCT);
 
         mKeyTADA = new KeyText(context);
-        mKeyTADA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyTADA, String.valueOf(MongolCode.Uni.DA)); // make DA the default
-        keyPunctuationValues.put(mKeyTADA, KEY_TA_PUNCT);
-        addView(mKeyTADA);
+        initTextKey(mKeyTADA, KEY_DA, KEY_DA_PUNCT);
 
         mKeyCHA = new KeyText(context);
-        mKeyCHA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyCHA, KEY_CHA);
-        keyPunctuationValues.put(mKeyCHA, KEY_CHA_PUNCT);
-        addView(mKeyCHA);
+        initTextKey(mKeyCHA, KEY_CHA, KEY_CHA_PUNCT);
 
         mKeyJA = new KeyText(context);
-        mKeyJA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyJA, KEY_JA);
-        keyPunctuationValues.put(mKeyJA, KEY_JA_PUNCT);
-        addView(mKeyJA);
+        initTextKey(mKeyJA, KEY_JA, KEY_JA_PUNCT);
 
         mKeyYA = new KeyText(context);
-        mKeyYA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyYA, KEY_YA);
-        keyPunctuationValues.put(mKeyYA, KEY_YA_PUNCT);
-        addView(mKeyYA);
+        initTextKey(mKeyYA, KEY_YA, KEY_YA_PUNCT);
 
         mKeyRA = new KeyText(context);
-        mKeyRA.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyRA, KEY_RA);
-        keyPunctuationValues.put(mKeyRA, KEY_RA_PUNCT);
-        addView(mKeyRA);
+        initTextKey(mKeyRA, KEY_RA, KEY_RA_PUNCT);
 
         // Row 4
 
@@ -289,29 +224,23 @@ public class KeyboardAeiou extends Keyboard {
 
         // comma
         mKeyComma = new KeyText(context);
-        mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
+        initTextKey(mKeyComma, KEY_COMMA, KEY_COMMA);
+        mKeyComma.setText(KEY_COMMA);
         mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
-        mKeyComma.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyComma, String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA));
-        keyPunctuationValues.put(mKeyComma, String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA));
-        addView(mKeyComma);
 
         // space
         mKeySpace = new KeyText(context);
+        initTextKey(mKeySpace, " ", " ");
         mKeySpace.setText(" ");
         String subtextDisplay = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
         mKeySpace.setSubText(subtextDisplay);
-        mKeySpace.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeySpace, " ");
-        keyPunctuationValues.put(mKeySpace, " ");
-        addView(mKeySpace);
 
         // return
         mKeyReturn = new KeyImage(context);
         mKeyReturn.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_return_black_48dp));
         mKeyReturn.setOnTouchListener(textKeyTouchListener);
-        keyValues.put(mKeyReturn, "\n");
-        keyPunctuationValues.put(mKeyReturn, "\n");
+        mKeyValues.put(mKeyReturn, "\n");
+        mKeyPunctuationValues.put(mKeyReturn, "\n");
         addView(mKeyReturn);
 
         // backspace
@@ -320,33 +249,13 @@ public class KeyboardAeiou extends Keyboard {
         mKeyBackspace.setOnTouchListener(handleBackspace);
         addView(mKeyBackspace);
 
-        setDisplayText();
-
-        for (int i = 0; i < getChildCount(); i++) {
-            Key child = (Key) getChildAt(i);
-            if (child instanceof KeyText) {
-                ((KeyText) child).setTypeFace(typeface);
-                ((KeyText) child).setTextSize(textSize);
-                ((KeyText) child).setSubTextSize(subTextSize);
-                ((KeyText) child).setTextColor(textColor);
-                ((KeyText) child).setSubTextColor(subTextColor);
-            } else if (child instanceof KeyImage) {
-
-            }
-
-            child.setKeyColor(keyColor);
-            child.setPressedColor(pressedColor);
-            child.setBorderColor(borderColor);
-            child.setBorderWidth(borderWidth);
-            child.setBorderRadius(borderRadius);
-            child.setPadding(padding, padding, padding, padding);
-        }
-
+        setDisplayText(mIsShowingPunctuation);
+        applyThemeToKeys();
     }
 
-    private void setDisplayText() {
+    public void setDisplayText(boolean isShowingPunctuation) {
 
-        if (mIsShowingPunctuation) {
+        if (isShowingPunctuation) {
             mKeyA.setText(KEY_A_PUNCT);
             mKeyE.setText(KEY_E_PUNCT);
             mKeyI.setText(KEY_I_PUNCT);
@@ -359,7 +268,7 @@ public class KeyboardAeiou extends Keyboard {
             mKeyMA.setText(KEY_MA_PUNCT);
             mKeyLA.setText(KEY_LA_PUNCT);
             mKeySA.setText(KEY_SA_PUNCT);
-            mKeyTADA.setText(KEY_TA_PUNCT);
+            mKeyTADA.setText(KEY_DA_PUNCT);
             mKeyCHA.setText(KEY_CHA_PUNCT);
             mKeyJA.setText(KEY_JA_PUNCT);
             mKeyYA.setText(KEY_YA_PUNCT);
@@ -377,7 +286,7 @@ public class KeyboardAeiou extends Keyboard {
             mKeyMA.setSubText(KEY_MA_PUNCT_SUB);
             mKeyLA.setSubText(KEY_LA_PUNCT_SUB);
             mKeySA.setSubText(KEY_SA_PUNCT_SUB);
-            mKeyTADA.setSubText(KEY_TA_PUNCT_SUB);
+            mKeyTADA.setSubText(KEY_DA_PUNCT_SUB);
             mKeyCHA.setSubText(KEY_CHA_PUNCT_SUB);
             mKeyJA.setSubText(KEY_JA_PUNCT_SUB);
             mKeyYA.setSubText(KEY_YA_PUNCT_SUB);
@@ -413,7 +322,7 @@ public class KeyboardAeiou extends Keyboard {
             mKeyMA.setSubText(KEY_MA_SUB);
             mKeyLA.setSubText(KEY_LA_SUB);
             mKeySA.setSubText(KEY_SA_SUB);
-            mKeyTADA.setSubText(KEY_TA_SUB);
+            mKeyTADA.setSubText(KEY_DA_SUB);
             mKeyCHA.setSubText(KEY_CHA_SUB);
             mKeyJA.setSubText(KEY_JA_SUB);
             mKeyYA.setSubText(KEY_YA_SUB);
@@ -421,343 +330,7 @@ public class KeyboardAeiou extends Keyboard {
         }
     }
 
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
-        // | A  | E  | I |  O |  U |    Row 1
-        // | N | B | Q | G | M | L |    Row 2
-        // | S | D | Ch| J | Y | R |    Row 3
-        // |kb | , | space |ret|del|    Row 4
-
-        final int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        final int totalHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-
-        int[] numberOfKeysInRow = {5, 6, 6, 5};
-        // the key weights for each row should sum to 1
-        float[] keyWeight = {
-                1 / 5f, 1 / 5f, 1 / 5f, 1 / 5f, 1 / 5f,           // row 0
-                1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f,     // row 1
-                1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f,     // row 2
-                1 / 6f, 1 / 6f, 2 / 6f, 1 / 6f, 1 / 6f};          // row 3
-        int numberOfRows = numberOfKeysInRow.length;
-
-        float x = getPaddingLeft();
-        float y = getPaddingTop();
-        int keyIndex = 0;
-        for (int rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
-
-            int end = keyIndex + numberOfKeysInRow[rowIndex];
-            for (int i = keyIndex; i < end; i++) {
-                View child = getChildAt(keyIndex);
-
-                float keyWidth = totalWidth * keyWeight[keyIndex];
-                float keyHeight = totalHeight / numberOfRows;
-                child.measure(MeasureSpec.makeMeasureSpec((int) keyWidth, MeasureSpec.EXACTLY),
-                        MeasureSpec.makeMeasureSpec((int) keyHeight, MeasureSpec.EXACTLY));
-
-                child.layout((int) x, (int) y, (int) (x + keyWidth), (int) (y + keyHeight));
-                //x += keyWidth;
-                x += keyWidth;
-                keyIndex++;
-            }
-
-            x = getPaddingLeft();
-            y += (float) totalHeight / numberOfRows;
-        }
-
-    }
-
-    protected View.OnTouchListener handleBackspace = new View.OnTouchListener() {
-
-        private Handler handler;
-        final int INITIAL_DELAY = 500;
-        final int REPEAT_DELAY = 50;
-
-        @Override
-        public boolean onTouch(View view, MotionEvent event) {
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    view.setPressed(true);
-                    doBackspace();
-                    if (handler != null)
-                        return true;
-                    handler = new Handler();
-                    handler.postDelayed(actionBackspace, INITIAL_DELAY);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    break;
-                default:
-                    view.setPressed(false);
-                    if (handler == null)
-                        return true;
-                    handler.removeCallbacks(actionBackspace);
-                    handler = null;
-                    break;
-            }
-
-            return true;
-        }
-
-        private void doBackspace(){
-            if (inputConnection == null) return;
-
-            if (mComposing.length() > 0) {
-                inputConnection.commitText("", 1);
-                mComposing.setLength(0);
-            } else {
-
-                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
-
-                // We could also do this with inputConnection.deleteSurroundingText(1, 0)
-                // but then we would need to be careful of not deleting too much
-                // and not deleting half a surrogate pair.
-                // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
-                // see also https://stackoverflow.com/a/45182401
-            }
-
-
-        }
-
-        Runnable actionBackspace = new Runnable() {
-            @Override
-            public void run() {
-                doBackspace();
-                handler.postDelayed(this, REPEAT_DELAY);
-            }
-        };
-
-    };
-
-
-    protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
-
-        Handler handler;
-        final int LONGPRESS_THRESHOLD = 500; // milliseconds
-
-        PopupKeyCandidates popupView;
-        int popupWidth;
-        PopupWindow popupWindow;
-
-        @Override
-        public boolean onTouch(View view, final MotionEvent event) {
-
-            if (event.getPointerCount() > 1) return false;
-
-            final Key key = (Key) view;
-            int action = event.getActionMasked();
-
-            switch (action) {
-                case (MotionEvent.ACTION_DOWN):
-
-                    key.setPressed(true);
-
-                    Candidates candidates = getPopupCandidates(key);
-                    if (candidates != null && candidates.unicode != null
-                            && candidates.unicode.length > 0) {
-                        int x = (int) event.getRawX();
-                        preparePopup(key, candidates, x);
-                    }
-
-
-                    return true;
-                case (MotionEvent.ACTION_MOVE):
-
-                    if (popupView != null) {
-                        int x = (int) event.getRawX();
-                        popupView.updateTouchPosition(x);
-                    }
-
-
-                    return true;
-                case (MotionEvent.ACTION_UP):
-
-                    if (inputConnection == null) {
-                        dismissPopup(key, event);
-                        return true;
-                    }
-
-
-                    if (popupView != null) {                                // handle popups
-                        dismissPopup(key, event);
-                    } else if (key == mKeyKeyboard) {                       // keyboard key
-
-                        mIsShowingPunctuation = !mIsShowingPunctuation;
-                        setDisplayText();
-
-                    } else {                                                // other keys
-
-                        String inputText;
-                        if (mIsShowingPunctuation) {
-                            inputText = keyPunctuationValues.get(key);
-                        } else {
-                            inputText = keyValues.get(key);
-                        }
-
-                        // handle composing
-                        if (mComposing.length() > 0) {
-                            if (MongolCode.isMongolian(inputText.charAt(0))) {
-                                inputConnection.commitText(mComposing, 1);
-                            } else {
-                                inputConnection.finishComposingText();
-                            }
-                            mComposing.setLength(0);
-                        }
-
-                        // TA/DA defaults to DA except in the INITIAL location
-                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
-                            char prevChar = getPreviousChar();
-                            if (!MongolCode.isMongolian(prevChar)) {
-                                inputText = String.valueOf(MongolCode.Uni.TA);
-                            }
-                        }
-
-                        inputConnection.commitText(inputText, 1);
-                    }
-
-                    key.setPressed(false);
-                    if (handler != null) handler.removeCallbacksAndMessages(null);
-                    return true;
-                default:
-                    dismissPopup(key, event);
-                    return false;
-            }
-        }
-
-        private void preparePopup(final Key key, final Candidates candidates, final int xPosition) {
-
-            if (handler != null) {
-                handler.removeCallbacksAndMessages(null);
-            } else {
-                handler = new Handler();
-            }
-
-            final Runnable runnableCode = new Runnable() {
-                @Override
-                public void run() {
-
-                    if (popupWindow != null) return;
-
-                    // get the popup view
-                    popupView = new PopupKeyCandidates(getContext());
-                    popupView.setBackgroundColor(mPopupBackgroundColor);
-
-                    // update the popup view with the candidate choices
-                    if (candidates == null || candidates.unicode == null) return;
-                    popupView.setCandidates(candidates.unicode);
-                    if (candidates.display == null) {
-                        popupView.setDisplayCandidates(candidates.unicode, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-                    } else {
-                        popupView.setDisplayCandidates(candidates.display, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-                    }
-
-                    popupView.setHighlightColor(mPopupHighlightColor);
-
-                    popupWindow = new PopupWindow(popupView,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-                    int location[] = new int[2];
-                    key.getLocationOnScreen(location);
-                    int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                    popupView.measure(measureSpec, measureSpec);
-                    popupWidth = popupView.getMeasuredWidth();
-                    int spaceAboveKey = key.getHeight() / 4;
-                    int x = xPosition - popupWidth / popupView.getChildCount() / 2;
-                    //int locationX = location[0]
-                    popupWindow.showAtLocation(key, Gravity.NO_GRAVITY,
-                            x, location[1] - popupView.getMeasuredHeight() - spaceAboveKey);
-
-
-                    // highlight current item (after the popup window has loaded)
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int x = xPosition;
-                            popupView.updateTouchPosition(x);
-                        }
-                    });
-
-                }
-            };
-
-            handler.postDelayed(runnableCode, LONGPRESS_THRESHOLD);
-        }
-
-        private void dismissPopup(Key key, MotionEvent event) {
-
-            key.setPressed(false);
-
-            if (handler != null) {
-                handler.removeCallbacksAndMessages(null);
-            }
-            if (popupWindow == null) return;
-
-            int x = (int) event.getRawX();
-
-            CharSequence selectedItem = popupView.getCurrentItem(x);
-            if (!TextUtils.isEmpty(selectedItem) && inputConnection != null) {
-
-                inputConnection.beginBatchEdit();
-
-                if (mComposing.length() > 0) {
-                    inputConnection.commitText(mComposing, 1);
-                    mComposing.setLength(0);
-                }
-
-                // add composing text for certain medials to avoid confusion with finals
-                if (selectedItem.equals(MEDIAL_A_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_A_FVS1);
-//                } else if (selectedItem.equals(INITIAL_I_SUFFIX)) {
-//                    inputConnection.setComposingText(INITIAL_I_SUFFIX_COMPOSING, 1);
-//                    mComposing.append(INITIAL_I_SUFFIX);
-                } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_I_FVS1);
-                } else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
-                    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
-                    mComposing.append(MEDIAL_ZWJ_I);
-                } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_U_FVS1);
-                } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
-                    inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
-                    mComposing.append(MEDIAL_UE_FVS2);
-                } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
-                    inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
-                    mComposing.append(MEDIAL_DOTTED_NA);
-                } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_TA_FVS1);
-                } else if (selectedItem.equals(YA_FVS1)) {
-                    inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
-                    mComposing.append(YA_FVS1);
-                } else {
-                    inputConnection.commitText(selectedItem, 1);
-                }
-
-                inputConnection.endBatchEdit();
-
-            }
-
-            popupWindow.dismiss();
-            popupView = null;
-            popupWindow = null;
-        }
-    };
-
-
-
-    private char getPreviousChar() {
-        if (inputConnection == null) return 0;
-        CharSequence previous = inputConnection.getTextBeforeCursor(1, 0);
-        if (TextUtils.isEmpty(previous)) return 0;
-        return previous.charAt(0);
-    }
-
-    private Candidates getPopupCandidates(Key key) {
+    public Candidates getPopupCandidates(Key key) {
         // these are the choices to display in the popup (and corresponding unicode values)
         Candidates candidates = null;
 
@@ -808,17 +381,7 @@ public class KeyboardAeiou extends Keyboard {
     }
 
 
-    private boolean isIsolateOrInitial() {
-        if (inputConnection == null) return true;
-        CharSequence before = inputConnection.getTextBeforeCursor(2, 0);
-        CharSequence after = inputConnection.getTextAfterCursor(2, 0);
-        if (before == null || after == null) return true;
-        // get Mongol word location at cursor input
-        MongolCode.Location location = MongolCode.getLocation(before, after);
-        return location == MongolCode.Location.ISOLATE ||
-                location == MongolCode.Location.INITIAL;
-        //return isIsolateOrInitial;
-    }
+
 
     private Candidates getCandidatesForA(boolean isIsolateOrInitial) {
         Candidates can = new Candidates();
@@ -894,14 +457,7 @@ public class KeyboardAeiou extends Keyboard {
             return can;
         }
 
-        if (isIsolateOrInitial) {
-//            can.unicode = new String[]{
-//                    "" + MongolCode.Uni.NNBS + MongolCode.Uni.I,
-//                    "" + MongolCode.Uni.NNBS + MongolCode.Uni.I};
-//            can.display = new String[]{
-//                    "" + MongolCode.Uni.NNBS + MongolCode.Uni.I,
-//                    "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ};
-        } else {// medial/final
+        if (!isIsolateOrInitial) {// medial/final
             char prevChar = getPreviousChar();
             if (MongolCode.isVowel(prevChar)) {
                 can.unicode = new String[]{
@@ -971,7 +527,7 @@ public class KeyboardAeiou extends Keyboard {
             can.unicode = new String[]{"" + MongolCode.Uni.ANG};
         } else { // medial/final
             can.unicode = new String[]{"" + MongolCode.Uni.ANG,
-                    "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ, // only(?) way to override dotted N before vowel in Unicode 9.0
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ, // only(?) way to override dotted N before vowel in Unicode 10.0
                     "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1};
             can.display = new String[]{
                     "" + MongolCode.Uni.ANG,
@@ -1064,7 +620,7 @@ public class KeyboardAeiou extends Keyboard {
         Candidates can = new Candidates();
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_TA_PUNCT_SUB};
+            can.unicode = new String[]{KEY_DA_PUNCT_SUB};
             return can;
         }
 
@@ -1101,7 +657,7 @@ public class KeyboardAeiou extends Keyboard {
 
         can.unicode = new String[]{
                 "" + MongolCode.Uni.TSA,
-                "" + MongolCode.Uni.CHI,};
+                "" + MongolCode.Uni.CHI};
         return can;
     }
 
@@ -1179,96 +735,11 @@ public class KeyboardAeiou extends Keyboard {
         return can;
     }
 
-    Candidates getCandidatesForSpace() {
-        Candidates can = new Candidates();
-        String previousWord = getPreviousMongolWord();
-        if (TextUtils.isEmpty(previousWord)) {
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.NNBS};
-            return can;
-
-        }
-        // TODO if it is a number then return the right suffix for that
-        char lastChar = previousWord.charAt(previousWord.length() - 1);
-        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
-        if (gender == null) {
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.NNBS};
-            return can;
-        }
-        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
-        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
-        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
-        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
-        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
-        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
-        String uuSuffix = MongolCode.getSuffixUu(gender);
-        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
-        String udSuffix = MongolCode.getSuffixUd(gender);
-
-        can.unicode = new String[]{
-                "" + MongolCode.Uni.NNBS,
-                uuSuffix,
-                yinUnUSuffix,
-                iYiSuffix,
-                duTuSuffix,
-                barIyarSuffix,
-                banIyanSuffix,
-                achaSuffix,
-                udSuffix};
-        return can;
-    }
-
-    // this may not actually return a whole word if the word is very long
-    private String getPreviousMongolWord() {
-        if (inputConnection == null) return "";
-        int numberOfCharsToFetch = 20;
-        CharSequence previous = inputConnection.getTextBeforeCursor(numberOfCharsToFetch, 0);
-        if (TextUtils.isEmpty(previous)) return "";
-        int startIndex = previous.length() - 1;
-        char charAtIndex = previous.charAt(startIndex);
-        if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) startIndex--;
-        StringBuilder mongolWord = new StringBuilder();
-        for (int i = startIndex; i >= 0; i--) {
-            charAtIndex = previous.charAt(i);
-            if (MongolCode.isMongolian(charAtIndex)) {
-                mongolWord.insert(0, charAtIndex);
-            } else if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) {
-                break;
-            }
-        }
-        return mongolWord.toString();
-    }
-
-    private class Candidates {
-        String[] unicode;
-        String[] display;
+    private Candidates getCandidatesForSpace() {
+        return getCandidatesForSuffix();
     }
 
 
 
 
-    // These are special popup chose characters. They are being converted to a
-    // temporary medial composing form so that the automatic Unicode rendering
-    // will not confuse users (because they would get displayed as a final otherwise).
-
-    private static final String MEDIAL_A_FVS1 = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_A_FVS1_COMPOSING = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    //    private static final String INITIAL_I_SUFFIX = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I;
-//    private static final String INITIAL_I_SUFFIX_COMPOSING = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_I_FVS1 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_I_FVS1_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_ZWJ_I = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I;
-    private static final String MEDIAL_ZWJ_I_COMPOSING = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
-
-    private static final String MEDIAL_U_FVS1 = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_U_FVS1_COMPOSING = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_UE_FVS2 = "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2;
-    private static final String MEDIAL_UE_FVS2_COMPOSING = "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_DOTTED_NA = "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_DOTTED_NA_COMPOSING = "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_TA_FVS1 = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_TA_FVS1_COMPOSING = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String YA_FVS1 = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1;
-    private static final String YA_FVS1_COMPOSING = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
 }

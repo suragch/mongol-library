@@ -59,11 +59,12 @@ public class ImeContainer extends ViewGroup implements KeyboardAeiou.KeyboardLis
                 dpPadding, getResources().getDisplayMetrics());
 
         Keyboard aeiou = new KeyboardAeiou(context);
+        Keyboard qwerty = new KeyboardQwerty(context);
         //Keyboard aeiouPunc = new KeyboardAeiouPunctuation(context);
         //aeiou.setBackgroundColor(Color.WHITE);
-        aeiou.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
-        this.addView(aeiou);
-        mCurrentKeyboard = aeiou;
+        qwerty.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
+        this.addView(qwerty);
+        mCurrentKeyboard = qwerty;
     }
 
 
