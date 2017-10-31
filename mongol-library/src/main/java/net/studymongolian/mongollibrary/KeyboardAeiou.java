@@ -72,6 +72,7 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_YA = String.valueOf(MongolCode.Uni.YA);
     private static final String KEY_RA = String.valueOf(MongolCode.Uni.RA);
     private static final String KEY_COMMA = String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA);
+    private static final String KEY_SPACE = " ";
 
     private static final String KEY_A_SUB = "";
     private static final String KEY_E_SUB = String.valueOf(MongolCode.Uni.EE);
@@ -126,6 +127,9 @@ public class KeyboardAeiou extends Keyboard {
     private static final String KEY_JA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
     private static final String KEY_YA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
     private static final String KEY_RA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
+
+    // Keys with different display values
+    private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
     public KeyboardAeiou(Context context) {
         this(context, null, 0);
@@ -234,9 +238,8 @@ public class KeyboardAeiou extends Keyboard {
         // space
         mKeySpace = new KeyText(context);
         initTextKey(mKeySpace, " ", " ");
-        mKeySpace.setText(" ");
-        String subtextDisplay = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
-        mKeySpace.setSubText(subtextDisplay);
+        mKeySpace.setText(KEY_SPACE);
+        mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
 
         // return
         mKeyReturn = new KeyImage(context);

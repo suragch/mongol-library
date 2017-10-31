@@ -82,6 +82,7 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_K = String.valueOf(MongolCode.Uni.KA);
     private static final String KEY_L = String.valueOf(MongolCode.Uni.LA);
     private static final String KEY_NG = String.valueOf(MongolCode.Uni.ANG);
+    // TODO maybe this key should be used for suffixes instead. Longpress could be ZWJ.
     private static final String KEY_ZWJ = String.valueOf(MongolCode.Uni.ZWJ);
     private static final String KEY_Z = String.valueOf(MongolCode.Uni.ZA);
     private static final String KEY_X = String.valueOf(MongolCode.Uni.SHA);
@@ -92,8 +93,10 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_M = String.valueOf(MongolCode.Uni.MA);
     private static final String KEY_EXCLAMATION = String.valueOf(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK);
     private static final String KEY_COMMA = String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA);
+    private static final String KEY_SPACE = " ";
     private static final String KEY_PERIOD = String.valueOf(MongolCode.Uni.MONGOLIAN_FULL_STOP);
     private static final String KEY_QUESTION = String.valueOf(MongolCode.Uni.VERTICAL_QUESTION_MARK);
+
 
     private static final String KEY_Q_SUB = String.valueOf(MongolCode.Uni.CHI);
     private static final String KEY_W_SUB = "";
@@ -144,10 +147,10 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_F_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
     private static final String KEY_G_PUNCT = "=";
     private static final String KEY_H_PUNCT = "¥";
-    private static final String KEY_J_PUNCT = ""; // TODO
-    private static final String KEY_K_PUNCT = ""; // TODO
-    private static final String KEY_L_PUNCT = ""; // TODO
-    private static final String KEY_NG_PUNCT = ""; // TODO
+    private static final String KEY_J_PUNCT = "+"; // TODO these should go in KEY_G_PUNCT_SUB popup
+    private static final String KEY_K_PUNCT = "-"; // TODO add other values here
+    private static final String KEY_L_PUNCT = "×"; // TODO
+    private static final String KEY_NG_PUNCT = "÷"; // TODO
     private static final String KEY_ZWJ_PUNCT = "/";
     private static final String KEY_Z_PUNCT = String.valueOf(MongolCode.Uni.REFERENCE_MARK);
     private static final String KEY_X_PUNCT = String.valueOf(MongolCode.Uni.MONGOLIAN_BIRGA);
@@ -185,6 +188,10 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_B_PUNCT_SUB = "~";
     private static final String KEY_N_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_COMMA);
     private static final String KEY_M_PUNCT_SUB = String.valueOf(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
+
+    // Keys with different display values
+    private static final String KEY_ZWJ_DISPLAY = "/";
+    private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
     public KeyboardQwerty(Context context) {
         this(context, null, 0);
@@ -289,7 +296,8 @@ public class KeyboardQwerty extends Keyboard {
         // Row 3 (9 keys)
 
         mKeyZwj = new KeyText(context);
-        initTextKey(mKeyZwj, KEY_Z, KEY_Z_PUNCT);
+        initTextKey(mKeyZwj, KEY_ZWJ, KEY_ZWJ_PUNCT);
+        mKeyZwj.setText(KEY_ZWJ_DISPLAY);
 
         mKeyZ = new KeyText(context);
         initTextKey(mKeyZ, KEY_Z, KEY_Z_PUNCT);
@@ -339,9 +347,8 @@ public class KeyboardQwerty extends Keyboard {
         // space
         mKeySpace = new KeyText(context);
         initTextKey(mKeySpace, " ", " ");
-        mKeySpace.setText(" ");
-        String subtextDisplay = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
-        mKeySpace.setSubText(subtextDisplay);
+        mKeySpace.setText(KEY_SPACE);
+        mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
 
         // period
         mKeyPeriod = new KeyText(context);
@@ -448,7 +455,7 @@ public class KeyboardQwerty extends Keyboard {
             mKeyK.setText(KEY_K);
             mKeyL.setText(KEY_L);
             mKeyNg.setText(KEY_NG);
-            mKeyZwj.setText(KEY_ZWJ);
+            mKeyZwj.setText(KEY_ZWJ_DISPLAY);
             mKeyZ.setText(KEY_Z);
             mKeyX.setText(KEY_X);
             mKeyC.setText(KEY_C);
@@ -534,6 +541,8 @@ public class KeyboardQwerty extends Keyboard {
             candidates = getCandidatesForL();
         } else if (key == mKeyNg) {
             candidates = getCandidatesForNG();
+        } else if (key == mKeyZwj) {
+            candidates = getCandidatesForZwj();
         } else if (key == mKeyZ) {
             candidates = getCandidatesForZ();
         } else if (key == mKeyX) {
@@ -891,6 +900,16 @@ public class KeyboardQwerty extends Keyboard {
         if (mIsShowingPunctuation) {
             Candidates can = new Candidates();
             can.unicode = new String[]{KEY_NG_PUNCT_SUB};
+            return can;
+        }
+        return null;
+    }
+
+    private Candidates getCandidatesForZwj() {
+
+        if (mIsShowingPunctuation) {
+            Candidates can = new Candidates();
+            can.unicode = new String[]{KEY_ZWJ_PUNCT_SUB};
             return can;
         }
         return null;
