@@ -10,6 +10,7 @@ import android.view.inputmethod.InputConnection;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +34,9 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
 //    private static final int CURRENT_KEYBOARD_INDEX = 0;
 //    private static final int PUNCTUATION_KEYBOARD_INDEX = 1;
 
-    List<Keyboard> keyboardCandidates;
+    List<Keyboard> mKeyboardCandidates;
     Keyboard mCurrentKeyboard;
+    private WeakReference<MongolInputMethodManager> mimm;
     //private boolean showingPunctuationKeyboard = false;
 
     // TODO for a custom keyboard let it set a custom pronunciation keyboard itself
@@ -128,6 +130,12 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         }
     }
 
+    InputConnection getInputConnection() {
+        MongolInputMethodManager imm = mimm.get();
+        if (imm == null) return null;
+        return imm.getCurrentInputConnection();
+    }
+
     // forward this on to the current keyboard
     public void onUpdateSelection(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
         if (mCurrentKeyboard != null) {
@@ -136,29 +144,50 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     @Override
-    public void onRequestNewKeyboard(int keyboardId) {
-        // error checking
-        if (keyboardId > keyboardCandidates.size() - 1) {
-            // TODO
+    public void onRequestNewKeyboard(String keyboardDisplayName) {
+
+        Keyboard newKeyboard = null;
+        for (Keyboard keyboard : mKeyboardCandidates) {
+            if (keyboard.getDisplayName().equals(keyboardDisplayName)) {
+                newKeyboard = keyboard;
+            }
         }
 
+        if (newKeyboard == null) return;
+
         this.removeView(mCurrentKeyboard);
-        Keyboard keyboard = keyboardCandidates.get(keyboardId);
-        this.addView(keyboard);
-        mCurrentKeyboard = keyboard;
+        newKeyboard.setKeyboardListener(this);
+        this.addView(newKeyboard);
+        mCurrentKeyboard = newKeyboard;
+        InputConnection ic = getInputConnection();
+        mCurrentKeyboard.setInputConnection(ic);
     }
-//
-//    public void addIme(Keyboard keyboard) {
-//        if (keyboardCandidates == null) {
-//            keyboardCandidates = new ArrayList<>();
-//        }
-//        keyboardCandidates.add(keyboard);
-//
-//    }
+
+    @Override
+    public String[] getKeyboardCandidates() {
+        int numberOfOtherKeyboards = mKeyboardCandidates.size() - 1;
+        if (numberOfOtherKeyboards < 1) return null;
+        String[] names = new String[numberOfOtherKeyboards];
+        int nameIndex = 0;
+        for (int i = 0; i < mKeyboardCandidates.size(); i++) {
+            Keyboard keyboard = mKeyboardCandidates.get(i);
+            if (keyboard == mCurrentKeyboard) {
+                continue;
+            }
+            names[nameIndex] = keyboard.getDisplayName();
+            nameIndex++;
+        }
+        return names;
+    }
+
+    public void setInputMethodManager(MongolInputMethodManager inputMethodManager) {
+        this.mimm = new WeakReference<>(inputMethodManager);
+    }
 
     public void apply(Builder builder) {
-        this.keyboardCandidates = builder.keyboardCandidates;
-        Keyboard defaultKeyboard = keyboardCandidates.get(0);
+        this.mKeyboardCandidates = builder.keyboardCandidates;
+        Keyboard defaultKeyboard = mKeyboardCandidates.get(0);
+        defaultKeyboard.setKeyboardListener(this);
         this.addView(defaultKeyboard);
         mCurrentKeyboard = defaultKeyboard;
     }
@@ -168,7 +197,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         //private final Keyboard defaultKeyboard;
         private final List<Keyboard> keyboardCandidates;
 
-        public Builder(Context context, Keyboard defaultKeyboard) {
+        public Builder(Keyboard defaultKeyboard) {
             //this.context = context;
             //this.defaultKeyboard = defaultKeyboard;
             this.keyboardCandidates = new ArrayList<>();
@@ -179,7 +208,5 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
             this.keyboardCandidates.add(keyboard);
             return this;
         }
-
-
     }
 }

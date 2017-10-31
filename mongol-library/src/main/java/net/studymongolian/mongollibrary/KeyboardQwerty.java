@@ -14,6 +14,9 @@ import java.util.Map;
 
 public class KeyboardQwerty extends Keyboard {
 
+    // name to use in the keyboard popup chooser
+    private static final String DISPLAY_NAME = "QWERTY";
+
     // Row 1
     protected KeyText mKeyQ;
     protected KeyText mKeyW;
@@ -484,18 +487,6 @@ public class KeyboardQwerty extends Keyboard {
             mKeyM.setSubText(KEY_M_SUB);
         }
     }
-
-//    @Override
-//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//
-//
-//
-//        super.onLayout(changed, l, t, r, b);
-//
-//        // TODO move this to super
-//
-//
-//    }
 
     @Override
     public Candidates getPopupCandidates(Key key) {
@@ -1001,16 +992,24 @@ public class KeyboardQwerty extends Keyboard {
         return null;
     }
 
-    private Candidates getCandidatesForKeyboard() {
-        return null;
+//    public Candidates getCandidatesForKeyboard() {
+//
+//        if (mKeyboardListener == null) return null;
+//
+//        return mKeyboardListener.getKeyboardCandidates();
+//
+////        // TODO add other candidates after keyboards are finished
+////        Candidates can = new Candidates();
+////        can.unicode = new String[]{
+////                "English",
+////                "Computer",
+////                "Cyrillic"};
+//        //return can;
+//    }
 
-        // TODO add other candidates after keyboards are finished
-//        Candidates can = new Candidates();
-//        can.unicode = new String[]{
-//                "English",
-//                "Computer",
-//                "Cyrillic"};
-//        return can;
+    @Override
+    public String getDisplayName() {
+        return DISPLAY_NAME;
     }
 
     private Candidates getCandidatesForSpace() {

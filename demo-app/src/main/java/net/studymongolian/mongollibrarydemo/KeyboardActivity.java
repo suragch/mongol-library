@@ -36,7 +36,7 @@ public class KeyboardActivity extends AppCompatActivity {
 
         // add keyboards to the IME container and apply any styles
         ImeContainer imeContainer = findViewById(R.id.keyboard);
-        ImeContainer.Builder builder = new ImeContainer.Builder(this, qwerty);
+        ImeContainer.Builder builder = new ImeContainer.Builder(qwerty);
         builder.addKeyboard(aeiou);
         imeContainer.apply(builder);
 

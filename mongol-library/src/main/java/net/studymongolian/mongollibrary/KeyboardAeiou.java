@@ -20,6 +20,9 @@ import java.util.Map;
 
 public class KeyboardAeiou extends Keyboard {
 
+    // name to use in the keyboard popup chooser
+    private static final String DISPLAY_NAME = "AEIOU";
+
     // Row 1
     protected KeyText mKeyA;
     protected KeyText mKeyE;
@@ -714,18 +717,16 @@ public class KeyboardAeiou extends Keyboard {
         return can;
     }
 
-    private Candidates getCandidatesForKeyboard() {
-        return null;
-
-        // TODO add other candidates after keyboards are finished
+//    public Candidates getCandidatesForKeyboard() {
+//
+//        // TODO add other candidates after keyboards are finished
 //        Candidates can = new Candidates();
 //        can.unicode = new String[]{
 //                "English",
 //                "Computer",
 //                "Cyrillic"};
 //        return can;
-    }
-
+//    }
     private Candidates getCandidatesForComma() {
         Candidates can = new Candidates();
         can.unicode = new String[]{
@@ -740,6 +741,10 @@ public class KeyboardAeiou extends Keyboard {
     }
 
 
+    @Override
+    public String getDisplayName() {
+        return DISPLAY_NAME;
+    }
 
 
 }

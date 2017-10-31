@@ -33,11 +33,13 @@ public abstract class Keyboard extends ViewGroup {
 //    public static final int CYRILLIC = 6;
 //    public static final int CYRILLIC_PUNCTUATION = 7;
 
+    //protected KeyboardListener mCallback;
     protected KeyImage mKeyKeyboard;
 
     protected int mPopupBackgroundColor = Color.WHITE;
     protected int mPopupHighlightColor = Color.GRAY;
 
+    //private String mDisplayName;
     protected Typeface mTypeface;
     protected float mTextSize;
     protected float mSubTextSize;
@@ -61,7 +63,7 @@ public abstract class Keyboard extends ViewGroup {
     protected InputConnection inputConnection;
     protected StringBuilder mComposing = new StringBuilder();
 
-    protected KeyboardListener mKeyboardController = null;
+    protected KeyboardListener mKeyboardListener = null;
 
     public Keyboard(Context context) {
         this(context, null, 0);
@@ -72,8 +74,8 @@ public abstract class Keyboard extends ViewGroup {
     }
 
     public Keyboard(Context context,
-                         AttributeSet attrs,
-                         int defStyle) {
+                    AttributeSet attrs,
+                    int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -101,6 +103,7 @@ public abstract class Keyboard extends ViewGroup {
     // number of keys and wieghts are initialized by keyboard subclass
     protected int[] mNumberOfKeysInRow;
     protected float[] mKeyWeights;
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
@@ -157,12 +160,12 @@ public abstract class Keyboard extends ViewGroup {
     }
 
     public interface KeyboardListener {
-        public void onRequestNewKeyboard(int keyboardId);
-
+        public void onRequestNewKeyboard(String keyboardDisplayName);
+        public String[] getKeyboardCandidates();
     }
 
     public void setKeyboardListener(KeyboardListener listener) {
-        this.mKeyboardController = listener;
+        this.mKeyboardListener = listener;
     }
 
     // The activity (or some parent or controller) must give us
@@ -235,13 +238,13 @@ public abstract class Keyboard extends ViewGroup {
                 case (MotionEvent.ACTION_UP):
 
                     if (inputConnection == null) {
-                        dismissPopup(key, event);
+                        handlePopupChoice(key, event);
                         return true;
                     }
 
 
                     if (popupView != null) {                                // handle popups
-                        dismissPopup(key, event);
+                        handlePopupChoice(key, event);
                     } else if (key == mKeyKeyboard) {                       // keyboard key
 
                         mIsShowingPunctuation = !mIsShowingPunctuation;
@@ -266,14 +269,15 @@ public abstract class Keyboard extends ViewGroup {
                             mComposing.setLength(0);
                         }
 
+                        // TODO add composing on initial DA
                         // FIXME not necessarily wanted on all keyboards
-                        // TA/DA defaults to DA except in the INITIAL location
-                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
-                            char prevChar = getPreviousChar();
-                            if (!MongolCode.isMongolian(prevChar)) {
-                                inputText = String.valueOf(MongolCode.Uni.TA);
-                            }
-                        }
+//                        // TA/DA defaults to DA except in the INITIAL location
+//                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
+//                            char prevChar = getPreviousChar();
+//                            if (!MongolCode.isMongolian(prevChar)) {
+//                                inputText = String.valueOf(MongolCode.Uni.TA);
+//                            }
+//                        }
 
                         inputConnection.commitText(inputText, 1);
                     }
@@ -282,7 +286,7 @@ public abstract class Keyboard extends ViewGroup {
                     if (handler != null) handler.removeCallbacksAndMessages(null);
                     return true;
                 default:
-                    dismissPopup(key, event);
+                    handlePopupChoice(key, event);
                     return false;
             }
         }
@@ -346,7 +350,7 @@ public abstract class Keyboard extends ViewGroup {
             handler.postDelayed(runnableCode, LONGPRESS_THRESHOLD);
         }
 
-        private void dismissPopup(Key key, MotionEvent event) {
+        private void handlePopupChoice(Key key, MotionEvent event) {
 
             key.setPressed(false);
 
@@ -356,51 +360,69 @@ public abstract class Keyboard extends ViewGroup {
             if (popupWindow == null) return;
 
             int x = (int) event.getRawX();
-
             CharSequence selectedItem = popupView.getCurrentItem(x);
-            if (!TextUtils.isEmpty(selectedItem) && inputConnection != null) {
 
-                inputConnection.beginBatchEdit();
-
-                if (mComposing.length() > 0) {
-                    inputConnection.commitText(mComposing, 1);
-                    mComposing.setLength(0);
-                }
-
-                // add composing text for certain medials to avoid confusion with finals
-                if (selectedItem.equals(MEDIAL_A_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_A_FVS1);
-                } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_I_FVS1);
-                } else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
-                    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
-                    mComposing.append(MEDIAL_ZWJ_I);
-                } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_U_FVS1);
-                } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
-                    inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
-                    mComposing.append(MEDIAL_UE_FVS2);
-                } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
-                    inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
-                    mComposing.append(MEDIAL_DOTTED_NA);
-                } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
-                    inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
-                    mComposing.append(MEDIAL_TA_FVS1);
-                } else if (selectedItem.equals(YA_FVS1)) {
-                    inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
-                    mComposing.append(YA_FVS1);
-                } else {
-                    inputConnection.commitText(selectedItem, 1);
-                }
-
-                inputConnection.endBatchEdit();
-
+            if (TextUtils.isEmpty(selectedItem)) {
+                dismissPopup();
+                return;
             }
 
-            popupWindow.dismiss();
+            if (key == mKeyKeyboard) {
+                CharSequence name = popupView.getCurrentItem(x);
+                mKeyboardListener.onRequestNewKeyboard(name.toString());
+                dismissPopup();
+                return;
+            }
+
+            if (inputConnection == null) {
+                dismissPopup();
+                return;
+            }
+
+            inputConnection.beginBatchEdit();
+
+            if (mComposing.length() > 0) {
+                inputConnection.commitText(mComposing, 1);
+                mComposing.setLength(0);
+            }
+
+            // add composing text for certain medials to avoid confusion with finals
+            if (selectedItem.equals(MEDIAL_A_FVS1)) {
+                inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
+                mComposing.append(MEDIAL_A_FVS1);
+            } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
+                inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
+                mComposing.append(MEDIAL_I_FVS1);
+            } else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
+                inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
+                mComposing.append(MEDIAL_ZWJ_I);
+            } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
+                inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
+                mComposing.append(MEDIAL_U_FVS1);
+            } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
+                inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
+                mComposing.append(MEDIAL_UE_FVS2);
+            } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
+                inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
+                mComposing.append(MEDIAL_DOTTED_NA);
+            } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
+                inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
+                mComposing.append(MEDIAL_TA_FVS1);
+            } else if (selectedItem.equals(YA_FVS1)) {
+                inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
+                mComposing.append(YA_FVS1);
+            } else {
+                inputConnection.commitText(selectedItem, 1);
+            }
+
+            inputConnection.endBatchEdit();
+
+            dismissPopup();
+        }
+
+        private void dismissPopup() {
+            if (popupWindow != null)
+                popupWindow.dismiss();
             popupView = null;
             popupWindow = null;
         }
@@ -438,7 +460,7 @@ public abstract class Keyboard extends ViewGroup {
             return true;
         }
 
-        private void doBackspace(){
+        private void doBackspace() {
             if (inputConnection == null) return;
 
             if (mComposing.length() > 0) {
@@ -548,10 +570,20 @@ public abstract class Keyboard extends ViewGroup {
                 location == MongolCode.Location.INITIAL;
     }
 
+    public Candidates getCandidatesForKeyboard() {
+        if (mKeyboardListener == null) return null;
+        Candidates can = new Candidates();
+        can.unicode = mKeyboardListener.getKeyboardCandidates();
+        return can;
+    }
+
     abstract public Candidates getPopupCandidates(Key key);
 
     // in this method you should switch the display on the keys for normal or punctuation mode
     abstract public void setDisplayText(boolean isShowingPunctuation);
+
+    // subclasses should return the name of the keyboard to display in the keyboard chooser popup
+    abstract public String getDisplayName();
 
     public class Candidates {
         String[] unicode;

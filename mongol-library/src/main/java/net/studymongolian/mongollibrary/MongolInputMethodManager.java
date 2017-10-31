@@ -237,9 +237,7 @@ public class MongolInputMethodManager {
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
                 mCurrentEditor = v;
-                EditorInfo tba = new EditorInfo();
-                tba.packageName = v.getContext().getPackageName();
-                tba.fieldId = v.getId();
+                EditorInfo tba = getEditorInfo(v);
                 InputConnection ic = v.onCreateInputConnection(tba);
                 mCurrentEditorInfo = tba;
                 if (mImeContainer != null) {
@@ -255,6 +253,13 @@ public class MongolInputMethodManager {
             }
         }
     };
+
+    private EditorInfo getEditorInfo(View view) {
+        EditorInfo editorInfo = new EditorInfo();
+        editorInfo.packageName = view.getContext().getPackageName();
+        editorInfo.fieldId = view.getId();
+        return editorInfo;
+    }
 
     private MongolEditText.OnMongolEditTextInputEventListener mongolEditTextListener =
             new MongolEditText.OnMongolEditTextInputEventListener() {
@@ -292,28 +297,28 @@ public class MongolInputMethodManager {
             };
 
 
-    // TODO
-    private void addIme(Ime keyboard) {
-        // Benefit of having this method: The developer would not have to
-        // add anything special to the layout or create the keyboard beforehand.
-        // May need to convert the keyboard to some sort of popup window
-        // before we can do this. Because currently the keyboard needs to
-        // be part of the activity layout.
-        switch (keyboard) {
-            case AEIOU:
-
-                break;
-            case QWERTY:
-
-                break;
-            case ENGLISH:
-
-                break;
-            case CYRILLIC:
-
-                break;
-        }
-    }
+//    // TODO
+//    private void addIme(Ime keyboard) {
+//        // Benefit of having this method: The developer would not have to
+//        // add anything special to the layout or create the keyboard beforehand.
+//        // May need to convert the keyboard to some sort of popup window
+//        // before we can do this. Because currently the keyboard needs to
+//        // be part of the activity layout.
+//        switch (keyboard) {
+//            case AEIOU:
+//
+//                break;
+//            case QWERTY:
+//
+//                break;
+//            case ENGLISH:
+//
+//                break;
+//            case CYRILLIC:
+//
+//                break;
+//        }
+//    }
 
 //    public void addIme(KeyboardAeiou keyboard) { // TODO change this to Keyboard later
 //        // TODO let the user add their own keyboard subclass
@@ -330,6 +335,11 @@ public class MongolInputMethodManager {
 
     public void setIme(ImeContainer imeContainer) {
         this.mImeContainer = imeContainer;
+        // pass in a weak connection
+        this.mImeContainer.setInputMethodManager(this);
     }
 
+    public InputConnection getCurrentInputConnection() {
+        return mCurrentEditor.onCreateInputConnection(mCurrentEditorInfo);
+    }
 }
