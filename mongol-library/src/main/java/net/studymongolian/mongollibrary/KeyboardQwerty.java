@@ -15,7 +15,7 @@ import java.util.Map;
 public class KeyboardQwerty extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "QWERTY";
+    private static final String DISPLAY_NAME = "ᠺᠣᠮᠫᠢᠦ᠋ᠲ᠋ᠧᠷ";
 
     // Row 1
     protected KeyText mKeyQ;
@@ -147,10 +147,10 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_F_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
     private static final String KEY_G_PUNCT = "=";
     private static final String KEY_H_PUNCT = "¥";
-    private static final String KEY_J_PUNCT = "+"; // TODO these should go in KEY_G_PUNCT_SUB popup
-    private static final String KEY_K_PUNCT = "-"; // TODO add other values here
-    private static final String KEY_L_PUNCT = "×"; // TODO
-    private static final String KEY_NG_PUNCT = "÷"; // TODO
+    private static final String KEY_J_PUNCT = "'";
+    private static final String KEY_K_PUNCT = "\"";
+    private static final String KEY_L_PUNCT = "#";
+    private static final String KEY_NG_PUNCT = "|";
     private static final String KEY_ZWJ_PUNCT = "/";
     private static final String KEY_Z_PUNCT = String.valueOf(MongolCode.Uni.REFERENCE_MARK);
     private static final String KEY_X_PUNCT = String.valueOf(MongolCode.Uni.MONGOLIAN_BIRGA);
@@ -835,7 +835,7 @@ public class KeyboardQwerty extends Keyboard {
         Candidates can = new Candidates();
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_G_PUNCT_SUB};
+            can.unicode = new String[]{"+", "-", "×", "÷", "≠", "≈"};
             return can;
         }
 
@@ -854,7 +854,7 @@ public class KeyboardQwerty extends Keyboard {
         Candidates can = new Candidates();
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_H_PUNCT_SUB};
+            can.unicode = new String[]{"$", "₮"};
             return can;
         }
 
@@ -919,7 +919,7 @@ public class KeyboardQwerty extends Keyboard {
         Candidates can = new Candidates();
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_Z_PUNCT_SUB};
+            can.unicode = new String[]{KEY_Z_PUNCT_SUB, "*"};
             return can;
         }
 
@@ -1005,7 +1005,11 @@ public class KeyboardQwerty extends Keyboard {
     private Candidates getCandidatesForM() {
         if (mIsShowingPunctuation) {
             Candidates can = new Candidates();
-            can.unicode = new String[]{KEY_M_PUNCT_SUB};
+            can.unicode = new String[]{
+                    "" + MongolCode.Uni.DOUBLE_EXCLAMATION_MARK,
+                    "" + MongolCode.Uni.DOUBLE_QUESTION_MARK,
+                    "" + MongolCode.Uni.EXCLAMATION_QUESTION_MARK
+            };
             return can;
         }
         return null;

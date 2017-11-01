@@ -25,15 +25,15 @@ public class KeyImage extends Key {
     private Bitmap mImageScaled;
     private boolean mNeedToScaleImage = false;
 
-    KeyImage(Context context) {
+    public KeyImage(Context context) {
         this(context, null, 0);
     }
 
-    KeyImage(Context context, AttributeSet attrs) {
+    public KeyImage(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    KeyImage(Context context, AttributeSet attrs, int defStyleAttr) {
+    public KeyImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initPaints();
     }

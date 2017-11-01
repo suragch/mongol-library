@@ -21,7 +21,7 @@ import java.util.Map;
 public class KeyboardAeiou extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "AEIOU";
+    private static final String DISPLAY_NAME = "ᠴᠠᠭᠠᠨ ᠲᠣᠯᠤᠭᠠᠢ";
 
     // Row 1
     protected KeyText mKeyA;

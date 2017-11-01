@@ -29,15 +29,15 @@ public class KeyText extends Key {
     private String mDisplaySubText;
     private TextPaint mSubTextPaint;
 
-    KeyText(Context context) {
+    public KeyText(Context context) {
         this(context, null);
     }
 
-    KeyText(Context context, AttributeSet attrs) {
+    public KeyText(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    KeyText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public KeyText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

@@ -33,11 +33,13 @@ public class KeyboardActivity extends AppCompatActivity {
         // keyboards to include
         Keyboard aeiou = new KeyboardAeiou(this);
         Keyboard qwerty = new KeyboardQwerty(this);
+        Keyboard custom = new CustomKeyboard(this); // locally defined keyboard (not in library)
 
         // add keyboards to the IME container and apply any styles
         ImeContainer imeContainer = findViewById(R.id.keyboard);
         ImeContainer.Builder builder = new ImeContainer.Builder(qwerty);
         builder.addKeyboard(aeiou);
+        builder.addKeyboard(custom);
         imeContainer.apply(builder);
 
         MongolInputMethodManager mimm = new MongolInputMethodManager();

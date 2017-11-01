@@ -218,13 +218,10 @@ public abstract class Keyboard extends ViewGroup {
                     key.setPressed(true);
 
                     Keyboard.Candidates candidates = getPopupCandidates(key);
-                    if (candidates != null && candidates.unicode != null
-                            && candidates.unicode.length > 0) {
+                    if (candidates != null && !candidates.isEmpty()) {
                         int x = (int) event.getRawX();
                         preparePopup(key, candidates, x);
                     }
-
-
                     return true;
                 case (MotionEvent.ACTION_MOVE):
 
@@ -588,6 +585,13 @@ public abstract class Keyboard extends ViewGroup {
     public class Candidates {
         String[] unicode;
         String[] display;
+
+        boolean isEmpty() {
+            if (unicode == null) return true;
+            if (unicode.length == 0) return true;
+            if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
+            return false;
+        }
     }
 
     // These are special popup choice characters. They are being converted to a
