@@ -35,33 +35,21 @@ Although this library is currently usable, there are still many improvements whi
  
 ## Installing
 
-This library is a part of the jCenter repository, which is the default in Android Studio. You should see this in your project's `build.gradle` file:
-
-```java
-repositories {
-    jcenter()
-}
-```
+This library is a part of the jCenter repository, which is the default in Android Studio.
 
 You can import `mongol-library` into your project from jCenter by adding the following line to your dependencies in your app module's `build.gradle` file:
 
 ```java
 dependencies {
-    compile 'net.studymongolian:mongol-library:0.9.8'
+    implementation 'net.studymongolian:mongol-library:0.9.10'
 }
 ```
 
-Beginning with Android Studio 3.0, you should use `implementation` rather than `compile`.
-
-```java
-dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.8'
-}
-```
+If you are still using Android Studio 2.x, you should use `compile` rather than `implementation`.
 
 #### Note
 
-**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O will also only cover down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be too difficult to support down to API 9 or perhaps lower.
+**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O also only covers down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be too difficult to support down to API 9 or perhaps lower.
 
 ## UI Componants
 
@@ -242,11 +230,23 @@ String text = mongolEditText.getText().toString();
 
 It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delehi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include an in-app keyboard. 
 
-Currently only the AEIOU keyboard layout is finished, but a QWERTY layout will also be added. Additionally, Cyrillic and English keyboards will be added for convenient language switching options.
+Currently the AEIOU and QWERTY keyboard layouts are finished (with improvements still to be made). Additionally, Cyrillic and English keyboards will be added for convenient language switching options in the near future. Punctuation is shown by clicking the keyboard button. Keyboard layouts can be switched by long pressing the keyboard button.
+
+##### AEIOU keyboard
 
 ![AEIOU keyboard](docs/images/keyboard-aeiou.png)
 
-The philosophy behind the AEIOU keyboard is to make input as easy as possible. The general arrangement follows the order of the Mongolian alphabet. The buttons are large by making infrequently used letters only available as longpress popups. The Unicode distinctions between O/U, OE/UE, and T/D are hidden from the user. It has been reported that countryside Mongols who have less interaction with computer keyboards prefer this layout. Users who want more controll over the Unicode input characters can use the QWERTY keyboard layout when it is finished.
+The philosophy behind the AEIOU keyboard is to make input as easy as possible. The general arrangement follows the order of the Mongolian alphabet. The buttons are large by making infrequently used letters only available as longpress popups. The Unicode distinctions between O/U, OE/UE, and T/D are hidden from the user. It has been reported that countryside Mongols who have less interaction with computer keyboards prefer this layout. Users who want more controll over the Unicode input characters can use the QWERTY keyboard layout.
+
+##### QWERTY keyboard
+
+![QWERTY keyboard](docs/images/keyboard-qwerty.png)
+
+This keyboard copies the layout of a computer keyboard (with the addition of Mongolian Unicode ANG). Users can differentiate O/U, OE/UE, and T/D.
+
+##### Custom keyboard
+
+Is is possible to use your own custom keyboard layout. You just need to extend `Keyboard` and implement the appropriate methods. Start with a copy of the source code for one of the library keyboards and modify it to suite your needs. An example of a custom keyboard is [included in the Demo App](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/java/net/studymongolian/mongollibrarydemo/KeyboardActivity.java).
 
 #### Basic usage
 
@@ -257,22 +257,23 @@ The system keyboard can be hidden by default by adding the following to your And
           android:windowSoftInputMode="stateHidden"/>
 ```
 
-In the future keyboards will be wrapped in an `ImeContainer` to allow for keyboard switching and candidate word suggestions. However, since that functionality is not finished yet, this example shows how to just use a single keyboard (`KeyboardAeiou`) directly connected to a `MongolEditText`.
+The keyboards are in an `ImeContainer` to allow for keyboard switching and candidate word suggestions. (Currently candidate word suggestion support is not finished yet, though.)
 
 XML layout
 
 ```xml
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <HorizontalScrollView
         android:id="@+id/hsvEditTextContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:layout_margin="20dp"
         android:fillViewport="true">
 
@@ -285,13 +286,13 @@ XML layout
             android:background="@android:color/white"/>
 
     </HorizontalScrollView>
-
-
-    <net.studymongolian.mongollibrary.KeyboardAeiou
-        android:id="@+id/keyboard_aeiou"
+   
+    <!-- Keyboard container -->
+    <net.studymongolian.mongollibrary.ImeContainer
+        android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"/>
+        android:layout_weight="1"/>
 
 </LinearLayout>
 ```
@@ -304,23 +305,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_keyboard);
 
-        MongolEditText mongolEditText = (MongolEditText) findViewById(R.id.mongoledittext);
-        KeyboardAeiou keyboard = (KeyboardAeiou) findViewById(R.id.keyboard_aeiou);
+        EditText editText = findViewById(R.id.edittext);
+        MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
 
-        // prevent system keyboard from appearing when MongolEditText is tapped
-        mongolEditText.setAllowSystemKeyboard(false);
+        // keyboards to include
+        Keyboard aeiou = new KeyboardAeiou(this);
+        Keyboard qwerty = new KeyboardQwerty(this);
 
-        // send the keyboard input to the MongolEditText
-        InputConnection ic = mongolEditText.onCreateInputConnection(new EditorInfo());
-        keyboard.setInputConnection(ic);
+        // add keyboards to the IME container
+        ImeContainer imeContainer = findViewById(R.id.keyboard);
+        ImeContainer.Builder builder = new ImeContainer.Builder(aeiou);
+        builder.addKeyboard(qwerty);
+        imeContainer.apply(builder);
 
+        // The MongolInputMethodManager handles communication between the keyboards and 
+        // the MongolEditText (or EditText).
+        MongolInputMethodManager mimm = new MongolInputMethodManager();
+        mimm.addEditor(mongolEditText);
+        mimm.setIme(imeContainer);
+        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS); // don't show system keyboard
+        mimm.startInput();
     }
 }
 ```
 
-This will produce the following setup.
+This will produce the following setup with the ability to switch to the QWERTY keyboard by long pressing the keyboard button.
 
 ![AEIOU keyboard example](docs/images/keyboard-example.png)
 
@@ -515,9 +526,13 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] add MongolToolbar with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] The vertical punctuation characters shouldn't be rotated.
+* [ ] English and Cyrillic keyboards.
+* [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
+* [ ] Allow keyboards to be customized (color, key size, borders, popups, etc). 
 
 #### Version changes 
 
+* `0.9.10`: QWERTY keyboard, ability to add custom keyboard; update for Android API 27.
 * `0.9.8`: Allow both touch events and click events on `MongolEditText`; fixed spacing on `MongolAlertView` with no buttons 
 * `0.9.7`: Added support for `UnderlineSpan` and `ClickableSpan`
 * `0.9.6`: fixed resizing bug, added text change listener to `MongolEditText`
