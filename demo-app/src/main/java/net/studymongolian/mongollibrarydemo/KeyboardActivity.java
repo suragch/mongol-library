@@ -2,10 +2,6 @@ package net.studymongolian.mongollibrarydemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
 
 import net.studymongolian.mongollibrary.ImeContainer;
@@ -18,10 +14,6 @@ import net.studymongolian.mongollibrary.MongolInputMethodManager;
 
 public class KeyboardActivity extends AppCompatActivity {
 
-    //EditText editText;
-    //MongolEditText mongolEditText;
-    //KeyboardAeiou keyboard;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,61 +22,45 @@ public class KeyboardActivity extends AppCompatActivity {
         EditText editText = findViewById(R.id.edittext);
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
 
-        // keyboards to include
+        // Uncomment this if you want to style the keyboard
+
+//        // keyboards style
+//        Keyboard.StyleBuilder keyboardStyle = new Keyboard.StyleBuilder();
+//        keyboardStyle.setKeyBackgroundColor(Color.GREEN)
+//                .setKeyPressedColor(Color.RED)
+//                .setKeyBorderColor(Color.BLACK)
+//                .setKeyBorderRadius(7)
+//                .setKeyBorderWidth(2)
+//                .setPopupBackgroundColor(Color.BLACK)
+//                .setPopupTextColor(Color.WHITE)
+//                .setPopupHighlightColor(Color.BLUE)
+//                .setKeyPrimaryTextColor(Color.BLACK)
+//                .setKeySecondaryTextColor(Color.GRAY)
+//                .setKeySpacing(10);
+//
+//        // init keyboards with styles
+//        Keyboard aeiou = new KeyboardAeiou(this, keyboardStyle);
+//        Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
+//        Keyboard custom = new CustomKeyboard(this, keyboardStyle);
+
+        // keyboards to include (default style)
         Keyboard aeiou = new KeyboardAeiou(this);
         Keyboard qwerty = new KeyboardQwerty(this);
-        Keyboard custom = new CustomKeyboard(this); // locally defined keyboard (not in library)
+        Keyboard custom = new CustomKeyboard(this);
 
-        // add keyboards to the IME container and apply any styles
+        // add keyboards to the IME container
         ImeContainer imeContainer = findViewById(R.id.keyboard);
-        ImeContainer.Builder builder = new ImeContainer.Builder(qwerty);
-        builder.addKeyboard(aeiou);
-        builder.addKeyboard(custom);
-        imeContainer.apply(builder);
+        imeContainer.addKeyboard(aeiou); // first one is the default
+        imeContainer.addKeyboard(qwerty);
+        imeContainer.addKeyboard(custom);
 
+        // The MongolInputMethodManager handles communication between the keyboards and
+        // the MongolEditText (or EditText).
         MongolInputMethodManager mimm = new MongolInputMethodManager();
         mimm.addEditor(editText);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
         mimm.startInput();
-
-
-
-
-
-        // prevent system keyboard from appearing when EditText is tapped
-        //int inputType = editText.getInputType();
-        //editText.setRawInputType(inputType);
-        //editText.setRawInputType(InputType.TYPE_CLASS_TEXT);
-        //editText.setTextIsSelectable(true);
-
-        // prevent system keyboard from appearing when MongolEditText is tapped
-        //mongolEditText.setAllowSystemKeyboard(false);
-
-        // get the input connection from the currently focused edit text
-//        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    InputConnection ic = editText.onCreateInputConnection(new EditorInfo());
-//                    keyboard.setInputConnection(ic);
-//                }
-//            }
-//        });
-//        mongolEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    InputConnection ic = mongolEditText.onCreateInputConnection(new EditorInfo());
-//                    keyboard.setInputConnection(ic);
-//                }
-//            }
-//        });
-
-
-
-
-
     }
 }

@@ -47,23 +47,21 @@ public class CustomKeyboard extends Keyboard {
     private static final String KEY_8 = "8";
     private static final String KEY_9 = "9";
 
+    // Use this constructor if you want the default style
     public CustomKeyboard(Context context) {
-        this(context, null, 0);
-    }
-
-    public CustomKeyboard(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public CustomKeyboard(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        super(context);
         init(context);
     }
 
+    // all keyboards should include this custom constructor
+    // (there was no way to force it in the abstract Keyboard class)
+    public CustomKeyboard(Context context, StyleBuilder style) {
+        super(context);
+        super.initStyle(style);
+        init(context);
+    }
 
-    @Override
     protected void init(Context context) {
-        super.init(context);
 
         // | 7 | 8 | 9 |    Row 1
         // | 4 | 5 | 6 |    Row 2
@@ -148,12 +146,11 @@ public class CustomKeyboard extends Keyboard {
         mKey0.setText(KEY_0);
     }
 
-    public Candidates getPopupCandidates(Key key) {
-        // this keyboard has no popups
+    public PopupCandidates getPopupCandidates(Key key) {
+        // this keyboard has no popups except for the keyboard key
         if (key == mKeyKeyboard) {
             return getCandidatesForKeyboard();
         }
-
         return null;
     }
 

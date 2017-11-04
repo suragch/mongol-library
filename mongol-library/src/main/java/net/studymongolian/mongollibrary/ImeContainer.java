@@ -16,62 +16,34 @@ import java.util.List;
 
 /**
  * Input Method Container
- *
+ * <p>
  * Currently it is a container/controller for Keyboards and suggested word candidates. In the future
  * it could also be a container for other IME views (like handwriting recognition or speech-to-text).
- *
+ * <p>
  * The word candidates may be arranged vertically on the left of horizontally at the top.
- *
+ * <p>
  * ImeContainer manages switching keyboards and handling communication between the keyboard and the
  * word suggestion candidates list.
  */
 public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener {
 
-
-//    // This view group should have up to two children
-//    // the child at index 0 is the current keyboard
-//    // the child at index 1 is the punctuation keyboard
-//    private static final int CURRENT_KEYBOARD_INDEX = 0;
-//    private static final int PUNCTUATION_KEYBOARD_INDEX = 1;
-
     List<Keyboard> mKeyboardCandidates;
     Keyboard mCurrentKeyboard;
     private WeakReference<MongolInputMethodManager> mimm;
-    //private boolean showingPunctuationKeyboard = false;
 
     // TODO for a custom keyboard let it set a custom pronunciation keyboard itself
 
     public ImeContainer(Context context) {
-        this(context, null, 0);
-        //this.mContext = context;
+        super(context, null, 0);
     }
 
     public ImeContainer(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs, 0);
     }
 
     public ImeContainer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
     }
-
-
-
-    private void init(Context context) {
-
-//        float dpPadding = 2;
-//        int pxPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-//                dpPadding, getResources().getDisplayMetrics());
-//
-//        Keyboard aeiou = new KeyboardAeiou(context);
-//        Keyboard qwerty = new KeyboardQwerty(context);
-//        //Keyboard aeiouPunc = new KeyboardAeiouPunctuation(context);
-//        //aeiou.setBackgroundColor(Color.WHITE);
-//        qwerty.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
-//        this.addView(qwerty);
-//        mCurrentKeyboard = qwerty;
-    }
-
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -92,11 +64,8 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         // TODO need to add a Candidates view (currently Keyboard is filling the entire layout)
 
 
-
-
         int count = getChildCount();
         if (count == 0) return;
-
 
 
         final int totalAvailableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
@@ -109,13 +78,6 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
 
         // just choose the first keyboard for now
         View child = getChildAt(0);
-//        if (showingPunctuationKeyboard) {
-//            if (PUNCTUATION_KEYBOARD_INDEX >= count) return;
-//            child = getChildAt(PUNCTUATION_KEYBOARD_INDEX);
-//        } else {
-//            if (CURRENT_KEYBOARD_INDEX >= count) return;
-//            child = getChildAt(CURRENT_KEYBOARD_INDEX);
-//        }
 
         child.measure(MeasureSpec.makeMeasureSpec(keyboardWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(keyboardHeight, MeasureSpec.EXACTLY));
@@ -164,7 +126,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     @Override
-    public String[] getKeyboardCandidates() {
+    public Keyboard.PopupCandidates getKeyboardCandidates() {
         int numberOfOtherKeyboards = mKeyboardCandidates.size() - 1;
         if (numberOfOtherKeyboards < 1) return null;
         String[] names = new String[numberOfOtherKeyboards];
@@ -177,36 +139,24 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
             names[nameIndex] = keyboard.getDisplayName();
             nameIndex++;
         }
-        return names;
+        return new Keyboard.PopupCandidates(names);
     }
 
     public void setInputMethodManager(MongolInputMethodManager inputMethodManager) {
         this.mimm = new WeakReference<>(inputMethodManager);
     }
 
-    public void apply(Builder builder) {
-        this.mKeyboardCandidates = builder.keyboardCandidates;
-        Keyboard defaultKeyboard = mKeyboardCandidates.get(0);
-        defaultKeyboard.setKeyboardListener(this);
-        this.addView(defaultKeyboard);
-        mCurrentKeyboard = defaultKeyboard;
-    }
+    public void addKeyboard(Keyboard keyboard) {
+        if (mKeyboardCandidates == null)
+            mKeyboardCandidates = new ArrayList<>();
 
-    public static class Builder {
-        //private final Context context;
-        //private final Keyboard defaultKeyboard;
-        private final List<Keyboard> keyboardCandidates;
+        mKeyboardCandidates.add(keyboard);
 
-        public Builder(Keyboard defaultKeyboard) {
-            //this.context = context;
-            //this.defaultKeyboard = defaultKeyboard;
-            this.keyboardCandidates = new ArrayList<>();
-            this.keyboardCandidates.add(defaultKeyboard);
-        }
-
-        public Builder addKeyboard(Keyboard keyboard) {
-            this.keyboardCandidates.add(keyboard);
-            return this;
+        // make the first keyboard added be the one that shows
+        if (mKeyboardCandidates.size() == 1) {
+            keyboard.setKeyboardListener(this);
+            this.addView(keyboard);
+            mCurrentKeyboard = keyboard;
         }
     }
 }

@@ -131,23 +131,21 @@ public class KeyboardAeiou extends Keyboard {
     // Keys with different display values
     private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
+    // Use this constructor if you want the default style
     public KeyboardAeiou(Context context) {
-        this(context, null, 0);
-    }
-
-    public KeyboardAeiou(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public KeyboardAeiou(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        super(context);
         init(context);
     }
 
+    // all keyboards should include this custom constructor
+    // (there was no way to force it in the abstract Keyboard class)
+    public KeyboardAeiou(Context context, StyleBuilder style) {
+        super(context);
+        super.initStyle(style);
+        init(context);
+    }
 
-    @Override
     protected void init(Context context) {
-        super.init(context);
 
         // | A  | E  | I |  O |  U |    Row 1
         // | N | B | Q | G | M | L |    Row 2
@@ -336,9 +334,9 @@ public class KeyboardAeiou extends Keyboard {
         }
     }
 
-    public Candidates getPopupCandidates(Key key) {
+    public PopupCandidates getPopupCandidates(Key key) {
         // these are the choices to display in the popup (and corresponding unicode values)
-        Candidates candidates = null;
+        PopupCandidates candidates = null;
 
         // get the appropriate candidates based on the key pressed
         if (key == mKeyA) {
@@ -387,359 +385,288 @@ public class KeyboardAeiou extends Keyboard {
     }
 
 
-
-
-    private Candidates getCandidatesForA(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
+    private PopupCandidates getCandidatesForA(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_A_PUNCT_SUB};
-            return can;
+            return new PopupCandidates(KEY_A_PUNCT_SUB);
         }
 
         if (isIsolateOrInitial) {
-            can.unicode = new String[]{
+            return new PopupCandidates(new String[]{
                     "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                    "" + MongolCode.Uni.MONGOLIAN_NIRUGU};
-        } else { // medial || final
-            char previousChar = getPreviousChar();
-            if (MongolCode.isMvsConsonant(previousChar)) {
-                // include MVS
-                can.unicode = new String[]{
-                        "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
-                        "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                        "" + MongolCode.Uni.MONGOLIAN_NIRUGU};
-                can.display = new String[]{
-                        "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                        "" + MongolCode.Uni.MONGOLIAN_NIRUGU};
-            } else {
-                can.unicode = new String[]{
-                        "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                        "" + MongolCode.Uni.MONGOLIAN_NIRUGU};
-                can.display = new String[]{
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                        "" + MongolCode.Uni.MONGOLIAN_NIRUGU};
-            }
-
+                    "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
         }
-        return can;
+
+        // medial || final
+        char previousChar = getPreviousChar();
+        if (MongolCode.isMvsConsonant(previousChar)) {
+            // include MVS
+            return new PopupCandidates(
+                    new String[]{
+                            "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
+                            "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
+                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU},
+                    new String[]{
+                            "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,
+                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
+        } else {
+            return new PopupCandidates(
+                    new String[]{
+                            "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
+                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU},
+                    new String[]{
+                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
+        }
     }
 
-    private Candidates getCandidatesForE(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
+    private PopupCandidates getCandidatesForE(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_E_PUNCT_SUB};
-            return can;
+            return new PopupCandidates(KEY_E_PUNCT_SUB);
         }
 
         if (isIsolateOrInitial) {
-            can.unicode = new String[]{"" + MongolCode.Uni.EE};
-        } else { // medial || final
-            char previousChar = getPreviousChar();
-            if (MongolCode.isMvsConsonant(previousChar)
-                    && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
-                // include MVS
-                can.unicode = new String[]{
-                        "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                        "" + MongolCode.Uni.EE};
-                can.display = new String[]{
-                        "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                        "" + MongolCode.Uni.EE};
-            } else {
-                can.unicode = new String[]{"" + MongolCode.Uni.EE};
-            }
-
+            return new PopupCandidates(MongolCode.Uni.EE);
         }
-        return can;
+
+        // medial || final
+        char previousChar = getPreviousChar();
+        if (MongolCode.isMvsConsonant(previousChar)
+                && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
+            // include MVS
+            return new PopupCandidates(
+                    new String[]{
+                            "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                            "" + MongolCode.Uni.EE},
+                    new String[]{
+                            "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                            "" + MongolCode.Uni.EE});
+        } else {
+            return new PopupCandidates(MongolCode.Uni.EE);
+        }
+
     }
 
-    private Candidates getCandidatesForI(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
+    private PopupCandidates getCandidatesForI(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_I_PUNCT_SUB};
-            return can;
+            return new PopupCandidates(KEY_I_PUNCT_SUB);
         }
 
         if (!isIsolateOrInitial) {// medial/final
             char prevChar = getPreviousChar();
             if (MongolCode.isVowel(prevChar)) {
-                can.unicode = new String[]{
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I, // override double tooth I after vowel
-                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS1};
-                can.display = new String[]{
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+                return new PopupCandidates(
+                        new String[]{
+                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I, // override double tooth I after vowel
+                                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1},
+                        new String[]{
+                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
+                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
             } else {
-                can.unicode = new String[]{"" +
-                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS1};
-                can.display = new String[]{
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+                return new PopupCandidates(
+                        new String[]{
+                                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1},
+                        new String[]{
+                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
             }
 
         }
-        return can;
+        return null;
     }
 
-    private Candidates getCandidatesForO(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
+    private PopupCandidates getCandidatesForO(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_O_PUNCT_SUB};
-            return can;
+            return new PopupCandidates(KEY_O_PUNCT_SUB);
         }
 
         if (!isIsolateOrInitial) { // medial/final
-            can.unicode = new String[]{"" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
-                    "" + MongolCode.Uni.U + MongolCode.Uni.FVS1};
-            can.display = new String[]{
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1};
-            return can;
+            return new PopupCandidates(
+                    new String[]{"" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                            "" + MongolCode.Uni.U + MongolCode.Uni.FVS1},
+                    new String[]{
+                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1});
         }
         return null;
     }
 
-    private Candidates getCandidatesForU(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
+    private PopupCandidates getCandidatesForU(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_U_PUNCT_SUB};
-            return can;
+            return new PopupCandidates(KEY_U_PUNCT_SUB);
         }
 
         if (!isIsolateOrInitial) { // medial/final
-            can.unicode = new String[]{"" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
-                    "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1};
-            can.display = new String[]{
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1};
-            return can;
+            return new PopupCandidates(
+                    new String[]{"" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
+                            "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1},
+                    new String[]{
+                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
+                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1});
         }
         return null;
     }
 
-    private Candidates getCandidatesForNA(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
+    private PopupCandidates getCandidatesForNA(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_NA_PUNCT_SUB};
-            return can;
+            return new PopupCandidates(KEY_NA_PUNCT_SUB);
         }
 
         if (isIsolateOrInitial) {
-            can.unicode = new String[]{"" + MongolCode.Uni.ANG};
-        } else { // medial/final
-            can.unicode = new String[]{"" + MongolCode.Uni.ANG,
-                    "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ, // only(?) way to override dotted N before vowel in Unicode 10.0
-                    "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1};
-            can.display = new String[]{
-                    "" + MongolCode.Uni.ANG,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+            return new PopupCandidates(MongolCode.Uni.ANG);
         }
-        return can;
+
+        // medial/final
+        return new PopupCandidates(
+                new String[]{"" + MongolCode.Uni.ANG,
+                        "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ, // only(?) way to override dotted N before vowel in Unicode 10.0
+                        "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1},
+                new String[]{
+                        "" + MongolCode.Uni.ANG,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
     }
 
-    private Candidates getCandidatesForBA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_BA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{"" + MongolCode.Uni.PA, "" + MongolCode.Uni.FA};
-        return can;
+    private PopupCandidates getCandidatesForBA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_BA_PUNCT_SUB);
+        return new PopupCandidates(new String[]{"" + MongolCode.Uni.PA, "" + MongolCode.Uni.FA});
     }
 
-    private Candidates getCandidatesForQA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_QA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{"" + MongolCode.Uni.HAA};
-        return can;
+    private PopupCandidates getCandidatesForQA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_QA_PUNCT_SUB);
+        return new PopupCandidates(MongolCode.Uni.HAA);
     }
 
-    private Candidates getCandidatesForGA(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_GA_PUNCT_SUB};
-            return can;
-        }
+    private PopupCandidates getCandidatesForGA(boolean isIsolateOrInitial) {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_GA_PUNCT_SUB);
 
         if (isIsolateOrInitial) {
-            can.unicode = new String[]{"" + MongolCode.Uni.KA};
-        } else { // medial/final
-            can.unicode = new String[]{"" + MongolCode.Uni.KA,
-                    "" + MongolCode.Uni.GA + MongolCode.Uni.FVS1, // see note on MongolCode(FINA_GA_FVS1)
-                    "" + MongolCode.Uni.GA + MongolCode.Uni.FVS2}; // see note on MongolCode(FINA_GA_FVS2)
-            can.display = new String[]{
-                    "" + MongolCode.Uni.KA,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS1,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2};
+            return new PopupCandidates(MongolCode.Uni.KA);
         }
-        return can;
+
+        // medial/final
+        return new PopupCandidates(
+                new String[]{
+                        "" + MongolCode.Uni.KA,
+                        "" + MongolCode.Uni.GA + MongolCode.Uni.FVS1, // see note on MongolCode(FINA_GA_FVS1)
+                        "" + MongolCode.Uni.GA + MongolCode.Uni.FVS2}, // see note on MongolCode(FINA_GA_FVS2)
+                new String[]{
+                        "" + MongolCode.Uni.KA,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS1,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2});
     }
 
-    private Candidates getCandidatesForMA() {
-        if (mIsShowingPunctuation) {
-            Candidates can = new Candidates();
-            can.unicode = new String[]{KEY_MA_PUNCT_SUB};
-            return can;
-        }
+    private PopupCandidates getCandidatesForMA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_MA_PUNCT_SUB);
         return null;
     }
 
-    private Candidates getCandidatesForLA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_LA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{"" + MongolCode.Uni.LHA};
-        return can;
+    private PopupCandidates getCandidatesForLA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_LA_PUNCT_SUB);
+        return new PopupCandidates(MongolCode.Uni.LHA);
     }
 
-    private Candidates getCandidatesForSA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_SA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{"" + MongolCode.Uni.SHA};
-        return can;
+    private PopupCandidates getCandidatesForSA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_SA_PUNCT_SUB);
+        return new PopupCandidates(MongolCode.Uni.SHA);
     }
 
-    private Candidates getCandidatesForTADA(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_DA_PUNCT_SUB};
-            return can;
-        }
+    private PopupCandidates getCandidatesForTADA(boolean isIsolateOrInitial) {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_DA_PUNCT_SUB);
 
         if (isIsolateOrInitial) {
             char prevChar = getPreviousChar();
+            String[] unicode;
             if (prevChar == MongolCode.Uni.NNBS) {
-                can.unicode = new String[]{"" + MongolCode.Uni.DA};
+                unicode = new String[]{"" + MongolCode.Uni.DA};
             } else {
-                can.unicode = new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
+                unicode = new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
             }
-            can.display = new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+            return new PopupCandidates(
+                    unicode,
+                    new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
             // TODO if this turns out to be an isolate then the FVS1 should be removed
-        } else { // medial/final
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
-                    "" + MongolCode.Uni.TA,
-                    "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
-            can.display = new String[]{
-                    "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
-                            MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
         }
-        return can;
+
+        // medial/final
+        return new PopupCandidates(
+                new String[]{
+                        "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
+                        "" + MongolCode.Uni.TA,
+                        "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1},
+                new String[]{
+                        "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
+                                MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1});
     }
 
-    private Candidates getCandidatesForCHA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_CHA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{
+    private PopupCandidates getCandidatesForCHA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_CHA_PUNCT_SUB);
+        return new PopupCandidates(new String[]{
                 "" + MongolCode.Uni.TSA,
-                "" + MongolCode.Uni.CHI};
-        return can;
+                "" + MongolCode.Uni.CHI});
     }
 
-    private Candidates getCandidatesForJA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_JA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{
+    private PopupCandidates getCandidatesForJA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_JA_PUNCT_SUB);
+        return new PopupCandidates(new String[]{
                 "" + MongolCode.Uni.ZA,
-                "" + MongolCode.Uni.ZHI};
-        return can;
+                "" + MongolCode.Uni.ZHI});
     }
 
-    private Candidates getCandidatesForYA(boolean isIsolateOrInitial) {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_YA_PUNCT_SUB};
-            return can;
-        }
+    private PopupCandidates getCandidatesForYA(boolean isIsolateOrInitial) {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_YA_PUNCT_SUB);
 
         if (isIsolateOrInitial) {
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.WA,
-                    "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1};
-            can.display = new String[]{
-                    "" + MongolCode.Uni.WA,
-                    "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
-        } else { // medial/final
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.WA,
-                    "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1};
-            can.display = new String[]{
-                    "" + MongolCode.Uni.WA,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ};
+            return new PopupCandidates(
+                    new String[]{
+                            "" + MongolCode.Uni.WA,
+                            "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1},
+                    new String[]{
+                            "" + MongolCode.Uni.WA,
+                            "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
         }
 
-        return can;
+        // medial/final
+        return new PopupCandidates(
+                new String[]{
+                        "" + MongolCode.Uni.WA,
+                        "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1},
+                new String[]{
+                        "" + MongolCode.Uni.WA,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
     }
 
-    private Candidates getCandidatesForRA() {
-        Candidates can = new Candidates();
-
-        if (mIsShowingPunctuation) {
-            can.unicode = new String[]{KEY_RA_PUNCT_SUB};
-            return can;
-        }
-
-        can.unicode = new String[]{"" + MongolCode.Uni.ZRA};
-        return can;
+    private PopupCandidates getCandidatesForRA() {
+        if (mIsShowingPunctuation)
+            return new PopupCandidates(KEY_RA_PUNCT_SUB);
+        return new PopupCandidates(MongolCode.Uni.ZRA);
     }
 
-//    public Candidates getCandidatesForKeyboard() {
-//
-//        // TODO add other candidates after keyboards are finished
-//        Candidates can = new Candidates();
-//        can.unicode = new String[]{
-//                "English",
-//                "Computer",
-//                "Cyrillic"};
-//        return can;
-//    }
-    private Candidates getCandidatesForComma() {
-        Candidates can = new Candidates();
-        can.unicode = new String[]{
+    private PopupCandidates getCandidatesForComma() {
+        return new PopupCandidates(new String[]{
                 "" + MongolCode.Uni.VERTICAL_QUESTION_MARK,
                 "" + MongolCode.Uni.MONGOLIAN_FULL_STOP,
-                "" + MongolCode.Uni.VERTICAL_EXCLAMATION_MARK};
-        return can;
+                "" + MongolCode.Uni.VERTICAL_EXCLAMATION_MARK});
     }
 
-    private Candidates getCandidatesForSpace() {
+    private PopupCandidates getCandidatesForSpace() {
         return getCandidatesForSuffix();
     }
 

@@ -17,6 +17,7 @@ class PopupKeyCandidates extends ViewGroup {
 
     private int mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
     private int mHighlightColor = Color.DKGRAY;
+    private int mTextColor = Color.BLACK;
     private String[] mCandidates;
 
     // this popup view will only be created programmatically
@@ -35,6 +36,7 @@ class PopupKeyCandidates extends ViewGroup {
             MongolLabel label = new MongolLabel(mContext);
             label.setText(candidate);
             label.setTextSize(textSize);
+            label.setTextColor(mTextColor);
             label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
             addView(label);
         }
@@ -48,6 +50,9 @@ class PopupKeyCandidates extends ViewGroup {
         this.mHighlightColor = highlightColor;
     }
 
+    public void setTextColor(int textColor) {
+        this.mTextColor = textColor;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

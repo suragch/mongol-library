@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -17,34 +18,38 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public abstract class Keyboard extends ViewGroup {
 
-    // Standard keyboard types
-//    public static final int AEIOU = 0;
-//    public static final int AEIOU_PUNCTUATION = 1;
-//    public static final int QWERTY = 2;
-//    public static final int QWERTY_PUNCTUATION = 3;
-//    public static final int LATIN = 4;
-//    public static final int LATIN_PUNCTUATION = 5;
-//    public static final int CYRILLIC = 6;
-//    public static final int CYRILLIC_PUNCTUATION = 7;
+    static final float DEFAULT_PRIMARY_TEXT_SIZE = 24;
+    static final int DEFAULT_PRIMARY_TEXT_COLOR = Color.BLACK;
+    static final int DEFAULT_SECONDARY_TEXT_COLOR = Color.parseColor("#61000000"); // alpha black
+    static final int DEFAULT_KEY_COLOR = Color.LTGRAY;
+    static final int DEFAULT_KEY_PRESSED_COLOR = Color.GRAY;
+    static final int DEFAULT_KEY_BORDER_COLOR = Color.BLACK;
+    static final int DEFAULT_KEY_BORDER_WIDTH = 0;
+    static final int DEFAULT_KEY_BORDER_RADIUS = 5;
+    static final int DEFAULT_KEY_PADDING = 2;
+    static final int DEFAULT_POPUP_COLOR = Color.WHITE;
+    static final int DEFAULT_POPUP_TEXT_COLOR = Color.BLACK;
+    static final int DEFAULT_POPUP_HIGHLIGHT_COLOR = Color.GRAY;
 
-    //protected KeyboardListener mCallback;
     protected KeyImage mKeyKeyboard;
 
-    protected int mPopupBackgroundColor = Color.WHITE;
-    protected int mPopupHighlightColor = Color.GRAY;
+    protected int mPopupBackgroundColor;
+    protected int mPopupHighlightColor;
+    protected int mPopupTextColor;
 
-    //private String mDisplayName;
     protected Typeface mTypeface;
-    protected float mTextSize;
-    protected float mSubTextSize;
-    protected int mTextColor;
-    protected int mSubTextColor;
+    protected float mPrimaryTextSize;
+    protected float mSecondaryTextSize;
+    protected int mPrimaryTextColor;
+    protected int mSecondaryTextColor;
     protected int mKeyColor;
     protected int mKeyPressedColor;
     protected int mKeyBorderColor;
@@ -66,31 +71,54 @@ public abstract class Keyboard extends ViewGroup {
     protected KeyboardListener mKeyboardListener = null;
 
     public Keyboard(Context context) {
-        this(context, null, 0);
+        super(context);
+        init(context);
     }
 
     public Keyboard(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context);
     }
 
-    public Keyboard(Context context,
-                    AttributeSet attrs,
-                    int defStyle) {
+    public Keyboard(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(context);
     }
 
-    protected void init(Context context) {
+
+
+    protected void initStyle(StyleBuilder style) {
+        mPrimaryTextSize = style.keyPrimaryTextSize;
+        mSecondaryTextSize = mPrimaryTextSize / 2;
+        mPrimaryTextColor = style.keyPrimaryTextColor;
+        mSecondaryTextColor = style.keySecondaryTextColor;
+        mKeyColor = style.keyBackgroundColor;
+        mKeyPressedColor = style.keyPressedColor;
+        mKeyBorderColor = style.keyBorderColor;
+        mKeyBorderWidth = style.keyBorderWidth;
+        mKeyBorderRadius = style.keyBorderRadius;
+        mKeyPadding = style.keySpacing;
+        mPopupBackgroundColor = style.popupBackgroundColor;
+        mPopupHighlightColor = style.popupHighlightColor;
+        mPopupTextColor = style.popupTextColor;
+    }
+
+    // use default values if custom constructor is not used
+    private void init(Context context) {
         mTypeface = MongolFont.get(MongolFont.QAGAN, context);
-        mTextSize = 24;
-        mSubTextSize = mTextSize / 2;
-        mTextColor = Color.BLACK;
-        mSubTextColor = Color.parseColor("#61000000"); // alpha black
-        mKeyColor = Color.LTGRAY;
-        mKeyPressedColor = Color.GRAY;
-        mKeyBorderColor = Color.BLACK;
-        mKeyBorderWidth = 0;
-        mKeyBorderRadius = 5;
-        mKeyPadding = 2;
+        mPrimaryTextSize = DEFAULT_PRIMARY_TEXT_SIZE;
+        mSecondaryTextSize = mPrimaryTextSize / 2;
+        mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
+        mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
+        mKeyColor = DEFAULT_KEY_COLOR;
+        mKeyPressedColor = DEFAULT_KEY_PRESSED_COLOR;
+        mKeyBorderColor = DEFAULT_KEY_BORDER_COLOR;
+        mKeyBorderWidth = DEFAULT_KEY_BORDER_WIDTH;
+        mKeyBorderRadius = DEFAULT_KEY_BORDER_RADIUS;
+        mKeyPadding = DEFAULT_KEY_PADDING;
+        mPopupBackgroundColor = DEFAULT_POPUP_COLOR;
+        mPopupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
+        mPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
     }
 
     protected void initTextKey(KeyText textKey, String primary, String punctuation) {
@@ -100,7 +128,7 @@ public abstract class Keyboard extends ViewGroup {
         addView(textKey);
     }
 
-    // number of keys and wieghts are initialized by keyboard subclass
+    // number of keys and weights are initialized by keyboard subclass
     protected int[] mNumberOfKeysInRow;
     protected float[] mKeyWeights;
 
@@ -142,10 +170,10 @@ public abstract class Keyboard extends ViewGroup {
             Key child = (Key) getChildAt(i);
             if (child instanceof KeyText) {
                 ((KeyText) child).setTypeFace(mTypeface);
-                ((KeyText) child).setTextSize(mTextSize);
-                ((KeyText) child).setSubTextSize(mSubTextSize);
-                ((KeyText) child).setTextColor(mTextColor);
-                ((KeyText) child).setSubTextColor(mSubTextColor);
+                ((KeyText) child).setTextSize(mPrimaryTextSize);
+                ((KeyText) child).setSubTextSize(mSecondaryTextSize);
+                ((KeyText) child).setTextColor(mPrimaryTextColor);
+                ((KeyText) child).setSubTextColor(mSecondaryTextColor);
             } else if (child instanceof KeyImage) {
 
             }
@@ -161,7 +189,8 @@ public abstract class Keyboard extends ViewGroup {
 
     public interface KeyboardListener {
         public void onRequestNewKeyboard(String keyboardDisplayName);
-        public String[] getKeyboardCandidates();
+
+        public PopupCandidates getKeyboardCandidates();
     }
 
     public void setKeyboardListener(KeyboardListener listener) {
@@ -217,7 +246,7 @@ public abstract class Keyboard extends ViewGroup {
 
                     key.setPressed(true);
 
-                    Keyboard.Candidates candidates = getPopupCandidates(key);
+                    Keyboard.PopupCandidates candidates = getPopupCandidates(key);
                     if (candidates != null && !candidates.isEmpty()) {
                         int x = (int) event.getRawX();
                         preparePopup(key, candidates, x);
@@ -288,7 +317,7 @@ public abstract class Keyboard extends ViewGroup {
             }
         }
 
-        private void preparePopup(final Key key, final KeyboardAeiou.Candidates candidates, final int xPosition) {
+        private void preparePopup(final Key key, final Keyboard.PopupCandidates candidates, final int xPosition) {
 
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
@@ -305,14 +334,15 @@ public abstract class Keyboard extends ViewGroup {
                     // get the popup view
                     popupView = new PopupKeyCandidates(getContext());
                     popupView.setBackgroundColor(mPopupBackgroundColor);
+                    popupView.setTextColor(mPopupTextColor);
 
                     // update the popup view with the candidate choices
-                    if (candidates == null || candidates.unicode == null) return;
-                    popupView.setCandidates(candidates.unicode);
-                    if (candidates.display == null) {
-                        popupView.setDisplayCandidates(candidates.unicode, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+                    if (candidates == null || candidates.getUnicode() == null) return;
+                    popupView.setCandidates(candidates.getUnicode());
+                    if (candidates.getDisplay() == null) {
+                        popupView.setDisplayCandidates(candidates.getUnicode(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
                     } else {
-                        popupView.setDisplayCandidates(candidates.display, PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+                        popupView.setDisplayCandidates(candidates.getDisplay(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
                     }
 
                     popupView.setHighlightColor(mPopupHighlightColor);
@@ -516,22 +546,16 @@ public abstract class Keyboard extends ViewGroup {
         return mongolWord.toString();
     }
 
-    protected Candidates getCandidatesForSuffix() {
-        Candidates can = new Candidates();
+    protected PopupCandidates getCandidatesForSuffix() {
         String previousWord = getPreviousMongolWord();
         if (TextUtils.isEmpty(previousWord)) {
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.NNBS};
-            return can;
-
+            return new PopupCandidates(MongolCode.Uni.NNBS);
         }
         // TODO if it is a number then return the right suffix for that
         char lastChar = previousWord.charAt(previousWord.length() - 1);
         MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
         if (gender == null) {
-            can.unicode = new String[]{
-                    "" + MongolCode.Uni.NNBS};
-            return can;
+            return new PopupCandidates(MongolCode.Uni.NNBS);
         }
         String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
         String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
@@ -543,7 +567,7 @@ public abstract class Keyboard extends ViewGroup {
         String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
         String udSuffix = MongolCode.getSuffixUd(gender);
 
-        can.unicode = new String[]{
+        String[] unicode = new String[]{
                 "" + MongolCode.Uni.NNBS,
                 uuSuffix,
                 yinUnUSuffix,
@@ -553,7 +577,7 @@ public abstract class Keyboard extends ViewGroup {
                 banIyanSuffix,
                 achaSuffix,
                 udSuffix};
-        return can;
+        return new PopupCandidates(unicode);
     }
 
     protected boolean isIsolateOrInitial() {
@@ -567,14 +591,12 @@ public abstract class Keyboard extends ViewGroup {
                 location == MongolCode.Location.INITIAL;
     }
 
-    public Candidates getCandidatesForKeyboard() {
+    public PopupCandidates getCandidatesForKeyboard() {
         if (mKeyboardListener == null) return null;
-        Candidates can = new Candidates();
-        can.unicode = mKeyboardListener.getKeyboardCandidates();
-        return can;
+        return mKeyboardListener.getKeyboardCandidates();
     }
 
-    abstract public Candidates getPopupCandidates(Key key);
+    abstract public PopupCandidates getPopupCandidates(Key key);
 
     // in this method you should switch the display on the keys for normal or punctuation mode
     abstract public void setDisplayText(boolean isShowingPunctuation);
@@ -582,15 +604,146 @@ public abstract class Keyboard extends ViewGroup {
     // subclasses should return the name of the keyboard to display in the keyboard chooser popup
     abstract public String getDisplayName();
 
-    public class Candidates {
-        String[] unicode;
-        String[] display;
 
-        boolean isEmpty() {
+    /**
+     * these are the choices for a popup key
+     */
+    public static class PopupCandidates {
+
+        private String[] unicode;
+        private String[] display;
+
+        /**
+         * Convenience constructor for PopupCandidates(String[] unicode)
+         *
+         * @param unicode the unicode values for the popup items
+         */
+        public PopupCandidates(char unicode) {
+            this(new String[]{String.valueOf(unicode)});
+        }
+
+        /**
+         * Convenience constructor for PopupCandidates(String[] unicode)
+         *
+         * @param unicode the unicode values for the popup items
+         */
+        public PopupCandidates(String unicode) {
+            this(new String[]{unicode});
+        }
+
+        /**
+         * @param unicode the unicode values for the popup items
+         */
+        public PopupCandidates(String[] unicode) {
+            this(unicode, null);
+        }
+
+        /**
+         * @param unicode the unicode values for the popup items
+         * @param display the value to display if different than the unicode values
+         */
+        public PopupCandidates(String[] unicode, String[] display) {
+            if (display != null) {
+                if (display.length != unicode.length)
+                    throw new IllegalArgumentException(
+                            "The number of display items must " +
+                                    "be the same as the number of unicode items.");
+            }
+            this.unicode = unicode;
+            this.display = display;
+        }
+
+        public boolean isEmpty() {
             if (unicode == null) return true;
             if (unicode.length == 0) return true;
             if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
             return false;
+        }
+
+        public String[] getUnicode() {
+            return unicode;
+        }
+
+        public String[] getDisplay() {
+            return display;
+        }
+    }
+
+
+
+    public static class StyleBuilder {
+
+        private int keyBackgroundColor = DEFAULT_KEY_COLOR;
+        private int keyPressedColor = DEFAULT_KEY_PRESSED_COLOR;
+        private int keyBorderColor = DEFAULT_KEY_BORDER_COLOR;
+        private int keyBorderRadius = DEFAULT_KEY_BORDER_RADIUS;
+        private int keyBorderWidth = DEFAULT_KEY_BORDER_WIDTH;
+        private int popupBackgroundColor = DEFAULT_POPUP_COLOR;
+        private int popupTextColor = DEFAULT_POPUP_TEXT_COLOR;
+        private int popupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
+        private int keyPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
+        private int keySecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
+        private float keyPrimaryTextSize = DEFAULT_PRIMARY_TEXT_SIZE;
+        private int keySpacing = DEFAULT_KEY_PADDING;
+
+        public StyleBuilder setKeyTextSize(float keyTextSize) {
+            this.keyPrimaryTextSize = keyTextSize;
+            return this;
+        }
+
+        public StyleBuilder setKeyBackgroundColor(int keyBackgroundColor) {
+            this.keyBackgroundColor = keyBackgroundColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyBorderColor(int keyBorderColor) {
+            this.keyBorderColor = keyBorderColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyBorderRadius(int keyBorderRadius) {
+            this.keyBorderRadius = keyBorderRadius;
+            return this;
+        }
+
+        public StyleBuilder setKeyBorderWidth(int keyBorderWidth) {
+            this.keyBorderWidth = keyBorderWidth;
+            return this;
+        }
+
+        public StyleBuilder setPopupBackgroundColor(int popupBackgroundColor) {
+            this.popupBackgroundColor = popupBackgroundColor;
+            return this;
+        }
+
+        public StyleBuilder setPopupTextColor(int popupTextColor) {
+            this.popupTextColor = popupTextColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyPrimaryTextColor(int keyPrimaryTextColor) {
+            this.keyPrimaryTextColor = keyPrimaryTextColor;
+            return this;
+        }
+
+        public StyleBuilder setKeySecondaryTextColor(int keySecondaryTextColor) {
+            this.keySecondaryTextColor = keySecondaryTextColor;
+            return this;
+        }
+
+        public StyleBuilder setKeySpacing(int keySpacing) {
+            this.keySpacing = keySpacing;
+            return this;
+        }
+
+        public StyleBuilder setPopupHighlightColor(int popupHighlightColor) {
+            this.popupHighlightColor = popupHighlightColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyPressedColor(int keyPressedColor) {
+            this.keyPressedColor = keyPressedColor;
+            return this;
         }
     }
 
@@ -601,7 +754,7 @@ public abstract class Keyboard extends ViewGroup {
     private static final String MEDIAL_A_FVS1 = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1;
     private static final String MEDIAL_A_FVS1_COMPOSING = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
     //    private static final String INITIAL_I_SUFFIX = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I;
-//    private static final String INITIAL_I_SUFFIX_COMPOSING = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
+    //    private static final String INITIAL_I_SUFFIX_COMPOSING = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
     private static final String MEDIAL_I_FVS1 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1;
     private static final String MEDIAL_I_FVS1_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
     private static final String MEDIAL_ZWJ_I = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I;
