@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.10'
+    implementation 'net.studymongolian:mongol-library:0.9.11'
 }
 ```
 
@@ -316,9 +316,8 @@ public class MainActivity extends AppCompatActivity {
 
         // add keyboards to the IME container
         ImeContainer imeContainer = findViewById(R.id.keyboard);
-        ImeContainer.Builder builder = new ImeContainer.Builder(aeiou);
-        builder.addKeyboard(qwerty);
-        imeContainer.apply(builder);
+        imeContainer.addKeyboard(aeiou); // first one is shown first
+        imeContainer.addKeyboard(qwerty);
 
         // The MongolInputMethodManager handles communication between the keyboards and 
         // the MongolEditText (or EditText).
@@ -334,6 +333,28 @@ public class MainActivity extends AppCompatActivity {
 This will produce the following setup with the ability to switch to the QWERTY keyboard by long pressing the keyboard button.
 
 ![AEIOU keyboard example](docs/images/keyboard-example.png)
+
+If you would like to style your keyboards then you can use the alternate Keyboard constructor `KeyboardXXX(Context context, StyleBuilder style)` where the `StyleBuilder` is used to set any parameters you want to change from the defaults. Here is an example:
+
+```java
+// keyboards style
+Keyboard.StyleBuilder keyboardStyle = new Keyboard.StyleBuilder();
+keyboardStyle.setKeyBackgroundColor(Color.GREEN)
+        .setKeyPressedColor(Color.RED)
+        .setKeyBorderColor(Color.BLACK)
+        .setKeyBorderRadius(7)
+        .setKeyBorderWidth(2)
+        .setPopupBackgroundColor(Color.BLACK)
+        .setPopupTextColor(Color.WHITE)
+        .setPopupHighlightColor(Color.BLUE)
+        .setKeyPrimaryTextColor(Color.BLACK)
+        .setKeySecondaryTextColor(Color.GRAY)
+        .setKeySpacing(10);
+
+// init keyboards with styles
+Keyboard aeiou = new KeyboardAeiou(this, keyboardStyle);
+Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
+```
 
 ### MongolToast 
 
@@ -528,10 +549,10 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] The vertical punctuation characters shouldn't be rotated.
 * [ ] English and Cyrillic keyboards.
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
-* [ ] Allow keyboards to be customized (color, key size, borders, popups, etc). 
 
 #### Version changes 
 
+* `0.9.11`: Customize keyboard properties like key background color, borders widths, radius, and popups.
 * `0.9.10`: QWERTY keyboard, ability to add custom keyboard; update for Android API 27.
 * `0.9.8`: Allow both touch events and click events on `MongolEditText`; fixed spacing on `MongolAlertView` with no buttons 
 * `0.9.7`: Added support for `UnderlineSpan` and `ClickableSpan`
