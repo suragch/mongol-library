@@ -16,7 +16,7 @@ class MongolWord {
     private char fvs;
     private Shape glyphShapeBelow;
 
-    private MongolWord() {};
+    private MongolWord() {}
 
     MongolWord(CharSequence mongolWord) {
         this.inputWord = mongolWord;
