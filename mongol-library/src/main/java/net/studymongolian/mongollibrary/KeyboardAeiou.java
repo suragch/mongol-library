@@ -223,7 +223,7 @@ public class KeyboardAeiou extends Keyboard {
 
         // keyboard
         mKeyKeyboard = new KeyImage(context);
-        mKeyKeyboard.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_black_48dp));
+        mKeyKeyboard.setImage(getKeyboardImage());
         mKeyKeyboard.setOnTouchListener(textKeyTouchListener);
         addView(mKeyKeyboard);
 
@@ -241,7 +241,7 @@ public class KeyboardAeiou extends Keyboard {
 
         // return
         mKeyReturn = new KeyImage(context);
-        mKeyReturn.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_return_black_48dp));
+        mKeyReturn.setImage(getReturnImage());
         mKeyReturn.setOnTouchListener(textKeyTouchListener);
         mKeyValues.put(mKeyReturn, "\n");
         mKeyPunctuationValues.put(mKeyReturn, "\n");
@@ -249,7 +249,7 @@ public class KeyboardAeiou extends Keyboard {
 
         // backspace
         mKeyBackspace = new KeyImage(context);
-        mKeyBackspace.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.ic_keyboard_backspace_black_48dp));
+        mKeyBackspace.setImage(getBackspaceImage());
         mKeyBackspace.setOnTouchListener(handleBackspace);
         addView(mKeyBackspace);
 

@@ -115,8 +115,7 @@ public class CustomKeyboard extends Keyboard {
 
         // keyboard
         mKeyKeyboard = new KeyImage(context);
-        mKeyKeyboard.setImage(BitmapFactory.decodeResource(getResources(),
-                net.studymongolian.mongollibrary.R.drawable.ic_keyboard_black_48dp));
+        mKeyKeyboard.setImage(getKeyboardImage());
         mKeyKeyboard.setOnTouchListener(textKeyTouchListener);
         addView(mKeyKeyboard);
 
@@ -126,7 +125,7 @@ public class CustomKeyboard extends Keyboard {
         // backspace
         mKeyBackspace = new KeyImage(context);
         mKeyBackspace.setImage(BitmapFactory.decodeResource(getResources(),
-                R.drawable.ic_cusom_backspace)); // custom (non library) icon
+                R.drawable.ic_custom_backspace)); // custom (non library) icon
         mKeyBackspace.setOnTouchListener(handleBackspace);
         addView(mKeyBackspace);
 

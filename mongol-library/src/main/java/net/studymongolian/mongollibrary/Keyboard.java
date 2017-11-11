@@ -1,6 +1,8 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -38,13 +40,15 @@ public abstract class Keyboard extends ViewGroup {
     static final int DEFAULT_POPUP_COLOR = Color.WHITE;
     static final int DEFAULT_POPUP_TEXT_COLOR = Color.BLACK;
     static final int DEFAULT_POPUP_HIGHLIGHT_COLOR = Color.GRAY;
+    static final KeyImage.Theme DEFAULT_IMAGE_THEME = KeyImage.Theme.LIGHT;
 
     protected KeyImage mKeyKeyboard;
+    protected KeyImage.Theme mKeyImageTheme;
 
     protected int mPopupBackgroundColor;
     protected int mPopupHighlightColor;
-    protected int mPopupTextColor;
 
+    protected int mPopupTextColor;
     protected Typeface mTypeface;
     protected float mPrimaryTextSize;
     protected float mSecondaryTextSize;
@@ -92,6 +96,7 @@ public abstract class Keyboard extends ViewGroup {
         mSecondaryTextSize = mPrimaryTextSize / 2;
         mPrimaryTextColor = style.keyPrimaryTextColor;
         mSecondaryTextColor = style.keySecondaryTextColor;
+        mKeyImageTheme = style.keyImageTheme;
         mKeyColor = style.keyBackgroundColor;
         mKeyPressedColor = style.keyPressedColor;
         mKeyBorderColor = style.keyBorderColor;
@@ -110,6 +115,7 @@ public abstract class Keyboard extends ViewGroup {
         mSecondaryTextSize = mPrimaryTextSize / 2;
         mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
         mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
+        mKeyImageTheme = DEFAULT_IMAGE_THEME;
         mKeyColor = DEFAULT_KEY_COLOR;
         mKeyPressedColor = DEFAULT_KEY_PRESSED_COLOR;
         mKeyBorderColor = DEFAULT_KEY_BORDER_COLOR;
@@ -518,6 +524,36 @@ public abstract class Keyboard extends ViewGroup {
 
     };
 
+    protected Bitmap getReturnImage() {
+        int imageResourceId;
+        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+            imageResourceId = R.drawable.ic_keyboard_return_black_48dp;
+        } else {
+            imageResourceId = R.drawable.ic_keyboard_return_white_48dp;
+        }
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getBackspaceImage() {
+        int imageResourceId;
+        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+            imageResourceId = R.drawable.ic_keyboard_backspace_black_48dp;
+        } else {
+            imageResourceId = R.drawable.ic_keyboard_backspace_white_48dp;
+        }
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getKeyboardImage() {
+        int imageResourceId;
+        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+            imageResourceId = R.drawable.ic_keyboard_black_48dp;
+        } else {
+            imageResourceId = R.drawable.ic_keyboard_white_48dp;
+        }
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
     protected char getPreviousChar() {
         if (inputConnection == null) return 0;
         CharSequence previous = inputConnection.getTextBeforeCursor(1, 0);
@@ -685,6 +721,7 @@ public abstract class Keyboard extends ViewGroup {
         private int keySecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
         private float keyPrimaryTextSize = DEFAULT_PRIMARY_TEXT_SIZE;
         private int keySpacing = DEFAULT_KEY_PADDING;
+        private KeyImage.Theme keyImageTheme = DEFAULT_IMAGE_THEME;
 
         public StyleBuilder setKeyTextSize(float keyTextSize) {
             this.keyPrimaryTextSize = keyTextSize;
@@ -743,6 +780,17 @@ public abstract class Keyboard extends ViewGroup {
 
         public StyleBuilder setKeyPressedColor(int keyPressedColor) {
             this.keyPressedColor = keyPressedColor;
+            return this;
+        }
+
+        /**
+         *
+         * @param theme KeyImage.Theme.DARK for a light image
+         *                  or KeyImage.ImageColor.LIGHT for a dark image.
+         * @return StyleBuilder
+         */
+        public StyleBuilder setKeyImageTheme(KeyImage.Theme theme) {
+            this.keyImageTheme = theme;
             return this;
         }
     }

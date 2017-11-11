@@ -26,16 +26,17 @@ public class KeyboardActivity extends AppCompatActivity {
 
 //        // keyboards style
 //        Keyboard.StyleBuilder keyboardStyle = new Keyboard.StyleBuilder();
-//        keyboardStyle.setKeyBackgroundColor(Color.GREEN)
+//        keyboardStyle.setKeyBackgroundColor(Color.BLUE)
 //                .setKeyPressedColor(Color.RED)
 //                .setKeyBorderColor(Color.BLACK)
-//                .setKeyBorderRadius(7)
+//                .setKeyBorderRadius(40)
 //                .setKeyBorderWidth(2)
 //                .setPopupBackgroundColor(Color.BLACK)
 //                .setPopupTextColor(Color.WHITE)
 //                .setPopupHighlightColor(Color.BLUE)
-//                .setKeyPrimaryTextColor(Color.BLACK)
+//                .setKeyPrimaryTextColor(Color.WHITE)
 //                .setKeySecondaryTextColor(Color.GRAY)
+//                .setKeyImageTheme(KeyImage.Theme.DARK) // for a light image
 //                .setKeySpacing(10);
 //
 //        // init keyboards with styles

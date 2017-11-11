@@ -20,6 +20,12 @@ public class KeyImage extends Key {
 
     private static final String DEBUG_TAG = "TAG";
 
+    // use a light image for a DARK theme and vice-versa
+    public enum Theme {
+        DARK,
+        LIGHT
+    }
+
     private TextPaint mImagePaint;
     private Bitmap mImage;
     private Bitmap mImageScaled;
