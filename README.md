@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.11'
+    implementation 'net.studymongolian:mongol-library:0.9.12'
 }
 ```
 
@@ -339,16 +339,17 @@ If you would like to style your keyboards then you can use the alternate Keyboar
 ```java
 // keyboards style
 Keyboard.StyleBuilder keyboardStyle = new Keyboard.StyleBuilder();
-keyboardStyle.setKeyBackgroundColor(Color.GREEN)
+keyboardStyle.setKeyBackgroundColor(Color.BLUE)
         .setKeyPressedColor(Color.RED)
         .setKeyBorderColor(Color.BLACK)
-        .setKeyBorderRadius(7)
+        .setKeyBorderRadius(40)
         .setKeyBorderWidth(2)
         .setPopupBackgroundColor(Color.BLACK)
         .setPopupTextColor(Color.WHITE)
         .setPopupHighlightColor(Color.BLUE)
-        .setKeyPrimaryTextColor(Color.BLACK)
+        .setKeyPrimaryTextColor(Color.WHITE)
         .setKeySecondaryTextColor(Color.GRAY)
+        .setKeyImageTheme(KeyImage.Theme.DARK) // for a light image
         .setKeySpacing(10);
 
 // init keyboards with styles
@@ -473,7 +474,7 @@ String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822
 
 ###### Static classes
 
-There are a number of static methods that are currently `private`. If these would be useful in other projects, then we could make them `public`. These are a sample:
+There are a number of static methods that may also be useful.
 
 * `boolean isMongolian(char character)`
 * `boolean isConsonant(char character)`
@@ -482,7 +483,7 @@ There are a number of static methods that are currently `private`. If these woul
 * `boolean isFeminineVowel(char character)`
 * `boolean isFVS(char character)`
 * `boolean isMvsConsonant(char character)`
-* `boolean isMenksoft(char character)`
+* `boolean isMenksoft(char character)` (currently `private`)
 
 TODO add Xinjiang Tod Mongol script support. 
 
@@ -544,7 +545,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
-* [ ] add MongolToolbar with vertical menu. (Toolbar can be vertical or horizontal orientation.)
+* [ ] add `MongolToolbar` with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] The vertical punctuation characters shouldn't be rotated.
 * [ ] English and Cyrillic keyboards.
@@ -552,6 +553,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `0.9.12`: Made more MongolCode methods public; added color theme for KeyImage (for light and dark keyboard icons)
 * `0.9.11`: Customize keyboard properties like key background color, borders widths, radius, and popups.
 * `0.9.10`: QWERTY keyboard, ability to add custom keyboard; update for Android API 27.
 * `0.9.8`: Allow both touch events and click events on `MongolEditText`; fixed spacing on `MongolAlertView` with no buttons 
