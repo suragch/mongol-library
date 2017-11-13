@@ -42,7 +42,9 @@ public class MongolTextStorage implements Editable {
     // callback methods to let EditText (or other view) know about changes
     // to the text here
     public interface OnChangeListener {
-        void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter);
+        void beforeTextChanged(CharSequence text, int start, int count, int after);
+        void onTextChanged(CharSequence text, int start, int before, int count);
+        void afterTextChanged(Editable editable);
         void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd);
     }
 
@@ -198,7 +200,8 @@ public class MongolTextStorage implements Editable {
             end = temp;
         }
 
-        int oldLength = mUnicodeText.length();
+        if (mChangelistener != null)
+            mChangelistener.beforeTextChanged(mUnicodeText, st, en - st, end - start);
 
         // replace glyphs (expand to the whole word preceding and following)
         int wordStart = getMongolWordStart(st, mUnicodeText);
@@ -212,8 +215,10 @@ public class MongolTextStorage implements Editable {
         ((SpannableStringBuilder) mGlyphText).replace(glyphStart, glyphEnd, glyphReplacement);
         updateGlyphTextForUnicodeRange(wordStart, adjustedEnd);
 
-        if (mChangelistener != null)
-            mChangelistener.onTextChanged(mUnicodeText, st, oldLength, mUnicodeText.length());
+        if (mChangelistener != null) {
+            mChangelistener.onTextChanged(mUnicodeText, st, en - st, end - start);
+            mChangelistener.afterTextChanged(this);
+        }
 
         return this;
     }

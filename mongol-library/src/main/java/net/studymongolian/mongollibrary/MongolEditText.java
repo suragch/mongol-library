@@ -90,7 +90,17 @@ public class MongolEditText extends MongolTextView {
         mTextStorage.setOnChangeListener(new MongolTextStorage.OnChangeListener() {
 
             @Override
-            public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+            public void beforeTextChanged(CharSequence text, int start, int count, int after) {
+                // notify any listeners the user may have added
+                if (mListeners != null && mListeners.size() > 0) {
+                    for (TextWatcher watcher : mListeners) {
+                        watcher.beforeTextChanged(text, start, count, after);
+                    }
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
                 // TODO just update the layout from the start position rather than everything
                 MongolEditText.super.mLayout.setText(mTextStorage.getGlyphText());
                 invalidate();
@@ -101,10 +111,20 @@ public class MongolEditText extends MongolTextView {
                 // notify any listeners the user may have added
                 if (mListeners != null && mListeners.size() > 0) {
                     for (TextWatcher watcher : mListeners) {
-                        watcher.onTextChanged(text, start, lengthBefore, lengthAfter);
+                        watcher.onTextChanged(text, start, before, count);
                     }
                 }
             }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mListeners != null && mListeners.size() > 0) {
+                    for (TextWatcher watcher : mListeners) {
+                        watcher.afterTextChanged(editable);
+                    }
+                }
+            }
+
 
             @Override
             public void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd) {
@@ -387,13 +407,11 @@ public class MongolEditText extends MongolTextView {
 
     /**
      * Adds a TextWatcher to the list of those whose methods are called
-     * whenever this MongolEditText's text changes. Currently only TextWatcher.onTextChanged
-     * is called. TextWatcher.beforeTextChanged and TextWatcher.afterTextChanged have
-     * no effect.
+     * whenever this MongolEditText's text changes.
      */
     public void addTextChangedListener(TextWatcher watcher) {
         if (mListeners == null) {
-            mListeners = new ArrayList<TextWatcher>();
+            mListeners = new ArrayList<>();
         }
 
         mListeners.add(watcher);
