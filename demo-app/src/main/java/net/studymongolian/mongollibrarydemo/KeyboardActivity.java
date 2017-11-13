@@ -37,6 +37,7 @@ public class KeyboardActivity extends AppCompatActivity {
 //                .setKeyPrimaryTextColor(Color.WHITE)
 //                .setKeySecondaryTextColor(Color.GRAY)
 //                .setKeyImageTheme(KeyImage.Theme.DARK) // for a light image
+//                //TODO .setKeyImageColorFilter(Color.BLUE) or (Color.BLUE, PorterDuffMode)
 //                .setKeySpacing(10);
 //
 //        // init keyboards with styles
