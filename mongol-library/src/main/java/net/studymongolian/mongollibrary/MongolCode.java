@@ -37,12 +37,6 @@ public final class MongolCode {
         MASCULINE, FEMININE, NEUTER
     }
 
-//    private enum Shape {
-//        TOOTH,     // glyph slants to the left like a tooth (includes medial T/D, R, W, etc)
-//        STEM,      // glyph starts with a vertical stem (includes B, O/U, CH, etc)
-//        ROUND      // glyph top is round (includes feminine Q/G)
-//    }
-
     // Constructor
     private MongolCode() {
     }
@@ -508,14 +502,6 @@ public final class MongolCode {
         return outputString.toString();
     }
 
-    private boolean isMenksoftConsonant(char character) {
-        return character >= Glyph.NA_START && character <= Glyph.FINA_CHI;
-    }
-
-    private boolean isMenksoft(char character) {
-        return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
-    }
-
     public static Location getLocation(CharSequence textBefore, CharSequence textAfter) {
 
         // TODO should we be using this in convertWordToMenksoftCode?
@@ -546,6 +532,14 @@ public final class MongolCode {
         else return Location.ISOLATE;
     }
 
+    private boolean isMenksoftConsonant(char character) {
+        return character >= Glyph.NA_START && character <= Glyph.FINA_CHI;
+    }
+
+    public boolean isMenksoft(char character) {
+        return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
+    }
+
     public static boolean isVowel(char character) {
         return (character >= Uni.A && character <= Uni.EE);
     }
@@ -566,9 +560,7 @@ public final class MongolCode {
         return (character >= Uni.FVS1 && character <= Uni.FVS3);
     }
 
-
-
-    static boolean isMongolian(char character) {
+    public static boolean isMongolian(char character) {
         // Mongolian letters, MVS, FVS1-3, NIRUGU, Uni.ZWJ, (but not NNBS)
         return ((character >= Uni.A && character <= Uni.CHI)
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS) || character == Uni.ZWJ);
