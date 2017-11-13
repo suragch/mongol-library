@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.12'
+    implementation 'net.studymongolian:mongol-library:0.9.14'
 }
 ```
 
@@ -483,7 +483,7 @@ There are a number of static methods that may also be useful.
 * `boolean isFeminineVowel(char character)`
 * `boolean isFVS(char character)`
 * `boolean isMvsConsonant(char character)`
-* `boolean isMenksoft(char character)` (currently `private`)
+* `boolean isMenksoft(char character)`
 
 TODO add Xinjiang Tod Mongol script support. 
 
@@ -553,6 +553,8 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `0.9.14`: Added full `TextWatcher` support (text change listener)
+* `0.9.13`: Made `MongolCode.isMongolian()` and `MongolCode.isMenksoft()` public
 * `0.9.12`: Made more MongolCode methods public; added color theme for KeyImage (for light and dark keyboard icons)
 * `0.9.11`: Customize keyboard properties like key background color, borders widths, radius, and popups.
 * `0.9.10`: QWERTY keyboard, ability to add custom keyboard; update for Android API 27.
