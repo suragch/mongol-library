@@ -322,12 +322,13 @@ class MongolWord {
             case MEDIAL:
                 if (fvs == MongolCode.Uni.FVS1) {
                     renderedWord.insert(0, MongolCode.Glyph.MEDI_I_FVS1);             // 2 long teeth
+                } else if (fvs == MongolCode.Uni.FVS2) {
+                    // Undefined in Unicode 10.0
+                    // Used to override context for NAIMA single tooth I
+                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I);                  // normal
                 } else {
-                    //char charAbove = mongolWord.charAt(i - 1);
                     if (isRoundLetterIncludingQG(charAbove)) {
                         renderedWord.insert(0, MongolCode.Glyph.MEDI_I_BP);           // After BPFK
-                        // Disabling diphthongs for now because of NAIMA
-                        // problem. Make diphthongs with Y+FVS1+I.
                     } else if (
                             charAbove == MongolCode.Uni.A ||
                                     charAbove == MongolCode.Uni.E ||

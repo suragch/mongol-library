@@ -4922,6 +4922,14 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
+    public void naimaWordMenksoftVersion() throws Exception {
+        String unicode = "ᠨᠠᠢ\u180Cᠮᠠ"; // NAI(FVS2)MA (not defined in Unicode 10.0)
+        String result = convert(unicode);
+        String expected = "\uE2B1\uE26C\uE27E\uE2F5\uE268";
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void naijaWord() throws Exception {
         String unicode = "ᠨᠠᠢᠵᠠ"; // NAIJA
         String result = convert(unicode);

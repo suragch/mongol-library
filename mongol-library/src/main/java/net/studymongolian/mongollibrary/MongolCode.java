@@ -10,6 +10,9 @@ package net.studymongolian.mongollibrary;
  *    - MONGOLIAN LETTER GA first and second form final (matching DS01, needed to
   *     break context) (So words with only I default to feminine. Menksoft also
   *     does this.)
+ *    - MONGOLIAN LETTER I, third medial form. Undefined in Unicode 10. This is a
+  *     single tooth I after a vowel. Needed to break context. Menksoft also
+  *     does this.
  *
  * The purpose of this class is to render Unicode text into glyphs
  * that can be displayed on all versions of Android. It solves the

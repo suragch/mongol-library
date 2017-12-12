@@ -426,9 +426,12 @@ public abstract class Keyboard extends ViewGroup {
             } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
                 inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
                 mComposing.append(MEDIAL_I_FVS1);
-            } else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
-                inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
-                mComposing.append(MEDIAL_ZWJ_I);
+            } else if (selectedItem.equals(MEDIAL_I_FVS2)) {
+                inputConnection.setComposingText(MEDIAL_I_FVS2_COMPOSING, 1);
+                mComposing.append(MEDIAL_I_FVS2);
+            //} else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
+            //    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
+            //    mComposing.append(MEDIAL_ZWJ_I);
             } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
                 inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
                 mComposing.append(MEDIAL_U_FVS1);
@@ -805,8 +808,10 @@ public abstract class Keyboard extends ViewGroup {
     //    private static final String INITIAL_I_SUFFIX_COMPOSING = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
     private static final String MEDIAL_I_FVS1 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1;
     private static final String MEDIAL_I_FVS1_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_ZWJ_I = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I;
-    private static final String MEDIAL_ZWJ_I_COMPOSING = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
+    private static final String MEDIAL_I_FVS2 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS2;
+    private static final String MEDIAL_I_FVS2_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ;
+    //private static final String MEDIAL_ZWJ_I = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I;
+    //private static final String MEDIAL_ZWJ_I_COMPOSING = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
 
     private static final String MEDIAL_U_FVS1 = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1;
     private static final String MEDIAL_U_FVS1_COMPOSING = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;

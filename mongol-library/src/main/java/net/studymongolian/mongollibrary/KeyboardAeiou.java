@@ -460,7 +460,8 @@ public class KeyboardAeiou extends Keyboard {
             if (MongolCode.isVowel(prevChar)) {
                 return new PopupCandidates(
                         new String[]{
-                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I, // override double tooth I after vowel
+                                "" + MongolCode.Uni.I + MongolCode.Uni.FVS2, // override double tooth I after vowel (Unicode 10.0 deviation)
+                                //"" + MongolCode.Uni.ZWJ + MongolCode.Uni.I, // alternate method to override double tooth I
                                 "" + MongolCode.Uni.I + MongolCode.Uni.FVS1},
                         new String[]{
                                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
