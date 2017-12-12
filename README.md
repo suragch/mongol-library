@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.14'
+    implementation 'net.studymongolian:mongol-library:0.9.15'
 }
 ```
 
@@ -558,6 +558,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `0.9.15`: Changed `MongolCode` rendering and Keyboards to support medial `I + FVS2` for words like NAIMA. (This is a Unicode 10.0 deviation.)
 * `0.9.14`: Added full `TextWatcher` support (text change listener)
 * `0.9.13`: Made `MongolCode.isMongolian()` and `MongolCode.isMenksoft()` public
 * `0.9.12`: Made more MongolCode methods public; added color theme for KeyImage (for light and dark keyboard icons)
@@ -567,7 +568,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * `0.9.7`: Added support for `UnderlineSpan` and `ClickableSpan`
 * `0.9.6`: fixed resizing bug, added text change listener to `MongolEditText`
 * `0.9.5`: fixed rotation for vertical presentation forms
-* `0.9.4`: Started adding intrumentation tests for `MongolTextStorage`; crash fix in `MongolTextStorage`
+* `0.9.4`: Started adding instrumentation tests for `MongolTextStorage`; crash fix in `MongolTextStorage`
 * `0.9.3`: `MongolEditText` crash fix, automatic keyboard switching
 * `0.9.2`: Android Oreo updates. `MongolLabel` vertical auto-resizing bug fix
 * `0.9.1`: Bug fix that was causing crashes for `setText` on `MongolEditText`
