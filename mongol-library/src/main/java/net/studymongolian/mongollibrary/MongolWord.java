@@ -16,7 +16,8 @@ class MongolWord {
     private char fvs;
     private Shape glyphShapeBelow;
 
-    private MongolWord() {}
+    private MongolWord() {
+    }
 
     MongolWord(CharSequence mongolWord) {
         this.inputWord = mongolWord;
@@ -303,7 +304,10 @@ class MongolWord {
         }
     }
 
-    private void handleI(StringBuilder renderedWord, int positionInWord, char charAbove, char charBelow) {
+    private void handleI(StringBuilder renderedWord,
+                         int positionInWord,
+                         char charAbove,
+                         char charBelow) {
         switch (location) {
             case ISOLATE:
                 if (isSuffix) {
@@ -320,31 +324,35 @@ class MongolWord {
                 }
                 break;
             case MEDIAL:
+
+                // FVS 1: one short, one long tooth
                 if (fvs == MongolCode.Uni.FVS1) {
-                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I_FVS1);             // 2 long teeth
-                } else if (fvs == MongolCode.Uni.FVS2) {
-                    // Undefined in Unicode 10.0
-                    // Used to override context for NAIMA single tooth I
-                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I);                  // normal
-                } else {
-                    if (isRoundLetterIncludingQG(charAbove)) {
-                        renderedWord.insert(0, MongolCode.Glyph.MEDI_I_BP);           // After BPFK
-                    } else if (
-                            charAbove == MongolCode.Uni.A ||
-                                    charAbove == MongolCode.Uni.E ||
-                                    charAbove == MongolCode.Uni.O ||
-                                    charAbove == MongolCode.Uni.U ||
-                                    // or non long toothed OE/UE
-                                    ((charAbove == MongolCode.Uni.OE ||
-                                            charAbove == MongolCode.Uni.UE) &&
-                                            !needsLongToothU(inputWord, positionInWord - 1))) {
-                        // *** AI, EI, OI, UI, OEI, UEI
-                        // medial double tooth I diphthong rule ***
-                        renderedWord.insert(0, MongolCode.Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
-                    } else {
-                        renderedWord.insert(0, MongolCode.Glyph.MEDI_I);              // normal
-                    }
+                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I_FVS1);
+                    break;
                 }
+
+                // FVS 2:  Used to override context for NAIMA single tooth I
+                // (Undefined in Unicode 10.0)
+                if (fvs == MongolCode.Uni.FVS2) {
+                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I);    // normal
+                    break;
+                }
+
+                // After BPFK
+                if (isRoundLetterIncludingQG(charAbove)) {
+                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I_BP);
+                    break;
+                }
+
+                // *** AI, EI, OI, UI, OEI, UEI
+                // medial double tooth I diphthong rule ***
+                if (contextCallsForDoubleToothI(positionInWord, charAbove, charBelow)) {
+                    renderedWord.insert(0, MongolCode.Glyph.MEDI_I_DOUBLE_TOOTH); // double tooth
+                    break;
+                }
+
+                // normal single tooth I
+                renderedWord.insert(0, MongolCode.Glyph.MEDI_I);
                 break;
             case FINAL:
                 if (isRoundLetterIncludingQG(charAbove)) {
@@ -355,6 +363,18 @@ class MongolWord {
                 break;
         }
         glyphShapeBelow = Shape.TOOTH;
+    }
+
+    private boolean contextCallsForDoubleToothI(int positionInWord, char charAbove, char charBelow) {
+        if (charBelow == MongolCode.Uni.I) return false;
+        if (charAbove == MongolCode.Uni.A ||
+                charAbove == MongolCode.Uni.E ||
+                charAbove == MongolCode.Uni.O ||
+                charAbove == MongolCode.Uni.U) return true;
+        // or non long toothed OE/UE
+        return ((charAbove == MongolCode.Uni.OE ||
+                        charAbove == MongolCode.Uni.UE) &&
+                        !needsLongToothU(inputWord, positionInWord - 1));
     }
 
     private void handleO(StringBuilder renderedWord, char charAbove) {

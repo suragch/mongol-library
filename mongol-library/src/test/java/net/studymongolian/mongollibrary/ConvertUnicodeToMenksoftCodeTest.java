@@ -4954,10 +4954,18 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void baiyinaWord() throws Exception {
+    public void bayinaWord() throws Exception {
         String unicode = "ᠪᠠᠶᠢᠨ᠎ᠠ"; // BAYIN(MVS)A
         String result = convert(unicode);
         String expected = "\uE2C1\uE26D\uE321\uE27E\uE2B6\uE26A";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void baiinaWord() throws Exception {
+        String unicode = "ᠪᠠᠢᠢᠨ᠎ᠠ"; // BAIIN(MVS)A
+        String result = convert(unicode);
+        String expected = "\uE2C1\uE26D\uE27E\uE27E\uE2B6\uE26A";
         assertEquals(expected, result);
     }
 
