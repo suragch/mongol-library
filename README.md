@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.15'
+    implementation 'net.studymongolian:mongol-library:0.9.16'
 }
 ```
 
@@ -433,7 +433,7 @@ Disadvantages of using these views:
 
 All of the UI components in this library are designed to use Unicode for all input and output. (However, since glyph rendering internally uses Menksoft code, you can also use Menksoft code for input. This is not recommended, though.) 
 
-The `MongolCode` rendering engine conforms to the [Unicode 10.0 standard](http://unicode.org/versions/Unicode10.0.0/). However, the standard was deviated from in the following two cases:
+The `MongolCode` rendering engine seeks to conform to the [Unicode 10.0 standard](http://unicode.org/versions/Unicode10.0.0/) ([Mongolian Block](https://www.unicode.org/charts/PDF/U1800.pdf)). However, the standard was deviated from in the following two cases:
 
 * MONGOLIAN LETTER GA, second final form. The Unicode 10.0 standard second final form is the feminine form. However, there is no way to override a feminine GA in words like SHIG to make it masculine and the only solution is to explicitly specify a feminine GA in every single neuter word (example: BICHIG(FVS1)). However, none of the major font players do that ([source](https://r12a.github.io/mongolian-variants/#char182D)). They use FVS1 as a masculine override and FVS2 to specify the feminine form. This was also the proposal in [DS01](https://w3c.github.io/mlreq/variants/ds01.pdf). It is much more natural to default to a feminine final GA in neuter words and only override to a masculine GA when necessary. Thus, the rendering engine in this library also follows the DS01 recomendation for final GA.
 
@@ -558,6 +558,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `0.9.16`: Support for II spelling of double tooth I
 * `0.9.15`: Changed `MongolCode` rendering and Keyboards to support medial `I + FVS2` for words like NAIMA. (This is a Unicode 10.0 deviation.)
 * `0.9.14`: Added full `TextWatcher` support (text change listener)
 * `0.9.13`: Made `MongolCode.isMongolian()` and `MongolCode.isMenksoft()` public
