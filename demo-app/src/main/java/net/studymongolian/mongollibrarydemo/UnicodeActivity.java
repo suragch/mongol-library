@@ -587,9 +587,9 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
                 .append("\u182E\u1822\u1829\u182D\u180E\u1820\u1828").append("\n")
                 .append("MINGG(MVS)AN").append("\n\n")
 
-                // break context with ZWJ for single tooth I
-                .append("\u1828\u1820\u200d\u1822\u182E\u1820").append("\n")
-                .append("NA(ZWJ)IMA").append("\n\n")
+                // break context with FVS2 for single tooth I (Unicode 10.0 deviation)
+                .append("\u1828\u1820\u180C\u1822\u182E\u1820").append("\n")
+                .append("NA(FVS2)IMA").append("\n\n")
 
                 // double touth AI diphthong
                 .append("\u1828\u1820\u1822\u1835\u1820").append("\n")
@@ -607,19 +607,21 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
                 .append("\u182A\u1820\u1836\u1822\u1828\u180E\u1820").append("\n")
                 .append("BAYIN(MVS)A").append("\n\n")
 
+                // double touth AII diphthong
+                .append("\u182A\u1820\u1822\u1822\u1828\u180E\u1820").append("\n")
+                .append("BAIIN(MVS)A").append("\n\n")
+
                 // sayihan (beautiful)
                 .append("\u1830\u1820\u1836\u1822\u182C\u1820\u1828").append("\n")
                 .append("SAYIHAN").append("\n\n")
 
-                // sayihan (recently), Using ZWJ to break context rule
-                .append("\u1830\u1820\u1836\u200d\u1822\u182C\u1820\u1828").append("\n")
-                .append("SAY(ZWJ)IHAN").append("\n\n")
+                // sayihan (recently)
+                .append("\u1830\u1820\u1836\u180B\u1822\u182C\u1820\u1828").append("\n")
+                .append("SAY(FVS1)IHAN").append("\n\n")
 
-                // FIXME update these (Replace ZWJ)
-
-                // sayi (recently), Using ZWJ to break context rule
-                .append("\u1830\u1820\u1836\u200d\u1822").append("\n")
-                .append("SAY(ZWJ)I").append("\n\n")
+                // sayi (recently)
+                .append("\u1830\u1820\u1836\u180B\u1822").append("\n")
+                .append("SAY(FVS1)I").append("\n\n")
 
                 // final AI diphthong
                 .append("\u1832\u1820\u1822").append("\n")

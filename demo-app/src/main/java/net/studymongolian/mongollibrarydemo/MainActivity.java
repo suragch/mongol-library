@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.MongolTextView;
@@ -35,15 +36,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolButton");
         apiDemos.add("MongolAlertDialog");
         apiDemos.add("Horizontal RecyclerView");
-        apiDemos.add("Testing");
+        //apiDemos.add("Testing");
 
 
         // set up the RecyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvApiDemoList);
+        RecyclerView recyclerView = findViewById(R.id.rvApiDemoList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MainActivityRecyclerViewAdapter(this, apiDemos);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+
+        // show the version number
+        String versionName = BuildConfig.VERSION_NAME;
+        String labelText = "mongol-library " + versionName;
+        TextView tvVersion = findViewById(R.id.version);
+        tvVersion.setText(labelText);
     }
 
     @Override
