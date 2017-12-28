@@ -24,10 +24,14 @@ public abstract class Key extends View {
 
     public Key(Context context) {
         super(context);
+        initDefault();
+        initPaints();
     }
 
     public Key(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initDefault();
+        initPaints();
     }
 
     Key(Context context, AttributeSet attrs, int defStyleAttr) {

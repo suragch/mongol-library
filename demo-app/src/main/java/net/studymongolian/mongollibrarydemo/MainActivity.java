@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         recyclerView.setAdapter(adapter);
 
         // show the version number
-        String versionName = BuildConfig.VERSION_NAME;
+        String versionName = net.studymongolian.mongollibrary.BuildConfig.VERSION_NAME;
         String labelText = "mongol-library " + versionName;
         TextView tvVersion = findViewById(R.id.version);
         tvVersion.setText(labelText);

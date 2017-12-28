@@ -136,6 +136,7 @@ public abstract class Keyboard extends ViewGroup {
 
     // number of keys and weights are initialized by keyboard subclass
     protected int[] mNumberOfKeysInRow;
+    protected float[] mInsetWeightInRow;
     protected float[] mKeyWeights;
 
     @Override
@@ -152,6 +153,9 @@ public abstract class Keyboard extends ViewGroup {
         int keyIndex = 0;
         for (int rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
 
+            if (mInsetWeightInRow != null) {
+                x += (totalWidth * mInsetWeightInRow[rowIndex]);
+            }
             int end = keyIndex + mNumberOfKeysInRow[rowIndex];
             for (int i = keyIndex; i < end; i++) {
                 View child = getChildAt(keyIndex);
@@ -527,6 +531,17 @@ public abstract class Keyboard extends ViewGroup {
 
     };
 
+    protected View.OnClickListener handleShift = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            onShiftClick();
+        }
+    };
+
+    // subclasses can override this if using a shift key
+    protected boolean shiftIsOn = false;
+    protected void onShiftClick() { }
+
     protected Bitmap getReturnImage() {
         int imageResourceId;
         if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
@@ -553,6 +568,17 @@ public abstract class Keyboard extends ViewGroup {
             imageResourceId = R.drawable.ic_keyboard_black_48dp;
         } else {
             imageResourceId = R.drawable.ic_keyboard_white_48dp;
+        }
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    // TODO either change them all to 32dp or change this to 48dp
+    protected Bitmap getShiftImage() {
+        int imageResourceId;
+        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+            imageResourceId = R.drawable.ic_keyboard_shift_black_32dp;
+        } else {
+            imageResourceId = R.drawable.ic_keyboard_shift_white_32dp;
         }
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }

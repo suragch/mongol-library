@@ -278,6 +278,17 @@ public class KeyboardAeiou extends Keyboard {
             mKeyYA.setText(KEY_YA_PUNCT);
             mKeyRA.setText(KEY_RA_PUNCT);
 
+            mKeyNA.setRotatedPrimaryText(false);
+            mKeyBA.setRotatedPrimaryText(false);
+            mKeyQA.setRotatedPrimaryText(false);
+            mKeyGA.setRotatedPrimaryText(false);
+            mKeyMA.setRotatedPrimaryText(false);
+            mKeySA.setRotatedPrimaryText(false);
+            mKeyTADA.setRotatedPrimaryText(false);
+            mKeyCHA.setRotatedPrimaryText(false);
+            mKeyJA.setRotatedPrimaryText(false);
+            mKeyYA.setRotatedPrimaryText(false);
+
             mKeyA.setSubText(KEY_A_PUNCT_SUB);
             mKeyE.setSubText(KEY_E_PUNCT_SUB);
             mKeyI.setSubText(KEY_I_PUNCT_SUB);
@@ -313,6 +324,17 @@ public class KeyboardAeiou extends Keyboard {
             mKeyJA.setText(KEY_JA);
             mKeyYA.setText(KEY_YA);
             mKeyRA.setText(KEY_RA);
+
+            mKeyNA.setRotatedPrimaryText(true);
+            mKeyBA.setRotatedPrimaryText(true);
+            mKeyQA.setRotatedPrimaryText(true);
+            mKeyGA.setRotatedPrimaryText(true);
+            mKeyMA.setRotatedPrimaryText(true);
+            mKeySA.setRotatedPrimaryText(true);
+            mKeyTADA.setRotatedPrimaryText(true);
+            mKeyCHA.setRotatedPrimaryText(true);
+            mKeyYA.setRotatedPrimaryText(true);
+            mKeyMA.setRotatedPrimaryText(true);
 
             mKeyA.setSubText(KEY_A_SUB);
             mKeyE.setSubText(KEY_E_SUB);

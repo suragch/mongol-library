@@ -1,107 +1,95 @@
 package net.studymongolian.mongollibrary;
 
+
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.View;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
-public class KeyboardQwerty extends Keyboard {
+public class KeyboardEnglish extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "ᠺᠣᠮᠫᠢᠦ᠋ᠲ᠋ᠧᠷ";
+    private static final String DISPLAY_NAME = "ᠠᠩᠭᠯᠢ";
 
     // Row 1
-    protected KeyText mKeyQ;
-    protected KeyText mKeyW;
-    protected KeyText mKeyE;
-    protected KeyText mKeyR;
-    protected KeyText mKeyT;
-    protected KeyText mKeyY;
-    protected KeyText mKeyU;
-    protected KeyText mKeyI;
-    protected KeyText mKeyO;
-    protected KeyText mKeyP;
+    protected KeyTextNotRotated mKeyQ;
+    protected KeyTextNotRotated mKeyW;
+    protected KeyTextNotRotated mKeyE;
+    protected KeyTextNotRotated mKeyR;
+    protected KeyTextNotRotated mKeyT;
+    protected KeyTextNotRotated mKeyY;
+    protected KeyTextNotRotated mKeyU;
+    protected KeyTextNotRotated mKeyI;
+    protected KeyTextNotRotated mKeyO;
+    protected KeyTextNotRotated mKeyP;
 
     // Row 2
-    protected KeyText mKeyA;
-    protected KeyText mKeyS;
-    protected KeyText mKeyD;
-    protected KeyText mKeyF;
-    protected KeyText mKeyG;
-    protected KeyText mKeyH;
-    protected KeyText mKeyJ;
-    protected KeyText mKeyK;
-    protected KeyText mKeyL;
-    protected KeyText mKeyNg;
+    protected KeyTextNotRotated mKeyA;
+    protected KeyTextNotRotated mKeyS;
+    protected KeyTextNotRotated mKeyD;
+    protected KeyTextNotRotated mKeyF;
+    protected KeyTextNotRotated mKeyG;
+    protected KeyTextNotRotated mKeyH;
+    protected KeyTextNotRotated mKeyJ;
+    protected KeyTextNotRotated mKeyK;
+    protected KeyTextNotRotated mKeyL;
+    //protected KeyText mKeyNg;
 
     // Row 3
-    protected KeyText mKeyZwj; // break text with ZWJ
-    protected KeyText mKeyZ;
-    protected KeyText mKeyX;
-    protected KeyText mKeyC;
-    protected KeyText mKeyV;
-    protected KeyText mKeyB;
-    protected KeyText mKeyN;
-    protected KeyText mKeyM;
+    protected KeyImage mKeyShift;
+    protected KeyTextNotRotated mKeyZ;
+    protected KeyTextNotRotated mKeyX;
+    protected KeyTextNotRotated mKeyC;
+    protected KeyTextNotRotated mKeyV;
+    protected KeyTextNotRotated mKeyB;
+    protected KeyTextNotRotated mKeyN;
+    protected KeyTextNotRotated mKeyM;
     protected KeyImage mKeyBackspace;
 
     // Row 4
     // protected KeyImage mKeyKeyboard; // defined in super class
-    protected KeyText mKeyExclamation;
-    protected KeyText mKeyComma;
-    protected KeyText mKeySpace;
-    protected KeyText mKeyPeriod;
-    protected KeyText mKeyQuestion;
+    protected KeyTextNotRotated mKeyExclamation;
+    protected KeyTextNotRotated mKeyComma;
+    protected KeyTextNotRotated mKeySpace;
+    protected KeyTextNotRotated mKeyPeriod;
+    protected KeyTextNotRotated mKeyQuestion;
     protected KeyImage mKeyReturn;
 
     // These are all input values (some display values are different)
-    private static final String KEY_Q = String.valueOf(MongolCode.Uni.CHA);
-    private static final String KEY_W = String.valueOf(MongolCode.Uni.WA);
-    private static final String KEY_E = String.valueOf(MongolCode.Uni.E);
-    private static final String KEY_R = String.valueOf(MongolCode.Uni.RA);
-    private static final String KEY_T = String.valueOf(MongolCode.Uni.TA);
-    private static final String KEY_Y = String.valueOf(MongolCode.Uni.YA);
-    private static final String KEY_U = String.valueOf(MongolCode.Uni.UE);
-    private static final String KEY_I = String.valueOf(MongolCode.Uni.I);
-    private static final String KEY_O = String.valueOf(MongolCode.Uni.OE);
-    private static final String KEY_P = String.valueOf(MongolCode.Uni.PA);
-    private static final String KEY_A = String.valueOf(MongolCode.Uni.A);
-    private static final String KEY_S = String.valueOf(MongolCode.Uni.SA);
-    private static final String KEY_D = String.valueOf(MongolCode.Uni.DA);
-    private static final String KEY_F = String.valueOf(MongolCode.Uni.FA);
-    private static final String KEY_G = String.valueOf(MongolCode.Uni.GA);
-    private static final String KEY_H = String.valueOf(MongolCode.Uni.QA);
-    private static final String KEY_J = String.valueOf(MongolCode.Uni.JA);
-    private static final String KEY_K = String.valueOf(MongolCode.Uni.KA);
-    private static final String KEY_L = String.valueOf(MongolCode.Uni.LA);
-    private static final String KEY_NG = String.valueOf(MongolCode.Uni.ANG);
-    // TODO maybe this key should be used for suffixes instead. Longpress could be ZWJ.
-    private static final String KEY_ZWJ = String.valueOf(MongolCode.Uni.ZWJ);
-    private static final String KEY_Z = String.valueOf(MongolCode.Uni.ZA);
-    private static final String KEY_X = String.valueOf(MongolCode.Uni.SHA);
-    private static final String KEY_C = String.valueOf(MongolCode.Uni.O);
-    private static final String KEY_V = String.valueOf(MongolCode.Uni.U);
-    private static final String KEY_B = String.valueOf(MongolCode.Uni.BA);
-    private static final String KEY_N = String.valueOf(MongolCode.Uni.NA);
-    private static final String KEY_M = String.valueOf(MongolCode.Uni.MA);
-    private static final String KEY_EXCLAMATION = String.valueOf(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK);
-    private static final String KEY_COMMA = String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA);
+    private static final String KEY_Q = "q";
+    private static final String KEY_W = "w";
+    private static final String KEY_E = "e";
+    private static final String KEY_R = "r";
+    private static final String KEY_T = "t";
+    private static final String KEY_Y = "y";
+    private static final String KEY_U = "u";
+    private static final String KEY_I = "i";
+    private static final String KEY_O = "o";
+    private static final String KEY_P = "p";
+    private static final String KEY_A = "a";
+    private static final String KEY_S = "s";
+    private static final String KEY_D = "d";
+    private static final String KEY_F = "f";
+    private static final String KEY_G = "g";
+    private static final String KEY_H = "h";
+    private static final String KEY_J = "j";
+    private static final String KEY_K = "k";
+    private static final String KEY_L = "l";
+    private static final String KEY_Z = "z";
+    private static final String KEY_X = "x";
+    private static final String KEY_C = "c";
+    private static final String KEY_V = "v";
+    private static final String KEY_B = "b";
+    private static final String KEY_N = "n";
+    private static final String KEY_M = "m";
+    private static final String KEY_EXCLAMATION = "!";
+    private static final String KEY_COMMA = ",";
     private static final String KEY_SPACE = " ";
-    private static final String KEY_PERIOD = String.valueOf(MongolCode.Uni.MONGOLIAN_FULL_STOP);
-    private static final String KEY_QUESTION = String.valueOf(MongolCode.Uni.VERTICAL_QUESTION_MARK);
+    private static final String KEY_PERIOD = ".";
+    private static final String KEY_QUESTION = "?";
 
 
-    private static final String KEY_Q_SUB = String.valueOf(MongolCode.Uni.CHI);
+    private static final String KEY_Q_SUB = "";
     private static final String KEY_W_SUB = "";
-    private static final String KEY_E_SUB = String.valueOf(MongolCode.Uni.EE);
-    private static final String KEY_R_SUB = String.valueOf(MongolCode.Uni.ZRA);
+    private static final String KEY_E_SUB = "";
+    private static final String KEY_R_SUB = "";
     private static final String KEY_T_SUB = "";
     private static final String KEY_Y_SUB = "";
     private static final String KEY_U_SUB = "";
@@ -113,13 +101,11 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_D_SUB = "";
     private static final String KEY_F_SUB = "";
     private static final String KEY_G_SUB = "";
-    private static final String KEY_H_SUB = String.valueOf(MongolCode.Uni.HAA);
-    private static final String KEY_J_SUB = String.valueOf(MongolCode.Uni.ZHI);
+    private static final String KEY_H_SUB = "";
+    private static final String KEY_J_SUB = "";
     private static final String KEY_K_SUB = "";
-    private static final String KEY_L_SUB = String.valueOf(MongolCode.Uni.LHA);
-    private static final String KEY_NG_SUB = "";
-    private static final String KEY_ZWJ_SUB = ""; // TODO should we add ZWNJ?
-    private static final String KEY_Z_SUB = String.valueOf(MongolCode.Uni.TSA);
+    private static final String KEY_L_SUB = "";
+    private static final String KEY_Z_SUB = "";
     private static final String KEY_X_SUB = "";
     private static final String KEY_C_SUB = "";
     private static final String KEY_V_SUB = "";
@@ -141,67 +127,63 @@ public class KeyboardQwerty extends Keyboard {
     private static final String KEY_I_PUNCT = "8";
     private static final String KEY_O_PUNCT = "9";
     private static final String KEY_P_PUNCT = "0";
-    private static final String KEY_A_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
-    private static final String KEY_S_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
-    private static final String KEY_D_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
-    private static final String KEY_F_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
+    private static final String KEY_A_PUNCT = "";
+    private static final String KEY_S_PUNCT = "";
+    private static final String KEY_D_PUNCT = "";
+    private static final String KEY_F_PUNCT = "";
     private static final String KEY_G_PUNCT = "=";
     private static final String KEY_H_PUNCT = "¥";
     private static final String KEY_J_PUNCT = "'";
     private static final String KEY_K_PUNCT = "\"";
     private static final String KEY_L_PUNCT = "#";
-    private static final String KEY_NG_PUNCT = "|";
-    private static final String KEY_ZWJ_PUNCT = "/";
-    private static final String KEY_Z_PUNCT = String.valueOf(MongolCode.Uni.REFERENCE_MARK);
-    private static final String KEY_X_PUNCT = String.valueOf(MongolCode.Uni.MONGOLIAN_BIRGA);
-    private static final String KEY_C_PUNCT = String.valueOf(MongolCode.Uni.MIDDLE_DOT);
-    private static final String KEY_V_PUNCT = String.valueOf(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
-    private static final String KEY_B_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_EM_DASH);
-    private static final String KEY_N_PUNCT = String.valueOf(MongolCode.Uni.MONGOLIAN_COLON);
-    private static final String KEY_M_PUNCT = String.valueOf(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
+    private static final String KEY_Z_PUNCT = "";
+    private static final String KEY_X_PUNCT = "";
+    private static final String KEY_C_PUNCT = "";
+    private static final String KEY_V_PUNCT = "";
+    private static final String KEY_B_PUNCT = "";
+    private static final String KEY_N_PUNCT = "";
+    private static final String KEY_M_PUNCT = "";
 
-    private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
-    private static final String KEY_W_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
-    private static final String KEY_E_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
-    private static final String KEY_R_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
-    private static final String KEY_T_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
-    private static final String KEY_Y_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
-    private static final String KEY_U_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
-    private static final String KEY_I_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
-    private static final String KEY_O_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
-    private static final String KEY_P_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
-    private static final String KEY_A_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
-    private static final String KEY_S_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
-    private static final String KEY_D_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
-    private static final String KEY_F_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
+    private static final String KEY_Q_PUNCT_SUB = "!";
+    private static final String KEY_W_PUNCT_SUB = "@";
+    private static final String KEY_E_PUNCT_SUB = "#";
+    private static final String KEY_R_PUNCT_SUB = "$";
+    private static final String KEY_T_PUNCT_SUB = "%";
+    private static final String KEY_Y_PUNCT_SUB = "^";
+    private static final String KEY_U_PUNCT_SUB = "&";
+    private static final String KEY_I_PUNCT_SUB = "*";
+    private static final String KEY_O_PUNCT_SUB = "(";
+    private static final String KEY_P_PUNCT_SUB = ")";
+    private static final String KEY_A_PUNCT_SUB = "";
+    private static final String KEY_S_PUNCT_SUB = "";
+    private static final String KEY_D_PUNCT_SUB = "";
+    private static final String KEY_F_PUNCT_SUB = "";
     private static final String KEY_G_PUNCT_SUB = "+";
     private static final String KEY_H_PUNCT_SUB = "$";
     private static final String KEY_J_PUNCT_SUB = "";
     private static final String KEY_K_PUNCT_SUB = "";
     private static final String KEY_L_PUNCT_SUB = "";
-    private static final String KEY_NG_PUNCT_SUB = "";
-    private static final String KEY_ZWJ_PUNCT_SUB = "\\";
-    private static final String KEY_Z_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
+    private static final String KEY_Z_PUNCT_SUB = "";
     private static final String KEY_X_PUNCT_SUB = "";
     private static final String KEY_C_PUNCT_SUB = ".";
     private static final String KEY_V_PUNCT_SUB = "";
     private static final String KEY_B_PUNCT_SUB = "~";
-    private static final String KEY_N_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_COMMA);
-    private static final String KEY_M_PUNCT_SUB = String.valueOf(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
+    private static final String KEY_N_PUNCT_SUB = "";
+    private static final String KEY_M_PUNCT_SUB = "";
 
     // Keys with different display values
-    private static final String KEY_ZWJ_DISPLAY = "/";
-    private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
+    //private static final String KEY_ZWJ_DISPLAY = "/";
+    //private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
     // Use this constructor if you want the default style
-    public KeyboardQwerty(Context context) {
+    public KeyboardEnglish(Context context) {
         super(context);
         init(context);
     }
 
     // all keyboards should include this custom constructor
     // (there was no way to force it in the abstract Keyboard class)
-    public KeyboardQwerty(Context context, StyleBuilder style) {
+    public KeyboardEnglish(Context context, StyleBuilder style) {
         super(context);
         super.initStyle(style);
         init(context);
@@ -212,111 +194,114 @@ public class KeyboardQwerty extends Keyboard {
         // keyboard layout
 
         // | Q | W | E | R | T | Y | U | I | O | P |  Row 1
-        // | A | S | D | F | G | H | J | K | L | NG|  Row 2
-        // |  /  | Z | X | C | V | B | N | M | del |  Row 3
+        //   | A | S | D | F | G | H | J | K | L |    Row 2
+        // |shift| Z | X | C | V | B | N | M | del |  Row 3
         // |  kb | ! | , |   space   | : | ? | ret |  Row 4
 
         // actual layout work is done by Keyboard superclass's onLayout
-        mNumberOfKeysInRow = new int[]{10, 10, 9, 7}; // 36 keys total
-        // the key weights for each row should sum to 1
+        mNumberOfKeysInRow = new int[]{10, 9, 9, 7}; // 36 keys total
+        // this is the percent to inset the row
+        mInsetWeightInRow = new float[]{0, 0.05f, 0, 0};
+        // the key weights for each row should sum to 1 (unless there is an inset)
         mKeyWeights = new float[]{
                 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,     // row 0
-                0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,     // row 1
+                0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,           // row 1
                 0.15f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.15f,         // row 2
-                0.15f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.15f};                   // row 3
+                0.15f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.15f};                    // row 3
 
         // Make sure that the total keys added to this ViewGroup below equals
         // the mNumberOfKeysInRow and mKeyWeights array totals above.
 
         // Row 1 (10 keys)
 
-        mKeyQ = new KeyText(context);
+        mKeyQ = new KeyTextNotRotated(context);
         initTextKey(mKeyQ, KEY_Q, KEY_Q_PUNCT);
 
-        mKeyW = new KeyText(context);
+        mKeyW = new KeyTextNotRotated(context);
         initTextKey(mKeyW, KEY_W, KEY_W_PUNCT);
 
-        mKeyE = new KeyText(context);
+        mKeyE = new KeyTextNotRotated(context);
         initTextKey(mKeyE, KEY_E, KEY_E_PUNCT);
 
-        mKeyR = new KeyText(context);
+        mKeyR = new KeyTextNotRotated(context);
         initTextKey(mKeyR, KEY_R, KEY_R_PUNCT);
 
-        mKeyT = new KeyText(context);
+        mKeyT = new KeyTextNotRotated(context);
         initTextKey(mKeyT, KEY_T, KEY_T_PUNCT);
 
-        mKeyY = new KeyText(context);
+        mKeyY = new KeyTextNotRotated(context);
         initTextKey(mKeyY, KEY_Y, KEY_Y_PUNCT);
 
-        mKeyU = new KeyText(context);
+        mKeyU = new KeyTextNotRotated(context);
         initTextKey(mKeyU, KEY_U, KEY_U_PUNCT);
 
-        mKeyI = new KeyText(context);
+        mKeyI = new KeyTextNotRotated(context);
         initTextKey(mKeyI, KEY_I, KEY_I_PUNCT);
 
-        mKeyO = new KeyText(context);
+        mKeyO = new KeyTextNotRotated(context);
         initTextKey(mKeyO, KEY_O, KEY_O_PUNCT);
 
-        mKeyP = new KeyText(context);
+        mKeyP = new KeyTextNotRotated(context);
         initTextKey(mKeyP, KEY_P, KEY_P_PUNCT);
 
         // Row 2 (10 keys)
 
-        mKeyA = new KeyText(context);
+        mKeyA = new KeyTextNotRotated(context);
         initTextKey(mKeyA, KEY_A, KEY_A_PUNCT);
 
-        mKeyS = new KeyText(context);
+        mKeyS = new KeyTextNotRotated(context);
         initTextKey(mKeyS, KEY_S, KEY_S_PUNCT);
 
-        mKeyD = new KeyText(context);
+        mKeyD = new KeyTextNotRotated(context);
         initTextKey(mKeyD, KEY_D, KEY_D_PUNCT);
 
-        mKeyF = new KeyText(context);
+        mKeyF = new KeyTextNotRotated(context);
         initTextKey(mKeyF, KEY_F, KEY_F_PUNCT);
 
-        mKeyG = new KeyText(context);
+        mKeyG = new KeyTextNotRotated(context);
         initTextKey(mKeyG, KEY_G, KEY_G_PUNCT);
 
-        mKeyH = new KeyText(context);
+        mKeyH = new KeyTextNotRotated(context);
         initTextKey(mKeyH, KEY_H, KEY_H_PUNCT);
 
-        mKeyJ = new KeyText(context);
+        mKeyJ = new KeyTextNotRotated(context);
         initTextKey(mKeyJ, KEY_J, KEY_J_PUNCT);
 
-        mKeyK = new KeyText(context);
+        mKeyK = new KeyTextNotRotated(context);
         initTextKey(mKeyK, KEY_K, KEY_K_PUNCT);
 
-        mKeyL = new KeyText(context);
+        mKeyL = new KeyTextNotRotated(context);
         initTextKey(mKeyL, KEY_L, KEY_L_PUNCT);
 
-        mKeyNg = new KeyText(context);
-        initTextKey(mKeyNg, KEY_NG, KEY_NG_PUNCT);
+        //mKeyNg = new KeyText(context);
+        //initTextKey(mKeyNg, KEY_NG, KEY_NG_PUNCT);
 
         // Row 3 (9 keys)
 
-        mKeyZwj = new KeyText(context);
-        initTextKey(mKeyZwj, KEY_ZWJ, KEY_ZWJ_PUNCT);
-        mKeyZwj.setText(KEY_ZWJ_DISPLAY);
+        mKeyShift = new KeyImage(context);
+        mKeyShift.setImage(getShiftImage());
+        mKeyShift.setOnClickListener(handleShift);
+        addView(mKeyShift);
 
-        mKeyZ = new KeyText(context);
+        mKeyZ = new KeyTextNotRotated(context);
         initTextKey(mKeyZ, KEY_Z, KEY_Z_PUNCT);
 
-        mKeyX = new KeyText(context);
+        mKeyX = new KeyTextNotRotated(context);
         initTextKey(mKeyX, KEY_X, KEY_X_PUNCT);
 
-        mKeyC = new KeyText(context);
+        mKeyC = new KeyTextNotRotated(context);
         initTextKey(mKeyC, KEY_C, KEY_C_PUNCT);
 
-        mKeyV = new KeyText(context);
+        mKeyV = new KeyTextNotRotated(context);
         initTextKey(mKeyV, KEY_V, KEY_V_PUNCT);
 
-        mKeyB = new KeyText(context);
+        mKeyB = new KeyTextNotRotated(context);
         initTextKey(mKeyB, KEY_B, KEY_B_PUNCT);
 
-        mKeyN = new KeyText(context);
+        mKeyN = new KeyTextNotRotated(context);
         initTextKey(mKeyN, KEY_N, KEY_N_PUNCT);
 
-        mKeyM = new KeyText(context);
+        mKeyM = new KeyTextNotRotated(context);
         initTextKey(mKeyM, KEY_M, KEY_M_PUNCT);
 
         // backspace
@@ -334,30 +319,30 @@ public class KeyboardQwerty extends Keyboard {
         addView(mKeyKeyboard);
 
         // exclamation
-        mKeyExclamation = new KeyText(context);
+        mKeyExclamation = new KeyTextNotRotated(context);
         initTextKey(mKeyExclamation, KEY_EXCLAMATION, KEY_EXCLAMATION);
         mKeyExclamation.setText(KEY_EXCLAMATION);
 
         // comma
-        mKeyComma = new KeyText(context);
+        mKeyComma = new KeyTextNotRotated(context);
         initTextKey(mKeyComma, KEY_COMMA, KEY_COMMA);
         mKeyComma.setText(KEY_COMMA);
 
         // space
-        mKeySpace = new KeyText(context);
+        mKeySpace = new KeyTextNotRotated(context);
         initTextKey(mKeySpace, " ", " ");
         mKeySpace.setText(KEY_SPACE);
-        mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
+        //mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
 
         // period
-        mKeyPeriod = new KeyText(context);
+        mKeyPeriod = new KeyTextNotRotated(context);
         initTextKey(mKeyPeriod, KEY_PERIOD, KEY_PERIOD);
-        mKeyPeriod.setText(MongolCode.Uni.MONGOLIAN_FULL_STOP);
+        mKeyPeriod.setText(KEY_PERIOD);
 
         // question mark
-        mKeyQuestion = new KeyText(context);
+        mKeyQuestion = new KeyTextNotRotated(context);
         initTextKey(mKeyQuestion, KEY_QUESTION, KEY_QUESTION);
-        mKeyQuestion.setText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
+        mKeyQuestion.setText(KEY_QUESTION);
 
         // return
         mKeyReturn = new KeyImage(context);
@@ -395,8 +380,8 @@ public class KeyboardQwerty extends Keyboard {
             mKeyJ.setText(KEY_J_PUNCT);
             mKeyK.setText(KEY_K_PUNCT);
             mKeyL.setText(KEY_L_PUNCT);
-            mKeyNg.setText(KEY_NG_PUNCT);
-            mKeyZwj.setText(KEY_ZWJ_PUNCT);
+            //mKeyNg.setText(KEY_NG_PUNCT);
+            //mKeyZwj.setText(KEY_ZWJ_PUNCT);
             mKeyZ.setText(KEY_Z_PUNCT);
             mKeyX.setText(KEY_X_PUNCT);
             mKeyC.setText(KEY_C_PUNCT);
@@ -404,18 +389,6 @@ public class KeyboardQwerty extends Keyboard {
             mKeyB.setText(KEY_B_PUNCT);
             mKeyN.setText(KEY_N_PUNCT);
             mKeyM.setText(KEY_M_PUNCT);
-
-            mKeyQ.setRotatedPrimaryText(false);
-            mKeyW.setRotatedPrimaryText(false);
-            mKeyE.setRotatedPrimaryText(false);
-            mKeyR.setRotatedPrimaryText(false);
-            mKeyT.setRotatedPrimaryText(false);
-            mKeyY.setRotatedPrimaryText(false);
-            mKeyU.setRotatedPrimaryText(false);
-            mKeyI.setRotatedPrimaryText(false);
-            mKeyO.setRotatedPrimaryText(false);
-            mKeyP.setRotatedPrimaryText(false);
-            mKeyH.setRotatedPrimaryText(false);
 
             mKeyQ.setSubText(KEY_Q_PUNCT_SUB);
             mKeyW.setSubText(KEY_W_PUNCT_SUB);
@@ -436,8 +409,8 @@ public class KeyboardQwerty extends Keyboard {
             mKeyJ.setSubText(KEY_J_PUNCT_SUB);
             mKeyK.setSubText(KEY_K_PUNCT_SUB);
             mKeyL.setSubText(KEY_L_PUNCT_SUB);
-            mKeyNg.setSubText(KEY_NG_PUNCT_SUB);
-            mKeyZwj.setSubText(KEY_ZWJ_PUNCT_SUB);
+            //mKeyNg.setSubText(KEY_NG_PUNCT_SUB);
+            //mKeyZwj.setSubText(KEY_ZWJ_PUNCT_SUB);
             mKeyZ.setSubText(KEY_Z_PUNCT_SUB);
             mKeyX.setSubText(KEY_X_PUNCT_SUB);
             mKeyC.setSubText(KEY_C_PUNCT_SUB);
@@ -445,8 +418,6 @@ public class KeyboardQwerty extends Keyboard {
             mKeyB.setSubText(KEY_B_PUNCT_SUB);
             mKeyN.setSubText(KEY_N_PUNCT_SUB);
             mKeyM.setSubText(KEY_M_PUNCT_SUB);
-
-            mKeyH.setRotatedSubText(false);
         } else {
             mKeyQ.setText(KEY_Q);
             mKeyW.setText(KEY_W);
@@ -467,8 +438,8 @@ public class KeyboardQwerty extends Keyboard {
             mKeyJ.setText(KEY_J);
             mKeyK.setText(KEY_K);
             mKeyL.setText(KEY_L);
-            mKeyNg.setText(KEY_NG);
-            mKeyZwj.setText(KEY_ZWJ_DISPLAY);
+            //mKeyNg.setText(KEY_NG);
+            //mKeyZwj.setText(KEY_ZWJ_DISPLAY);
             mKeyZ.setText(KEY_Z);
             mKeyX.setText(KEY_X);
             mKeyC.setText(KEY_C);
@@ -476,17 +447,6 @@ public class KeyboardQwerty extends Keyboard {
             mKeyB.setText(KEY_B);
             mKeyN.setText(KEY_N);
             mKeyM.setText(KEY_M);
-
-            mKeyQ.setRotatedPrimaryText(true);
-            mKeyW.setRotatedPrimaryText(true);
-            mKeyE.setRotatedPrimaryText(true);
-            mKeyT.setRotatedPrimaryText(true);
-            mKeyY.setRotatedPrimaryText(true);
-            mKeyU.setRotatedPrimaryText(true);
-            mKeyI.setRotatedPrimaryText(true);
-            mKeyO.setRotatedPrimaryText(true);
-            mKeyP.setRotatedPrimaryText(true);
-            mKeyH.setRotatedPrimaryText(true);
 
             mKeyQ.setSubText(KEY_Q_SUB);
             mKeyW.setSubText(KEY_W_SUB);
@@ -507,8 +467,8 @@ public class KeyboardQwerty extends Keyboard {
             mKeyJ.setSubText(KEY_J_SUB);
             mKeyK.setSubText(KEY_K_SUB);
             mKeyL.setSubText(KEY_L_SUB);
-            mKeyNg.setSubText(KEY_NG_SUB);
-            mKeyZwj.setSubText(KEY_ZWJ_SUB);
+            //mKeyNg.setSubText(KEY_NG_SUB);
+            //mKeyZwj.setSubText(KEY_ZWJ_SUB);
             mKeyZ.setSubText(KEY_Z_SUB);
             mKeyX.setSubText(KEY_X_SUB);
             mKeyC.setSubText(KEY_C_SUB);
@@ -516,9 +476,69 @@ public class KeyboardQwerty extends Keyboard {
             mKeyB.setSubText(KEY_B_SUB);
             mKeyN.setSubText(KEY_N_SUB);
             mKeyM.setSubText(KEY_M_SUB);
-
-            mKeyH.setRotatedSubText(true);
         }
+    }
+
+    @Override
+    protected void onShiftClick() {
+        if (shiftIsOn) {
+            // switch to lowercase
+            mKeyQ.setText(KEY_Q.toLowerCase());
+            mKeyW.setText(KEY_W.toLowerCase());
+            mKeyE.setText(KEY_E.toLowerCase());
+            mKeyR.setText(KEY_R.toLowerCase());
+            mKeyT.setText(KEY_T.toLowerCase());
+            mKeyY.setText(KEY_Y.toLowerCase());
+            mKeyU.setText(KEY_U.toLowerCase());
+            mKeyI.setText(KEY_I.toLowerCase());
+            mKeyO.setText(KEY_O.toLowerCase());
+            mKeyP.setText(KEY_P.toLowerCase());
+            mKeyA.setText(KEY_A.toLowerCase());
+            mKeyS.setText(KEY_S.toLowerCase());
+            mKeyD.setText(KEY_D.toLowerCase());
+            mKeyF.setText(KEY_F.toLowerCase());
+            mKeyG.setText(KEY_G.toLowerCase());
+            mKeyH.setText(KEY_H.toLowerCase());
+            mKeyJ.setText(KEY_J.toLowerCase());
+            mKeyK.setText(KEY_K.toLowerCase());
+            mKeyL.setText(KEY_L.toLowerCase());
+            mKeyZ.setText(KEY_Z.toLowerCase());
+            mKeyX.setText(KEY_X.toLowerCase());
+            mKeyC.setText(KEY_C.toLowerCase());
+            mKeyV.setText(KEY_V.toLowerCase());
+            mKeyB.setText(KEY_B.toLowerCase());
+            mKeyN.setText(KEY_N.toLowerCase());
+            mKeyM.setText(KEY_M.toLowerCase());
+        } else {
+            // switch to uppercase
+            mKeyQ.setText(KEY_Q.toUpperCase());
+            mKeyW.setText(KEY_W.toUpperCase());
+            mKeyE.setText(KEY_E.toUpperCase());
+            mKeyR.setText(KEY_R.toUpperCase());
+            mKeyT.setText(KEY_T.toUpperCase());
+            mKeyY.setText(KEY_Y.toUpperCase());
+            mKeyU.setText(KEY_U.toUpperCase());
+            mKeyI.setText(KEY_I.toUpperCase());
+            mKeyO.setText(KEY_O.toUpperCase());
+            mKeyP.setText(KEY_P.toUpperCase());
+            mKeyA.setText(KEY_A.toUpperCase());
+            mKeyS.setText(KEY_S.toUpperCase());
+            mKeyD.setText(KEY_D.toUpperCase());
+            mKeyF.setText(KEY_F.toUpperCase());
+            mKeyG.setText(KEY_G.toUpperCase());
+            mKeyH.setText(KEY_H.toUpperCase());
+            mKeyJ.setText(KEY_J.toUpperCase());
+            mKeyK.setText(KEY_K.toUpperCase());
+            mKeyL.setText(KEY_L.toUpperCase());
+            mKeyZ.setText(KEY_Z.toUpperCase());
+            mKeyX.setText(KEY_X.toUpperCase());
+            mKeyC.setText(KEY_C.toUpperCase());
+            mKeyV.setText(KEY_V.toUpperCase());
+            mKeyB.setText(KEY_B.toUpperCase());
+            mKeyN.setText(KEY_N.toUpperCase());
+            mKeyM.setText(KEY_M.toUpperCase());
+        }
+        shiftIsOn = !shiftIsOn;
     }
 
     @Override
@@ -565,10 +585,10 @@ public class KeyboardQwerty extends Keyboard {
             candidates = getCandidatesForK();
         } else if (key == mKeyL) {
             candidates = getCandidatesForL();
-        } else if (key == mKeyNg) {
-            candidates = getCandidatesForNG();
-        } else if (key == mKeyZwj) {
-            candidates = getCandidatesForZwj();
+//        } else if (key == mKeyNg) {
+//            candidates = getCandidatesForNG();
+//        } else if (key == mKeyZwj) {
+//            candidates = getCandidatesForZwj();
         } else if (key == mKeyZ) {
             candidates = getCandidatesForZ();
         } else if (key == mKeyX) {
@@ -837,17 +857,17 @@ public class KeyboardQwerty extends Keyboard {
         return new PopupCandidates(MongolCode.Uni.LHA);
     }
 
-    private PopupCandidates getCandidatesForNG() {
-        if (mIsShowingPunctuation)
-            return new PopupCandidates(KEY_NG_PUNCT_SUB);
-        return null;
-    }
-
-    private PopupCandidates getCandidatesForZwj() {
-        if (mIsShowingPunctuation)
-            return new PopupCandidates(KEY_ZWJ_PUNCT_SUB);
-        return null;
-    }
+//    private PopupCandidates getCandidatesForNG() {
+//        if (mIsShowingPunctuation)
+//            return new PopupCandidates(KEY_NG_PUNCT_SUB);
+//        return null;
+//    }
+//
+//    private PopupCandidates getCandidatesForZwj() {
+//        if (mIsShowingPunctuation)
+//            return new PopupCandidates(KEY_ZWJ_PUNCT_SUB);
+//        return null;
+//    }
 
     private PopupCandidates getCandidatesForZ() {
         if (mIsShowingPunctuation)
