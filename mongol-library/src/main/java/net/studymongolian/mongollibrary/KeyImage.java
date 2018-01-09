@@ -3,22 +3,14 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.GestureDetector;
-import android.view.View;
 
 public class KeyImage extends Key {
 
-    private static final String DEBUG_TAG = "TAG";
+    //private static final String DEBUG_TAG = "TAG";
 
     // use a light image for a DARK theme and vice-versa
     public enum Theme {
@@ -26,17 +18,20 @@ public class KeyImage extends Key {
         LIGHT
     }
 
+    protected Theme mTheme = Theme.LIGHT;
     private TextPaint mImagePaint;
     private Bitmap mImage;
     private Bitmap mImageScaled;
     private boolean mNeedToScaleImage = false;
 
     public KeyImage(Context context) {
-        this(context, null, 0);
+        super(context);
+        initPaints();
     }
 
     public KeyImage(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        initPaints();
     }
 
     public KeyImage(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -52,7 +47,7 @@ public class KeyImage extends Key {
 
 
 
-        mImagePaint.setColor(Color.YELLOW);
+        //mImagePaint.setColor(Color.YELLOW);
     }
 
 
@@ -93,10 +88,10 @@ public class KeyImage extends Key {
 
 
 
-        int left = getPaddingLeft();
-        int top = getPaddingTop();
-        int right = left + keyWidth;
-        int bottom = top + keyHeight;
+        //int left = getPaddingLeft();
+        //int top = getPaddingTop();
+        //int right = left + keyWidth;
+        //int bottom = top + keyHeight;
 
         // automatically resize text that is too large
         if (mNeedToScaleImage) {
@@ -115,4 +110,7 @@ public class KeyImage extends Key {
         mImage = bitmap;
     }
 
+    public void setTheme(Theme theme) {
+        mTheme = theme;
+    }
 }

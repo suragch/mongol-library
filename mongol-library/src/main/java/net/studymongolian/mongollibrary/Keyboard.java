@@ -234,6 +234,8 @@ public abstract class Keyboard extends ViewGroup {
         }
     }
 
+
+    // TODO: move all this logic to the key
     protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
 
         Handler handler;
@@ -573,9 +575,9 @@ public abstract class Keyboard extends ViewGroup {
     }
 
     // TODO either change them all to 32dp or change this to 48dp
-    protected Bitmap getShiftImage() {
+    protected Bitmap getShiftImage(KeyImage.Theme theme) {
         int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+        if (theme == KeyImage.Theme.LIGHT) {
             imageResourceId = R.drawable.ic_keyboard_shift_black_32dp;
         } else {
             imageResourceId = R.drawable.ic_keyboard_shift_white_32dp;

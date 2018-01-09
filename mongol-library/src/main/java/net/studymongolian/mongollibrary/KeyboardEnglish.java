@@ -127,47 +127,47 @@ public class KeyboardEnglish extends Keyboard {
     private static final String KEY_I_PUNCT = "8";
     private static final String KEY_O_PUNCT = "9";
     private static final String KEY_P_PUNCT = "0";
-    private static final String KEY_A_PUNCT = "";
-    private static final String KEY_S_PUNCT = "";
-    private static final String KEY_D_PUNCT = "";
-    private static final String KEY_F_PUNCT = "";
-    private static final String KEY_G_PUNCT = "=";
-    private static final String KEY_H_PUNCT = "¥";
-    private static final String KEY_J_PUNCT = "'";
-    private static final String KEY_K_PUNCT = "\"";
-    private static final String KEY_L_PUNCT = "#";
-    private static final String KEY_Z_PUNCT = "";
-    private static final String KEY_X_PUNCT = "";
-    private static final String KEY_C_PUNCT = "";
-    private static final String KEY_V_PUNCT = "";
-    private static final String KEY_B_PUNCT = "";
-    private static final String KEY_N_PUNCT = "";
-    private static final String KEY_M_PUNCT = "";
+    private static final String KEY_A_PUNCT = "\\";
+    private static final String KEY_S_PUNCT = "_";
+    private static final String KEY_D_PUNCT = "(";
+    private static final String KEY_F_PUNCT = ":";
+    private static final String KEY_G_PUNCT = ")";
+    private static final String KEY_H_PUNCT = "&";
+    private static final String KEY_J_PUNCT = "#";
+    private static final String KEY_K_PUNCT = "*";
+    private static final String KEY_L_PUNCT = "\"";
+    private static final String KEY_Z_PUNCT = "@";
+    private static final String KEY_X_PUNCT = "/";
+    private static final String KEY_C_PUNCT = "-";
+    private static final String KEY_V_PUNCT = "\'";
+    private static final String KEY_B_PUNCT = "!";
+    private static final String KEY_N_PUNCT = "?";
+    private static final String KEY_M_PUNCT = ";";
 
-    private static final String KEY_Q_PUNCT_SUB = "!";
-    private static final String KEY_W_PUNCT_SUB = "@";
-    private static final String KEY_E_PUNCT_SUB = "#";
-    private static final String KEY_R_PUNCT_SUB = "$";
-    private static final String KEY_T_PUNCT_SUB = "%";
-    private static final String KEY_Y_PUNCT_SUB = "^";
-    private static final String KEY_U_PUNCT_SUB = "&";
-    private static final String KEY_I_PUNCT_SUB = "*";
-    private static final String KEY_O_PUNCT_SUB = "(";
-    private static final String KEY_P_PUNCT_SUB = ")";
+    private static final String KEY_Q_PUNCT_SUB = "";
+    private static final String KEY_W_PUNCT_SUB = "";
+    private static final String KEY_E_PUNCT_SUB = "";
+    private static final String KEY_R_PUNCT_SUB = "";
+    private static final String KEY_T_PUNCT_SUB = "";
+    private static final String KEY_Y_PUNCT_SUB = "";
+    private static final String KEY_U_PUNCT_SUB = "";
+    private static final String KEY_I_PUNCT_SUB = "";
+    private static final String KEY_O_PUNCT_SUB = "";
+    private static final String KEY_P_PUNCT_SUB = "";
     private static final String KEY_A_PUNCT_SUB = "";
     private static final String KEY_S_PUNCT_SUB = "";
     private static final String KEY_D_PUNCT_SUB = "";
     private static final String KEY_F_PUNCT_SUB = "";
-    private static final String KEY_G_PUNCT_SUB = "+";
-    private static final String KEY_H_PUNCT_SUB = "$";
+    private static final String KEY_G_PUNCT_SUB = "";
+    private static final String KEY_H_PUNCT_SUB = "";
     private static final String KEY_J_PUNCT_SUB = "";
     private static final String KEY_K_PUNCT_SUB = "";
     private static final String KEY_L_PUNCT_SUB = "";
     private static final String KEY_Z_PUNCT_SUB = "";
     private static final String KEY_X_PUNCT_SUB = "";
-    private static final String KEY_C_PUNCT_SUB = ".";
+    private static final String KEY_C_PUNCT_SUB = "";
     private static final String KEY_V_PUNCT_SUB = "";
-    private static final String KEY_B_PUNCT_SUB = "~";
+    private static final String KEY_B_PUNCT_SUB = "";
     private static final String KEY_N_PUNCT_SUB = "";
     private static final String KEY_M_PUNCT_SUB = "";
 
@@ -279,7 +279,7 @@ public class KeyboardEnglish extends Keyboard {
         // Row 3 (9 keys)
 
         mKeyShift = new KeyImage(context);
-        mKeyShift.setImage(getShiftImage());
+        //mKeyShift.setImage(getShiftImage());
         mKeyShift.setOnClickListener(handleShift);
         addView(mKeyShift);
 
@@ -481,6 +481,7 @@ public class KeyboardEnglish extends Keyboard {
 
     @Override
     protected void onShiftClick() {
+        if (mIsShowingPunctuation) return;
         if (shiftIsOn) {
             // switch to lowercase
             mKeyQ.setText(KEY_Q.toLowerCase());
