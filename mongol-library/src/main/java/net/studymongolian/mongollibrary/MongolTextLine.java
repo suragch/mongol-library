@@ -315,6 +315,7 @@ class MongolTextLine {
 
 
     int getOffsetForAdvance (float advance) {
+        Log.i(TAG, "getOffsetForAdvance: " + advance);
         boolean hasSpan = mText instanceof Spanned;
         int offset = 0;
         float oldWidth = 0;
@@ -351,10 +352,6 @@ class MongolTextLine {
                 offset += charactersMeasured;
                 newWidth = oldWidth + measuredWidth[0];
                 int nextCharIndex = start + charactersMeasured;
-                if (nextCharIndex + 1 >= mText.length()) {
-                    Log.e(TAG, "getOffsetForAdvance: Crashing gracefully! This would have been IndexOutOfBoundsException");
-                    //break;
-                }
                 float widthOfNextChar = wp.measureText(mText, nextCharIndex, nextCharIndex + 1);
                 // choose the closer offset
                 if (advance - newWidth > newWidth + widthOfNextChar - advance) {
