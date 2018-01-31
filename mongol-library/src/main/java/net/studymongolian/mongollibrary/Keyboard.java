@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
 import android.widget.Button;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public abstract class Keyboard extends ViewGroup {
+public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     static final float DEFAULT_PRIMARY_TEXT_SIZE = 24;
     static final int DEFAULT_PRIMARY_TEXT_COLOR = Color.BLACK;
@@ -40,14 +41,12 @@ public abstract class Keyboard extends ViewGroup {
     static final int DEFAULT_POPUP_COLOR = Color.WHITE;
     static final int DEFAULT_POPUP_TEXT_COLOR = Color.BLACK;
     static final int DEFAULT_POPUP_HIGHLIGHT_COLOR = Color.GRAY;
-    static final KeyImage.Theme DEFAULT_IMAGE_THEME = KeyImage.Theme.LIGHT;
+    static final Theme DEFAULT_THEME = Theme.LIGHT;
 
-    protected KeyImage mKeyKeyboard;
-    protected KeyImage.Theme mKeyImageTheme;
 
+    protected Theme mKeyboardTheme;
     protected int mPopupBackgroundColor;
     protected int mPopupHighlightColor;
-
     protected int mPopupTextColor;
     protected Typeface mTypeface;
     protected float mPrimaryTextSize;
@@ -61,9 +60,19 @@ public abstract class Keyboard extends ViewGroup {
     protected int mKeyBorderRadius;
     protected int mKeyPadding;
 
+    private PopupKeyCandidatesView popupView;
+    private PopupWindow popupWindow;
+
+
+    // use a light image for a DARK theme and vice-versa
+    public enum Theme {
+        DARK,
+        LIGHT
+    }
+
     // This will map the button resource id to the String value that we want to
     // input when that key is clicked.
-    protected Map<Key, String> mKeyValues = new HashMap<>();
+    //protected Map<Key, String> mKeyValues = new HashMap<>();
     protected Map<Key, String> mKeyPunctuationValues = new HashMap<>();
 
     protected boolean mIsShowingPunctuation = false;
@@ -96,7 +105,7 @@ public abstract class Keyboard extends ViewGroup {
         mSecondaryTextSize = mPrimaryTextSize / 2;
         mPrimaryTextColor = style.keyPrimaryTextColor;
         mSecondaryTextColor = style.keySecondaryTextColor;
-        mKeyImageTheme = style.keyImageTheme;
+        mKeyboardTheme = style.keyboardTheme;
         mKeyColor = style.keyBackgroundColor;
         mKeyPressedColor = style.keyPressedColor;
         mKeyBorderColor = style.keyBorderColor;
@@ -115,7 +124,7 @@ public abstract class Keyboard extends ViewGroup {
         mSecondaryTextSize = mPrimaryTextSize / 2;
         mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
         mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
-        mKeyImageTheme = DEFAULT_IMAGE_THEME;
+        mKeyboardTheme = DEFAULT_THEME;
         mKeyColor = DEFAULT_KEY_COLOR;
         mKeyPressedColor = DEFAULT_KEY_PRESSED_COLOR;
         mKeyBorderColor = DEFAULT_KEY_BORDER_COLOR;
@@ -127,12 +136,13 @@ public abstract class Keyboard extends ViewGroup {
         mPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
     }
 
-    protected void initTextKey(KeyText textKey, String primary, String punctuation) {
-        textKey.setOnTouchListener(textKeyTouchListener);
-        mKeyValues.put(textKey, primary);
-        mKeyPunctuationValues.put(textKey, punctuation);
-        addView(textKey);
-    }
+//    // FIXME this shouldn't be here
+//    protected void initTextKey(KeyText textKey, String primary, String punctuation) {
+//        textKey.setOnTouchListener(textKeyTouchListener);
+//        //mKeyValues.put(textKey, primary);
+//        mKeyPunctuationValues.put(textKey, punctuation);
+//        addView(textKey);
+//    }
 
     // number of keys and weights are initialized by keyboard subclass
     protected int[] mNumberOfKeysInRow;
@@ -185,7 +195,7 @@ public abstract class Keyboard extends ViewGroup {
                 ((KeyText) child).setTextColor(mPrimaryTextColor);
                 ((KeyText) child).setSubTextColor(mSecondaryTextColor);
             } else if (child instanceof KeyImage) {
-
+                // TODO apply theme to key image
             }
 
             child.setKeyColor(mKeyColor);
@@ -200,7 +210,7 @@ public abstract class Keyboard extends ViewGroup {
     public interface KeyboardListener {
         public void onRequestNewKeyboard(String keyboardDisplayName);
 
-        public PopupCandidates getKeyboardCandidates();
+        public Key.PopupCandidates getKeyboardCandidates();
     }
 
     public void setKeyboardListener(KeyboardListener listener) {
@@ -235,240 +245,251 @@ public abstract class Keyboard extends ViewGroup {
     }
 
 
-    // TODO: move all this logic to the key
-    protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
-
-        Handler handler;
-        final int LONGPRESS_THRESHOLD = 500; // milliseconds
-
-        PopupKeyCandidates popupView;
-        int popupWidth;
-        PopupWindow popupWindow;
-
-        @Override
-        public boolean onTouch(View view, final MotionEvent event) {
-
-            if (event.getPointerCount() > 1) return false;
-
-            final Key key = (Key) view;
-            int action = event.getActionMasked();
-
-            switch (action) {
-                case (MotionEvent.ACTION_DOWN):
-
-                    key.setPressed(true);
-
-                    Keyboard.PopupCandidates candidates = getPopupCandidates(key);
-                    if (candidates != null && !candidates.isEmpty()) {
-                        int x = (int) event.getRawX();
-                        preparePopup(key, candidates, x);
-                    }
-                    return true;
-                case (MotionEvent.ACTION_MOVE):
-
-                    if (popupView != null) {
-                        int x = (int) event.getRawX();
-                        popupView.updateTouchPosition(x);
-                    }
-
-
-                    return true;
-                case (MotionEvent.ACTION_UP):
-
-                    if (inputConnection == null) {
-                        handlePopupChoice(key, event);
-                        return true;
-                    }
-
-
-                    if (popupView != null) {                                // handle popups
-                        handlePopupChoice(key, event);
-                    } else if (key == mKeyKeyboard) {                       // keyboard key
-
-                        mIsShowingPunctuation = !mIsShowingPunctuation;
-                        setDisplayText(mIsShowingPunctuation);
-
-                    } else {                                                // other keys
-
-                        String inputText;
-                        if (mIsShowingPunctuation) {
-                            inputText = mKeyPunctuationValues.get(key);
-                        } else {
-                            inputText = mKeyValues.get(key);
-                        }
-
-                        // handle composing
-                        if (mComposing.length() > 0) {
-                            if (MongolCode.isMongolian(inputText.charAt(0))) {
-                                inputConnection.commitText(mComposing, 1);
-                            } else {
-                                inputConnection.finishComposingText();
-                            }
-                            mComposing.setLength(0);
-                        }
-
-                        // TODO add composing on initial DA
-                        // FIXME not necessarily wanted on all keyboards
-//                        // TA/DA defaults to DA except in the INITIAL location
-//                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
-//                            char prevChar = getPreviousChar();
-//                            if (!MongolCode.isMongolian(prevChar)) {
-//                                inputText = String.valueOf(MongolCode.Uni.TA);
-//                            }
+//    // TODO: move all this logic to the key
+//    protected View.OnTouchListener textKeyTouchListener = new View.OnTouchListener() {
+//
+//        Handler handler;
+//        final int LONGPRESS_THRESHOLD = 500; // milliseconds
+//
+//        PopupKeyCandidates popupView;
+//        int popupWidth;
+//        PopupWindow popupWindow;
+//
+//        @Override
+//        public boolean onTouch(View view, final MotionEvent event) {
+//
+//            if (event.getPointerCount() > 1) return false;
+//
+//            final Key key = (Key) view;
+//            int action = event.getActionMasked();
+//
+//            switch (action) {
+//                case (MotionEvent.ACTION_DOWN):
+//
+//                    key.setPressed(true);
+//
+//                    Key.PopupCandidates candidates = getPopupCandidates(key);
+//                    if (candidates != null && !candidates.isEmpty()) {
+//                        int x = (int) event.getRawX();
+//                        preparePopup(key, candidates, x);
+//                    }
+//                    return true;
+//                case (MotionEvent.ACTION_MOVE):
+//
+//                    if (popupView != null) {
+//                        int x = (int) event.getRawX();
+//                        popupView.updateTouchPosition(x);
+//                    }
+//
+//
+//                    return true;
+//                case (MotionEvent.ACTION_UP):
+//
+//                    if (inputConnection == null) {
+//                        handlePopupChoice(key, event);
+//                        return true;
+//                    }
+//
+//
+//                    if (popupView != null) {                                // handle popups
+//                        handlePopupChoice(key, event);
+//                    } else if (key == mKeyKeyboard) {                       // keyboard key
+//
+//                        mIsShowingPunctuation = !mIsShowingPunctuation;
+//                        //setDisplayText(mIsShowingPunctuation);
+//
+//                    } else {                                                // other keys
+//
+//                        String inputText;
+//                        if (mIsShowingPunctuation) {
+//                            inputText = mKeyPunctuationValues.get(key);
+//                        } else {
+//                            inputText = "aaa";//mKeyValues.get(key);
 //                        }
+//
+//                        // handle composing
+//                        if (mComposing.length() > 0) {
+//                            if (MongolCode.isMongolian(inputText.charAt(0))) {
+//                                inputConnection.commitText(mComposing, 1);
+//                            } else {
+//                                inputConnection.finishComposingText();
+//                            }
+//                            mComposing.setLength(0);
+//                        }
+//
+//                        // TODO add composing on initial DA
+//                        // FIXME not necessarily wanted on all keyboards
+////                        // TA/DA defaults to DA except in the INITIAL location
+////                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
+////                            char prevChar = getPreviousChar();
+////                            if (!MongolCode.isMongolian(prevChar)) {
+////                                inputText = String.valueOf(MongolCode.Uni.TA);
+////                            }
+////                        }
+//
+//                        inputConnection.commitText(inputText, 1);
+//                    }
+//
+//                    key.setPressed(false);
+//                    if (handler != null) handler.removeCallbacksAndMessages(null);
+//                    return true;
+//                default:
+//                    handlePopupChoice(key, event);
+//                    return false;
+//            }
+//        }
 
-                        inputConnection.commitText(inputText, 1);
-                    }
+//        private void preparePopup(final Key key, final Key.PopupCandidates candidates, final int xPosition) {
+//
+//            if (handler != null) {
+//                handler.removeCallbacksAndMessages(null);
+//            } else {
+//                handler = new Handler();
+//            }
+//
+//            final Runnable runnableCode = new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    if (popupWindow != null) return;
+//
+//                    // get the popup view
+//                    popupView = new PopupKeyCandidates(getContext());
+//                    popupView.setBackgroundColor(mPopupBackgroundColor);
+//                    popupView.setTextColor(mPopupTextColor);
+//
+//                    // update the popup view with the candidate choices
+//                    if (candidates == null || candidates.getUnicode() == null) return;
+//                    popupView.setCandidates(candidates.getUnicode());
+//                    if (candidates.getDisplay() == null) {
+//                        popupView.setDisplayCandidates(candidates.getUnicode(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+//                    } else {
+//                        popupView.setDisplayCandidates(candidates.getDisplay(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+//                    }
+//
+//                    popupView.setHighlightColor(mPopupHighlightColor);
+//
+//                    popupWindow = new PopupWindow(popupView,
+//                            LinearLayout.LayoutParams.WRAP_CONTENT,
+//                            LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    int location[] = new int[2];
+//                    key.getLocationOnScreen(location);
+//                    int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//                    popupView.measure(measureSpec, measureSpec);
+//                    popupWidth = popupView.getMeasuredWidth();
+//                    int spaceAboveKey = key.getHeight() / 4;
+//                    int x = xPosition - popupWidth / popupView.getChildCount() / 2;
+//                    //int locationX = location[0]
+//                    popupWindow.showAtLocation(key, Gravity.NO_GRAVITY,
+//                            x, location[1] - popupView.getMeasuredHeight() - spaceAboveKey);
+//
+//
+//                    // highlight current item (after the popup window has loaded)
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            int x = xPosition;
+//                            popupView.updateTouchPosition(x);
+//                        }
+//                    });
+//
+//                }
+//            };
+//
+//            handler.postDelayed(runnableCode, LONGPRESS_THRESHOLD);
+//        }
+//
+//        private void handlePopupChoice(Key key, MotionEvent event) {
+//
+//            key.setPressed(false);
+//
+//            if (handler != null) {
+//                handler.removeCallbacksAndMessages(null);
+//            }
+//            if (popupWindow == null) return;
+//
+//            int x = (int) event.getRawX();
+//            CharSequence selectedItem = popupView.getCurrentItem(x);
+//
+//            if (TextUtils.isEmpty(selectedItem)) {
+//                dismissPopup();
+//                return;
+//            }
+//
+//            if (key == mKeyKeyboard) {
+//                CharSequence name = popupView.getCurrentItem(x);
+//                mKeyboardListener.onRequestNewKeyboard(name.toString());
+//                dismissPopup();
+//                return;
+//            }
+//
+//            if (inputConnection == null) {
+//                dismissPopup();
+//                return;
+//            }
+//
+//            inputConnection.beginBatchEdit();
+//
+//            if (mComposing.length() > 0) {
+//                inputConnection.commitText(mComposing, 1);
+//                mComposing.setLength(0);
+//            }
+//
+//            // add composing text for certain medials to avoid confusion with finals
+//            if (selectedItem.equals(MEDIAL_A_FVS1)) {
+//                inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
+//                mComposing.append(MEDIAL_A_FVS1);
+//            } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
+//                inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
+//                mComposing.append(MEDIAL_I_FVS1);
+//            } else if (selectedItem.equals(MEDIAL_I_FVS2)) {
+//                inputConnection.setComposingText(MEDIAL_I_FVS2_COMPOSING, 1);
+//                mComposing.append(MEDIAL_I_FVS2);
+//            //} else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
+//            //    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
+//            //    mComposing.append(MEDIAL_ZWJ_I);
+//            } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
+//                inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
+//                mComposing.append(MEDIAL_U_FVS1);
+//            } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
+//                inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
+//                mComposing.append(MEDIAL_UE_FVS2);
+//            } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
+//                inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
+//                mComposing.append(MEDIAL_DOTTED_NA);
+//            } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
+//                inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
+//                mComposing.append(MEDIAL_TA_FVS1);
+//            } else if (selectedItem.equals(YA_FVS1)) {
+//                inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
+//                mComposing.append(YA_FVS1);
+//            } else {
+//                inputConnection.commitText(selectedItem, 1);
+//            }
+//
+//            inputConnection.endBatchEdit();
+//
+//            dismissPopup();
+//        }
+//
+//        private void dismissPopup() {
+//            if (popupWindow != null)
+//                popupWindow.dismiss();
+//            popupView = null;
+//            popupWindow = null;
+//        }
+//    };
 
-                    key.setPressed(false);
-                    if (handler != null) handler.removeCallbacksAndMessages(null);
-                    return true;
-                default:
-                    handlePopupChoice(key, event);
-                    return false;
-            }
+    protected void handleComposing(String inputText) {
+        if (inputConnection == null) return;
+        if (mComposing.length() <= 0) return;
+        if (MongolCode.isMongolian(inputText.charAt(0))) {
+            inputConnection.commitText(mComposing, 1);
+        } else {
+            inputConnection.finishComposingText();
         }
-
-        private void preparePopup(final Key key, final Keyboard.PopupCandidates candidates, final int xPosition) {
-
-            if (handler != null) {
-                handler.removeCallbacksAndMessages(null);
-            } else {
-                handler = new Handler();
-            }
-
-            final Runnable runnableCode = new Runnable() {
-                @Override
-                public void run() {
-
-                    if (popupWindow != null) return;
-
-                    // get the popup view
-                    popupView = new PopupKeyCandidates(getContext());
-                    popupView.setBackgroundColor(mPopupBackgroundColor);
-                    popupView.setTextColor(mPopupTextColor);
-
-                    // update the popup view with the candidate choices
-                    if (candidates == null || candidates.getUnicode() == null) return;
-                    popupView.setCandidates(candidates.getUnicode());
-                    if (candidates.getDisplay() == null) {
-                        popupView.setDisplayCandidates(candidates.getUnicode(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-                    } else {
-                        popupView.setDisplayCandidates(candidates.getDisplay(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-                    }
-
-                    popupView.setHighlightColor(mPopupHighlightColor);
-
-                    popupWindow = new PopupWindow(popupView,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT);
-                    int location[] = new int[2];
-                    key.getLocationOnScreen(location);
-                    int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-                    popupView.measure(measureSpec, measureSpec);
-                    popupWidth = popupView.getMeasuredWidth();
-                    int spaceAboveKey = key.getHeight() / 4;
-                    int x = xPosition - popupWidth / popupView.getChildCount() / 2;
-                    //int locationX = location[0]
-                    popupWindow.showAtLocation(key, Gravity.NO_GRAVITY,
-                            x, location[1] - popupView.getMeasuredHeight() - spaceAboveKey);
-
-
-                    // highlight current item (after the popup window has loaded)
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int x = xPosition;
-                            popupView.updateTouchPosition(x);
-                        }
-                    });
-
-                }
-            };
-
-            handler.postDelayed(runnableCode, LONGPRESS_THRESHOLD);
-        }
-
-        private void handlePopupChoice(Key key, MotionEvent event) {
-
-            key.setPressed(false);
-
-            if (handler != null) {
-                handler.removeCallbacksAndMessages(null);
-            }
-            if (popupWindow == null) return;
-
-            int x = (int) event.getRawX();
-            CharSequence selectedItem = popupView.getCurrentItem(x);
-
-            if (TextUtils.isEmpty(selectedItem)) {
-                dismissPopup();
-                return;
-            }
-
-            if (key == mKeyKeyboard) {
-                CharSequence name = popupView.getCurrentItem(x);
-                mKeyboardListener.onRequestNewKeyboard(name.toString());
-                dismissPopup();
-                return;
-            }
-
-            if (inputConnection == null) {
-                dismissPopup();
-                return;
-            }
-
-            inputConnection.beginBatchEdit();
-
-            if (mComposing.length() > 0) {
-                inputConnection.commitText(mComposing, 1);
-                mComposing.setLength(0);
-            }
-
-            // add composing text for certain medials to avoid confusion with finals
-            if (selectedItem.equals(MEDIAL_A_FVS1)) {
-                inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
-                mComposing.append(MEDIAL_A_FVS1);
-            } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
-                inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
-                mComposing.append(MEDIAL_I_FVS1);
-            } else if (selectedItem.equals(MEDIAL_I_FVS2)) {
-                inputConnection.setComposingText(MEDIAL_I_FVS2_COMPOSING, 1);
-                mComposing.append(MEDIAL_I_FVS2);
-            //} else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
-            //    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
-            //    mComposing.append(MEDIAL_ZWJ_I);
-            } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
-                inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
-                mComposing.append(MEDIAL_U_FVS1);
-            } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
-                inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
-                mComposing.append(MEDIAL_UE_FVS2);
-            } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
-                inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
-                mComposing.append(MEDIAL_DOTTED_NA);
-            } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
-                inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
-                mComposing.append(MEDIAL_TA_FVS1);
-            } else if (selectedItem.equals(YA_FVS1)) {
-                inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
-                mComposing.append(YA_FVS1);
-            } else {
-                inputConnection.commitText(selectedItem, 1);
-            }
-
-            inputConnection.endBatchEdit();
-
-            dismissPopup();
-        }
-
-        private void dismissPopup() {
-            if (popupWindow != null)
-                popupWindow.dismiss();
-            popupView = null;
-            popupWindow = null;
-        }
-    };
+        mComposing.setLength(0);
+    }
 
     protected View.OnTouchListener handleBackspace = new View.OnTouchListener() {
 
@@ -533,20 +554,20 @@ public abstract class Keyboard extends ViewGroup {
 
     };
 
-    protected View.OnClickListener handleShift = new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            onShiftClick();
-        }
-    };
+//    protected View.OnClickListener handleShift = new OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            onShiftClick();
+//        }
+//    };
 
-    // subclasses can override this if using a shift key
-    protected boolean shiftIsOn = false;
-    protected void onShiftClick() { }
+//    // subclasses can override this if using a shift key
+//    protected boolean shiftIsOn = false;
+//    protected void onShiftClick() { }
 
     protected Bitmap getReturnImage() {
         int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+        if (mKeyboardTheme == Theme.LIGHT) {
             imageResourceId = R.drawable.ic_keyboard_return_black_48dp;
         } else {
             imageResourceId = R.drawable.ic_keyboard_return_white_48dp;
@@ -556,7 +577,7 @@ public abstract class Keyboard extends ViewGroup {
 
     protected Bitmap getBackspaceImage() {
         int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+        if (mKeyboardTheme == Theme.LIGHT) {
             imageResourceId = R.drawable.ic_keyboard_backspace_black_48dp;
         } else {
             imageResourceId = R.drawable.ic_keyboard_backspace_white_48dp;
@@ -566,7 +587,7 @@ public abstract class Keyboard extends ViewGroup {
 
     protected Bitmap getKeyboardImage() {
         int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
+        if (mKeyboardTheme == Theme.LIGHT) {
             imageResourceId = R.drawable.ic_keyboard_black_48dp;
         } else {
             imageResourceId = R.drawable.ic_keyboard_white_48dp;
@@ -574,16 +595,16 @@ public abstract class Keyboard extends ViewGroup {
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
 
-    // TODO either change them all to 32dp or change this to 48dp
-    protected Bitmap getShiftImage(KeyImage.Theme theme) {
-        int imageResourceId;
-        if (theme == KeyImage.Theme.LIGHT) {
-            imageResourceId = R.drawable.ic_keyboard_shift_black_32dp;
-        } else {
-            imageResourceId = R.drawable.ic_keyboard_shift_white_32dp;
-        }
-        return BitmapFactory.decodeResource(getResources(), imageResourceId);
-    }
+//    // TODO either change them all to 32dp or change this to 48dp
+//    protected Bitmap getShiftImage(KeyImage.Theme theme) {
+//        int imageResourceId;
+//        if (theme == KeyImage.Theme.LIGHT) {
+//            imageResourceId = R.drawable.ic_keyboard_shift_black_32dp;
+//        } else {
+//            imageResourceId = R.drawable.ic_keyboard_shift_white_32dp;
+//        }
+//        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+//    }
 
     protected char getPreviousChar() {
         if (inputConnection == null) return 0;
@@ -595,8 +616,8 @@ public abstract class Keyboard extends ViewGroup {
     // this may not actually return a whole word if the word is very long
     protected String getPreviousMongolWord() {
         if (inputConnection == null) return "";
-        int numberOfCharsToFetch = 20;
-        CharSequence previous = inputConnection.getTextBeforeCursor(numberOfCharsToFetch, 0);
+        int numberOfCharsToGet = 20;
+        CharSequence previous = inputConnection.getTextBeforeCursor(numberOfCharsToGet, 0);
         if (TextUtils.isEmpty(previous)) return "";
         int startIndex = previous.length() - 1;
         char charAtIndex = previous.charAt(startIndex);
@@ -613,16 +634,16 @@ public abstract class Keyboard extends ViewGroup {
         return mongolWord.toString();
     }
 
-    protected PopupCandidates getCandidatesForSuffix() {
+    protected Key.PopupCandidates getCandidatesForSuffix() {
         String previousWord = getPreviousMongolWord();
         if (TextUtils.isEmpty(previousWord)) {
-            return new PopupCandidates(MongolCode.Uni.NNBS);
+            return new Key.PopupCandidates(MongolCode.Uni.NNBS);
         }
         // TODO if it is a number then return the right suffix for that
         char lastChar = previousWord.charAt(previousWord.length() - 1);
         MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
         if (gender == null) {
-            return new PopupCandidates(MongolCode.Uni.NNBS);
+            return new Key.PopupCandidates(MongolCode.Uni.NNBS);
         }
         String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
         String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
@@ -644,7 +665,7 @@ public abstract class Keyboard extends ViewGroup {
                 banIyanSuffix,
                 achaSuffix,
                 udSuffix};
-        return new PopupCandidates(unicode);
+        return new Key.PopupCandidates(unicode);
     }
 
     protected boolean isIsolateOrInitial() {
@@ -658,83 +679,85 @@ public abstract class Keyboard extends ViewGroup {
                 location == MongolCode.Location.INITIAL;
     }
 
-    public PopupCandidates getCandidatesForKeyboard() {
+    public Key.PopupCandidates getCandidatesForKeyboard() {
         if (mKeyboardListener == null) return null;
         return mKeyboardListener.getKeyboardCandidates();
     }
 
-    abstract public PopupCandidates getPopupCandidates(Key key);
+    abstract public Key.PopupCandidates getPopupCandidates(Key key);
 
+    // TODO do we need this?
     // in this method you should switch the display on the keys for normal or punctuation mode
-    abstract public void setDisplayText(boolean isShowingPunctuation);
+    //abstract public void setDisplayText(boolean isShowingPunctuation);
 
     // subclasses should return the name of the keyboard to display in the keyboard chooser popup
     abstract public String getDisplayName();
 
 
-    /**
-     * these are the choices for a popup key
-     */
-    public static class PopupCandidates {
-
-        private String[] unicode;
-        private String[] display;
-
-        /**
-         * Convenience constructor for PopupCandidates(String[] unicode)
-         *
-         * @param unicode the unicode values for the popup items
-         */
-        public PopupCandidates(char unicode) {
-            this(new String[]{String.valueOf(unicode)});
-        }
-
-        /**
-         * Convenience constructor for PopupCandidates(String[] unicode)
-         *
-         * @param unicode the unicode values for the popup items
-         */
-        public PopupCandidates(String unicode) {
-            this(new String[]{unicode});
-        }
-
-        /**
-         * @param unicode the unicode values for the popup items
-         */
-        public PopupCandidates(String[] unicode) {
-            this(unicode, null);
-        }
-
-        /**
-         * @param unicode the unicode values for the popup items
-         * @param display the value to display if different than the unicode values
-         */
-        public PopupCandidates(String[] unicode, String[] display) {
-            if (display != null) {
-                if (display.length != unicode.length)
-                    throw new IllegalArgumentException(
-                            "The number of display items must " +
-                                    "be the same as the number of unicode items.");
-            }
-            this.unicode = unicode;
-            this.display = display;
-        }
-
-        public boolean isEmpty() {
-            if (unicode == null) return true;
-            if (unicode.length == 0) return true;
-            if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
-            return false;
-        }
-
-        public String[] getUnicode() {
-            return unicode;
-        }
-
-        public String[] getDisplay() {
-            return display;
-        }
-    }
+    // TODO move these to KeyText or Key
+//    /**
+//     * these are the choices for a popup key
+//     */
+//    public static class PopupCandidates {
+//
+//        private String[] unicode;
+//        private String[] display;
+//
+//        /**
+//         * Convenience constructor for PopupCandidates(String[] unicode)
+//         *
+//         * @param unicode the unicode values for the popup items
+//         */
+//        public PopupCandidates(char unicode) {
+//            this(new String[]{String.valueOf(unicode)});
+//        }
+//
+//        /**
+//         * Convenience constructor for PopupCandidates(String[] unicode)
+//         *
+//         * @param unicode the unicode values for the popup items
+//         */
+//        public PopupCandidates(String unicode) {
+//            this(new String[]{unicode});
+//        }
+//
+//        /**
+//         * @param unicode the unicode values for the popup items
+//         */
+//        public PopupCandidates(String[] unicode) {
+//            this(unicode, null);
+//        }
+//
+//        /**
+//         * @param unicode the unicode values for the popup items
+//         * @param display the value to display if different than the unicode values
+//         */
+//        public PopupCandidates(String[] unicode, String[] display) {
+//            if (display != null) {
+//                if (display.length != unicode.length)
+//                    throw new IllegalArgumentException(
+//                            "The number of display items must " +
+//                                    "be the same as the number of unicode items.");
+//            }
+//            this.unicode = unicode;
+//            this.display = display;
+//        }
+//
+//        public boolean isEmpty() {
+//            if (unicode == null) return true;
+//            if (unicode.length == 0) return true;
+//            if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
+//            return false;
+//        }
+//
+//        public String[] getUnicode() {
+//            return unicode;
+//        }
+//
+//        public String[] getDisplay() {
+//            return display;
+//        }
+//    }
 
 
 
@@ -752,7 +775,7 @@ public abstract class Keyboard extends ViewGroup {
         private int keySecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
         private float keyPrimaryTextSize = DEFAULT_PRIMARY_TEXT_SIZE;
         private int keySpacing = DEFAULT_KEY_PADDING;
-        private KeyImage.Theme keyImageTheme = DEFAULT_IMAGE_THEME;
+        private Theme keyboardTheme = DEFAULT_THEME;
 
         public StyleBuilder setKeyTextSize(float keyTextSize) {
             this.keyPrimaryTextSize = keyTextSize;
@@ -816,12 +839,12 @@ public abstract class Keyboard extends ViewGroup {
 
         /**
          *
-         * @param theme KeyImage.Theme.DARK for a light image
-         *                  or KeyImage.ImageColor.LIGHT for a dark image.
+         * @param theme Theme.DARK for a light image
+         *                  or Theme.LIGHT for a dark image.
          * @return StyleBuilder
          */
-        public StyleBuilder setKeyImageTheme(KeyImage.Theme theme) {
-            this.keyImageTheme = theme;
+        public StyleBuilder setKeyboardTheme(Theme theme) {
+            this.keyboardTheme = theme;
             return this;
         }
     }
@@ -851,4 +874,127 @@ public abstract class Keyboard extends ViewGroup {
     private static final String MEDIAL_TA_FVS1_COMPOSING = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
     private static final String YA_FVS1 = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1;
     private static final String YA_FVS1_COMPOSING = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+
+
+    @Override
+    public void onKeyInput(String text) {
+
+        if (inputConnection == null) return;
+        handleComposing(text);
+
+        //showPopup();
+        // TODO add composing on initial DA
+//                        // TA/DA defaults to DA except in the INITIAL location
+//                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
+//                            char prevChar = getPreviousChar();
+//                            if (!MongolCode.isMongolian(prevChar)) {
+//                                inputText = String.valueOf(MongolCode.Uni.TA);
+//                            }
+//                        }
+
+        inputConnection.commitText(text, 1);
+    }
+
+
+
+    @Override
+    public void showPopup(Key key, final int xPosition) {
+        Key.PopupCandidates popupCandidates = getPopupCandidates(key);
+        if (popupCandidates == null || popupCandidates.getUnicode() == null) return;
+        popupView = getPopupView();
+        updatePopupViewWithCandidateChoices(popupCandidates);
+        layoutAndShowPopupWindow(key, xPosition);
+        highlightCurrentItemAfterPopupWindowHasLoaded(key, xPosition);
+
+    }
+
+    private PopupKeyCandidatesView getPopupView() {
+        PopupKeyCandidatesView popupView = new PopupKeyCandidatesView(getContext());
+        popupView.setBackgroundColor(mPopupBackgroundColor);
+        popupView.setTextColor(mPopupTextColor);
+        popupView.setHighlightColor(mPopupHighlightColor);
+        return popupView;
+    }
+
+    private void updatePopupViewWithCandidateChoices(Key.PopupCandidates popupCandidates) {
+        popupView.setCandidates(popupCandidates.getUnicode());
+        int defaultTextSize = PopupKeyCandidatesView.DEFAULT_TEXT_SIZE;
+        if (popupCandidates.getDisplay() == null) {
+            popupView.setDisplayCandidates(popupCandidates.getUnicode(), defaultTextSize);
+        } else {
+            popupView.setDisplayCandidates(popupCandidates.getDisplay(), defaultTextSize);
+        }
+    }
+
+    private void layoutAndShowPopupWindow(Key key, int xPosition) {
+        popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        int location[] = new int[2];
+        key.getLocationOnScreen(location);
+        int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        popupView.measure(measureSpec, measureSpec);
+        int popupWidth = popupView.getMeasuredWidth();
+        int spaceAboveKey = key.getHeight() / 4;
+        int x = xPosition - popupWidth / popupView.getChildCount() / 2;
+        int y = location[1] - popupView.getMeasuredHeight() - spaceAboveKey;
+        popupWindow.showAtLocation(key, Gravity.NO_GRAVITY, x, y);
+    }
+
+    private void highlightCurrentItemAfterPopupWindowHasLoaded(Key key, final int xPosition) {
+        key.post(new Runnable() {
+            @Override
+            public void run() {
+                popupView.updateTouchPosition(xPosition);
+            }
+        });
+    }
+
+    @Override
+    public void updatePopup(int xPosition) {
+        if (popupView == null) return;
+        popupView.updateTouchPosition(xPosition);
+    }
+
+    @Override
+    public String getPopupChoiceOnFinish(int xPosition) {
+        if (popupWindow == null) return null;
+
+        CharSequence selectedItem = popupView.getCurrentItem(xPosition);
+        dismissPopup();
+        return selectedItem.toString();
+    }
+
+    private void dismissPopup() {
+        if (popupWindow != null)
+            popupWindow.dismiss();
+        popupView = null;
+        popupWindow = null;
+    }
+
+    @Override
+    public void onBackspace() {
+        if (inputConnection == null) return;
+
+        if (mComposing.length() > 0) {
+            inputConnection.commitText("", 1);
+            mComposing.setLength(0);
+        } else {
+
+            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+
+            // We could also do this with inputConnection.deleteSurroundingText(1, 0)
+            // but then we would need to be careful of not deleting too much
+            // and not deleting half a surrogate pair.
+            // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
+            // see also https://stackoverflow.com/a/45182401
+        }
+    }
+
+
+    @Override
+    public void onNewKeyboardChosen(String displayName) {
+        mKeyboardListener.onRequestNewKeyboard(displayName);
+    }
 }

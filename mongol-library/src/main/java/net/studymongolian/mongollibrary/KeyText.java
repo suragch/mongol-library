@@ -5,44 +5,63 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+import android.widget.PopupWindow;
+
+import static android.content.ContentValues.TAG;
 
 public class KeyText extends Key {
 
     private static final int SUBTEXT_INDENT = 5; // px
 
+    private String mPrimaryText;
+    private String mPrimaryTextDisplay;
+    //private StringForKey mSubText;
+    private String mSubTextDisplay;
+
     private MongolCode renderer = MongolCode.INSTANCE;
     private TextPaint mTextPaint;
     private Rect mTextBounds;
     private Rect mSubTextBounds;
-    private String mDisplayText;
-    private String mDisplaySubText;
+    //private String mDisplayText;
+    //private String mDisplaySubText;
     private TextPaint mSubTextPaint;
-    private int mKeyHeight;
-    private int mKeyWidth;
+
+
+
+    private final int LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
+    private Handler mHandler = new Handler();
+    private boolean mIsLongPress = false;
+    //private float[] lastTouchDownXY = new float[2];
+    private int lastTouchDownX;
+
 
     protected boolean mIsRotatedPrimaryText;
     protected boolean mIsRotatedSubText;
 
     public KeyText(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public KeyText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public KeyText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(90);
         mTextBounds = new Rect();
@@ -51,17 +70,20 @@ public class KeyText extends Key {
         mSubTextPaint.setTextSize(90);
         mSubTextBounds = new Rect();
 
-        mDisplaySubText = "";
+        mSubTextDisplay = "";
         mIsRotatedPrimaryText = true;
         mIsRotatedSubText = true;
+
+        //gestureDetector = new GestureDetector(context, new GestureListener());
+        //gestureDetector.setIsLongpressEnabled(false);
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mKeyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-        mKeyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-    }
+//    @Override
+//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+//        super.onSizeChanged(w, h, oldw, oldh);
+//        mKeyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+//        mKeyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -81,10 +103,11 @@ public class KeyText extends Key {
     }
 
     private void drawRotatedSubText(Canvas canvas) {
-        if (TextUtils.isEmpty(mDisplaySubText)) return;
+        String text = mSubTextDisplay;
+        if (TextUtils.isEmpty(text)) return;
 
         // get text size
-        mSubTextPaint.getTextBounds(mDisplaySubText, 0, mDisplaySubText.length(), mSubTextBounds);
+        mSubTextPaint.getTextBounds(text, 0, text.length(), mSubTextBounds);
 
         // automatically resize text that is too large
         final float widthProportion = MAX_CONTENT_PROPORTION * mKeyWidth / mSubTextBounds.height();
@@ -92,7 +115,7 @@ public class KeyText extends Key {
         float proportion = Math.min(heightProportion, widthProportion);
         if (proportion < 1) {
             mSubTextPaint.setTextSize(mSubTextPaint.getTextSize() * proportion);
-            mSubTextPaint.getTextBounds(mDisplaySubText, 0, mDisplaySubText.length(), mSubTextBounds);
+            mSubTextPaint.getTextBounds(text, 0, text.length(), mSubTextBounds);
         }
 
         // make sure a large border radius doesn't overlap the subtext
@@ -111,15 +134,16 @@ public class KeyText extends Key {
         canvas.save();
         canvas.rotate(90);
         canvas.translate(dx, dy);
-        canvas.drawText(mDisplaySubText, 0, 0, mSubTextPaint);
+        canvas.drawText(text, 0, 0, mSubTextPaint);
         canvas.restore();
     }
 
     private void drawRotatedPrimaryText(Canvas canvas) {
-        if (TextUtils.isEmpty(mDisplayText)) return;
+        String text = mPrimaryTextDisplay;
+        if (TextUtils.isEmpty(text)) return;
 
         // metrics
-        mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+        mTextPaint.getTextBounds(text, 0, text.length(), mTextBounds);
 
         // automatically resize text that is too large
         final float widthProportion = MAX_CONTENT_PROPORTION * mKeyWidth / mTextBounds.height();
@@ -127,7 +151,7 @@ public class KeyText extends Key {
         float proportion = Math.min(heightProportion, widthProportion);
         if (proportion < 1) {
             mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
-            mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+            mTextPaint.getTextBounds(text, 0, text.length(), mTextBounds);
         }
 
         // location
@@ -138,15 +162,16 @@ public class KeyText extends Key {
         canvas.save();
         canvas.rotate(90);
         canvas.translate(dx, dy);
-        canvas.drawText(mDisplayText, 0, 0, mTextPaint);
+        canvas.drawText(text, 0, 0, mTextPaint);
         canvas.restore();
     }
 
     private void drawNonRotatedSubText(Canvas canvas) {
-        if (TextUtils.isEmpty(mDisplaySubText)) return;
+        String text = mSubTextDisplay;
+        if (TextUtils.isEmpty(text)) return;
 
         // get text size
-        mSubTextPaint.getTextBounds(mDisplaySubText, 0, mDisplaySubText.length(), mSubTextBounds);
+        mSubTextPaint.getTextBounds(text, 0, text.length(), mSubTextBounds);
 
         // resize text if too big
         final float widthProportion = MAX_CONTENT_PROPORTION * mKeyWidth / mSubTextBounds.width();
@@ -154,7 +179,7 @@ public class KeyText extends Key {
         float proportion = Math.min(heightProportion, widthProportion);
         if (proportion < 1) {
             mSubTextPaint.setTextSize(mSubTextPaint.getTextSize() * proportion);
-            mSubTextPaint.getTextBounds(mDisplaySubText, 0, mDisplaySubText.length(), mSubTextBounds);
+            mSubTextPaint.getTextBounds(text, 0, text.length(), mSubTextBounds);
         }
 
         // make sure a large border radius doesn't overlap the subtext
@@ -172,15 +197,16 @@ public class KeyText extends Key {
         // draw text
         canvas.save();
         canvas.translate(dx, dy);
-        canvas.drawText(mDisplaySubText, 0, 0, mSubTextPaint);
+        canvas.drawText(text, 0, 0, mSubTextPaint);
         canvas.restore();
     }
 
     private void drawNonRotatedPrimaryText(Canvas canvas) {
-        if (TextUtils.isEmpty(mDisplayText)) return;
+        String text = mPrimaryTextDisplay;
+        if (TextUtils.isEmpty(text)) return;
 
         // metrics
-        mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+        mTextPaint.getTextBounds(text, 0, text.length(), mTextBounds);
         Paint.FontMetricsInt fm = mTextPaint.getFontMetricsInt();
         int textHeight = fm.descent - fm.ascent;
 
@@ -190,7 +216,7 @@ public class KeyText extends Key {
         float proportion = Math.min(heightProportion, widthProportion);
         if (proportion < 1) {
             mTextPaint.setTextSize(mTextPaint.getTextSize() * proportion);
-            mTextPaint.getTextBounds(mDisplayText, 0, mDisplayText.length(), mTextBounds);
+            mTextPaint.getTextBounds(text, 0, text.length(), mTextBounds);
             fm = mTextPaint.getFontMetricsInt();
             textHeight = fm.descent - fm.ascent;
         }
@@ -202,21 +228,178 @@ public class KeyText extends Key {
         // draw text
         canvas.save();
         canvas.translate(dx, dy);
-        canvas.drawText(mDisplayText, 0, 0, mTextPaint);
+        canvas.drawText(text, 0, 0, mTextPaint);
         canvas.restore();
     }
 
-    public void setText(String text) {
-        this.mDisplayText = renderer.unicodeToMenksoft(text);
-        invalidate();
+    @Override
+    protected void onActionUp(int xPosition) {
+        super.onActionUp(xPosition);
+        String popupChoice = getFinalPopupChoice(xPosition);
+        if (popupChoice != null)
+            sendTextToKeyboard(popupChoice);
+        else if (mPrimaryText != null)
+            sendTextToKeyboard(mPrimaryText);
     }
+
+
+//        private void onActionUp(int xPosition) {
+//        Log.i(TAG, "onActionUp: " + mPrimaryText);
+//        //int x = (int) event.getRawX();
+//        String popupChoice = getPopupChoice(xPosition);
+//        if (popupChoice != null)
+//            sendTextToKeyboard(popupChoice);
+//        else
+//            sendTextToKeyboard(mPrimaryText);
+//    }
+
+//    PopupWindow popupWindow;
+//    PopupKeyCandidatesView popupView;
+//    //int popupWidth;
+
+//
+//
+//
+//    private void updatePopup(MotionEvent event) {
+//        if (popupView == null) return;
+//        int x = (int) event.getRawX();
+//        popupView.updateTouchPosition(x);
+//    }
+
+
+
+//    private void handlePopupChoice(Key key, MotionEvent event) {
+//
+//        //key.setPressed(false);
+//
+////        if (handler != null) {
+////            handler.removeCallbacksAndMessages(null);
+////        }
+//        if (popupWindow == null) return;
+//
+//        int x = (int) event.getRawX();
+//        CharSequence selectedItem = popupView.getCurrentItem(x);
+//
+//        if (TextUtils.isEmpty(selectedItem)) {
+//            dismissPopup();
+//            return;
+//        }
+//
+//        sendTextToKeyboard(selectedItem.toString());
+//
+//        if (key == mKeyKeyboard) {
+//            CharSequence name = popupView.getCurrentItem(x);
+//            mKeyboardListener.onRequestNewKeyboard(name.toString());
+//            dismissPopup();
+//            return;
+//        }
+//
+//        if (inputConnection == null) {
+//            dismissPopup();
+//            return;
+//        }
+//
+//        inputConnection.beginBatchEdit();
+//
+//        if (mComposing.length() > 0) {
+//            inputConnection.commitText(mComposing, 1);
+//            mComposing.setLength(0);
+//        }
+//
+//        // add composing text for certain medials to avoid confusion with finals
+//        if (selectedItem.equals(MEDIAL_A_FVS1)) {
+//            inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
+//            mComposing.append(MEDIAL_A_FVS1);
+//        } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
+//            inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
+//            mComposing.append(MEDIAL_I_FVS1);
+//        } else if (selectedItem.equals(MEDIAL_I_FVS2)) {
+//            inputConnection.setComposingText(MEDIAL_I_FVS2_COMPOSING, 1);
+//            mComposing.append(MEDIAL_I_FVS2);
+//            //} else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
+//            //    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
+//            //    mComposing.append(MEDIAL_ZWJ_I);
+//        } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
+//            inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
+//            mComposing.append(MEDIAL_U_FVS1);
+//        } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
+//            inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
+//            mComposing.append(MEDIAL_UE_FVS2);
+//        } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
+//            inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
+//            mComposing.append(MEDIAL_DOTTED_NA);
+//        } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
+//            inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
+//            mComposing.append(MEDIAL_TA_FVS1);
+//        } else if (selectedItem.equals(YA_FVS1)) {
+//            inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
+//            mComposing.append(YA_FVS1);
+//        } else {
+//            inputConnection.commitText(selectedItem, 1);
+//        }
+//
+//        inputConnection.endBatchEdit();
+//
+//        dismissPopup();
+//    }
+//
+//    private void dismissPopup() {
+//        if (popupWindow != null)
+//            popupWindow.dismiss();
+//        popupView = null;
+//        popupWindow = null;
+//    }
+
+
+
+//    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+//
+//        @Override
+//        public boolean onDown(MotionEvent e) {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onSingleTapUp(MotionEvent e) {
+//            Log.i(TAG, "onSingleTapUp: " + mPrimaryText);
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//            //handlePopupScrolling();
+//            return true;
+//        }
+//
+//        @Override
+//        public void onLongPress(MotionEvent e) {
+//            //showPopupCandidates();
+//
+//        }
+//    }
+
 
     public void setText(char text) {
         setText(String.valueOf(text));
     }
 
+    public void setText(String text) {
+        setText(text, text);
+    }
+
+    /**
+     * @param inputValue the unicode value that will be  used as an input value when
+     *                the key is pressed.
+     * @param displayText the value to display if different than the unicode value
+     */
+    public void setText(String inputValue, String displayText) {
+        this.mPrimaryText = inputValue;
+        this.mPrimaryTextDisplay = renderer.unicodeToMenksoft(displayText);
+        invalidate();
+    }
+
     public void setSubText(String text) {
-        this.mDisplaySubText = renderer.unicodeToMenksoft(text);
+        this.mSubTextDisplay = renderer.unicodeToMenksoft(text);
         invalidate();
     }
 
@@ -263,4 +446,105 @@ public class KeyText extends Key {
         this.mIsRotatedSubText = isRotated;
         invalidate();
     }
+
+
+//    /**
+//     * these are the choices for a popup key
+//     */
+//    public static class PopupCandidates {
+//
+//        private String[] unicode;
+//        private String[] display;
+//
+//        /**
+//         * Convenience constructor for PopupCandidates(String[] unicode)
+//         *
+//         * @param unicode the unicode values for the popup items
+//         */
+//        public PopupCandidates(char unicode) {
+//            this(new String[]{String.valueOf(unicode)});
+//        }
+//
+//        /**
+//         * Convenience constructor for PopupCandidates(String[] unicode)
+//         *
+//         * @param unicode the unicode values for the popup items
+//         */
+//        public PopupCandidates(String unicode) {
+//            this(new String[]{unicode});
+//        }
+//
+//        /**
+//         * @param unicode the unicode values for the popup items
+//         */
+//        public PopupCandidates(String[] unicode) {
+//            this(unicode, null);
+//        }
+//
+//        /**
+//         * @param unicode the unicode values for the popup items
+//         * @param display the value to display if different than the unicode values
+//         */
+//        public PopupCandidates(String[] unicode, String[] display) {
+//            if (display != null) {
+//                if (display.length != unicode.length)
+//                    throw new IllegalArgumentException(
+//                            "The number of display items must " +
+//                                    "be the same as the number of unicode items.");
+//            }
+//            this.unicode = unicode;
+//            this.display = display;
+//        }
+//
+//        public boolean isEmpty() {
+//            if (unicode == null) return true;
+//            if (unicode.length == 0) return true;
+//            if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
+//            return false;
+//        }
+//
+//        public String[] getUnicode() {
+//            return unicode;
+//        }
+//
+//        public String[] getDisplay() {
+//            return display;
+//        }
+//    }
+
+//    /**
+//     * this is the text in the center of the key
+//     */
+//    public static class StringForKey {
+//
+//        private String unicodeInput;
+//        private String display;
+//
+//
+//        /**
+//         * @param unicodeInput the unicode value that will be  used as an input value when
+//         *                the key is pressed.
+//         */
+//        public StringForKey(String unicodeInput) {
+//            this(unicodeInput, null);
+//        }
+//
+//        /**
+//         * @param unicodeInput the unicode value that will be  used as an input value when
+//         *                the key is pressed.
+//         * @param display the value to display if different than the unicode value
+//         */
+//        public StringForKey(String unicodeInput, String display) {
+//            this.unicodeInput = unicodeInput;
+//            this.display = display;
+//        }
+//
+//        public String getInputValue() {
+//            return unicodeInput;
+//        }
+//
+//        public String getDisplayValue() {
+//            return display;
+//        }
+//    }
 }

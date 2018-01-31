@@ -7,7 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
-class PopupKeyCandidates extends ViewGroup {
+class PopupKeyCandidatesView extends ViewGroup {
 
     private static final int LABEL_PADDING = 5; // dp
     private static final int DEFAULT_KEY_HEIGHT = 60; // dp
@@ -21,7 +21,7 @@ class PopupKeyCandidates extends ViewGroup {
     private String[] mCandidates;
 
     // this popup view will only be created programmatically
-    public PopupKeyCandidates(Context context) {
+    public PopupKeyCandidatesView(Context context) {
         super(context);
         this.mContext = context;
     }

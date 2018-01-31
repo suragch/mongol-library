@@ -7,18 +7,18 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+
+import static android.content.ContentValues.TAG;
 
 public class KeyImage extends Key {
 
     //private static final String DEBUG_TAG = "TAG";
 
-    // use a light image for a DARK theme and vice-versa
-    public enum Theme {
-        DARK,
-        LIGHT
-    }
+    private String mPrimaryText;
 
-    protected Theme mTheme = Theme.LIGHT;
+    //protected Theme mTheme = Theme.LIGHT;
     private TextPaint mImagePaint;
     private Bitmap mImage;
     private Bitmap mImageScaled;
@@ -110,7 +110,79 @@ public class KeyImage extends Key {
         mImage = bitmap;
     }
 
-    public void setTheme(Theme theme) {
-        mTheme = theme;
+    //public void setTheme(Theme theme) {
+    //    mTheme = theme;
+    //}
+
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        changeBackgroundColorForClickEvent(event);
+//
+//        int action = event.getActionMasked();
+//        int x = (int) event.getRawX();
+//
+//        switch(action) {
+//            case (MotionEvent.ACTION_DOWN) :
+//                lastTouchDownX = x;
+//                mIsLongPress = true;
+//                mHandler.postDelayed(longPress, LONG_PRESS_TIMEOUT);
+//                return true;
+//            case (MotionEvent.ACTION_MOVE) :
+//                onActionScroll(x);
+//                return true;
+//            case (MotionEvent.ACTION_CANCEL) :
+//            case (MotionEvent.ACTION_OUTSIDE) :
+//            case (MotionEvent.ACTION_UP) :
+//                mIsLongPress = false;
+//                mHandler.removeCallbacks(longPress);
+//                onActionUp(x);
+//                return true;
+//            default :
+//                return super.onTouchEvent(event);
+//        }
+//    }
+//
+//    private Runnable longPress = new Runnable() {
+//
+//        @Override
+//        public void run() {
+//            if (mIsLongPress) {
+//                onLongPressThresholdReached();
+//                mIsLongPress = false;
+//            }
+//        }
+//
+//    };
+//
+//    private void onLongPressThresholdReached() {
+//
+//        Log.i(TAG, "onLongPressThresholdReached: ");
+//        showPopup(this, lastTouchDownX);
+//    }
+//
+//    private void onActionScroll(int xPosition) {
+//        if (mIsLongPress) return;
+//        Log.i(TAG, "onActionScroll: ");
+//        updatePopup(xPosition);
+//    }
+
+
+    @Override
+    protected void onActionUp(int xPosition) {
+        super.onActionUp(xPosition);
+        String popupChoice = getFinalPopupChoice(xPosition);
+        if (popupChoice != null)
+            sendTextToKeyboard(popupChoice);
+        else if (mPrimaryText != null)
+            sendTextToKeyboard(mPrimaryText);
+    }
+
+    public void setText(char text) {
+        setText(String.valueOf(text));
+    }
+
+    public void setText(String text) {
+        mPrimaryText = text;
     }
 }
