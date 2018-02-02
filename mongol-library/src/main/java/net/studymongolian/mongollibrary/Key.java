@@ -115,6 +115,8 @@ public abstract class Key extends View {
             case (MotionEvent.ACTION_CANCEL) :
             case (MotionEvent.ACTION_OUTSIDE) :
             case (MotionEvent.ACTION_UP) :
+                mIsLongPress = false;
+                mHandler.removeCallbacks(longPress);
                 onActionUp(x);
                 return true;
             default :
@@ -149,8 +151,7 @@ public abstract class Key extends View {
 
 
     protected void onActionUp(int xPosition) {
-        mIsLongPress = false;
-        mHandler.removeCallbacks(longPress);
+        finishPopup(xPosition);
     }
 
     @Override
@@ -204,12 +205,15 @@ public abstract class Key extends View {
     // Keyboards should implement this interface to receive input from keys
     public interface KeyListener {
         public void onKeyInput(String text);
+        //public void onPopupInput(String text);
         public void onBackspace();
+        public boolean getIsShowingPopup();
         public void showPopup(Key key, int xPosition);
         public void updatePopup(int xPosition);
-        public String getPopupChoiceOnFinish(int xPosition);
+        public void finishPopup(int xPosition);
+        //public String getPopupChoiceOnFinish(int xPosition);
         public void onKeyboardKeyClick();
-        public void onNewKeyboardChosen(String displayName);
+        public void onNewKeyboardChosen(int xPositionOnPopup);
     }
     public void setKeyListener(KeyListener listener) {
         this.mKeyListener = listener;
@@ -217,6 +221,15 @@ public abstract class Key extends View {
     protected void sendTextToKeyboard(String text) {
         if (mKeyListener == null) return;
         mKeyListener.onKeyInput(text);
+    }
+//    protected void sendPopupTextToKeyboard(String popupText) {
+//        if (mKeyListener == null) return;
+//        mKeyListener.onPopupInput(popupText);
+//    }
+
+    protected boolean getIsShowingPopup() {
+        if (mKeyListener == null) return false;
+        return mKeyListener.getIsShowingPopup();
     }
     protected void showPopup(Key key, int xPosition) {
         if (mKeyListener == null) return;
@@ -226,10 +239,14 @@ public abstract class Key extends View {
         if (mKeyListener == null) return;
         mKeyListener.updatePopup(xPosition);
     }
-    protected String getFinalPopupChoice(int xPosition) {
-        if (mKeyListener == null) return null;
-        return mKeyListener.getPopupChoiceOnFinish(xPosition);
+    protected void finishPopup(int xPosition) {
+        if (mKeyListener == null) return;
+        mKeyListener.finishPopup(xPosition);
     }
+//    protected String getFinalPopupChoice(int xPosition) {
+//        if (mKeyListener == null) return null;
+//        return mKeyListener.getPopupChoiceOnFinish(xPosition);
+//    }
     protected void backspace() {
         if (mKeyListener == null) return;
         mKeyListener.onBackspace();
@@ -238,9 +255,9 @@ public abstract class Key extends View {
         if (mKeyListener == null) return;
         mKeyListener.onKeyboardKeyClick();
     }
-    protected void chooseAnotherKeyboard(String displayName) {
+    protected void chooseAnotherKeyboard(int xPositionOnPopup) {
         if (mKeyListener == null) return;
-        mKeyListener.onNewKeyboardChosen(displayName);
+        mKeyListener.onNewKeyboardChosen(xPositionOnPopup);
     }
 
 //    public interface KeyboardChoiceListener extends KeyListener {
@@ -264,67 +281,5 @@ public abstract class Key extends View {
 //        this.mBackspaceListener = listener;
 //    }
 
-    /**
-     * these are the choices for a popup key
-     */
-    public static class PopupCandidates {
 
-        private String[] unicode;
-        private String[] display;
-
-        /**
-         * Convenience constructor for PopupCandidates(String[] unicode)
-         *
-         * @param unicode the unicode values for the popup items
-         */
-        public PopupCandidates(char unicode) {
-            this(new String[]{String.valueOf(unicode)});
-        }
-
-        /**
-         * Convenience constructor for PopupCandidates(String[] unicode)
-         *
-         * @param unicode the unicode values for the popup items
-         */
-        public PopupCandidates(String unicode) {
-            this(new String[]{unicode});
-        }
-
-        /**
-         * @param unicode the unicode values for the popup items
-         */
-        public PopupCandidates(String[] unicode) {
-            this(unicode, null);
-        }
-
-        /**
-         * @param unicode the unicode values for the popup items
-         * @param display the value to display if different than the unicode values
-         */
-        public PopupCandidates(String[] unicode, String[] display) {
-            if (display != null) {
-                if (display.length != unicode.length)
-                    throw new IllegalArgumentException(
-                            "The number of display items must " +
-                                    "be the same as the number of unicode items.");
-            }
-            this.unicode = unicode;
-            this.display = display;
-        }
-
-        public boolean isEmpty() {
-            if (unicode == null) return true;
-            if (unicode.length == 0) return true;
-            if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
-            return false;
-        }
-
-        public String[] getUnicode() {
-            return unicode;
-        }
-
-        public String[] getDisplay() {
-            return display;
-        }
-    }
 }

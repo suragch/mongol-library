@@ -29,6 +29,8 @@ import java.util.Map;
 
 public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
+
+
     static final float DEFAULT_PRIMARY_TEXT_SIZE = 24;
     static final int DEFAULT_PRIMARY_TEXT_COLOR = Color.BLACK;
     static final int DEFAULT_SECONDARY_TEXT_COLOR = Color.parseColor("#61000000"); // alpha black
@@ -79,9 +81,36 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     // Our communication link to the EditText/MongolEditText
     protected InputConnection inputConnection;
-    protected StringBuilder mComposing = new StringBuilder();
+    protected String mComposing = null;
 
     protected KeyboardListener mKeyboardListener = null;
+
+//    // These are special popup choice characters. They are being converted to a
+//    // temporary medial composing form so that the automatic Unicode rendering
+//    // will not confuse users (because they would get displayed as a final otherwise).
+//
+//    private static final String MEDIAL_A_FVS1 = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1;
+//    private static final String MEDIAL_A_FVS1_COMPOSING = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+//    //    private static final String INITIAL_I_SUFFIX = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I;
+//    //    private static final String INITIAL_I_SUFFIX_COMPOSING = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
+//    private static final String MEDIAL_I_FVS1 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1;
+//    private static final String MEDIAL_I_FVS1_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+//    private static final String MEDIAL_I_FVS2 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS2;
+//    private static final String MEDIAL_I_FVS2_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ;
+//    //private static final String MEDIAL_ZWJ_I = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I;
+//    //private static final String MEDIAL_ZWJ_I_COMPOSING = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
+//
+//    private static final String MEDIAL_U_FVS1 = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1;
+//    private static final String MEDIAL_U_FVS1_COMPOSING = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+//    private static final String MEDIAL_UE_FVS2 = "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2;
+//    private static final String MEDIAL_UE_FVS2_COMPOSING = "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ;
+//    private static final String MEDIAL_DOTTED_NA = "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1;
+//    private static final String MEDIAL_DOTTED_NA_COMPOSING = "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+//    private static final String MEDIAL_TA_FVS1 = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1;
+//    private static final String MEDIAL_TA_FVS1_COMPOSING = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+//    private static final String YA_FVS1 = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1;
+//    private static final String YA_FVS1_COMPOSING = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
+
 
     public Keyboard(Context context) {
         super(context);
@@ -208,9 +237,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     public interface KeyboardListener {
-        public void onRequestNewKeyboard(String keyboardDisplayName);
-
-        public Key.PopupCandidates getKeyboardCandidates();
+        void onRequestNewKeyboard(String keyboardDisplayName);
+        PopupKeyCandidate[] getKeyboardCandidates();
     }
 
     public void setKeyboardListener(KeyboardListener listener) {
@@ -234,9 +262,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
         // currently we are only using composing for popup glyph selection. If we want to be more
         // like the standard keyboards we could do composing on the whole word.
-        if (mComposing.length() > 0 && (newSelStart != candidatesEnd
+        if (mComposing != null && (newSelStart != candidatesEnd
                 || newSelEnd != candidatesEnd)) {
-            mComposing.setLength(0);
+            mComposing = null;
             // TODO updateCandidates();
             if (inputConnection != null) {
                 inputConnection.finishComposingText();
@@ -251,7 +279,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 //        Handler handler;
 //        final int LONGPRESS_THRESHOLD = 500; // milliseconds
 //
-//        PopupKeyCandidates popupView;
+//        PopupKeyCandidate popupView;
 //        int popupWidth;
 //        PopupWindow popupWindow;
 //
@@ -354,7 +382,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 //                    if (popupWindow != null) return;
 //
 //                    // get the popup view
-//                    popupView = new PopupKeyCandidates(getContext());
+//                    popupView = new PopupKeyCandidate(getContext());
 //                    popupView.setBackgroundColor(mPopupBackgroundColor);
 //                    popupView.setTextColor(mPopupTextColor);
 //
@@ -362,9 +390,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 //                    if (candidates == null || candidates.getUnicode() == null) return;
 //                    popupView.setCandidates(candidates.getUnicode());
 //                    if (candidates.getDisplay() == null) {
-//                        popupView.setDisplayCandidates(candidates.getUnicode(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+//                        popupView.setDisplayCandidates(candidates.getUnicode(), PopupKeyCandidate.DEFAULT_TEXT_SIZE);
 //                    } else {
-//                        popupView.setDisplayCandidates(candidates.getDisplay(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
+//                        popupView.setDisplayCandidates(candidates.getDisplay(), PopupKeyCandidate.DEFAULT_TEXT_SIZE);
 //                    }
 //
 //                    popupView.setHighlightColor(mPopupHighlightColor);
@@ -480,79 +508,70 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 //        }
 //    };
 
-    protected void handleComposing(String inputText) {
-        if (inputConnection == null) return;
-        if (mComposing.length() <= 0) return;
-        if (MongolCode.isMongolian(inputText.charAt(0))) {
-            inputConnection.commitText(mComposing, 1);
-        } else {
-            inputConnection.finishComposingText();
-        }
-        mComposing.setLength(0);
-    }
-
-    protected View.OnTouchListener handleBackspace = new View.OnTouchListener() {
-
-        private Handler handler;
-        final int INITIAL_DELAY = 500;
-        final int REPEAT_DELAY = 50;
-
-        @Override
-        public boolean onTouch(View view, MotionEvent event) {
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    view.setPressed(true);
-                    doBackspace();
-                    if (handler != null)
-                        return true;
-                    handler = new Handler();
-                    handler.postDelayed(actionBackspace, INITIAL_DELAY);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    break;
-                default:
-                    view.setPressed(false);
-                    if (handler == null)
-                        return true;
-                    handler.removeCallbacks(actionBackspace);
-                    handler = null;
-                    break;
-            }
-
-            return true;
-        }
-
-        private void doBackspace() {
-            if (inputConnection == null) return;
-
-            if (mComposing.length() > 0) {
-                inputConnection.commitText("", 1);
-                mComposing.setLength(0);
-            } else {
-
-                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
-
-                // We could also do this with inputConnection.deleteSurroundingText(1, 0)
-                // but then we would need to be careful of not deleting too much
-                // and not deleting half a surrogate pair.
-                // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
-                // see also https://stackoverflow.com/a/45182401
-            }
 
 
-        }
-
-        Runnable actionBackspace = new Runnable() {
-            @Override
-            public void run() {
-                doBackspace();
-                handler.postDelayed(this, REPEAT_DELAY);
-            }
-        };
-
-    };
+//    protected View.OnTouchListener handleBackspace = new View.OnTouchListener() {
+//
+//        private Handler handler;
+//        final int INITIAL_DELAY = 500;
+//        final int REPEAT_DELAY = 50;
+//
+//        @Override
+//        public boolean onTouch(View view, MotionEvent event) {
+//
+//            switch (event.getAction()) {
+//                case MotionEvent.ACTION_DOWN:
+//                    view.setPressed(true);
+//                    doBackspace();
+//                    if (handler != null)
+//                        return true;
+//                    handler = new Handler();
+//                    handler.postDelayed(actionBackspace, INITIAL_DELAY);
+//                    break;
+//                case MotionEvent.ACTION_MOVE:
+//                    break;
+//                default:
+//                    view.setPressed(false);
+//                    if (handler == null)
+//                        return true;
+//                    handler.removeCallbacks(actionBackspace);
+//                    handler = null;
+//                    break;
+//            }
+//
+//            return true;
+//        }
+//
+//        private void doBackspace() {
+//            if (inputConnection == null) return;
+//
+//            if (mComposing.length() > 0) {
+//                inputConnection.commitText("", 1);
+//                mComposing.setLength(0);
+//            } else {
+//
+//                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+//                inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+//
+//                // We could also do this with inputConnection.deleteSurroundingText(1, 0)
+//                // but then we would need to be careful of not deleting too much
+//                // and not deleting half a surrogate pair.
+//                // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
+//                // see also https://stackoverflow.com/a/45182401
+//            }
+//
+//
+//        }
+//
+//        Runnable actionBackspace = new Runnable() {
+//            @Override
+//            public void run() {
+//                doBackspace();
+//                handler.postDelayed(this, REPEAT_DELAY);
+//            }
+//        };
+//
+//    };
 
 //    protected View.OnClickListener handleShift = new OnClickListener() {
 //        @Override
@@ -634,16 +653,16 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mongolWord.toString();
     }
 
-    protected Key.PopupCandidates getCandidatesForSuffix() {
+    protected PopupKeyCandidate[] getCandidatesForSuffix() {
         String previousWord = getPreviousMongolWord();
         if (TextUtils.isEmpty(previousWord)) {
-            return new Key.PopupCandidates(MongolCode.Uni.NNBS);
+            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
         }
         // TODO if it is a number then return the right suffix for that
         char lastChar = previousWord.charAt(previousWord.length() - 1);
         MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
         if (gender == null) {
-            return new Key.PopupCandidates(MongolCode.Uni.NNBS);
+            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
         }
         String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
         String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
@@ -665,7 +684,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 banIyanSuffix,
                 achaSuffix,
                 udSuffix};
-        return new Key.PopupCandidates(unicode);
+        return PopupKeyCandidate.createArray(unicode);
     }
 
     protected boolean isIsolateOrInitial() {
@@ -679,12 +698,12 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 location == MongolCode.Location.INITIAL;
     }
 
-    public Key.PopupCandidates getCandidatesForKeyboard() {
+    public PopupKeyCandidate[] getCandidatesForKeyboard() {
         if (mKeyboardListener == null) return null;
         return mKeyboardListener.getKeyboardCandidates();
     }
 
-    abstract public Key.PopupCandidates getPopupCandidates(Key key);
+    abstract public PopupKeyCandidate[] getPopupCandidates(Key key);
 
     // TODO do we need this?
     // in this method you should switch the display on the keys for normal or punctuation mode
@@ -849,60 +868,40 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         }
     }
 
-    // These are special popup choice characters. They are being converted to a
-    // temporary medial composing form so that the automatic Unicode rendering
-    // will not confuse users (because they would get displayed as a final otherwise).
 
-    private static final String MEDIAL_A_FVS1 = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_A_FVS1_COMPOSING = "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    //    private static final String INITIAL_I_SUFFIX = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I;
-    //    private static final String INITIAL_I_SUFFIX_COMPOSING = "" + MongolCode.Uni.NNBS + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_I_FVS1 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_I_FVS1_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_I_FVS2 = "" + MongolCode.Uni.I + MongolCode.Uni.FVS2;
-    private static final String MEDIAL_I_FVS2_COMPOSING = "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ;
-    //private static final String MEDIAL_ZWJ_I = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I;
-    //private static final String MEDIAL_ZWJ_I_COMPOSING = "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ;
 
-    private static final String MEDIAL_U_FVS1 = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_U_FVS1_COMPOSING = "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_UE_FVS2 = "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2;
-    private static final String MEDIAL_UE_FVS2_COMPOSING = "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_DOTTED_NA = "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_DOTTED_NA_COMPOSING = "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String MEDIAL_TA_FVS1 = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1;
-    private static final String MEDIAL_TA_FVS1_COMPOSING = "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-    private static final String YA_FVS1 = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1;
-    private static final String YA_FVS1_COMPOSING = "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ;
-
+    // KeyListener methods
 
     @Override
     public void onKeyInput(String text) {
-
         if (inputConnection == null) return;
-        handleComposing(text);
-
-        //showPopup();
-        // TODO add composing on initial DA
-//                        // TA/DA defaults to DA except in the INITIAL location
-//                        if (inputText.equals(String.valueOf(MongolCode.Uni.DA))) {
-//                            char prevChar = getPreviousChar();
-//                            if (!MongolCode.isMongolian(prevChar)) {
-//                                inputText = String.valueOf(MongolCode.Uni.TA);
-//                            }
-//                        }
-
+        handleOldComposingText(text);
         inputConnection.commitText(text, 1);
     }
 
+    private void handleOldComposingText(String inputText) {
+        //if (inputConnection == null) return;
+        if (mComposing == null) return;
+        if (MongolCode.isMongolian(inputText.charAt(0))) {
+            inputConnection.commitText(mComposing, 1);
+        } else {
+            inputConnection.finishComposingText();
+        }
+        mComposing = null;
+    }
 
 
     @Override
+    public boolean getIsShowingPopup() {
+        return popupView != null;
+    }
+
+    @Override
     public void showPopup(Key key, final int xPosition) {
-        Key.PopupCandidates popupCandidates = getPopupCandidates(key);
-        if (popupCandidates == null || popupCandidates.getUnicode() == null) return;
+        PopupKeyCandidate[] popupCandidates = getPopupCandidates(key);
+        if (popupCandidates == null || popupCandidates.length == 0) return;
         popupView = getPopupView();
-        updatePopupViewWithCandidateChoices(popupCandidates);
+        popupView.setCandidates(popupCandidates);
         layoutAndShowPopupWindow(key, xPosition);
         highlightCurrentItemAfterPopupWindowHasLoaded(key, xPosition);
 
@@ -914,16 +913,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         popupView.setTextColor(mPopupTextColor);
         popupView.setHighlightColor(mPopupHighlightColor);
         return popupView;
-    }
-
-    private void updatePopupViewWithCandidateChoices(Key.PopupCandidates popupCandidates) {
-        popupView.setCandidates(popupCandidates.getUnicode());
-        int defaultTextSize = PopupKeyCandidatesView.DEFAULT_TEXT_SIZE;
-        if (popupCandidates.getDisplay() == null) {
-            popupView.setDisplayCandidates(popupCandidates.getUnicode(), defaultTextSize);
-        } else {
-            popupView.setDisplayCandidates(popupCandidates.getDisplay(), defaultTextSize);
-        }
     }
 
     private void layoutAndShowPopupWindow(Key key, int xPosition) {
@@ -957,13 +946,40 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     @Override
-    public String getPopupChoiceOnFinish(int xPosition) {
-        if (popupWindow == null) return null;
-
-        CharSequence selectedItem = popupView.getCurrentItem(xPosition);
+    public void finishPopup(int xPosition) {
+        if (popupWindow == null) return;
+        PopupKeyCandidate selectedItem = popupView.getCurrentItem(xPosition);
+        inputPopupChoice(selectedItem);
         dismissPopup();
-        return selectedItem.toString();
     }
+
+    private void inputPopupChoice(PopupKeyCandidate choice) {
+        if (inputConnection == null) return;
+        if (choice == null) return;
+        String composingText = choice.getComposing();
+        if (TextUtils.isEmpty(composingText)) {
+            String text = choice.getUnicode();
+            handleOldComposingText(text);
+            inputConnection.commitText(text, 1);
+        }
+        else
+            setComposing(choice);
+    }
+
+    private void setComposing(PopupKeyCandidate popupChoice) {
+        handleOldComposingText(popupChoice.getUnicode());
+        inputConnection.setComposingText(popupChoice.getComposing(), 1);
+        mComposing = popupChoice.getUnicode();
+    }
+
+//    @Override
+//    public String getPopupChoiceOnFinish(int xPosition) {
+//        if (popupWindow == null) return null;
+//
+//        CharSequence selectedItem = popupView.getCurrentItem(xPosition);
+//        dismissPopup();
+//        return selectedItem.toString();
+//    }
 
     private void dismissPopup() {
         if (popupWindow != null)
@@ -976,9 +992,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     public void onBackspace() {
         if (inputConnection == null) return;
 
-        if (mComposing.length() > 0) {
+        if (mComposing != null) {
             inputConnection.commitText("", 1);
-            mComposing.setLength(0);
+            mComposing = null;
         } else {
 
             inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
@@ -994,7 +1010,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
 
     @Override
-    public void onNewKeyboardChosen(String displayName) {
-        mKeyboardListener.onRequestNewKeyboard(displayName);
+    public void onNewKeyboardChosen(int xPosition) {
+        PopupKeyCandidate selectedKeyboard = popupView.getCurrentItem(xPosition);
+        mKeyboardListener.onRequestNewKeyboard(selectedKeyboard.getUnicode());
     }
 }

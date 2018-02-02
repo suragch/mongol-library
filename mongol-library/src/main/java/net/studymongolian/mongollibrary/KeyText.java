@@ -234,10 +234,8 @@ public class KeyText extends Key {
 
     @Override
     protected void onActionUp(int xPosition) {
-        super.onActionUp(xPosition);
-        String popupChoice = getFinalPopupChoice(xPosition);
-        if (popupChoice != null)
-            sendTextToKeyboard(popupChoice);
+        if (getIsShowingPopup())
+            finishPopup(xPosition);
         else if (mPrimaryText != null)
             sendTextToKeyboard(mPrimaryText);
     }
@@ -385,6 +383,10 @@ public class KeyText extends Key {
 
     public void setText(String text) {
         setText(text, text);
+    }
+
+    public void setText(char inputValue, char displayText) {
+        setText(String.valueOf(inputValue), String.valueOf(displayText));
     }
 
     /**

@@ -1,9 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,24 +16,26 @@ class PopupKeyCandidatesView extends ViewGroup {
     private int mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
     private int mHighlightColor = Color.DKGRAY;
     private int mTextColor = Color.BLACK;
-    private String[] mCandidates;
+    private int mTextSize = DEFAULT_TEXT_SIZE;
+    private PopupKeyCandidate[] mCandidates;
 
-    // this popup view will only be created programmatically
     public PopupKeyCandidatesView(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public void setCandidates(String[] candidates) {
-        mCandidates = candidates;
+    public void setCandidates(PopupKeyCandidate[] candidates) {
+        this.mCandidates = candidates;
+        initDisplay();
     }
 
-    public void setDisplayCandidates(String[] displayCandidates, int textSize) {
+    private void initDisplay() {
         int paddingPX = (int) (LABEL_PADDING * getResources().getDisplayMetrics().density);
-        for (String candidate : displayCandidates) {
+        for (PopupKeyCandidate candidate : mCandidates) {
             MongolLabel label = new MongolLabel(mContext);
-            label.setText(candidate);
-            label.setTextSize(textSize);
+            String text = (candidate.getDisplay() != null) ? candidate.getDisplay() : candidate.getUnicode();
+            label.setText(text);
+            label.setTextSize(mTextSize);
             label.setTextColor(mTextColor);
             label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
             addView(label);
@@ -52,6 +52,10 @@ class PopupKeyCandidatesView extends ViewGroup {
 
     public void setTextColor(int textColor) {
         this.mTextColor = textColor;
+    }
+
+    public void setTextSize(int textSize) {
+        this.mTextSize = textSize;
     }
 
     @Override
@@ -122,13 +126,15 @@ class PopupKeyCandidatesView extends ViewGroup {
     }
 
     public void updateTouchPosition(int x) {
-        // see which candidate is selected
-        int highlightedIndex = getHighlightedCandidateIndex(x);
-        // highlight that candidate
+        int index = getSelectedCandidateIndex(x);
+        highlightCandidate(index);
+    }
+
+    private void highlightCandidate(int index) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (i == highlightedIndex) {
+            if (i == index) {
                 child.setBackgroundColor(mHighlightColor);
             } else {
                 child.setBackgroundColor(Color.TRANSPARENT);
@@ -136,7 +142,7 @@ class PopupKeyCandidatesView extends ViewGroup {
         }
     }
 
-    public int getHighlightedCandidateIndex(int x) {
+    public int getSelectedCandidateIndex(int x) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
@@ -151,11 +157,11 @@ class PopupKeyCandidatesView extends ViewGroup {
         return -1;
     }
 
-    public CharSequence getCurrentItem(int touchPositionX) {
-        int highlightedIndex = getHighlightedCandidateIndex(touchPositionX);
+    public PopupKeyCandidate getCurrentItem(int touchPositionX) {
+        int highlightedIndex = getSelectedCandidateIndex(touchPositionX);
         if (highlightedIndex >= 0 && mCandidates != null) {
             return mCandidates[highlightedIndex];
         }
-        return "";
+        return null;
     }
 }

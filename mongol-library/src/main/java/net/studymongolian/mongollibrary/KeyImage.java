@@ -170,10 +170,8 @@ public class KeyImage extends Key {
 
     @Override
     protected void onActionUp(int xPosition) {
-        super.onActionUp(xPosition);
-        String popupChoice = getFinalPopupChoice(xPosition);
-        if (popupChoice != null)
-            sendTextToKeyboard(popupChoice);
+        if (getIsShowingPopup())
+            finishPopup(xPosition);
         else if (mPrimaryText != null)
             sendTextToKeyboard(mPrimaryText);
     }

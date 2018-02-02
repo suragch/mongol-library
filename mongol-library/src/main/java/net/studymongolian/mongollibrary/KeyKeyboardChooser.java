@@ -21,10 +21,8 @@ public class KeyKeyboardChooser extends KeyImage {
 
     @Override
     protected void onActionUp(int xPosition) {
-        super.onActionUp(xPosition);
-        String popupChoice = getFinalPopupChoice(xPosition);
-        if (popupChoice != null)
-            chooseAnotherKeyboard(popupChoice);
+        if (getIsShowingPopup())
+            chooseAnotherKeyboard(xPosition);
         else
             clickKeyboardKey();
     }

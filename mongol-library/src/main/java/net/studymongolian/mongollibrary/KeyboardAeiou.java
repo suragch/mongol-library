@@ -1,13 +1,6 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 
 public class KeyboardAeiou extends Keyboard {
 
@@ -44,63 +37,7 @@ public class KeyboardAeiou extends Keyboard {
     protected KeyBackspace mKeyBackspace;
     protected KeyImage mKeyReturn;
 
-//    // These are all input values (some display values are different)
-//    private static final String KEY_A = String.valueOf(MongolCode.Uni.A);
-//    private static final String KEY_E = String.valueOf(MongolCode.Uni.E);
-//    private static final String KEY_I = String.valueOf(MongolCode.Uni.I);
-//    private static final String KEY_O = String.valueOf(MongolCode.Uni.U);
-//    private static final String KEY_U = String.valueOf(MongolCode.Uni.UE);
-//    private static final String KEY_NA = String.valueOf(MongolCode.Uni.NA);
-//    private static final String KEY_BA = String.valueOf(MongolCode.Uni.BA);
-//    private static final String KEY_QA = String.valueOf(MongolCode.Uni.QA);
-//    private static final String KEY_GA = String.valueOf(MongolCode.Uni.GA);
-//    private static final String KEY_MA = String.valueOf(MongolCode.Uni.MA);
-//    private static final String KEY_LA = String.valueOf(MongolCode.Uni.LA);
-//    private static final String KEY_SA = String.valueOf(MongolCode.Uni.SA);
-//    private static final String KEY_DA = String.valueOf(MongolCode.Uni.DA);
-//    private static final String KEY_CHA = String.valueOf(MongolCode.Uni.CHA);
-//    private static final String KEY_JA = String.valueOf(MongolCode.Uni.JA);
-//    private static final String KEY_YA = String.valueOf(MongolCode.Uni.YA);
-//    private static final String KEY_RA = String.valueOf(MongolCode.Uni.RA);
-//    private static final String KEY_COMMA = String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA);
-//    private static final String KEY_SPACE = " ";
-//
-//    private static final String KEY_A_SUB = "";
-//    private static final String KEY_E_SUB = String.valueOf(MongolCode.Uni.EE);
-//    private static final String KEY_I_SUB = "";
-//    private static final String KEY_O_SUB = "";
-//    private static final String KEY_U_SUB = "";
-//    private static final String KEY_NA_SUB = String.valueOf(MongolCode.Uni.ANG);
-//    private static final String KEY_BA_SUB = String.valueOf(MongolCode.Uni.PA);
-//    private static final String KEY_QA_SUB = String.valueOf(MongolCode.Uni.HAA);
-//    private static final String KEY_GA_SUB = String.valueOf(MongolCode.Uni.KA);
-//    private static final String KEY_MA_SUB = "";
-//    private static final String KEY_LA_SUB = String.valueOf(MongolCode.Uni.LHA);
-//    private static final String KEY_SA_SUB = String.valueOf(MongolCode.Uni.SHA);
-//    private static final String KEY_DA_SUB = String.valueOf(MongolCode.Uni.DA); // DA is default
-//    private static final String KEY_CHA_SUB = String.valueOf(MongolCode.Uni.TSA);
-//    private static final String KEY_JA_SUB = String.valueOf(MongolCode.Uni.ZA);
-//    private static final String KEY_YA_SUB = String.valueOf(MongolCode.Uni.WA);
-//    private static final String KEY_RA_SUB = String.valueOf(MongolCode.Uni.ZRA);
-//
-//    private static final String KEY_A_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
-//    private static final String KEY_E_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
-//    private static final String KEY_I_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
-//    private static final String KEY_O_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
-//    private static final String KEY_U_PUNCT = String.valueOf(MongolCode.Uni.MIDDLE_DOT);
-//    private static final String KEY_NA_PUNCT = "1";
-//    private static final String KEY_BA_PUNCT = "2";
-//    private static final String KEY_QA_PUNCT = "3";
-//    private static final String KEY_GA_PUNCT = "4";
-//    private static final String KEY_MA_PUNCT = "5";
-//    private static final String KEY_LA_PUNCT = String.valueOf(MongolCode.Uni.VERTICAL_EM_DASH);
-//    private static final String KEY_SA_PUNCT = "6";
-//    private static final String KEY_DA_PUNCT = "7";
-//    private static final String KEY_CHA_PUNCT = "8";
-//    private static final String KEY_JA_PUNCT = "9";
-//    private static final String KEY_YA_PUNCT = "0";
-//    private static final String KEY_RA_PUNCT = String.valueOf(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
-//
+
     private static final String KEY_A_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
     private static final String KEY_E_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
     private static final String KEY_I_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
@@ -156,105 +93,9 @@ public class KeyboardAeiou extends Keyboard {
 
         instantiateKeys(context);
         setKeyValues();
-        setNonChangingKeyValues(context);
+        setNonChangingKeyValues();
         setListeners();
         addKeysToKeyboard();
-
-
-//        // Row 1
-//
-//        mKeyA = new KeyText(context);
-//        mKeyA.setText(KEY_A);
-//
-//        initTextKey(mKeyA, KEY_A, KEY_A_PUNCT);
-//
-//        mKeyE = new KeyText(context);
-//        initTextKey(mKeyE, KEY_E, KEY_E_PUNCT);
-//
-//        mKeyI = new KeyText(context);
-//        initTextKey(mKeyI, KEY_I, KEY_I_PUNCT);
-//
-//        mKeyO = new KeyText(context);
-//        initTextKey(mKeyO, KEY_O, KEY_O_PUNCT);
-//
-//        mKeyU = new KeyText(context);
-//        initTextKey(mKeyU, KEY_U, KEY_U_PUNCT);
-//
-//        // Row 2
-//
-//        mKeyNA = new KeyText(context);
-//        initTextKey(mKeyNA, KEY_NA, KEY_NA_PUNCT);
-//
-//        mKeyBA = new KeyText(context);
-//        initTextKey(mKeyBA, KEY_BA, KEY_BA_PUNCT);
-//
-//        mKeyQA = new KeyText(context);
-//        initTextKey(mKeyQA, KEY_QA, KEY_QA_PUNCT);
-//
-//        mKeyGA = new KeyText(context);
-//        initTextKey(mKeyGA, KEY_GA, KEY_GA_PUNCT);
-//
-//        mKeyMA = new KeyText(context);
-//        initTextKey(mKeyMA, KEY_MA, KEY_MA_PUNCT);
-//
-//        mKeyLA = new KeyText(context);
-//        initTextKey(mKeyLA, KEY_LA, KEY_LA_PUNCT);
-//
-//        // Row 3
-//
-//        mKeySA = new KeyText(context);
-//        initTextKey(mKeySA, KEY_SA, KEY_SA_PUNCT);
-//
-//        mKeyTADA = new KeyText(context);
-//        initTextKey(mKeyTADA, KEY_DA, KEY_DA_PUNCT);
-//
-//        mKeyCHA = new KeyText(context);
-//        initTextKey(mKeyCHA, KEY_CHA, KEY_CHA_PUNCT);
-//
-//        mKeyJA = new KeyText(context);
-//        initTextKey(mKeyJA, KEY_JA, KEY_JA_PUNCT);
-//
-//        mKeyYA = new KeyText(context);
-//        initTextKey(mKeyYA, KEY_YA, KEY_YA_PUNCT);
-//
-//        mKeyRA = new KeyText(context);
-//        initTextKey(mKeyRA, KEY_RA, KEY_RA_PUNCT);
-//
-//        // Row 4
-//
-//        // keyboard
-//        mKeyKeyboard = new KeyImage(context);
-//        mKeyKeyboard.setImage(getKeyboardImage());
-//        mKeyKeyboard.setOnTouchListener(textKeyTouchListener);
-//        addView(mKeyKeyboard);
-//
-//        // comma
-//        mKeyComma = new KeyText(context);
-//        initTextKey(mKeyComma, KEY_COMMA, KEY_COMMA);
-//        mKeyComma.setText(KEY_COMMA);
-//        mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
-//
-//        // space
-//        mKeySpace = new KeyText(context);
-//        initTextKey(mKeySpace, " ", " ");
-//        mKeySpace.setText(KEY_SPACE);
-//        mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
-//
-//        // return
-//        mKeyReturn = new KeyImage(context);
-//        mKeyReturn.setImage(getReturnImage());
-//        mKeyReturn.setOnTouchListener(textKeyTouchListener);
-//        mKeyValues.put(mKeyReturn, "\n");
-//        mKeyPunctuationValues.put(mKeyReturn, "\n");
-//        addView(mKeyReturn);
-//
-//        // backspace
-//        mKeyBackspace = new KeyImage(context);
-//        mKeyBackspace.setImage(getBackspaceImage());
-//        mKeyBackspace.setOnTouchListener(handleBackspace);
-//        addView(mKeyBackspace);
-
-        //setDisplayText(mIsShowingPunctuation);
         applyThemeToKeys();
     }
 
@@ -294,6 +135,8 @@ public class KeyboardAeiou extends Keyboard {
 
     private void setKeyValues() {
 
+        rotatePrimaryText();
+
         // Row 1
 
         mKeyA.setText(MongolCode.Uni.A);
@@ -305,10 +148,10 @@ public class KeyboardAeiou extends Keyboard {
         mKeyI.setText(MongolCode.Uni.I);
         mKeyI.setSubText("");
 
-        mKeyO.setText(MongolCode.Uni.O);
+        mKeyO.setText(MongolCode.Uni.U);
         mKeyO.setSubText("");
 
-        mKeyU.setText(MongolCode.Uni.U);
+        mKeyU.setText(MongolCode.Uni.UE);
         mKeyU.setSubText("");
 
         // Row 2
@@ -336,7 +179,7 @@ public class KeyboardAeiou extends Keyboard {
         mKeySA.setText(MongolCode.Uni.SA);
         mKeySA.setSubText(MongolCode.Uni.SHA);
 
-        mKeyTADA.setText(MongolCode.Uni.DA);
+        mKeyTADA.setText(MongolCode.Uni.DA, MongolCode.Uni.TA);
         mKeyTADA.setSubText(MongolCode.Uni.DA);
 
         mKeyCHA.setText(MongolCode.Uni.CHA);
@@ -353,7 +196,22 @@ public class KeyboardAeiou extends Keyboard {
 
     }
 
+    private void rotatePrimaryText() {
+        mKeyNA.setRotatedPrimaryText(true);
+        mKeyBA.setRotatedPrimaryText(true);
+        mKeyQA.setRotatedPrimaryText(true);
+        mKeyGA.setRotatedPrimaryText(true);
+        mKeyMA.setRotatedPrimaryText(true);
+        mKeySA.setRotatedPrimaryText(true);
+        mKeyTADA.setRotatedPrimaryText(true);
+        mKeyCHA.setRotatedPrimaryText(true);
+        mKeyJA.setRotatedPrimaryText(true);
+        mKeyYA.setRotatedPrimaryText(true);
+    }
+
     private void setPuncuationKeyValues() {
+
+        dontRotatePrimaryTextForSelectKeys();
 
         // Row 1
 
@@ -413,7 +271,20 @@ public class KeyboardAeiou extends Keyboard {
         mKeyRA.setSubText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
     }
 
-    private void setNonChangingKeyValues(Context context) {
+    private void dontRotatePrimaryTextForSelectKeys() {
+        mKeyNA.setRotatedPrimaryText(false);
+        mKeyBA.setRotatedPrimaryText(false);
+        mKeyQA.setRotatedPrimaryText(false);
+        mKeyGA.setRotatedPrimaryText(false);
+        mKeyMA.setRotatedPrimaryText(false);
+        mKeySA.setRotatedPrimaryText(false);
+        mKeyTADA.setRotatedPrimaryText(false);
+        mKeyCHA.setRotatedPrimaryText(false);
+        mKeyJA.setRotatedPrimaryText(false);
+        mKeyYA.setRotatedPrimaryText(false);
+    }
+
+    private void setNonChangingKeyValues() {
 
         // Row 4
 
@@ -429,7 +300,6 @@ public class KeyboardAeiou extends Keyboard {
         mKeyReturn.setText(NEWLINE);
 
         mKeyBackspace.setImage(getBackspaceImage());
-
     }
 
     private void setListeners() {
@@ -497,159 +367,7 @@ public class KeyboardAeiou extends Keyboard {
         addView(mKeyBackspace);
     }
 
-//    public void setDisplayText(boolean isShowingPunctuation) {
-//
-//        if (isShowingPunctuation) {
-//            mKeyA.setText(KEY_A_PUNCT);
-//            mKeyE.setText(KEY_E_PUNCT);
-//            mKeyI.setText(KEY_I_PUNCT);
-//            mKeyO.setText(KEY_O_PUNCT);
-//            mKeyU.setText(KEY_U_PUNCT);
-//            mKeyNA.setText(KEY_NA_PUNCT);
-//            mKeyBA.setText(KEY_BA_PUNCT);
-//            mKeyQA.setText(KEY_QA_PUNCT);
-//            mKeyGA.setText(KEY_GA_PUNCT);
-//            mKeyMA.setText(KEY_MA_PUNCT);
-//            mKeyLA.setText(KEY_LA_PUNCT);
-//            mKeySA.setText(KEY_SA_PUNCT);
-//            mKeyTADA.setText(KEY_DA_PUNCT);
-//            mKeyCHA.setText(KEY_CHA_PUNCT);
-//            mKeyJA.setText(KEY_JA_PUNCT);
-//            mKeyYA.setText(KEY_YA_PUNCT);
-//            mKeyRA.setText(KEY_RA_PUNCT);
-//
-//            mKeyNA.setRotatedPrimaryText(false);
-//            mKeyBA.setRotatedPrimaryText(false);
-//            mKeyQA.setRotatedPrimaryText(false);
-//            mKeyGA.setRotatedPrimaryText(false);
-//            mKeyMA.setRotatedPrimaryText(false);
-//            mKeySA.setRotatedPrimaryText(false);
-//            mKeyTADA.setRotatedPrimaryText(false);
-//            mKeyCHA.setRotatedPrimaryText(false);
-//            mKeyJA.setRotatedPrimaryText(false);
-//            mKeyYA.setRotatedPrimaryText(false);
-//
-//            mKeyA.setSubText(KEY_A_PUNCT_SUB);
-//            mKeyE.setSubText(KEY_E_PUNCT_SUB);
-//            mKeyI.setSubText(KEY_I_PUNCT_SUB);
-//            mKeyO.setSubText(KEY_O_PUNCT_SUB);
-//            mKeyU.setSubText(KEY_U_PUNCT_SUB);
-//            mKeyNA.setSubText(KEY_NA_PUNCT_SUB);
-//            mKeyBA.setSubText(KEY_BA_PUNCT_SUB);
-//            mKeyQA.setSubText(KEY_QA_PUNCT_SUB);
-//            mKeyGA.setSubText(KEY_GA_PUNCT_SUB);
-//            mKeyMA.setSubText(KEY_MA_PUNCT_SUB);
-//            mKeyLA.setSubText(KEY_LA_PUNCT_SUB);
-//            mKeySA.setSubText(KEY_SA_PUNCT_SUB);
-//            mKeyTADA.setSubText(KEY_DA_PUNCT_SUB);
-//            mKeyCHA.setSubText(KEY_CHA_PUNCT_SUB);
-//            mKeyJA.setSubText(KEY_JA_PUNCT_SUB);
-//            mKeyYA.setSubText(KEY_YA_PUNCT_SUB);
-//            mKeyRA.setSubText(KEY_RA_PUNCT_SUB);
-//        } else {
-//            mKeyA.setText(KEY_A);
-//            mKeyE.setText(KEY_E);
-//            mKeyI.setText(KEY_I);
-//            mKeyO.setText(KEY_O);
-//            mKeyU.setText("" + KEY_U + MongolCode.Uni.ZWJ); // display
-//            mKeyNA.setText(KEY_NA);
-//            mKeyBA.setText(KEY_BA);
-//            mKeyQA.setText(KEY_QA);
-//            mKeyGA.setText(KEY_GA);
-//            mKeyMA.setText(KEY_MA);
-//            mKeyLA.setText(KEY_LA);
-//            mKeySA.setText(KEY_SA);
-//            mKeyTADA.setText("" + MongolCode.Uni.TA); // display
-//            mKeyCHA.setText(KEY_CHA);
-//            mKeyJA.setText(KEY_JA);
-//            mKeyYA.setText(KEY_YA);
-//            mKeyRA.setText(KEY_RA);
-//
-//            mKeyNA.setRotatedPrimaryText(true);
-//            mKeyBA.setRotatedPrimaryText(true);
-//            mKeyQA.setRotatedPrimaryText(true);
-//            mKeyGA.setRotatedPrimaryText(true);
-//            mKeyMA.setRotatedPrimaryText(true);
-//            mKeySA.setRotatedPrimaryText(true);
-//            mKeyTADA.setRotatedPrimaryText(true);
-//            mKeyCHA.setRotatedPrimaryText(true);
-//            mKeyYA.setRotatedPrimaryText(true);
-//            mKeyMA.setRotatedPrimaryText(true);
-//
-//            mKeyA.setSubText(KEY_A_SUB);
-//            mKeyE.setSubText(KEY_E_SUB);
-//            mKeyI.setSubText(KEY_I_SUB);
-//            mKeyO.setSubText(KEY_O_SUB);
-//            mKeyU.setSubText(KEY_U_SUB);
-//            mKeyNA.setSubText(KEY_NA_SUB);
-//            mKeyBA.setSubText(KEY_BA_SUB);
-//            mKeyQA.setSubText(KEY_QA_SUB);
-//            mKeyGA.setSubText(KEY_GA_SUB);
-//            mKeyMA.setSubText(KEY_MA_SUB);
-//            mKeyLA.setSubText(KEY_LA_SUB);
-//            mKeySA.setSubText(KEY_SA_SUB);
-//            mKeyTADA.setSubText(KEY_DA_SUB);
-//            mKeyCHA.setSubText(KEY_CHA_SUB);
-//            mKeyJA.setSubText(KEY_JA_SUB);
-//            mKeyYA.setSubText(KEY_YA_SUB);
-//            mKeyRA.setSubText(KEY_RA_SUB);
-//        }
-//    }
-
-//    private void showPopup() {
-//
-//
-//        //PopupWindow window = new PopupWindow()
-//
-//        //if (popupWindow != null) return;
-//
-//        // get the popup view
-//        PopupKeyCandidates popupView = new PopupKeyCandidates(getContext());
-//        popupView.setBackgroundColor(mPopupBackgroundColor);
-//        popupView.setTextColor(mPopupTextColor);
-//
-//        // update the popup view with the candidate choices
-//        Key.PopupCandidates popupCandidates = getPopupCandidates(mKeyE);
-//        if (popupCandidates == null || popupCandidates.getUnicode() == null) return;
-//        popupView.setCandidates(popupCandidates.getUnicode());
-//        if (popupCandidates.getDisplay() == null) {
-//            popupView.setDisplayCandidates(popupCandidates.getUnicode(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-//        } else {
-//            popupView.setDisplayCandidates(popupCandidates.getDisplay(), PopupKeyCandidates.DEFAULT_TEXT_SIZE);
-//        }
-//
-//        popupView.setHighlightColor(mPopupHighlightColor);
-//
-//        PopupWindow popupWindow = new PopupWindow(popupView,
-//                LinearLayout.LayoutParams.WRAP_CONTENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT);
-//        int location[] = new int[2];
-//        this.getLocationOnScreen(location);
-//        int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-//        popupView.measure(measureSpec, measureSpec);
-//        int popupWidth = popupView.getMeasuredWidth();
-//        int spaceAboveKey = this.getHeight() / 4;
-//        //final int xPosition = (int) lastTouchDownXY[0];
-//        //int x = xPosition - popupWidth / popupView.getChildCount() / 2;
-//        //int locationX = location[0]
-//        //x = xPosition;
-//        int y = location[1] - popupView.getMeasuredHeight() - spaceAboveKey;
-//        //y = (int) lastTouchDownXY[1];
-//        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY,0, 0);
-//
-//
-////        // highlight current item (after the popup window has loaded)
-////        handler.post(new Runnable() {
-////            @Override
-////            public void run() {
-////                int x = xPosition;
-////                popupView.updateTouchPosition(x);
-////            }
-////        });
-//    }
-
-
-    public Key.PopupCandidates getPopupCandidates(Key key) {
+    public PopupKeyCandidate[] getPopupCandidates(Key key) {
 
         // get the appropriate candidates based on the key pressed
         if (key == mKeyA) {
@@ -687,7 +405,6 @@ public class KeyboardAeiou extends Keyboard {
         } else if (key == mKeyRA) {
             return getCandidatesForRA();
         } else if (key == mKeyKeyboard) {
-
             return getCandidatesForKeyboard();
         } else if (key == mKeyComma) {
             return getCandidatesForComma();
@@ -698,299 +415,305 @@ public class KeyboardAeiou extends Keyboard {
         return null;
     }
 
-
-    private Key.PopupCandidates getCandidatesForA(boolean isIsolateOrInitial) {
+    private PopupKeyCandidate[] getCandidatesForA(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            return new Key.PopupCandidates(KEY_A_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_A_PUNCT_SUB);
         }
 
         if (isIsolateOrInitial) {
-            return new Key.PopupCandidates(new String[]{
+            return PopupKeyCandidate.createArray(new String[]{
                     "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
                     "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
         }
 
         // medial || final
+        PopupKeyCandidate medial_A_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        PopupKeyCandidate nirugu = new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_NIRUGU);
         char previousChar = getPreviousChar();
         if (MongolCode.isMvsConsonant(previousChar)) {
+            PopupKeyCandidate mvs_a = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
+                    "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,
+                    null);
             // include MVS
-            return new Key.PopupCandidates(
-                    new String[]{
-                            "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
-                            "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU},
-                    new String[]{
-                            "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,
-                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
+            return new PopupKeyCandidate[]{mvs_a, medial_A_FVS1, nirugu};
         } else {
-            return new Key.PopupCandidates(
-                    new String[]{
-                            "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU},
-                    new String[]{
-                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                            "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
+            return new PopupKeyCandidate[]{medial_A_FVS1, nirugu};
         }
     }
 
-    private Key.PopupCandidates getCandidatesForE(boolean isIsolateOrInitial) {
+
+    private PopupKeyCandidate[] getCandidatesForE(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            return new Key.PopupCandidates(KEY_E_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_E_PUNCT_SUB);
         }
 
         if (isIsolateOrInitial) {
-            return new Key.PopupCandidates(MongolCode.Uni.EE);
+            return PopupKeyCandidate.createArray(MongolCode.Uni.EE);
         }
 
         // medial || final
         char previousChar = getPreviousChar();
+        PopupKeyCandidate ee = new PopupKeyCandidate(MongolCode.Uni.EE);
         if (MongolCode.isMvsConsonant(previousChar)
                 && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
-            // include MVS
-            return new Key.PopupCandidates(
-                    new String[]{
-                            "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                            "" + MongolCode.Uni.EE},
-                    new String[]{
-                            "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                            "" + MongolCode.Uni.EE});
+            PopupKeyCandidate mvs_E = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                    "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                    null);
+            return new PopupKeyCandidate[]{mvs_E, ee};
         } else {
-            return new Key.PopupCandidates(MongolCode.Uni.EE);
+            return new PopupKeyCandidate[]{ee};
         }
 
     }
 
-    private Key.PopupCandidates getCandidatesForI(boolean isIsolateOrInitial) {
+    private PopupKeyCandidate[] getCandidatesForI(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            return new Key.PopupCandidates(KEY_I_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_I_PUNCT_SUB);
         }
 
         if (!isIsolateOrInitial) {// medial/final
+            PopupKeyCandidate medial_I_FVS1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
             char prevChar = getPreviousChar();
             if (MongolCode.isVowel(prevChar)) {
-                return new Key.PopupCandidates(
-                        new String[]{
-                                "" + MongolCode.Uni.I + MongolCode.Uni.FVS2, // override double tooth I after vowel (Unicode 10.0 deviation)
-                                //"" + MongolCode.Uni.ZWJ + MongolCode.Uni.I, // alternate method to override double tooth I
-                                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1},
-                        new String[]{
-                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
-                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
+                // override double tooth I after vowel (Unicode 10.0 deviation)
+                // ("" + MongolCode.Uni.ZWJ + MongolCode.Uni.I) is an alternate method to override double tooth I
+                PopupKeyCandidate medial_I_FVS2 = new PopupKeyCandidate(
+                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS2,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
+                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
+                return new PopupKeyCandidate[]{medial_I_FVS2, medial_I_FVS1};
             } else {
-                return new Key.PopupCandidates(
-                        new String[]{
-                                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1},
-                        new String[]{
-                                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
+                return new PopupKeyCandidate[]{medial_I_FVS1};
             }
-
         }
         return null;
     }
 
-    private Key.PopupCandidates getCandidatesForO(boolean isIsolateOrInitial) {
+    private PopupKeyCandidate[] getCandidatesForO(boolean isIsolateOrInitial) {
 
         if (mIsShowingPunctuation) {
-            return new Key.PopupCandidates(KEY_O_PUNCT_SUB);
-        }
-
-        if (!isIsolateOrInitial) { // medial/final
-            return new Key.PopupCandidates(
-                    new String[]{"" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
-                            "" + MongolCode.Uni.U + MongolCode.Uni.FVS1},
-                    new String[]{
-                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1});
-        }
-        return null;
-    }
-
-    private Key.PopupCandidates getCandidatesForU(boolean isIsolateOrInitial) {
-
-        if (mIsShowingPunctuation) {
-            return new Key.PopupCandidates(KEY_U_PUNCT_SUB);
-        }
-
-        if (!isIsolateOrInitial) { // medial/final
-            return new Key.PopupCandidates(
-                    new String[]{"" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
-                            "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1},
-                    new String[]{
-                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
-                            "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1});
-        }
-        return null;
-    }
-
-    private Key.PopupCandidates getCandidatesForNA(boolean isIsolateOrInitial) {
-
-        if (mIsShowingPunctuation) {
-            return new Key.PopupCandidates(KEY_NA_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_O_PUNCT_SUB);
         }
 
         if (isIsolateOrInitial) {
-            return new Key.PopupCandidates(MongolCode.Uni.ANG);
+            return PopupKeyCandidate.createArray(MongolCode.Uni.O);
         }
 
         // medial/final
-        return new Key.PopupCandidates(
-                new String[]{"" + MongolCode.Uni.ANG,
-                        "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ, // only(?) way to override dotted N before vowel in Unicode 10.0
-                        "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1},
-                new String[]{
-                        "" + MongolCode.Uni.ANG,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
+        PopupKeyCandidate medial_U_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        PopupKeyCandidate final_U_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                null);
+        return new PopupKeyCandidate[]{medial_U_FVS1, final_U_FVS1};
     }
 
-    private Key.PopupCandidates getCandidatesForBA() {
-        if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_BA_PUNCT_SUB);
-        return new Key.PopupCandidates(new String[]{"" + MongolCode.Uni.PA, "" + MongolCode.Uni.FA});
-    }
+    private PopupKeyCandidate[] getCandidatesForU(boolean isIsolateOrInitial) {
 
-    private Key.PopupCandidates getCandidatesForQA() {
-        if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_QA_PUNCT_SUB);
-        return new Key.PopupCandidates(MongolCode.Uni.HAA);
-    }
-
-    private Key.PopupCandidates getCandidatesForGA(boolean isIsolateOrInitial) {
-        if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_GA_PUNCT_SUB);
+        if (mIsShowingPunctuation) {
+            return PopupKeyCandidate.createArray(KEY_U_PUNCT_SUB);
+        }
 
         if (isIsolateOrInitial) {
-            return new Key.PopupCandidates(MongolCode.Uni.KA);
+            return PopupKeyCandidate.createArray(MongolCode.Uni.OE);
         }
 
         // medial/final
-        return new Key.PopupCandidates(
-                new String[]{
-                        "" + MongolCode.Uni.KA,
-                        "" + MongolCode.Uni.GA + MongolCode.Uni.FVS1, // see note on MongolCode(FINA_GA_FVS1)
-                        "" + MongolCode.Uni.GA + MongolCode.Uni.FVS2}, // see note on MongolCode(FINA_GA_FVS2)
-                new String[]{
-                        "" + MongolCode.Uni.KA,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS1,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2});
+        PopupKeyCandidate medial_UE_FVS2 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
+        PopupKeyCandidate final_UE_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
+                null);
+        return new PopupKeyCandidate[]{medial_UE_FVS2, final_UE_FVS1};
     }
 
-    private Key.PopupCandidates getCandidatesForMA() {
+    private PopupKeyCandidate[] getCandidatesForNA(boolean isIsolateOrInitial) {
+
+        if (mIsShowingPunctuation) {
+            return PopupKeyCandidate.createArray(KEY_NA_PUNCT_SUB);
+        }
+
+        if (isIsolateOrInitial) {
+            return PopupKeyCandidate.createArray(MongolCode.Uni.ANG);
+        }
+
+        // medial/final
+        PopupKeyCandidate ang = new PopupKeyCandidate(MongolCode.Uni.ANG);
+        // only(?) way to override dotted N before vowel in Unicode 10.0
+        PopupKeyCandidate na_zwj = new PopupKeyCandidate(
+                "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ);
+        PopupKeyCandidate na_fvs1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        return new PopupKeyCandidate[]{ang, na_zwj, na_fvs1};
+    }
+
+    private PopupKeyCandidate[] getCandidatesForBA() {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_MA_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_BA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(new String[]{"" + MongolCode.Uni.PA, "" + MongolCode.Uni.FA});
+    }
+
+    private PopupKeyCandidate[] getCandidatesForQA() {
+        if (mIsShowingPunctuation)
+            return PopupKeyCandidate.createArray(KEY_QA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(MongolCode.Uni.HAA);
+    }
+
+    private PopupKeyCandidate[] getCandidatesForGA(boolean isIsolateOrInitial) {
+        if (mIsShowingPunctuation)
+            return PopupKeyCandidate.createArray(KEY_GA_PUNCT_SUB);
+
+        if (isIsolateOrInitial) {
+            return PopupKeyCandidate.createArray(MongolCode.Uni.KA);
+        }
+
+        // medial/final
+        PopupKeyCandidate ka = new PopupKeyCandidate(MongolCode.Uni.KA);
+        // see note on MongolCode(FINA_GA_FVS1)
+        PopupKeyCandidate ga_fvs1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.GA + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS1);
+        // see note on MongolCode(FINA_GA_FVS2)
+        PopupKeyCandidate ga_fvs2 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.GA + MongolCode.Uni.FVS2,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2);
+        return new PopupKeyCandidate[]{ka, ga_fvs1, ga_fvs2};
+    }
+
+    private PopupKeyCandidate[] getCandidatesForMA() {
+        if (mIsShowingPunctuation)
+            return PopupKeyCandidate.createArray(KEY_MA_PUNCT_SUB);
         return null;
     }
 
-    private Key.PopupCandidates getCandidatesForLA() {
+    private PopupKeyCandidate[] getCandidatesForLA() {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_LA_PUNCT_SUB);
-        return new Key.PopupCandidates(MongolCode.Uni.LHA);
+            return PopupKeyCandidate.createArray(KEY_LA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(MongolCode.Uni.LHA);
     }
 
-    private Key.PopupCandidates getCandidatesForSA() {
+    private PopupKeyCandidate[] getCandidatesForSA() {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_SA_PUNCT_SUB);
-        return new Key.PopupCandidates(MongolCode.Uni.SHA);
+            return PopupKeyCandidate.createArray(KEY_SA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(MongolCode.Uni.SHA);
     }
 
-    private Key.PopupCandidates getCandidatesForTADA(boolean isIsolateOrInitial) {
+    private PopupKeyCandidate[] getCandidatesForTADA(boolean isIsolateOrInitial) {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_DA_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_DA_PUNCT_SUB);
 
         if (isIsolateOrInitial) {
             char prevChar = getPreviousChar();
-            String[] unicode;
+            String unicode;
             if (prevChar == MongolCode.Uni.NNBS) {
-                unicode = new String[]{"" + MongolCode.Uni.DA};
+                unicode = "" + MongolCode.Uni.DA;
             } else {
-                unicode = new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1};
+                unicode = "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1;
             }
-            return new Key.PopupCandidates(
+            PopupKeyCandidate initial_da = new PopupKeyCandidate(
                     unicode,
-                    new String[]{"" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
+                    "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+            return new PopupKeyCandidate[]{initial_da};
             // TODO if this turns out to be an isolate then the FVS1 should be removed
         }
 
         // medial/final
-        return new Key.PopupCandidates(
-                new String[]{
-                        "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
-                        "" + MongolCode.Uni.TA,
-                        "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1},
-                new String[]{
-                        "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
-                                MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1});
+        PopupKeyCandidate medial_ta_fvs1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
+                        MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        PopupKeyCandidate final_ta = new PopupKeyCandidate(
+                "" + MongolCode.Uni.TA,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA);
+        PopupKeyCandidate final_da = new PopupKeyCandidate(
+                "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1);
+        return new PopupKeyCandidate[]{medial_ta_fvs1, final_ta, final_da};
     }
 
-    private Key.PopupCandidates getCandidatesForCHA() {
+    private PopupKeyCandidate[] getCandidatesForCHA() {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_CHA_PUNCT_SUB);
-        return new Key.PopupCandidates(new String[]{
+            return PopupKeyCandidate.createArray(KEY_CHA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(new String[]{
                 "" + MongolCode.Uni.TSA,
                 "" + MongolCode.Uni.CHI});
     }
 
-    private Key.PopupCandidates getCandidatesForJA() {
+    private PopupKeyCandidate[] getCandidatesForJA() {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_JA_PUNCT_SUB);
-        return new Key.PopupCandidates(new String[]{
+            return PopupKeyCandidate.createArray(KEY_JA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(new String[]{
                 "" + MongolCode.Uni.ZA,
                 "" + MongolCode.Uni.ZHI});
     }
 
-    private Key.PopupCandidates getCandidatesForYA(boolean isIsolateOrInitial) {
+    private PopupKeyCandidate[] getCandidatesForYA(boolean isIsolateOrInitial) {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_YA_PUNCT_SUB);
+            return PopupKeyCandidate.createArray(KEY_YA_PUNCT_SUB);
 
+        PopupKeyCandidate wa = new PopupKeyCandidate(MongolCode.Uni.WA);
         if (isIsolateOrInitial) {
-            return new Key.PopupCandidates(
-                    new String[]{
-                            "" + MongolCode.Uni.WA,
-                            "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1},
-                    new String[]{
-                            "" + MongolCode.Uni.WA,
-                            "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
+            PopupKeyCandidate initial_YA_FVS1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+            return new PopupKeyCandidate[]{wa, initial_YA_FVS1};
         }
 
         // medial/final
-        return new Key.PopupCandidates(
-                new String[]{
-                        "" + MongolCode.Uni.WA,
-                        "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1},
-                new String[]{
-                        "" + MongolCode.Uni.WA,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ});
+        PopupKeyCandidate medial_YA_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        return new PopupKeyCandidate[]{wa, medial_YA_FVS1};
     }
 
-    private Key.PopupCandidates getCandidatesForRA() {
+    private PopupKeyCandidate[] getCandidatesForRA() {
         if (mIsShowingPunctuation)
-            return new Key.PopupCandidates(KEY_RA_PUNCT_SUB);
-        return new Key.PopupCandidates(MongolCode.Uni.ZRA);
+            return PopupKeyCandidate.createArray(KEY_RA_PUNCT_SUB);
+        return PopupKeyCandidate.createArray(MongolCode.Uni.ZRA);
     }
 
-    private Key.PopupCandidates getCandidatesForComma() {
-        return new Key.PopupCandidates(new String[]{
+    private PopupKeyCandidate[] getCandidatesForComma() {
+        return PopupKeyCandidate.createArray(new String[]{
                 "" + MongolCode.Uni.VERTICAL_QUESTION_MARK,
                 "" + MongolCode.Uni.MONGOLIAN_FULL_STOP,
                 "" + MongolCode.Uni.VERTICAL_EXCLAMATION_MARK});
     }
 
-    private Key.PopupCandidates getCandidatesForSpace() {
-        return getCandidatesForSuffix();
+    private PopupKeyCandidate[] getCandidatesForSpace() {
+        PopupKeyCandidate nnbs = new PopupKeyCandidate(
+                "" + MongolCode.Uni.NNBS,
+                KEY_SPACE_SUB_DISPLAY,
+                " ");
+        return new PopupKeyCandidate[]{nnbs};
     }
-
 
     @Override
     public String getDisplayName() {
         return DISPLAY_NAME;
     }
-
 
     @Override
     public void onKeyboardKeyClick() {
@@ -1000,5 +723,17 @@ public class KeyboardAeiou extends Keyboard {
         } else {
             setKeyValues();
         }
+    }
+
+    @Override
+    public void onKeyInput(String text) {
+        // TA/DA defaults to DA except in the INITIAL location
+        if (text.equals(String.valueOf(MongolCode.Uni.DA))) {
+            char prevChar = getPreviousChar();
+            if (!MongolCode.isMongolian(prevChar)) {
+                text = String.valueOf(MongolCode.Uni.TA);
+            }
+        }
+        super.onKeyInput(text);
     }
 }

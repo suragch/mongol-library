@@ -126,7 +126,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     @Override
-    public Key.PopupCandidates getKeyboardCandidates() {
+    public PopupKeyCandidate[] getKeyboardCandidates() {
         int numberOfOtherKeyboards = mKeyboardCandidates.size() - 1;
         if (numberOfOtherKeyboards < 1) return null;
         String[] names = new String[numberOfOtherKeyboards];
@@ -139,7 +139,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
             names[nameIndex] = keyboard.getDisplayName();
             nameIndex++;
         }
-        return new Key.PopupCandidates(names);
+        return PopupKeyCandidate.createArray(names);
     }
 
     public void setInputMethodManager(MongolInputMethodManager inputMethodManager) {
