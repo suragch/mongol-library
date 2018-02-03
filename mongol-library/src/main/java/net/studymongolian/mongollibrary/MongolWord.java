@@ -16,8 +16,7 @@ class MongolWord {
     private char fvs;
     private Shape glyphShapeBelow;
 
-    private MongolWord() {
-    }
+    private MongolWord() {}
 
     MongolWord(CharSequence mongolWord) {
         this.inputWord = mongolWord;
@@ -198,8 +197,14 @@ class MongolWord {
                 case MongolCode.Uni.MONGOLIAN_NIRUGU:
                     handleNirugu(renderedWord);
                     break;
+                case MongolCode.Uni.ZWJ:
+                    handleZWJ(renderedWord);
+                    break;
+                case MongolCode.Uni.ZWNJ:
+                    handleZWNJ(renderedWord);
+                    break;
                 default:
-                    // any extra FVS and MVS characters are ignored
+                    // any extra MVS characters are ignored
             }
 
             charBelow = currentChar;
@@ -1639,6 +1644,17 @@ class MongolWord {
 
     private void handleNirugu(StringBuilder renderedWord) {
         renderedWord.insert(0, MongolCode.Glyph.NIRUGU);
+        glyphShapeBelow = Shape.STEM;
+    }
+
+    // Even though ZWJ and ZWNJ are invisible, inserting them into the rendered text in order to
+    // simplify glyph-unicode indexing
+    private void handleZWJ(StringBuilder renderedWord) {
+        renderedWord.insert(0, MongolCode.Uni.ZWJ);
+    }
+
+    private void handleZWNJ(StringBuilder renderedWord) {
+        renderedWord.insert(0, MongolCode.Uni.ZWNJ);
     }
 
     private boolean needsLongToothU(CharSequence word, int uIndex) {

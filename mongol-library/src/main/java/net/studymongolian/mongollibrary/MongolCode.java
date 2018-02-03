@@ -564,15 +564,17 @@ public final class MongolCode {
     }
 
     public static boolean isMongolian(char character) {
-        // Mongolian letters, MVS, FVS1-3, NIRUGU, Uni.ZWJ, (but not NNBS)
+        // Mongolian letters, MVS, FVS1-3, NIRUGU, ZWJ, ZWNJ, (but not NNBS)
         return ((character >= Uni.A && character <= Uni.CHI)
-                || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS) || character == Uni.ZWJ);
+                || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS)
+                || character == Uni.ZWJ|| character == Uni.ZWNJ);
     }
 
-    // MVS, FVS, ZWJ
-    static boolean isRenderedGlyph(int index, CharSequence someString) {
-        final char someChar = someString.charAt(index);
-        return !(someChar == Uni.MVS || isFVS(someChar) || someChar == Uni.ZWJ);
+    // not MVS, FVS
+    static boolean isRenderedGlyph(char character) {
+        //return !(character == Uni.MVS || isFVS(character)
+        //        || character == Uni.ZWJ || character == Uni.ZWNJ);
+        return !(character == Uni.MVS || isFVS(character));
     }
 
     private static boolean isBGDRS(char character) {

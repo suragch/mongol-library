@@ -88,16 +88,20 @@ public class MongolTextStorage implements Editable {
         }
 
         // update glyph indexes
+        // Non rendered characters (mvs, fvs) follow rendered chars
+        //    Exception: non rendered chars at the beginning of the string
         boolean indexingHasStarted = false;
         int glyphIndex = 0;
         if (start > 0) {
             glyphIndex = getGlyphIndexForUnicodeIndex(start - 1);
-            if (glyphIndex > 0 || MongolCode.isRenderedGlyph(0, mUnicodeText)) {
+
+            if (glyphIndex > 0 || MongolCode.isRenderedGlyph(mUnicodeText.charAt(0))) {
                 indexingHasStarted = true;
             }
         }
         for (int i = start; i < lengthUnicode; i++) {
-            if (MongolCode.isRenderedGlyph(i, mUnicodeText)) {
+            final char currentChar = mUnicodeText.charAt(i);
+            if (MongolCode.isRenderedGlyph(currentChar)) {
                 if (indexingHasStarted) {
                     glyphIndex++;
                 }
