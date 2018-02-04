@@ -116,6 +116,8 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         }
 
         if (newKeyboard == null) return;
+        if (mCurrentKeyboard == null) return;
+
 
         this.removeView(mCurrentKeyboard);
         newKeyboard.setKeyboardListener(this);

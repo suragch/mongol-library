@@ -31,7 +31,7 @@ public class KeyboardAeiou extends Keyboard {
     protected KeyText mKeyRA;
 
     // Row 4
-    protected KeyKeyboardChooser mKeyKeyboard; // defined in super class
+    protected KeyKeyboardChooser mKeyKeyboard;
     protected KeyText mKeyComma;
     protected KeyText mKeySpace;
     protected KeyBackspace mKeyBackspace;
@@ -464,8 +464,7 @@ public class KeyboardAeiou extends Keyboard {
                 && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
             PopupKeyCandidate mvs_E = new PopupKeyCandidate(
                     "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                    "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                    null);
+                    "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E);
             return new PopupKeyCandidate[]{mvs_E, ee};
         } else {
             return new PopupKeyCandidate[]{ee};
@@ -479,25 +478,27 @@ public class KeyboardAeiou extends Keyboard {
             return PopupKeyCandidate.createArray(KEY_I_PUNCT_SUB);
         }
 
-        if (!isIsolateOrInitial) {// medial/final
-            PopupKeyCandidate medial_I_FVS1 = new PopupKeyCandidate(
-                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS1,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-            char prevChar = getPreviousChar();
-            if (MongolCode.isVowel(prevChar)) {
-                // override double tooth I after vowel (Unicode 10.0 deviation)
-                // ("" + MongolCode.Uni.ZWJ + MongolCode.Uni.I) is an alternate method to override double tooth I
-                PopupKeyCandidate medial_I_FVS2 = new PopupKeyCandidate(
-                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS2,
-                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
-                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
-                return new PopupKeyCandidate[]{medial_I_FVS2, medial_I_FVS1};
-            } else {
-                return new PopupKeyCandidate[]{medial_I_FVS1};
-            }
+        if (isIsolateOrInitial)
+            return null;
+
+        // medial/final
+        PopupKeyCandidate medial_I_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        char prevChar = getPreviousChar();
+        if (MongolCode.isVowel(prevChar)) {
+            // override double tooth I after vowel (Unicode 10.0 deviation)
+            // ("" + MongolCode.Uni.ZWJ + MongolCode.Uni.I) is an alternate method to override double tooth I
+            PopupKeyCandidate medial_I_FVS2 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS2,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
+            return new PopupKeyCandidate[]{medial_I_FVS2, medial_I_FVS1};
+        } else {
+            return new PopupKeyCandidate[]{medial_I_FVS1};
         }
-        return null;
+
     }
 
     private PopupKeyCandidate[] getCandidatesForO(boolean isIsolateOrInitial) {
@@ -517,8 +518,7 @@ public class KeyboardAeiou extends Keyboard {
                 "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
         PopupKeyCandidate final_U_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1,
-                null);
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1);
         return new PopupKeyCandidate[]{medial_U_FVS1, final_U_FVS1};
     }
 
@@ -539,8 +539,7 @@ public class KeyboardAeiou extends Keyboard {
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
         PopupKeyCandidate final_UE_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
-                null);
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1);
         return new PopupKeyCandidate[]{medial_UE_FVS2, final_UE_FVS1};
     }
 
@@ -646,10 +645,10 @@ public class KeyboardAeiou extends Keyboard {
         PopupKeyCandidate final_ta = new PopupKeyCandidate(
                 "" + MongolCode.Uni.TA,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA);
-        PopupKeyCandidate final_da = new PopupKeyCandidate(
+        PopupKeyCandidate final_da_fvs1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1);
-        return new PopupKeyCandidate[]{medial_ta_fvs1, final_ta, final_da};
+        return new PopupKeyCandidate[]{medial_ta_fvs1, final_ta, final_da_fvs1};
     }
 
     private PopupKeyCandidate[] getCandidatesForCHA() {

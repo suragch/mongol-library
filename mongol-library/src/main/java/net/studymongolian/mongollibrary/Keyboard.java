@@ -1011,7 +1011,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     @Override
     public void onNewKeyboardChosen(int xPosition) {
+        if (mKeyboardListener == null) return;
         PopupKeyCandidate selectedKeyboard = popupView.getCurrentItem(xPosition);
+        dismissPopup();
         mKeyboardListener.onRequestNewKeyboard(selectedKeyboard.getUnicode());
     }
 }

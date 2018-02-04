@@ -9,6 +9,7 @@ import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.KeyImage;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
+import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
 
@@ -44,7 +45,7 @@ public class KeyboardActivity extends AppCompatActivity {
 
         // init keyboards with styles
         Keyboard aeiou = new KeyboardAeiou(this, keyboardStyle);
-        //Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
+        Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
         //Keyboard english = new KeyboardEnglish(this, keyboardStyle);
         //Keyboard custom = new CustomKeyboard(this, keyboardStyle);
 
@@ -56,8 +57,8 @@ public class KeyboardActivity extends AppCompatActivity {
 
         // add keyboards to the IME container
         ImeContainer imeContainer = findViewById(R.id.keyboard);
-        //imeContainer.addKeyboard(qwerty);
         imeContainer.addKeyboard(aeiou); // first one is the default
+        imeContainer.addKeyboard(qwerty);
         //imeContainer.addKeyboard(english);
         //imeContainer.addKeyboard(custom);
 

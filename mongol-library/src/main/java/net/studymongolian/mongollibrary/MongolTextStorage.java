@@ -90,6 +90,7 @@ public class MongolTextStorage implements Editable {
         // update glyph indexes
         // Non rendered characters (mvs, fvs) follow rendered chars
         //    Exception: non rendered chars at the beginning of the string
+        // FIXME: can produce index mismatches when mvs or fvs in illegal position (ex: SA + MVS + " " + MVS + SA)
         boolean indexingHasStarted = false;
         int glyphIndex = 0;
         if (start > 0) {
