@@ -14,11 +14,8 @@ import static android.content.ContentValues.TAG;
 
 public class KeyImage extends Key {
 
-    //private static final String DEBUG_TAG = "TAG";
-
     private String mPrimaryText;
 
-    //protected Theme mTheme = Theme.LIGHT;
     private TextPaint mImagePaint;
     private Bitmap mImage;
     private Bitmap mImageScaled;
@@ -45,9 +42,6 @@ public class KeyImage extends Key {
         mImagePaint.setFilterBitmap(true);
         mImagePaint.setDither(true);
 
-
-
-        //mImagePaint.setColor(Color.YELLOW);
     }
 
 
@@ -86,13 +80,6 @@ public class KeyImage extends Key {
         int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
 
-
-
-        //int left = getPaddingLeft();
-        //int top = getPaddingTop();
-        //int right = left + keyWidth;
-        //int bottom = top + keyHeight;
-
         // automatically resize text that is too large
         if (mNeedToScaleImage) {
             float x = getPaddingLeft() + (keyWidth - mImageScaled.getWidth()) / 2;
@@ -109,64 +96,6 @@ public class KeyImage extends Key {
     public void setImage (Bitmap bitmap) {
         mImage = bitmap;
     }
-
-    //public void setTheme(Theme theme) {
-    //    mTheme = theme;
-    //}
-
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        changeBackgroundColorForClickEvent(event);
-//
-//        int action = event.getActionMasked();
-//        int x = (int) event.getRawX();
-//
-//        switch(action) {
-//            case (MotionEvent.ACTION_DOWN) :
-//                lastTouchDownX = x;
-//                mIsLongPress = true;
-//                mHandler.postDelayed(longPress, LONG_PRESS_TIMEOUT);
-//                return true;
-//            case (MotionEvent.ACTION_MOVE) :
-//                onActionScroll(x);
-//                return true;
-//            case (MotionEvent.ACTION_CANCEL) :
-//            case (MotionEvent.ACTION_OUTSIDE) :
-//            case (MotionEvent.ACTION_UP) :
-//                mIsLongPress = false;
-//                mHandler.removeCallbacks(longPress);
-//                onActionUp(x);
-//                return true;
-//            default :
-//                return super.onTouchEvent(event);
-//        }
-//    }
-//
-//    private Runnable longPress = new Runnable() {
-//
-//        @Override
-//        public void run() {
-//            if (mIsLongPress) {
-//                onLongPressThresholdReached();
-//                mIsLongPress = false;
-//            }
-//        }
-//
-//    };
-//
-//    private void onLongPressThresholdReached() {
-//
-//        Log.i(TAG, "onLongPressThresholdReached: ");
-//        showPopup(this, lastTouchDownX);
-//    }
-//
-//    private void onActionScroll(int xPosition) {
-//        if (mIsLongPress) return;
-//        Log.i(TAG, "onActionScroll: ");
-//        updatePopup(xPosition);
-//    }
-
 
     @Override
     protected void onActionUp(int xPosition) {

@@ -112,14 +112,14 @@ public abstract class Key extends View {
             case (MotionEvent.ACTION_MOVE) :
                 onActionScroll(x);
                 return true;
-            case (MotionEvent.ACTION_CANCEL) :
-            case (MotionEvent.ACTION_OUTSIDE) :
             case (MotionEvent.ACTION_UP) :
                 mIsLongPress = false;
                 mHandler.removeCallbacks(longPress);
                 onActionUp(x);
                 return true;
             default :
+                mIsLongPress = false;
+                mHandler.removeCallbacks(longPress);
                 return super.onTouchEvent(event);
         }
     }
@@ -204,16 +204,16 @@ public abstract class Key extends View {
 
     // Keyboards should implement this interface to receive input from keys
     public interface KeyListener {
-        public void onKeyInput(String text);
-        //public void onPopupInput(String text);
-        public void onBackspace();
-        public boolean getIsShowingPopup();
-        public void showPopup(Key key, int xPosition);
-        public void updatePopup(int xPosition);
-        public void finishPopup(int xPosition);
-        //public String getPopupChoiceOnFinish(int xPosition);
-        public void onKeyboardKeyClick();
-        public void onNewKeyboardChosen(int xPositionOnPopup);
+        void onKeyInput(String text);
+        void onBackspace();
+
+        boolean getIsShowingPopup();
+        void showPopup(Key key, int xPosition);
+        void updatePopup(int xPosition);
+        void finishPopup(int xPosition);
+
+        void onKeyboardKeyClick();
+        void onNewKeyboardChosen(int xPositionOnPopup);
     }
     public void setKeyListener(KeyListener listener) {
         this.mKeyListener = listener;
@@ -222,11 +222,6 @@ public abstract class Key extends View {
         if (mKeyListener == null) return;
         mKeyListener.onKeyInput(text);
     }
-//    protected void sendPopupTextToKeyboard(String popupText) {
-//        if (mKeyListener == null) return;
-//        mKeyListener.onPopupInput(popupText);
-//    }
-
     protected boolean getIsShowingPopup() {
         if (mKeyListener == null) return false;
         return mKeyListener.getIsShowingPopup();
@@ -243,10 +238,6 @@ public abstract class Key extends View {
         if (mKeyListener == null) return;
         mKeyListener.finishPopup(xPosition);
     }
-//    protected String getFinalPopupChoice(int xPosition) {
-//        if (mKeyListener == null) return null;
-//        return mKeyListener.getPopupChoiceOnFinish(xPosition);
-//    }
     protected void backspace() {
         if (mKeyListener == null) return;
         mKeyListener.onBackspace();
@@ -259,27 +250,5 @@ public abstract class Key extends View {
         if (mKeyListener == null) return;
         mKeyListener.onNewKeyboardChosen(xPositionOnPopup);
     }
-
-//    public interface KeyboardChoiceListener extends KeyListener {
-//        public void onKeyboardKeyClick();
-//        public void onKeyboardKeyLongClick();
-//    }
-//
-//    public void setKeyListener(KeyKeyboardChooser.Listener listener) {
-//        this.mListener = listener;
-//    }
-
-//    protected Keyboard.Theme getKeyboardTheme() {
-//        if (mKeyListener == null) return Keyboard.Theme.LIGHT;
-//        return mKeyListener.getKeyboardTheme();
-//    }
-
-//    public interface BackspaceListener {
-//        public void onBackspace();
-//    }
-//    public void setBackspaceListener(BackspaceListener listener) {
-//        this.mBackspaceListener = listener;
-//    }
-
 
 }

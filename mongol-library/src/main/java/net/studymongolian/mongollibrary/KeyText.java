@@ -23,25 +23,13 @@ public class KeyText extends Key {
 
     private String mPrimaryText;
     private String mPrimaryTextDisplay;
-    //private StringForKey mSubText;
     private String mSubTextDisplay;
 
     private MongolCode renderer = MongolCode.INSTANCE;
     private TextPaint mTextPaint;
     private Rect mTextBounds;
     private Rect mSubTextBounds;
-    //private String mDisplayText;
-    //private String mDisplaySubText;
     private TextPaint mSubTextPaint;
-
-
-
-    private final int LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
-    private Handler mHandler = new Handler();
-    private boolean mIsLongPress = false;
-    //private float[] lastTouchDownXY = new float[2];
-    private int lastTouchDownX;
-
 
     protected boolean mIsRotatedPrimaryText;
     protected boolean mIsRotatedSubText;
@@ -74,16 +62,7 @@ public class KeyText extends Key {
         mIsRotatedPrimaryText = true;
         mIsRotatedSubText = true;
 
-        //gestureDetector = new GestureDetector(context, new GestureListener());
-        //gestureDetector.setIsLongpressEnabled(false);
     }
-
-//    @Override
-//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-//        super.onSizeChanged(w, h, oldw, oldh);
-//        mKeyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-//        mKeyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -240,143 +219,6 @@ public class KeyText extends Key {
             sendTextToKeyboard(mPrimaryText);
     }
 
-
-//        private void onActionUp(int xPosition) {
-//        Log.i(TAG, "onActionUp: " + mPrimaryText);
-//        //int x = (int) event.getRawX();
-//        String popupChoice = getPopupChoice(xPosition);
-//        if (popupChoice != null)
-//            sendTextToKeyboard(popupChoice);
-//        else
-//            sendTextToKeyboard(mPrimaryText);
-//    }
-
-//    PopupWindow popupWindow;
-//    PopupKeyCandidatesView popupView;
-//    //int popupWidth;
-
-//
-//
-//
-//    private void updatePopup(MotionEvent event) {
-//        if (popupView == null) return;
-//        int x = (int) event.getRawX();
-//        popupView.updateTouchPosition(x);
-//    }
-
-
-
-//    private void handlePopupChoice(Key key, MotionEvent event) {
-//
-//        //key.setPressed(false);
-//
-////        if (handler != null) {
-////            handler.removeCallbacksAndMessages(null);
-////        }
-//        if (popupWindow == null) return;
-//
-//        int x = (int) event.getRawX();
-//        CharSequence selectedItem = popupView.getCurrentItem(x);
-//
-//        if (TextUtils.isEmpty(selectedItem)) {
-//            dismissPopup();
-//            return;
-//        }
-//
-//        sendTextToKeyboard(selectedItem.toString());
-//
-//        if (key == mKeyKeyboard) {
-//            CharSequence name = popupView.getCurrentItem(x);
-//            mKeyboardListener.onRequestNewKeyboard(name.toString());
-//            dismissPopup();
-//            return;
-//        }
-//
-//        if (inputConnection == null) {
-//            dismissPopup();
-//            return;
-//        }
-//
-//        inputConnection.beginBatchEdit();
-//
-//        if (mComposing.length() > 0) {
-//            inputConnection.commitText(mComposing, 1);
-//            mComposing.setLength(0);
-//        }
-//
-//        // add composing text for certain medials to avoid confusion with finals
-//        if (selectedItem.equals(MEDIAL_A_FVS1)) {
-//            inputConnection.setComposingText(MEDIAL_A_FVS1_COMPOSING, 1);
-//            mComposing.append(MEDIAL_A_FVS1);
-//        } else if (selectedItem.equals(MEDIAL_I_FVS1)) {
-//            inputConnection.setComposingText(MEDIAL_I_FVS1_COMPOSING, 1);
-//            mComposing.append(MEDIAL_I_FVS1);
-//        } else if (selectedItem.equals(MEDIAL_I_FVS2)) {
-//            inputConnection.setComposingText(MEDIAL_I_FVS2_COMPOSING, 1);
-//            mComposing.append(MEDIAL_I_FVS2);
-//            //} else if (selectedItem.equals(MEDIAL_ZWJ_I)) {
-//            //    inputConnection.setComposingText(MEDIAL_ZWJ_I_COMPOSING, 1);
-//            //    mComposing.append(MEDIAL_ZWJ_I);
-//        } else if (selectedItem.equals(MEDIAL_U_FVS1)) {
-//            inputConnection.setComposingText(MEDIAL_U_FVS1_COMPOSING, 1);
-//            mComposing.append(MEDIAL_U_FVS1);
-//        } else if (selectedItem.equals(MEDIAL_UE_FVS2)) {
-//            inputConnection.setComposingText(MEDIAL_UE_FVS2_COMPOSING, 1);
-//            mComposing.append(MEDIAL_UE_FVS2);
-//        } else if (selectedItem.equals(MEDIAL_DOTTED_NA)) {
-//            inputConnection.setComposingText(MEDIAL_DOTTED_NA_COMPOSING, 1);
-//            mComposing.append(MEDIAL_DOTTED_NA);
-//        } else if (selectedItem.equals(MEDIAL_TA_FVS1)) {
-//            inputConnection.setComposingText(MEDIAL_TA_FVS1_COMPOSING, 1);
-//            mComposing.append(MEDIAL_TA_FVS1);
-//        } else if (selectedItem.equals(YA_FVS1)) {
-//            inputConnection.setComposingText(YA_FVS1_COMPOSING, 1);
-//            mComposing.append(YA_FVS1);
-//        } else {
-//            inputConnection.commitText(selectedItem, 1);
-//        }
-//
-//        inputConnection.endBatchEdit();
-//
-//        dismissPopup();
-//    }
-//
-//    private void dismissPopup() {
-//        if (popupWindow != null)
-//            popupWindow.dismiss();
-//        popupView = null;
-//        popupWindow = null;
-//    }
-
-
-
-//    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-//
-//        @Override
-//        public boolean onDown(MotionEvent e) {
-//            return true;
-//        }
-//
-//        @Override
-//        public boolean onSingleTapUp(MotionEvent e) {
-//            Log.i(TAG, "onSingleTapUp: " + mPrimaryText);
-//            return true;
-//        }
-//
-//        @Override
-//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//            //handlePopupScrolling();
-//            return true;
-//        }
-//
-//        @Override
-//        public void onLongPress(MotionEvent e) {
-//            //showPopupCandidates();
-//
-//        }
-//    }
-
-
     public void setText(char text) {
         setText(String.valueOf(text));
     }
@@ -449,104 +291,4 @@ public class KeyText extends Key {
         invalidate();
     }
 
-
-//    /**
-//     * these are the choices for a popup key
-//     */
-//    public static class PopupCandidates {
-//
-//        private String[] unicode;
-//        private String[] display;
-//
-//        /**
-//         * Convenience constructor for PopupCandidates(String[] unicode)
-//         *
-//         * @param unicode the unicode values for the popup items
-//         */
-//        public PopupCandidates(char unicode) {
-//            this(new String[]{String.valueOf(unicode)});
-//        }
-//
-//        /**
-//         * Convenience constructor for PopupCandidates(String[] unicode)
-//         *
-//         * @param unicode the unicode values for the popup items
-//         */
-//        public PopupCandidates(String unicode) {
-//            this(new String[]{unicode});
-//        }
-//
-//        /**
-//         * @param unicode the unicode values for the popup items
-//         */
-//        public PopupCandidates(String[] unicode) {
-//            this(unicode, null);
-//        }
-//
-//        /**
-//         * @param unicode the unicode values for the popup items
-//         * @param display the value to display if different than the unicode values
-//         */
-//        public PopupCandidates(String[] unicode, String[] display) {
-//            if (display != null) {
-//                if (display.length != unicode.length)
-//                    throw new IllegalArgumentException(
-//                            "The number of display items must " +
-//                                    "be the same as the number of unicode items.");
-//            }
-//            this.unicode = unicode;
-//            this.display = display;
-//        }
-//
-//        public boolean isEmpty() {
-//            if (unicode == null) return true;
-//            if (unicode.length == 0) return true;
-//            if (unicode.length == 1 && TextUtils.isEmpty(unicode[0])) return true;
-//            return false;
-//        }
-//
-//        public String[] getUnicode() {
-//            return unicode;
-//        }
-//
-//        public String[] getDisplay() {
-//            return display;
-//        }
-//    }
-
-//    /**
-//     * this is the text in the center of the key
-//     */
-//    public static class StringForKey {
-//
-//        private String unicodeInput;
-//        private String display;
-//
-//
-//        /**
-//         * @param unicodeInput the unicode value that will be  used as an input value when
-//         *                the key is pressed.
-//         */
-//        public StringForKey(String unicodeInput) {
-//            this(unicodeInput, null);
-//        }
-//
-//        /**
-//         * @param unicodeInput the unicode value that will be  used as an input value when
-//         *                the key is pressed.
-//         * @param display the value to display if different than the unicode value
-//         */
-//        public StringForKey(String unicodeInput, String display) {
-//            this.unicodeInput = unicodeInput;
-//            this.display = display;
-//        }
-//
-//        public String getInputValue() {
-//            return unicodeInput;
-//        }
-//
-//        public String getDisplayValue() {
-//            return display;
-//        }
-//    }
 }

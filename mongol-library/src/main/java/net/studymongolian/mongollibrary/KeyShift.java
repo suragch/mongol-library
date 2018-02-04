@@ -17,8 +17,6 @@ public class KeyShift extends KeyImage {
 
     private static final int CAPS_STATE_INDICATOR_INDENT = 5; // px
     private static final int CAPS_STATE_INDICATOR_RADIUS = 10; // px
-    //private int mKeyHeight;
-    //private int mKeyWidth;
 
     private boolean shiftIsOn = false;
     private boolean isCapsLockOn = false;
@@ -46,7 +44,6 @@ public class KeyShift extends KeyImage {
         mCapsStatePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCapsStatePaint.setStyle(Paint.Style.FILL);
         mCapsStatePaint.setColor(Color.RED);
-        //this.setImage(getShiftImage());
         gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
