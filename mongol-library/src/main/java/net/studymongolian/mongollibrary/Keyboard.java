@@ -561,20 +561,99 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         if (inputConnection == null) return;
 
         if (mComposing != null) {
-            inputConnection.commitText("", 1);
-            mComposing = null;
+            deleteComposingText();
         } else {
-
-            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-            inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
-
-            // We could also do this with inputConnection.deleteSurroundingText(1, 0)
-            // but then we would need to be careful of not deleting too much
-            // and not deleting half a surrogate pair.
-            // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
-            // see also https://stackoverflow.com/a/45182401
+            String previousFourChars = getPreviousFourChars();
+            backspaceFromEndOf(previousFourChars);
         }
     }
+
+    private void deleteComposingText() {
+        inputConnection.commitText("", 1);
+        mComposing = null;
+    }
+
+    private String getPreviousFourChars() {
+        if (inputConnection == null) return "";
+        CharSequence previous = inputConnection.getTextBeforeCursor(4, 0);
+        return previous.toString();
+    }
+
+    private void backspaceFromEndOf(String previousChars) {
+        if (TextUtils.isEmpty(previousChars)) return;
+        int deleteIndex = previousChars.length() - 1;
+
+        // delete any invisible character directly in front of cursor
+        char currentChar = previousChars.charAt(deleteIndex);
+        if (isInvisibleChar(currentChar)){
+            backspaceOneChar();
+            deleteIndex--;
+        }
+        if (deleteIndex < 0) return;
+
+        // always delete at least one visible character
+        backspaceOneChar();
+        deleteIndex--;
+        if (deleteIndex < 0) return;
+
+        // also delete certain invisible characters before the just deleted character
+        currentChar = previousChars.charAt(deleteIndex);
+        if (currentChar == MongolCode.Uni.MVS) {
+            backspaceOneChar();
+        } else if (currentChar == MongolCode.Uni.ZWJ || currentChar == MongolCode.Uni.ZWNJ) {
+            if (deleteIndex == 0) {
+                backspaceOneChar();
+                return;
+            }
+            char previousChar = previousChars.charAt(deleteIndex - 1);
+            if (!MongolCode.isMongolian(previousChar)) {
+                backspaceOneChar();
+            }
+        }
+    }
+
+//    private void backspaceInvisibleCharacter(char character) {
+//        if (isInvisibleChar(character)) {
+//            backspaceOneChar();
+//        }
+//    }
+
+    private boolean isInvisibleChar(char character) {
+        return character == MongolCode.Uni.MVS ||
+                MongolCode.isFVS(character) ||
+                character == MongolCode.Uni.ZWJ ||
+                character == MongolCode.Uni.ZWNJ;
+    }
+
+    private void backspaceOneChar() {
+        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+
+        // We could also do this with inputConnection.deleteSurroundingText(1, 0)
+        // but then we would need to be careful of not deleting too much
+        // and not deleting half a surrogate pair.
+        // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
+        // see also https://stackoverflow.com/a/45182401
+    }
+
+//    private void backspaceUnnecessaryInvisibleCharacter(char character) {
+//        if (character == MongolCode.Uni.MVS) {
+//            backspaceOneChar();
+//        } else if (character == MongolCode.Uni.ZWJ || character == MongolCode.Uni.ZWNJ) {
+//            char charBeforePreviousChar = getSecondCharBeforeCursor();
+//            if (!MongolCode.isMongolian(charBeforePreviousChar)) {
+//                backspaceOneChar();
+//            }
+//        }
+//    }
+
+//    protected char getSecondCharBeforeCursor() {
+//        if (inputConnection == null) return 0;
+//        CharSequence previous = inputConnection.getTextBeforeCursor(2, 0);
+//        if (TextUtils.isEmpty(previous)) return 0;
+//        if (previous.length() != 2) return 0;
+//        return previous.charAt(0);
+//    }
 
 
     @Override

@@ -161,4 +161,8 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
             mCurrentKeyboard = keyboard;
         }
     }
+
+    public Keyboard getCurrentKeyboard() {
+        return mCurrentKeyboard;
+    }
 }
