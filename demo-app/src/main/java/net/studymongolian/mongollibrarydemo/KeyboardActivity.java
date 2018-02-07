@@ -47,7 +47,7 @@ public class KeyboardActivity extends AppCompatActivity {
         Keyboard aeiou = new KeyboardAeiou(this, keyboardStyle);
         Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
         //Keyboard english = new KeyboardEnglish(this, keyboardStyle);
-        //Keyboard custom = new CustomKeyboard(this, keyboardStyle);
+        Keyboard custom = new CustomKeyboard(this, keyboardStyle);
 
         // keyboards to include (default style)
 //        Keyboard aeiou = new KeyboardAeiou(this);
@@ -60,7 +60,7 @@ public class KeyboardActivity extends AppCompatActivity {
         imeContainer.addKeyboard(aeiou); // first one is the default
         imeContainer.addKeyboard(qwerty);
         //imeContainer.addKeyboard(english);
-        //imeContainer.addKeyboard(custom);
+        imeContainer.addKeyboard(custom);
 
         // The MongolInputMethodManager handles communication between the keyboards and
         // the MongolEditText (or EditText).
