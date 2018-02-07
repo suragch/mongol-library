@@ -18,6 +18,7 @@
         </activity>
         <activity android:label="@string/mongol_textview_activity_title"
                   android:name=".MongolTextViewActivity"/>
+        <activity android:name=".KeyboardActivity"/>
     </application>
 
 </manifest>

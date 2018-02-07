@@ -23,14 +23,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         setContentView(R.layout.activity_main);
 
         // data to populate the RecyclerView with
-        ArrayList<String> apiDemos = new ArrayList<>();
-        apiDemos.add("MongolTextView");
+        ArrayList<String> testingActivities = new ArrayList<>();
+        testingActivities.add("Keyboard");
+        //testingActivities.add("MongolTextView");
 
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvApiTestingList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MainActivityRecyclerViewAdapter(this, apiDemos);
+        adapter = new MainActivityRecyclerViewAdapter(this, testingActivities);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -40,7 +41,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
 
         Intent intent;
         switch (position) {
-            case 0: // MongolTextView
+            case 0: // Keyboard
+                intent = new Intent(this, KeyboardActivity.class);
+                startActivity(intent);
+                break;
+            case 1: // MongolTextView
                 intent = new Intent(this, MongolTextViewActivity.class);
                 startActivity(intent);
                 break;
