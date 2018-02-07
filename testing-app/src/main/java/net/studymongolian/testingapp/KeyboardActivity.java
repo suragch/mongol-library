@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.Keyboard;
@@ -26,7 +27,7 @@ public class KeyboardActivity extends AppCompatActivity {
     ImeContainer imeContainer;
 
     Handler handler = new Handler();
-    List<Runnable> backspaceTests = new ArrayList<>();
+    List<Runnable> backspaceTests;
     int testIndex = 0;
 
     @Override
@@ -61,6 +62,7 @@ public class KeyboardActivity extends AppCompatActivity {
 
         testIndex = 0;
 
+        backspaceTests  = new ArrayList<>();
         backspaceTests.add(backspaceOneChar);
         backspaceTests.add(backspace_M_MVS_M);
         backspaceTests.add(backspace_M_MVS_X);
@@ -73,6 +75,7 @@ public class KeyboardActivity extends AppCompatActivity {
         backspaceTests.add(backspace_X_ZWJ_M);
         backspaceTests.add(backspace_X_ZWJ_X);
         backspaceTests.add(backspace_X_ZWJ_M_FVS1);
+        backspaceTests.add(backspace_everything_highlighted);
 
         handler.post(runnableCode);
     }
@@ -329,6 +332,26 @@ public class KeyboardActivity extends AppCompatActivity {
             mongolEditText.setText(original);
 
             // action
+            Keyboard keyboard = imeContainer.getCurrentKeyboard();
+            keyboard.onBackspace();
+
+            // results
+            assertEqualsMetText(message, expected);
+        }
+    };
+
+    Runnable backspace_everything_highlighted = new Runnable() {
+        @Override
+        public void run() {
+            final String message = "backspace_everything_highlighted";
+
+            // setup
+            final String original = "abc";
+            final String expected = "";
+            mongolEditText.setText(original);
+
+            // action
+            mongolEditText.selectAll();
             Keyboard keyboard = imeContainer.getCurrentKeyboard();
             keyboard.onBackspace();
 
