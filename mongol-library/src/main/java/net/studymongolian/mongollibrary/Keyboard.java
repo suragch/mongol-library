@@ -562,15 +562,26 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
         if (mComposing != null) {
             deleteComposingText();
-        } else {
-            String previousFourChars = getPreviousFourChars();
-            backspaceFromEndOf(previousFourChars);
+            return;
         }
+
+        if (hasSelection()) {
+            doBackspace();
+            return;
+        }
+
+        String previousFourChars = getPreviousFourChars();
+        backspaceFromEndOf(previousFourChars);
     }
 
     private void deleteComposingText() {
         inputConnection.commitText("", 1);
         mComposing = null;
+    }
+
+    private boolean hasSelection() {
+        CharSequence selection = inputConnection.getSelectedText(0);
+        return selection != null && selection.length() > 0;
     }
 
     private String getPreviousFourChars() {
@@ -586,28 +597,28 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         // delete any invisible character directly in front of cursor
         char currentChar = previousChars.charAt(deleteIndex);
         if (isInvisibleChar(currentChar)){
-            backspaceOneChar();
+            doBackspace();
             deleteIndex--;
         }
         if (deleteIndex < 0) return;
 
         // always delete at least one visible character
-        backspaceOneChar();
+        doBackspace();
         deleteIndex--;
         if (deleteIndex < 0) return;
 
         // also delete certain invisible characters before the just deleted character
         currentChar = previousChars.charAt(deleteIndex);
         if (currentChar == MongolCode.Uni.MVS) {
-            backspaceOneChar();
+            doBackspace();
         } else if (currentChar == MongolCode.Uni.ZWJ || currentChar == MongolCode.Uni.ZWNJ) {
             if (deleteIndex == 0) {
-                backspaceOneChar();
+                doBackspace();
                 return;
             }
             char previousChar = previousChars.charAt(deleteIndex - 1);
             if (!MongolCode.isMongolian(previousChar)) {
-                backspaceOneChar();
+                doBackspace();
             }
         }
     }
@@ -625,7 +636,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 character == MongolCode.Uni.ZWNJ;
     }
 
-    private void backspaceOneChar() {
+    private void doBackspace() {
         inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
         inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
 
