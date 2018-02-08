@@ -122,6 +122,7 @@ public class KeyboardQwerty extends Keyboard {
         instantiateKeys(context);
         setKeyValues();
         setNonChangingKeyValues();
+        setKeyImages();
         setListeners();
         addKeysToKeyboard();
         applyThemeToKeys();
@@ -391,28 +392,18 @@ public class KeyboardQwerty extends Keyboard {
     }
 
     private void setNonChangingKeyValues() {
-
-
-        // Row 3
-
-        mKeyBackspace.setImage(getBackspaceImage());
-
-        // Row 4
-
-        mKeyKeyboard.setImage(getKeyboardImage());
-
         mKeyExclamation.setText(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK);
-
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
-
         mKeySpace.setText(" ");
-
         mKeyPeriod.setText(MongolCode.Uni.MONGOLIAN_FULL_STOP);
-
         mKeyQuestion.setText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
-
-        mKeyReturn.setImage(getReturnImage());
         mKeyReturn.setText(NEWLINE);
+    }
+
+    private void setKeyImages() {
+        mKeyBackspace.setImage(getBackspaceImage());
+        mKeyKeyboard.setImage(getKeyboardImage());
+        mKeyReturn.setImage(getReturnImage());
     }
 
     private void setListeners() {

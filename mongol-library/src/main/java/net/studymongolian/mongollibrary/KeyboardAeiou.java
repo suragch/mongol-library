@@ -94,6 +94,7 @@ public class KeyboardAeiou extends Keyboard {
         instantiateKeys(context);
         setKeyValues();
         setNonChangingKeyValues();
+        setKeyImages();
         setListeners();
         addKeysToKeyboard();
         applyThemeToKeys();
@@ -285,21 +286,17 @@ public class KeyboardAeiou extends Keyboard {
     }
 
     private void setNonChangingKeyValues() {
-
-        // Row 4
-
-        mKeyKeyboard.setImage(getKeyboardImage());
-
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
         mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
-
         mKeySpace.setText(" ");
         mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
-
-        mKeyReturn.setImage(getReturnImage());
         mKeyReturn.setText(NEWLINE);
+    }
 
+    private void setKeyImages() {
         mKeyBackspace.setImage(getBackspaceImage());
+        mKeyKeyboard.setImage(getKeyboardImage());
+        mKeyReturn.setImage(getReturnImage());
     }
 
     private void setListeners() {
