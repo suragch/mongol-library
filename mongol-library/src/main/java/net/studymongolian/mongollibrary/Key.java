@@ -214,6 +214,7 @@ public abstract class Key extends View {
 
         void onKeyboardKeyClick();
         void onNewKeyboardChosen(int xPositionOnPopup);
+        void onShiftChanged(boolean isShiftOn);
     }
     public void setKeyListener(KeyListener listener) {
         this.mKeyListener = listener;
@@ -249,6 +250,10 @@ public abstract class Key extends View {
     protected void chooseAnotherKeyboard(int xPositionOnPopup) {
         if (mKeyListener == null) return;
         mKeyListener.onNewKeyboardChosen(xPositionOnPopup);
+    }
+    protected void setShift(boolean isShiftOn) {
+        if (mKeyListener == null) return;
+        mKeyListener.onShiftChanged(isShiftOn);
     }
 
 }

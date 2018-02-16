@@ -1,9 +1,8 @@
 package net.studymongolian.mongollibrary;
 
-
 import android.content.Context;
 
-public class KeyboardEnglish extends Keyboard {
+public class KeyboardCyrillic extends Keyboard {
 
     // name to use in the keyboard popup chooser
     private static final String DISPLAY_NAME = "ᠠᠩᠭᠯᠢ";
@@ -51,7 +50,99 @@ public class KeyboardEnglish extends Keyboard {
     protected KeyText mKeyQuestion;
     protected KeyImage mKeyReturn;
 
-private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
+    //    // These are all input values (some display values are different)
+//    private String key_Q = "q";
+//    private static final String KEY_W = "w";
+//    private static final String KEY_E = "e";
+//    private static final String KEY_R = "r";
+//    private static final String KEY_T = "t";
+//    private static final String KEY_Y = "y";
+//    private static final String KEY_U = "u";
+//    private static final String KEY_I = "i";
+//    private static final String KEY_O = "o";
+//    private static final String KEY_P = "p";
+//    private static final String KEY_A = "a";
+//    private static final String KEY_S = "s";
+//    private static final String KEY_D = "d";
+//    private static final String KEY_F = "f";
+//    private static final String KEY_G = "g";
+//    private static final String KEY_H = "h";
+//    private static final String KEY_J = "j";
+//    private static final String KEY_K = "k";
+//    private static final String KEY_L = "l";
+//    private static final String KEY_Z = "z";
+//    private static final String KEY_X = "x";
+//    private static final String KEY_C = "c";
+//    private static final String KEY_V = "v";
+//    private static final String KEY_B = "b";
+//    private static final String KEY_N = "n";
+//    private static final String KEY_M = "m";
+//    private static final String KEY_EXCLAMATION = "!";
+//    private static final String KEY_COMMA = ",";
+//    private static final String KEY_SPACE = " ";
+//    private static final String KEY_PERIOD = ".";
+//    private static final String KEY_QUESTION = "?";
+//
+//
+//    private static final String KEY_Q_SUB = "";
+//    private static final String KEY_W_SUB = "";
+//    private static final String KEY_E_SUB = "";
+//    private static final String KEY_R_SUB = "";
+//    private static final String KEY_T_SUB = "";
+//    private static final String KEY_Y_SUB = "";
+//    private static final String KEY_U_SUB = "";
+//    private static final String KEY_I_SUB = "";
+//    private static final String KEY_O_SUB = "";
+//    private static final String KEY_P_SUB = "";
+//    private static final String KEY_A_SUB = "";
+//    private static final String KEY_S_SUB = "";
+//    private static final String KEY_D_SUB = "";
+//    private static final String KEY_F_SUB = "";
+//    private static final String KEY_G_SUB = "";
+//    private static final String KEY_H_SUB = "";
+//    private static final String KEY_J_SUB = "";
+//    private static final String KEY_K_SUB = "";
+//    private static final String KEY_L_SUB = "";
+//    private static final String KEY_Z_SUB = "";
+//    private static final String KEY_X_SUB = "";
+//    private static final String KEY_C_SUB = "";
+//    private static final String KEY_V_SUB = "";
+//    private static final String KEY_B_SUB = "";
+//    private static final String KEY_N_SUB = "";
+//    private static final String KEY_M_SUB = "";
+//    private static final String KEY_EXCLAMATION_SUB = "";
+//    private static final String KEY_COMMA_SUB = "";
+//    private static final String KEY_PERIOD_SUB = "";
+//    private static final String KEY_QUESTION_SUB = "";
+//
+//    private static final String KEY_Q_PUNCT = "1";
+//    private static final String KEY_W_PUNCT = "2";
+//    private static final String KEY_E_PUNCT = "3";
+//    private static final String KEY_R_PUNCT = "4";
+//    private static final String KEY_T_PUNCT = "5";
+//    private static final String KEY_Y_PUNCT = "6";
+//    private static final String KEY_U_PUNCT = "7";
+//    private static final String KEY_I_PUNCT = "8";
+//    private static final String KEY_O_PUNCT = "9";
+//    private static final String KEY_P_PUNCT = "0";
+//    private static final String KEY_A_PUNCT = "\\";
+//    private static final String KEY_S_PUNCT = "_";
+//    private static final String KEY_D_PUNCT = "(";
+//    private static final String KEY_F_PUNCT = ":";
+//    private static final String KEY_G_PUNCT = ")";
+//    private static final String KEY_H_PUNCT = "&";
+//    private static final String KEY_J_PUNCT = "#";
+//    private static final String KEY_K_PUNCT = "*";
+//    private static final String KEY_L_PUNCT = "\"";
+//    private static final String KEY_Z_PUNCT = "@";
+//    private static final String KEY_X_PUNCT = "/";
+//    private static final String KEY_C_PUNCT = "-";
+//    private static final String KEY_V_PUNCT = "\'";
+//    private static final String KEY_B_PUNCT = "!";
+//    private static final String KEY_N_PUNCT = "?";
+//    private static final String KEY_M_PUNCT = ";";
+//
+    private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
     private static final String KEY_W_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
     private static final String KEY_E_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
     private static final String KEY_R_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
@@ -86,14 +177,14 @@ private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONG
     private static final String NEWLINE = "\n";
 
     // Use this constructor if you want the default style
-    public KeyboardEnglish(Context context) {
+    public KeyboardCyrillic(Context context) {
         super(context);
         init(context);
     }
 
     // all keyboards should include this custom constructor
     // (there was no way to force it in the abstract Keyboard class)
-    public KeyboardEnglish(Context context, StyleBuilder style) {
+    public KeyboardCyrillic(Context context, StyleBuilder style) {
         super(context);
         super.initStyle(style);
         init(context);
@@ -123,7 +214,7 @@ private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONG
         // the mNumberOfKeysInRow and mKeyWeights array totals above.
 
         instantiateKeys(context);
-        makeKeysLowercase();
+        setLowerCaseKeyValues();
         setNonChangingKeyValues();
         dontRotatePrimaryTextForSelectKeys();
         setKeyImages();
@@ -178,7 +269,7 @@ private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONG
         mKeyReturn = new KeyImage(context);
     }
 
-    private void makeKeysLowercase() {
+    private void setLowerCaseKeyValues() {
 
         // Row 1
 
@@ -264,7 +355,7 @@ private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONG
         mKeyM.setSubText("");
     }
 
-    private void makeKeysUppercase() {
+    private void setUpperCaseKeyValues() {
 
         // Row 1
 
@@ -588,15 +679,15 @@ private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONG
         addView(mKeyReturn);
     }
 
-//    //@Override
-//    public void onShiftChanged(boolean shiftIsOn) {
-//
-//        if (shiftIsOn) {
-//            setUpperCaseKeyValues();
-//        } else {
-//            setLowerCaseKeyValues();
-//        }
-//    }
+    //@Override
+    public void onShiftChanged(boolean shiftIsOn) {
+
+        if (shiftIsOn) {
+            setUpperCaseKeyValues();
+        } else {
+            setLowerCaseKeyValues();
+        }
+    }
 
     public PopupKeyCandidate[] getPopupCandidates(Key key) {
         // get the appropriate candidates based on the key pressed
@@ -1021,28 +1112,12 @@ private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONG
     }
 
     @Override
-    public void onKeyInput(String text) {
-        super.onKeyInput(text);
-        if (mKeyShift != null)
-            mKeyShift.turnOffCapsUnlessLocked();
-    }
-
-    @Override
     public void onKeyboardKeyClick() {
         mIsShowingPunctuation = !mIsShowingPunctuation;
         if (mIsShowingPunctuation) {
             setPunctuationKeyValues();
         } else {
-            makeKeysLowercase();
-        }
-    }
-
-    @Override
-    public void onShiftChanged(boolean shiftIsOn) {
-        if (shiftIsOn) {
-            makeKeysUppercase();
-        } else {
-            makeKeysLowercase();
+            setLowerCaseKeyValues();
         }
     }
 }

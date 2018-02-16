@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import static android.content.ContentValues.TAG;
 
@@ -16,12 +17,18 @@ import static android.content.ContentValues.TAG;
 public class KeyShift extends KeyImage {
 
     private static final int CAPS_STATE_INDICATOR_INDENT = 5; // px
-    private static final int CAPS_STATE_INDICATOR_RADIUS = 10; // px
+    private static final int CAPS_STATE_INDICATOR_RADIUS = 5; // px
 
-    private boolean shiftIsOn = false;
+    private static final long DOUBLE_CLICK_TIME_DELTA = ViewConfiguration.getDoubleTapTimeout();
+
+    long lastClickTime = 0;
+
+    private boolean isShiftOn = false;
     private boolean isCapsLockOn = false;
-    private ChangeListener mListener = null;
+    //private ChangeListener mListener = null;
     private Paint mCapsStatePaint;
+    //private int mCapsStateIndicatorColor = Color.RED;
+    private static final int DEFAULT_CAPS_STATE_INDICATOR_COLOR = Color.RED;
 
     GestureDetector gestureDetector;
 
@@ -43,7 +50,7 @@ public class KeyShift extends KeyImage {
     private void init(Context context) {
         mCapsStatePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCapsStatePaint.setStyle(Paint.Style.FILL);
-        mCapsStatePaint.setColor(Color.RED);
+        mCapsStatePaint.setColor(DEFAULT_CAPS_STATE_INDICATOR_COLOR);
         gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
@@ -55,7 +62,7 @@ public class KeyShift extends KeyImage {
 
     private void drawCircleRepresentingTheCapsState(Canvas canvas) {
 
-        if (!shiftIsOn) return;
+        if (!isShiftOn) return;
 
         // make sure a large border radius doesn't cover the indicator
         float indent = CAPS_STATE_INDICATOR_INDENT;
@@ -65,7 +72,7 @@ public class KeyShift extends KeyImage {
         int indicatorDiameter = 2 * CAPS_STATE_INDICATOR_RADIUS;
 
         int dx = getPaddingLeft() + mKeyWidth - indicatorDiameter - (int) indent;
-        int dy = getPaddingTop() + mKeyHeight - indicatorDiameter - (int) indent;
+        int dy = getPaddingTop() + indicatorDiameter + (int) indent;
 
         // draw indicator
         canvas.save();
@@ -75,10 +82,32 @@ public class KeyShift extends KeyImage {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        changeBackgroundColorForClickEvent(e);
-        return gestureDetector.onTouchEvent(e);
+    public boolean onTouchEvent(MotionEvent event) {
+        changeBackgroundColorForClickEvent(event);
+
+        int action = event.getActionMasked();
+        int x = (int) event.getRawX();
+
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                onActionDown(x);
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+                onActionScroll(x);
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                onActionUp(x);
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
     }
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent e) {
+//        changeBackgroundColorForClickEvent(e);
+//        return gestureDetector.onTouchEvent(e);
+//    }
 
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -91,41 +120,45 @@ public class KeyShift extends KeyImage {
 
         // TODO this could be singleTap to lessen delay since there is no long press here
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.i(TAG, "onSingleTapConfirmed: " + shiftIsOn);
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.i(TAG, "onSingleTapConfirmed: " + isShiftOn);
             //KeyShift.this.setPressed(true);
             isCapsLockOn = false;
-            shiftIsOn = !shiftIsOn;
-            if (mListener != null)
-                mListener.onShiftChanged(shiftIsOn);
+            isShiftOn = !isShiftOn;
+            setShift(isShiftOn);
+//            if (mListener != null)
+//                mListener.onShiftChanged(shiftIsOn);
             invalidate();
             return true;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            Log.i(TAG, "onDoubleTap: " + shiftIsOn);
-            boolean oldStateWasAlreadyOn = shiftIsOn;
+            Log.i(TAG, "onDoubleTap: " + isShiftOn);
+            boolean oldStateWasAlreadyOn = isShiftOn;
             isCapsLockOn = true;
-            shiftIsOn = true;
+            isShiftOn = true;
             if (oldStateWasAlreadyOn) return true;
-            if (mListener != null)
-                mListener.onShiftChanged(true);
+            setShift(isShiftOn);
+//            if (mListener != null)
+//                mListener.onShiftChanged(true);
             invalidate();
             return true;
         }
     }
 
     public boolean shiftIsOn() {
-        return shiftIsOn;
+        return isShiftOn;
     }
 
     public void turnOffCapsUnlessLocked() {
         if (isCapsLockOn) return;
-        if (!shiftIsOn) return;
-        shiftIsOn = false;
-        if (mListener != null)
-            mListener.onShiftChanged(shiftIsOn);
+        if (!isShiftOn) return;
+        isShiftOn = false;
+        setShift(isShiftOn);
+        invalidate();
+//        if (mListener != null)
+//            mListener.onShiftChanged(shiftIsOn);
     }
 
     public void setShiftImage(Keyboard.Theme theme) {
@@ -138,11 +171,33 @@ public class KeyShift extends KeyImage {
         setImage(BitmapFactory.decodeResource(getResources(), imageResourceId));
     }
 
-    public void setChangeListener(ChangeListener listener) {
-        this.mListener = listener;
+    public void setCapsStateIndicatorColor(int color) {
+        mCapsStatePaint.setColor(color);
+        invalidate();
     }
 
-    public interface ChangeListener {
-        void onShiftChanged(boolean shiftIsOn);
+//    public void setChangeListener(ChangeListener listener) {
+//        this.mListener = listener;
+//    }
+//
+//    public interface ChangeListener {
+//        void onShiftChanged(boolean shiftIsOn);
+//    }
+
+    @Override
+    protected void onActionUp(int xPosition) {
+        if (getIsShowingPopup())
+            finishPopup(xPosition);
+        else if (isDoubleTap())
+            onDoubleTap();
+    }
+
+    private boolean isDoubleTap() {
+        long thisClickTime = System.currentTimeMillis();
+        return (thisClickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA);
+    }
+
+    protected void onDoubleTap() {
+
     }
 }

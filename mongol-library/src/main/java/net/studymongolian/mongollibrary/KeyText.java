@@ -36,20 +36,20 @@ public class KeyText extends Key {
 
     public KeyText(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public KeyText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public KeyText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(90);
         mTextBounds = new Rect();

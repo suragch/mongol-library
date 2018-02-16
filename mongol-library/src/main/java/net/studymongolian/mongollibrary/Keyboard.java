@@ -186,6 +186,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 ((KeyText) child).setSubTextColor(mSecondaryTextColor);
             } else if (child instanceof KeyImage) {
                 // TODO apply theme to key image
+
+                if (child instanceof KeyShift) {
+                    ((KeyShift) child).setCapsStateIndicatorColor(mPrimaryTextColor);
+                }
             }
 
             child.setKeyColor(mKeyColor);
@@ -673,5 +677,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         PopupKeyCandidate selectedKeyboard = popupView.getCurrentItem(xPosition);
         dismissPopup();
         mKeyboardListener.onRequestNewKeyboard(selectedKeyboard.getUnicode());
+    }
+
+    @Override
+    public void onShiftChanged(boolean isShiftOn) {
+        // Keyboard subclasses can override this if they have a shift key
     }
 }
