@@ -25,9 +25,7 @@ public class KeyShift extends KeyImage {
 
     private boolean isShiftOn = false;
     private boolean isCapsLockOn = false;
-    //private ChangeListener mListener = null;
     private Paint mCapsStatePaint;
-    //private int mCapsStateIndicatorColor = Color.RED;
     private static final int DEFAULT_CAPS_STATE_INDICATOR_COLOR = Color.RED;
 
     GestureDetector gestureDetector;
@@ -57,10 +55,11 @@ public class KeyShift extends KeyImage {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        drawCircleRepresentingTheCapsState(canvas);
+        drawCircleRepresentingTheShiftState(canvas);
+        // TODO: draw something to represent the caps lock state
     }
 
-    private void drawCircleRepresentingTheCapsState(Canvas canvas) {
+    private void drawCircleRepresentingTheShiftState(Canvas canvas) {
 
         if (!isShiftOn) return;
 
@@ -84,71 +83,61 @@ public class KeyShift extends KeyImage {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         changeBackgroundColorForClickEvent(event);
-
         int action = event.getActionMasked();
-        int x = (int) event.getRawX();
-
         switch(action) {
             case (MotionEvent.ACTION_DOWN) :
-                onActionDown(x);
-                return true;
-            case (MotionEvent.ACTION_MOVE) :
-                onActionScroll(x);
                 return true;
             case (MotionEvent.ACTION_UP) :
-                onActionUp(x);
+                differentiateSingleDoubleTap();
                 return true;
             default :
                 return super.onTouchEvent(event);
         }
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent e) {
-//        changeBackgroundColorForClickEvent(e);
-//        return gestureDetector.onTouchEvent(e);
-//    }
+    private void differentiateSingleDoubleTap() {
+        long clickTime = System.currentTimeMillis();
+        if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+            onSecondTapOfDoubleTap();
+        } else {
+            onSingleTapUp();
+        }
+        lastClickTime = clickTime;
+    }
 
+    private void onSingleTapUp() {
+        Log.i(TAG, "onSingleTapUp: ");
+        isCapsLockOn = false;
+        isShiftOn = !isShiftOn;
+        setShift(isShiftOn);
+        invalidate();
+    }
+
+    private void onSecondTapOfDoubleTap() {
+        if (isShiftOn) {
+            isCapsLockOn = true;
+            invalidate();
+        }
+    }
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            // change color to pressed color
             return true;
         }
 
-        // TODO this could be singleTap to lessen delay since there is no long press here
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            Log.i(TAG, "onSingleTapConfirmed: " + isShiftOn);
-            //KeyShift.this.setPressed(true);
-            isCapsLockOn = false;
-            isShiftOn = !isShiftOn;
-            setShift(isShiftOn);
-//            if (mListener != null)
-//                mListener.onShiftChanged(shiftIsOn);
-            invalidate();
+            Log.i(TAG, "onSingleTapUp: ");
             return true;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            Log.i(TAG, "onDoubleTap: " + isShiftOn);
-            boolean oldStateWasAlreadyOn = isShiftOn;
-            isCapsLockOn = true;
-            isShiftOn = true;
-            if (oldStateWasAlreadyOn) return true;
-            setShift(isShiftOn);
-//            if (mListener != null)
-//                mListener.onShiftChanged(true);
-            invalidate();
+            Log.i(TAG, "onDoubleTap: ");
             return true;
         }
-    }
-
-    public boolean shiftIsOn() {
-        return isShiftOn;
     }
 
     public void turnOffCapsUnlessLocked() {
@@ -157,8 +146,6 @@ public class KeyShift extends KeyImage {
         isShiftOn = false;
         setShift(isShiftOn);
         invalidate();
-//        if (mListener != null)
-//            mListener.onShiftChanged(shiftIsOn);
     }
 
     public void setShiftImage(Keyboard.Theme theme) {
@@ -174,30 +161,5 @@ public class KeyShift extends KeyImage {
     public void setCapsStateIndicatorColor(int color) {
         mCapsStatePaint.setColor(color);
         invalidate();
-    }
-
-//    public void setChangeListener(ChangeListener listener) {
-//        this.mListener = listener;
-//    }
-//
-//    public interface ChangeListener {
-//        void onShiftChanged(boolean shiftIsOn);
-//    }
-
-    @Override
-    protected void onActionUp(int xPosition) {
-        if (getIsShowingPopup())
-            finishPopup(xPosition);
-        else if (isDoubleTap())
-            onDoubleTap();
-    }
-
-    private boolean isDoubleTap() {
-        long thisClickTime = System.currentTimeMillis();
-        return (thisClickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA);
-    }
-
-    protected void onDoubleTap() {
-
     }
 }
