@@ -6,12 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-
-import static android.content.ContentValues.TAG;
 
 
 public class KeyShift extends KeyImage {
@@ -28,28 +24,25 @@ public class KeyShift extends KeyImage {
     private Paint mCapsStatePaint;
     private static final int DEFAULT_CAPS_STATE_INDICATOR_COLOR = Color.RED;
 
-    GestureDetector gestureDetector;
-
     public KeyShift(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public KeyShift(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public KeyShift(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         mCapsStatePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCapsStatePaint.setStyle(Paint.Style.FILL);
         mCapsStatePaint.setColor(DEFAULT_CAPS_STATE_INDICATOR_COLOR);
-        gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     @Override
@@ -106,7 +99,6 @@ public class KeyShift extends KeyImage {
     }
 
     private void onSingleTapUp() {
-        Log.i(TAG, "onSingleTapUp: ");
         isCapsLockOn = false;
         isShiftOn = !isShiftOn;
         setShift(isShiftOn);
@@ -120,31 +112,11 @@ public class KeyShift extends KeyImage {
         }
     }
 
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            Log.i(TAG, "onSingleTapUp: ");
-            return true;
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            Log.i(TAG, "onDoubleTap: ");
-            return true;
-        }
-    }
-
     public void turnOffCapsUnlessLocked() {
         if (isCapsLockOn) return;
         if (!isShiftOn) return;
         isShiftOn = false;
-        setShift(isShiftOn);
+        setShift(false);
         invalidate();
     }
 
