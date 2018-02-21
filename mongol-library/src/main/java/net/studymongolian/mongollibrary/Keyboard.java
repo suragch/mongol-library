@@ -627,12 +627,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         }
     }
 
-//    private void backspaceInvisibleCharacter(char character) {
-//        if (isInvisibleChar(character)) {
-//            backspaceOneChar();
-//        }
-//    }
-
     private boolean isInvisibleChar(char character) {
         return character == MongolCode.Uni.MVS ||
                 MongolCode.isFVS(character) ||
@@ -651,32 +645,12 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         // see also https://stackoverflow.com/a/45182401
     }
 
-//    private void backspaceUnnecessaryInvisibleCharacter(char character) {
-//        if (character == MongolCode.Uni.MVS) {
-//            backspaceOneChar();
-//        } else if (character == MongolCode.Uni.ZWJ || character == MongolCode.Uni.ZWNJ) {
-//            char charBeforePreviousChar = getSecondCharBeforeCursor();
-//            if (!MongolCode.isMongolian(charBeforePreviousChar)) {
-//                backspaceOneChar();
-//            }
-//        }
-//    }
-
-//    protected char getSecondCharBeforeCursor() {
-//        if (inputConnection == null) return 0;
-//        CharSequence previous = inputConnection.getTextBeforeCursor(2, 0);
-//        if (TextUtils.isEmpty(previous)) return 0;
-//        if (previous.length() != 2) return 0;
-//        return previous.charAt(0);
-//    }
-
-
     @Override
     public void onNewKeyboardChosen(int xPosition) {
         if (mKeyboardListener == null) return;
         PopupKeyCandidate selectedKeyboard = popupView.getCurrentItem(xPosition);
         dismissPopup();
-        if (popupView == null) return;
+        if (selectedKeyboard == null) return;
         mKeyboardListener.onRequestNewKeyboard(selectedKeyboard.getUnicode());
     }
 

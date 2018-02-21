@@ -13,7 +13,7 @@ class PopupKeyCandidatesView extends ViewGroup {
 
     private final Context mContext;
 
-    private int mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
+    private int mHeight = 0;
     private int mHighlightColor = Color.DKGRAY;
     private int mTextColor = Color.BLACK;
     private int mTextSize = DEFAULT_TEXT_SIZE;
@@ -62,14 +62,20 @@ class PopupKeyCandidatesView extends ViewGroup {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         int summedWidth = 0;
+        int maxHeight = 0;
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
             child.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
+                    View.MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
             summedWidth += child.getMeasuredWidth();
+            maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
 
+        mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
+        if (mHeight < maxHeight) {
+            mHeight = maxHeight;
+        }
 
         int desiredWidth = summedWidth + getPaddingLeft() + getPaddingRight();
         int desiredHeight = mHeight + getPaddingTop() + getPaddingBottom();
