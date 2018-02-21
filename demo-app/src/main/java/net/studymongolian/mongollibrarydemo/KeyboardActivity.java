@@ -63,6 +63,7 @@ public class KeyboardActivity extends AppCompatActivity {
         imeContainer.addKeyboard(aeiou); // first one is the default
         imeContainer.addKeyboard(qwerty);
         imeContainer.addKeyboard(english);
+        imeContainer.addKeyboard(cyrillic);
         imeContainer.addKeyboard(custom);
 
         // The MongolInputMethodManager handles communication between the keyboards and
