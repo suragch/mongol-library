@@ -676,6 +676,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         if (mKeyboardListener == null) return;
         PopupKeyCandidate selectedKeyboard = popupView.getCurrentItem(xPosition);
         dismissPopup();
+        if (popupView == null) return;
         mKeyboardListener.onRequestNewKeyboard(selectedKeyboard.getUnicode());
     }
 
