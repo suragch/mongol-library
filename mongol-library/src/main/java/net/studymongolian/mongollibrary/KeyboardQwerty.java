@@ -126,6 +126,7 @@ public class KeyboardQwerty extends Keyboard {
         setListeners();
         addKeysToKeyboard();
         applyThemeToKeys();
+        //setPreferredCandidateLocation(CandidateLocation.HORIZONTAL_TOP);
     }
 
     private void instantiateKeys(Context context) {

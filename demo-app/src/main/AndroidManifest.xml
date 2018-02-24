@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="net.studymongolian.mongollibrarydemo">
+    package="net.studymongolian.mongollibrarydemo">
 
     <application
         android:allowBackup="true"
@@ -10,36 +10,51 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:label="@string/mongol_label_activity_title"
-                  android:name=".MongolLabelActivity"/>
-        <activity android:label="@string/mongol_textview_activity_title"
-                  android:name=".MongolTextViewActivity"/>
-        <activity android:label="@string/mongol_edittext_activity_title"
-                  android:name=".MongolEditTextActivity"/>
-        <activity android:label="Testing"
-                  android:windowSoftInputMode="stateHidden"
-                  android:name=".TestingActivity"/>
-        <activity android:label="@string/unicode_activity_title"
-                  android:name=".UnicodeActivity"/>
-        <activity android:label="@string/convert_code_activity_title"
-                  android:name=".ConvertCodeActivity"/>
-        <activity android:label="@string/mongol_font_activity_title"
-                  android:name=".MongolFontActivity"/>
-        <activity android:label="@string/keyboard_activity_title"
-                  android:name=".KeyboardActivity"/>
-        <activity android:label="@string/mongol_toast_activity_title"
-                  android:name=".MongolToastActivity"/>
-        <activity android:label="@string/mongol_button_activity_title"
-                  android:name=".MongolButtonActivity"/>
-        <activity android:label="@string/mongol_alert_dialog_activity_title"
-                  android:name=".MongolAlertDialogActivity"/>
-        <activity android:label="@string/horizontal_recyclerview_activity_title"
-                  android:name=".HorizontalRecyclerViewActivity"/>
+        <activity
+            android:name=".MongolLabelActivity"
+            android:label="@string/mongol_label_activity_title" />
+        <activity
+            android:name=".MongolTextViewActivity"
+            android:label="@string/mongol_textview_activity_title" />
+        <activity
+            android:name=".MongolEditTextActivity"
+            android:label="@string/mongol_edittext_activity_title" />
+        <activity
+            android:name=".TestingActivity"
+            android:label="Testing"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".UnicodeActivity"
+            android:label="@string/unicode_activity_title" />
+        <activity
+            android:name=".ConvertCodeActivity"
+            android:label="@string/convert_code_activity_title" />
+        <activity
+            android:name=".MongolFontActivity"
+            android:label="@string/mongol_font_activity_title" />
+        <activity
+            android:name=".KeyboardActivity"
+            android:label="@string/keyboard_activity_title" />
+        <activity
+            android:name=".KeyboardCandidateActivity"
+            android:label="@string/keyboard_candidate_activity_title" />
+        <activity
+            android:name=".MongolToastActivity"
+            android:label="@string/mongol_toast_activity_title" />
+        <activity
+            android:name=".MongolButtonActivity"
+            android:label="@string/mongol_button_activity_title" />
+        <activity
+            android:name=".MongolAlertDialogActivity"
+            android:label="@string/mongol_alert_dialog_activity_title" />
+        <activity
+            android:name=".HorizontalRecyclerViewActivity"
+            android:label="@string/horizontal_recyclerview_activity_title" />
     </application>
 
 </manifest>

@@ -11,7 +11,7 @@ public class PopupKeyCandidate {
     private String unicode;
     private String display;
     private String composing;
-    // The composing String can be set if a unicode character would be temperarily rendered incorrectly.
+    // The composing String can be set if a unicode character would be temporarily rendered incorrectly.
     // For example, a mongolian medial would be rendered as a final until another character is typed.
     // Adding the composing span will let it be displayed as a medial until the next char is typed.
 

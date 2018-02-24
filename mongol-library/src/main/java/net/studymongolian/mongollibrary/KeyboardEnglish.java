@@ -458,7 +458,7 @@ public class KeyboardEnglish extends Keyboard {
     }
 
     private void setKeyImages() {
-        mKeyShift.setShiftImage(mKeyboardTheme);
+        mKeyShift.setShiftImage(getKeyboardTheme());
         mKeyBackspace.setImage(getBackspaceImage());
         mKeyKeyboard.setImage(getKeyboardImage());
         mKeyReturn.setImage(getReturnImage());

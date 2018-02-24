@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolFont");
         apiDemos.add("MongolEditText");
         apiDemos.add("Keyboard");
+        apiDemos.add("Keyboard Candidate View");
         apiDemos.add("MongolToast");
         apiDemos.add("MongolButton");
         apiDemos.add("MongolAlertDialog");
@@ -86,23 +87,27 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 intent = new Intent(this, KeyboardActivity.class);
                 startActivity(intent);
                 break;
-            case 7: // MongolToast
+            case 7: // Keyboard Candidate View
+                intent = new Intent(this, KeyboardCandidateActivity.class);
+                startActivity(intent);
+                break;
+            case 8: // MongolToast
                 intent = new Intent(this, MongolToastActivity.class);
                 startActivity(intent);
                 break;
-            case 8: // MongolButton
+            case 9: // MongolButton
                 intent = new Intent(this, MongolButtonActivity.class);
                 startActivity(intent);
                 break;
-            case 9: // MongolAlertDialog
+            case 10: // MongolAlertDialog
                 intent = new Intent(this, MongolAlertDialogActivity.class);
                 startActivity(intent);
                 break;
-            case 10: // Horizontal RecyclerView
+            case 11: // Horizontal RecyclerView
                 intent = new Intent(this, HorizontalRecyclerViewActivity.class);
                 startActivity(intent);
                 break;
-            case 11: // Testing
+            case 12: // Testing
                 intent = new Intent(this, TestingActivity.class);
                 startActivity(intent);
                 break;

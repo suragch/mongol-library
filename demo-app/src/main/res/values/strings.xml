@@ -7,6 +7,7 @@
     <string name="convert_code_activity_title">Unicode &lt;--&gt; Menksoft</string>
     <string name="mongol_font_activity_title">MongolFont</string>
     <string name="keyboard_activity_title">Keyboard</string>
+    <string name="keyboard_candidate_activity_title">Keyboard Candidate View</string>
     <string name="mongol_toast_activity_title">MongolToast</string>
     <string name="mongol_button_activity_title">MongolButton</string>
     <string name="mongol_alert_dialog_activity_title">MongolAlertDialog</string>

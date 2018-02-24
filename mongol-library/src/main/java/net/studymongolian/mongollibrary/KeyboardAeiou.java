@@ -98,6 +98,7 @@ public class KeyboardAeiou extends Keyboard {
         setListeners();
         addKeysToKeyboard();
         applyThemeToKeys();
+        //setPreferredCandidateLocation(CandidateLocation.VERTICAL_LEFT);
     }
 
     private void instantiateKeys(Context context) {
