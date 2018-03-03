@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,8 +71,10 @@ class KeyboardCandidatesAdapter extends RecyclerView.Adapter<KeyboardCandidatesA
         }
 
         void setText(String text) {
-            if (orientation == KeyboardCandidatesView.Orientation.VERTICAL)
+            if (orientation == KeyboardCandidatesView.Orientation.VERTICAL) {
                 ((MongolLabel) textView).setText(text);
+                ((MongolLabel) textView).setTextSize(26); // FIXME put this somewhere else
+            }
             else
                 ((TextView) textView).setText(text);
         }

@@ -31,6 +31,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     private Keyboard mCurrentKeyboard;
     private KeyboardCandidatesView candidatesView;
     private WeakReference<MongolInputMethodManager> mimm;
+    private InputListener mInputListener = null;
 
     public ImeContainer(Context context) {
         super(context, null, 0);
@@ -49,6 +50,17 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
 
     private void init(Context context) {
         this.mContext = context;
+    }
+
+
+    public interface InputListener {
+        public void onImeInput(String currentWord);
+    }
+
+
+    // provide a way for another class to set the listener
+    public void setMyClassListener(InputListener listener) {
+        this.mInputListener = listener;
     }
 
     @Override
@@ -214,11 +226,13 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     private void setCandidatesView() {
+
         //if (!mCurrentKeyboard.isRequestingCandidatesView()) return;
         Keyboard.CandidatesPreference location = mCurrentKeyboard.getCandidatesPreference();
         if (location == Keyboard.CandidatesPreference.NONE) return;
         if (candidatesView == null) {
             candidatesView = new KeyboardCandidatesView(mContext);
+            this.addView(candidatesView);
         }
         switch (location) {
             case VERTICAL_LEFT:

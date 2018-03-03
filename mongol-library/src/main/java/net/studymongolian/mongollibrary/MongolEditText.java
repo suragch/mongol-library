@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -703,6 +704,12 @@ public class MongolEditText extends MongolTextView {
 
     public void setAllowSystemKeyboard(boolean whether) {
         mAllowSystemKeyboard = whether;
+//        if (!mAllowSystemKeyboard) {
+//            InputMethodManager inputMethodManager = (InputMethodManager)
+//                    this.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+//            if (inputMethodManager == null) return;
+//            inputMethodManager.hideSoftInputFromWindow(this.getWindowToken(), 0);
+//        }
     }
 
 

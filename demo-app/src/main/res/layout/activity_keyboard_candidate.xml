@@ -57,4 +57,16 @@
         app:layout_constraintBottom_toTopOf="@+id/keyboard"
         app:layout_constraintStart_toEndOf="@+id/verticalButton" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="Give keyboard candidates"
+        android:onClick="onGiveKeyboardCandidatesButtonClick"
+        app:layout_constraintBottom_toTopOf="@+id/verticalButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

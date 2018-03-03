@@ -2,12 +2,16 @@ package net.studymongolian.mongollibrary;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
@@ -99,8 +103,22 @@ public class MongolInputMethodManager {
                         allowSystemKeyboard == ALL_EDITORS ||
                         allowSystemKeyboard == MONGOL_EDITOR_ONLY;
                 ((MongolEditText) editor).setAllowSystemKeyboard(showSystemSoftIme);
+                if (!showSystemSoftIme) {
+                    Activity activity = getActivity(editor.getContext());
+                    if (activity != null) {
+                        // TODO do I need to do this for EditText also?
+                        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                    }
+                }
             }
         }
+    }
+
+    private static Activity getActivity(Context context) {
+        if (context == null) return null;
+        if (context instanceof Activity) return (Activity) context;
+        if (context instanceof ContextWrapper) return getActivity(((ContextWrapper)context).getBaseContext());
+        return null;
     }
 
 
@@ -340,6 +358,8 @@ public class MongolInputMethodManager {
     }
 
     public InputConnection getCurrentInputConnection() {
+        //if (mCurrentEditorInfo == null)
+        //    mCurrentEditorInfo = getEditorInfo(null);
         return mCurrentEditor.onCreateInputConnection(mCurrentEditorInfo);
     }
 }

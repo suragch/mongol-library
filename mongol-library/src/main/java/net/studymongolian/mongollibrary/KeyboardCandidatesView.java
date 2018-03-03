@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandidatesAdapter.ItemClickListener {
@@ -49,7 +48,7 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
         mContext = context;
         mCandidates = new ArrayList<>();
 
-        this.setBackgroundColor(Color.WHITE);
+        //this.setBackgroundColor(Color.WHITE);
 
         // set up the RecyclerView
         recyclerView = new RecyclerView(context);
@@ -58,20 +57,25 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
 
     @Override
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-        final int availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        final int availableHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
 
-        float x = getPaddingLeft();
-        float y = getPaddingTop();
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
+        int right = getMeasuredWidth() - getPaddingRight();
+        int bottom = getMeasuredHeight() - getPaddingBottom();
+
+        final int availableWidth = right - left;
+        final int availableHeight = bottom - top;
 
         recyclerView.measure(MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.EXACTLY));
-        recyclerView.layout((int) x, (int) y, (int) (x + availableWidth), (int) (y + availableHeight));
+        recyclerView.layout(left, top, right, bottom);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(mContext, "toast", Toast.LENGTH_SHORT).show();
+        String item = adapter.getItem(position);
+        MongolToast.makeText(mContext, item, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mContext, item, Toast.LENGTH_SHORT).show();
     }
 
     public void setOrientation(Orientation orientation) {
