@@ -5,10 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 //import android.view.inputmethod.InputConnection;
@@ -134,7 +132,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         char getPreviousChar();
         boolean insertLocationIsIsolateOrInitial();
         void onKeyboardInput(String text);
-        void onKeyPopupInput(PopupKeyCandidate popupKeyCandidate);
+        void onKeyPopupChosen(PopupKeyCandidate popupKeyCandidate);
         void onBackspace();
     }
 
@@ -241,62 +239,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         if (mKeyboardListener == null) return 0;
         return mKeyboardListener.getPreviousChar();
     }
-
-//    // this may not actually return a whole word if the word is very long
-//    // TODO remove from here. This is only used for getting suffix candidates
-//    protected String getPreviousMongolWord() {
-//        if (inputConnection == null) return "";
-//        int numberOfCharsToGet = 20;
-//        CharSequence previous = inputConnection.getTextBeforeCursor(numberOfCharsToGet, 0);
-//        if (TextUtils.isEmpty(previous)) return "";
-//        int startIndex = previous.length() - 1;
-//        char charAtIndex = previous.charAt(startIndex);
-//        if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) startIndex--;
-//        StringBuilder mongolWord = new StringBuilder();
-//        for (int i = startIndex; i >= 0; i--) {
-//            charAtIndex = previous.charAt(i);
-//            if (MongolCode.isMongolian(charAtIndex)) {
-//                mongolWord.insert(0, charAtIndex);
-//            } else if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) {
-//                break;
-//            }
-//        }
-//        return mongolWord.toString();
-//    }
-//
-//    protected PopupKeyCandidate[] getCandidatesForSuffix() {
-//        String previousWord = getPreviousMongolWord();
-//        if (TextUtils.isEmpty(previousWord)) {
-//            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
-//        }
-//        // TODO if it is a number then return the right suffix for that
-//        char lastChar = previousWord.charAt(previousWord.length() - 1);
-//        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
-//        if (gender == null) {
-//            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
-//        }
-//        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
-//        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
-//        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
-//        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
-//        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
-//        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
-//        String uuSuffix = MongolCode.getSuffixUu(gender);
-//        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
-//        String udSuffix = MongolCode.getSuffixUd(gender);
-//
-//        String[] unicode = new String[]{
-//                "" + MongolCode.Uni.NNBS,
-//                uuSuffix,
-//                yinUnUSuffix,
-//                iYiSuffix,
-//                duTuSuffix,
-//                barIyarSuffix,
-//                banIyanSuffix,
-//                achaSuffix,
-//                udSuffix};
-//        return PopupKeyCandidate.createArray(unicode);
-//    }
 
     protected boolean isIsolateOrInitial() {
         if (mKeyboardListener == null) return true;
@@ -500,7 +442,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     private void inputPopupChoice(PopupKeyCandidate choice) {
         if (mKeyboardListener == null) return;
-        mKeyboardListener.onKeyPopupInput(choice);
+        mKeyboardListener.onKeyPopupChosen(choice);
     }
 
     private void dismissPopup() {

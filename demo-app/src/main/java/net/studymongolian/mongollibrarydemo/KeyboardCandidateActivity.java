@@ -12,10 +12,9 @@ import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class KeyboardCandidateActivity extends AppCompatActivity implements ImeContainer.InputListener {
+public class KeyboardCandidateActivity extends AppCompatActivity implements ImeContainer.DataSource {
 
     ImeContainer imeContainer;
 
@@ -39,6 +38,9 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         imeContainer.addKeyboard(aeiou); // first one is the default
         imeContainer.addKeyboard(qwerty);
 
+        // provide words for candidate selection
+        imeContainer.setDataAdapter(this);
+
         // set up input method manager
         MongolInputMethodManager mimm = new MongolInputMethodManager();
         mimm.addEditor(mongolEditText);
@@ -47,38 +49,38 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         mimm.startInput();
     }
 
-    @Override
-    public void onImeInput(String currentWord) {
-        List<String> candidates = getCandidatesStartingWith(currentWord);
-        imeContainer.updateCandidateWordList(candidates);
-    }
-
-    private List<String> getCandidatesStartingWith(String currentWord) {
-        return Collections.emptyList();
-    }
-
     public void onGiveKeyboardCandidatesButtonClick(View view) {
+
+    }
+
+    public void onVerticalButtonClick(View view) {
+
+    }
+
+    public void onHorizontalButtonClick(View view) {
+
+    }
+
+
+    // ImeContainer.DataSource methods
+
+    @Override
+    public List<String> onRequestWordsStartingWith(String text) {
         List<String> animalNames = new ArrayList<>();
         animalNames.add("ᠮᠣᠷᠢ");
         animalNames.add("ᠦᠬᠡᠷ");
         animalNames.add("ᠲᠡᠮᠡᠭᠡ");
         animalNames.add("ᠬᠣᠨᠢ");
         animalNames.add("ᠢᠮᠠᠭ᠎ᠠ");
-        imeContainer.updateCandidateWordList(animalNames);
+        return animalNames;
     }
 
-    public void onVerticalButtonClick(View view) {
-
-
-        // test data
-
-    }
-
-    public void onHorizontalButtonClick(View view) {
-//        List<String> animalNames = new ArrayList<>();
-//        animalNames.add("Lion");
-//        animalNames.add("Giraffe");
-//        animalNames.add("Bear");
-//        imeContainer.updateCandidateWordList(animalNames);
+    @Override
+    public List<String> onRequestWordsFollowing(String word) {
+        List<String> animalNames = new ArrayList<>();
+        animalNames.add("Lion");
+        animalNames.add("Giraffe");
+        animalNames.add("Bear");
+        return animalNames;
     }
 }

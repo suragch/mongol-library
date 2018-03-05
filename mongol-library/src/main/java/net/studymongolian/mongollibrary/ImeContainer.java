@@ -33,8 +33,8 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     private Keyboard mCurrentKeyboard;
     private KeyboardCandidatesView candidatesView;
     private WeakReference<MongolInputMethodManager> mimm;
-    private InputListener mInputListener = null;
-    private String mComposing = null;
+    private DataSource mDataSource = null;
+    private CharSequence mComposing = "";
     private InputConnection mInputConnection;
 
     public ImeContainer(Context context) {
@@ -57,14 +57,14 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
 
-    public interface InputListener {
-        public void onImeInput(String currentWord);
+    public interface DataSource {
+        public List<String> onRequestWordsStartingWith(String text);
+        public List<String> onRequestWordsFollowing(String word);
     }
 
-
     // provide a way for another class to set the listener
-    public void setMyClassListener(InputListener listener) {
-        this.mInputListener = listener;
+    public void setDataAdapter(DataSource adapter) {
+        this.mDataSource = adapter;
     }
 
     @Override
@@ -171,17 +171,14 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
 
     public void setInputConnection(InputConnection inputConnection) {
         this.mInputConnection = inputConnection;
-//        if (mCurrentKeyboard != null) {
-//            mCurrentKeyboard.setInputConnection(inputConnection);
-//        }
     }
 
-    InputConnection getInputConnection() {
-        if (mimm == null) return null;
-        MongolInputMethodManager imm = mimm.get();
-        if (imm == null) return null;
-        return imm.getCurrentInputConnection();
-    }
+//    InputConnection getInputConnection() {
+//        if (mimm == null) return null;
+//        MongolInputMethodManager imm = mimm.get();
+//        if (imm == null) return null;
+//        return imm.getCurrentInputConnection();
+//    }
 
     public void onUpdateSelection(int oldSelStart,
                                   int oldSelEnd,
@@ -195,10 +192,10 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         // currently we are only using composing for popup glyph selection.
         // If we want to be more like the standard keyboards we could do
         // composing on the whole word.
-        if (mComposing != null &&
+        if (!TextUtils.isEmpty(mComposing) &&
                 (newSelStart != candidatesEnd
                 || newSelEnd != candidatesEnd)) {
-            mComposing = null;
+            mComposing = "";
             // TODO updateCandidates();
             if (mInputConnection != null) {
                 mInputConnection.finishComposingText();
@@ -227,7 +224,6 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     private void setCurrentKeyboard(Keyboard keyboard) {
         removeOldCurrentKeyboard();
         addNewCurrentKeyboard(keyboard);
-        //setInputConnectionToCurrentKeyboard();
     }
 
     private void removeOldCurrentKeyboard() {
@@ -240,11 +236,6 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         keyboard.setKeyboardListener(this);
         this.addView(keyboard);
     }
-
-//    private void setInputConnectionToCurrentKeyboard() {
-//        InputConnection ic = getInputConnection();
-//        mCurrentKeyboard.setInputConnection(ic);
-//    }
 
     private void setCandidatesView() {
 
@@ -313,48 +304,125 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     @Override
     public void onKeyboardInput(String text) {
         if (mInputConnection == null) return;
-        handleOldComposingText(text);
-        mInputConnection.commitText(text, 1);
-    }
-
-    @Override
-    public void onKeyPopupInput(PopupKeyCandidate choice) {
-        if (mInputConnection == null) return;
-        if (choice == null) return;
-        String composingText = choice.getComposing();
-        if (TextUtils.isEmpty(composingText)) {
-            String text = choice.getUnicode();
+        if (hasCandidatesView()) {
+            if (isMongol(text)) {
+                mInputConnection.beginBatchEdit();
+                mComposing = getComposingForPreviousMongolWord();
+                mComposing = mComposing + text;
+                mInputConnection.setComposingText(mComposing, 1);
+                mInputConnection.endBatchEdit();
+            } else {
+                handleOldComposingText(text);
+                mInputConnection.commitText(text, 1);
+            }
+        } else {
             handleOldComposingText(text);
             mInputConnection.commitText(text, 1);
         }
-        else
-            setComposing(choice);
     }
 
-    private void setComposing(PopupKeyCandidate popupChoice) {
-        handleOldComposingText(popupChoice.getUnicode());
-        mInputConnection.setComposingText(popupChoice.getComposing(), 1);
-        mComposing = popupChoice.getUnicode();
+    private boolean isMongol(String text) {
+        if (TextUtils.isEmpty(text)) return false;
+        for (char character : text.toCharArray()) {
+            if (!MongolCode.isMongolian(character))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean hasCandidatesView() {
+        // FIXME get the actual value
+        return true;
+    }
+
+    protected CharSequence getComposingForPreviousMongolWord() {
+        if (mInputConnection == null) return "";
+        int numberOfCharsToGet = Integer.MAX_VALUE;
+        CharSequence previous = mInputConnection.getTextBeforeCursor(numberOfCharsToGet, 0);
+        if (TextUtils.isEmpty(previous)) return "";
+        int endIndex = previous.length();
+        int startIndex = endIndex;
+        for (int i = endIndex - 1; i >= 0; i--) {
+            if (MongolCode.isMongolian(previous.charAt(i))) {
+                startIndex = i;
+            } else {
+                break;
+            }
+        }
+        mInputConnection.setComposingRegion(startIndex, endIndex);
+        if (startIndex < endIndex) {
+            return previous.subSequence(startIndex, endIndex);
+        }
+        return "";
+    }
+//
+//    protected PopupKeyCandidate[] getCandidatesForSuffix() {
+//        String previousWord = getPreviousMongolWord();
+//        if (TextUtils.isEmpty(previousWord)) {
+//            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
+//        }
+//        // TODO if it is a number then return the right suffix for that
+//        char lastChar = previousWord.charAt(previousWord.length() - 1);
+//        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+//        if (gender == null) {
+//            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
+//        }
+//        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
+//        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
+//        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
+//        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
+//        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
+//        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
+//        String uuSuffix = MongolCode.getSuffixUu(gender);
+//        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
+//        String udSuffix = MongolCode.getSuffixUd(gender);
+//
+//        String[] unicode = new String[]{
+//                "" + MongolCode.Uni.NNBS,
+//                uuSuffix,
+//                yinUnUSuffix,
+//                iYiSuffix,
+//                duTuSuffix,
+//                barIyarSuffix,
+//                banIyanSuffix,
+//                achaSuffix,
+//                udSuffix};
+//        return PopupKeyCandidate.createArray(unicode);
+//    }
+
+    @Override
+    public void onKeyPopupChosen(PopupKeyCandidate choice) {
+        if (mInputConnection == null) return;
+        if (choice == null) return;
+        String composingText = choice.getComposing();
+        String unicode = choice.getUnicode();
+        if (TextUtils.isEmpty(composingText)) {
+            onKeyboardInput(unicode);
+        }
+        else {
+            handleOldComposingText(unicode);
+            mInputConnection.setComposingText(composingText, 1);
+            mComposing = unicode;
+        }
     }
 
     private void handleOldComposingText(String inputText) {
-        //if (inputConnection == null) return;
-        if (mComposing == null) return;
+        if (TextUtils.isEmpty(mComposing)) return;
         if (MongolCode.isMongolian(inputText.charAt(0))) {
             mInputConnection.commitText(mComposing, 1);
         } else {
             mInputConnection.finishComposingText();
         }
-        mComposing = null;
+        mComposing = "";
     }
 
     @Override
     public void onBackspace() {
         if (mInputConnection == null) return;
 
-        if (mComposing != null) {
-            deleteComposingText();
-            return;
+        if (!TextUtils.isEmpty(mComposing)) {
+            mInputConnection.commitText(mComposing, 1);
+            mComposing = "";
         }
 
         if (hasSelection()) {
@@ -364,11 +432,6 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
 
         String previousFourChars = getPreviousFourChars();
         backspaceFromEndOf(previousFourChars);
-    }
-
-    private void deleteComposingText() {
-        mInputConnection.commitText("", 1);
-        mComposing = null;
     }
 
     private boolean hasSelection() {
@@ -454,15 +517,15 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         return mCurrentKeyboard;
     }
 
-    public void updateCandidateWordList(List<String> wordList) {
-        if (thereIsNoCandidateViewToSendWordsTo()) return;
-        candidatesView.setCandidates(wordList);
-    }
-
-    private boolean thereIsNoCandidateViewToSendWordsTo() {
-        if (candidatesView == null) return true;
-        if (mCurrentKeyboard == null) return true;
-        Keyboard.CandidatesPreference candidatesPreference = mCurrentKeyboard.getCandidatesPreference();
-        return (candidatesPreference == Keyboard.CandidatesPreference.NONE);
-    }
+//    public void updateCandidateWordList(List<String> wordList) {
+//        if (thereIsNoCandidateViewToSendWordsTo()) return;
+//        candidatesView.setCandidates(wordList);
+//    }
+//
+//    private boolean thereIsNoCandidateViewToSendWordsTo() {
+//        if (candidatesView == null) return true;
+//        if (mCurrentKeyboard == null) return true;
+//        Keyboard.CandidatesPreference candidatesPreference = mCurrentKeyboard.getCandidatesPreference();
+//        return (candidatesPreference == Keyboard.CandidatesPreference.NONE);
+//    }
 }
