@@ -560,7 +560,7 @@ public class KeyboardQwerty extends Keyboard {
         } else if (key == mKeyM) {
             return getCandidatesForM();
         } else if (key == mKeyKeyboard) {
-            return getCandidatesForKeyboard();
+            return getCandidatesForKeyboardKey();
         } else if (key == mKeySpace) {
             return getCandidatesForSpace();
         }

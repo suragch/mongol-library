@@ -677,7 +677,7 @@ public class KeyboardCyrillic extends Keyboard {
     public PopupKeyCandidate[] getPopupCandidates(Key key) {
         // get the appropriate candidates based on the key pressed
         if (key == mKeyKeyboard) {
-            return getCandidatesForKeyboard();
+            return getCandidatesForKeyboardKey();
         }
 
         return null;

@@ -1,7 +1,9 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
 
@@ -32,6 +34,8 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     private KeyboardCandidatesView candidatesView;
     private WeakReference<MongolInputMethodManager> mimm;
     private InputListener mInputListener = null;
+    private String mComposing = null;
+    private InputConnection mInputConnection;
 
     public ImeContainer(Context context) {
         super(context, null, 0);
@@ -165,11 +169,11 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         mCurrentKeyboard.layout(left, top, right, bottom);
     }
 
-    // forward this on to the current keyboard
     public void setInputConnection(InputConnection inputConnection) {
-        if (mCurrentKeyboard != null) {
-            mCurrentKeyboard.setInputConnection(inputConnection);
-        }
+        this.mInputConnection = inputConnection;
+//        if (mCurrentKeyboard != null) {
+//            mCurrentKeyboard.setInputConnection(inputConnection);
+//        }
     }
 
     InputConnection getInputConnection() {
@@ -179,11 +183,28 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         return imm.getCurrentInputConnection();
     }
 
-    // forward this on to the current keyboard
-    public void onUpdateSelection(int oldSelStart, int oldSelEnd, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
-        if (mCurrentKeyboard != null) {
-            mCurrentKeyboard.onUpdateSelection(oldSelStart, oldSelEnd, selStart, selEnd, candidatesStart, candidatesEnd);
+    public void onUpdateSelection(int oldSelStart,
+                                  int oldSelEnd,
+                                  int newSelStart,
+                                  int newSelEnd,
+                                  int candidatesStart,
+                                  int candidatesEnd) {
+
+        // TODO in the Android source InputMethodService also handles Extracted Text here
+
+        // currently we are only using composing for popup glyph selection.
+        // If we want to be more like the standard keyboards we could do
+        // composing on the whole word.
+        if (mComposing != null &&
+                (newSelStart != candidatesEnd
+                || newSelEnd != candidatesEnd)) {
+            mComposing = null;
+            // TODO updateCandidates();
+            if (mInputConnection != null) {
+                mInputConnection.finishComposingText();
+            }
         }
+
     }
 
     @Override
@@ -206,7 +227,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     private void setCurrentKeyboard(Keyboard keyboard) {
         removeOldCurrentKeyboard();
         addNewCurrentKeyboard(keyboard);
-        setInputConnectionToCurrentKeyboard();
+        //setInputConnectionToCurrentKeyboard();
     }
 
     private void removeOldCurrentKeyboard() {
@@ -220,10 +241,10 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         this.addView(keyboard);
     }
 
-    private void setInputConnectionToCurrentKeyboard() {
-        InputConnection ic = getInputConnection();
-        mCurrentKeyboard.setInputConnection(ic);
-    }
+//    private void setInputConnectionToCurrentKeyboard() {
+//        InputConnection ic = getInputConnection();
+//        mCurrentKeyboard.setInputConnection(ic);
+//    }
 
     private void setCandidatesView() {
 
@@ -253,7 +274,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     @Override
-    public PopupKeyCandidate[] getKeyboardCandidates() {
+    public PopupKeyCandidate[] getKeyboardKeyCandidates() {
         int numberOfOtherKeyboards = mKeyboards.size() - 1;
         if (numberOfOtherKeyboards < 1) return null;
         String[] names = new String[numberOfOtherKeyboards];
@@ -267,6 +288,149 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
             nameIndex++;
         }
         return PopupKeyCandidate.createArray(names);
+    }
+
+    @Override
+    public char getPreviousChar() {
+        if (mInputConnection == null) return 0;
+        CharSequence previous = mInputConnection.getTextBeforeCursor(1, 0);
+        if (TextUtils.isEmpty(previous)) return 0;
+        return previous.charAt(0);
+    }
+
+    @Override
+    public boolean insertLocationIsIsolateOrInitial() {
+        if (mInputConnection == null) return true;
+        CharSequence before = mInputConnection.getTextBeforeCursor(2, 0);
+        CharSequence after = mInputConnection.getTextAfterCursor(2, 0);
+        if (before == null || after == null) return true;
+        // get Mongol word location at cursor input
+        MongolCode.Location location = MongolCode.getLocation(before, after);
+        return location == MongolCode.Location.ISOLATE ||
+                location == MongolCode.Location.INITIAL;
+    }
+
+    @Override
+    public void onKeyboardInput(String text) {
+        if (mInputConnection == null) return;
+        handleOldComposingText(text);
+        mInputConnection.commitText(text, 1);
+    }
+
+    @Override
+    public void onKeyPopupInput(PopupKeyCandidate choice) {
+        if (mInputConnection == null) return;
+        if (choice == null) return;
+        String composingText = choice.getComposing();
+        if (TextUtils.isEmpty(composingText)) {
+            String text = choice.getUnicode();
+            handleOldComposingText(text);
+            mInputConnection.commitText(text, 1);
+        }
+        else
+            setComposing(choice);
+    }
+
+    private void setComposing(PopupKeyCandidate popupChoice) {
+        handleOldComposingText(popupChoice.getUnicode());
+        mInputConnection.setComposingText(popupChoice.getComposing(), 1);
+        mComposing = popupChoice.getUnicode();
+    }
+
+    private void handleOldComposingText(String inputText) {
+        //if (inputConnection == null) return;
+        if (mComposing == null) return;
+        if (MongolCode.isMongolian(inputText.charAt(0))) {
+            mInputConnection.commitText(mComposing, 1);
+        } else {
+            mInputConnection.finishComposingText();
+        }
+        mComposing = null;
+    }
+
+    @Override
+    public void onBackspace() {
+        if (mInputConnection == null) return;
+
+        if (mComposing != null) {
+            deleteComposingText();
+            return;
+        }
+
+        if (hasSelection()) {
+            doBackspace();
+            return;
+        }
+
+        String previousFourChars = getPreviousFourChars();
+        backspaceFromEndOf(previousFourChars);
+    }
+
+    private void deleteComposingText() {
+        mInputConnection.commitText("", 1);
+        mComposing = null;
+    }
+
+    private boolean hasSelection() {
+        CharSequence selection = mInputConnection.getSelectedText(0);
+        return selection != null && selection.length() > 0;
+    }
+
+    private String getPreviousFourChars() {
+        if (mInputConnection == null) return "";
+        CharSequence previous = mInputConnection.getTextBeforeCursor(4, 0);
+        return previous.toString();
+    }
+
+    private void backspaceFromEndOf(String previousChars) {
+        if (TextUtils.isEmpty(previousChars)) return;
+        int deleteIndex = previousChars.length() - 1;
+
+        // delete any invisible character directly in front of cursor
+        char currentChar = previousChars.charAt(deleteIndex);
+        if (isInvisibleChar(currentChar)){
+            doBackspace();
+            deleteIndex--;
+        }
+        if (deleteIndex < 0) return;
+
+        // always delete at least one visible character
+        doBackspace();
+        deleteIndex--;
+        if (deleteIndex < 0) return;
+
+        // also delete certain invisible characters before the just deleted character
+        currentChar = previousChars.charAt(deleteIndex);
+        if (currentChar == MongolCode.Uni.MVS) {
+            doBackspace();
+        } else if (currentChar == MongolCode.Uni.ZWJ || currentChar == MongolCode.Uni.ZWNJ) {
+            if (deleteIndex == 0) {
+                doBackspace();
+                return;
+            }
+            char previousChar = previousChars.charAt(deleteIndex - 1);
+            if (!MongolCode.isMongolian(previousChar)) {
+                doBackspace();
+            }
+        }
+    }
+
+    private boolean isInvisibleChar(char character) {
+        return character == MongolCode.Uni.MVS ||
+                MongolCode.isFVS(character) ||
+                character == MongolCode.Uni.ZWJ ||
+                character == MongolCode.Uni.ZWNJ;
+    }
+
+    private void doBackspace() {
+        mInputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+        mInputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+
+        // We could also do this with inputConnection.deleteSurroundingText(1, 0)
+        // but then we would need to be careful of not deleting too much
+        // and not deleting half a surrogate pair.
+        // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
+        // see also https://stackoverflow.com/a/45182401
     }
 
     public void setInputMethodManager(MongolInputMethodManager inputMethodManager) {

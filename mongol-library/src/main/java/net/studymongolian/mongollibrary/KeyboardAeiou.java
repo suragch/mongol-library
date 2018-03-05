@@ -403,7 +403,7 @@ public class KeyboardAeiou extends Keyboard {
         } else if (key == mKeyRA) {
             return getCandidatesForRA();
         } else if (key == mKeyKeyboard) {
-            return getCandidatesForKeyboard();
+            return getCandidatesForKeyboardKey();
         } else if (key == mKeyComma) {
             return getCandidatesForComma();
         } else if (key == mKeySpace) {

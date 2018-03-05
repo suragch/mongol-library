@@ -11,12 +11,9 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputConnection;
+//import android.view.inputmethod.InputConnection;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
@@ -70,10 +67,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     protected boolean mIsShowingPunctuation = false;
-
-    // Our communication link to the EditText/MongolEditText
-    protected InputConnection inputConnection;
-    protected String mComposing = null;
 
     // number of keys and weights are initialized by keyboard subclass
     protected int[] mNumberOfKeysInRow;
@@ -133,6 +126,20 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         mPopupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
         mPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
         mCandidatesPreference = DEFAULT_CANDIDATES_PREFERENCE;
+    }
+
+    public interface KeyboardListener {
+        void onRequestNewKeyboard(String keyboardDisplayName);
+        PopupKeyCandidate[] getKeyboardKeyCandidates();
+        char getPreviousChar();
+        boolean insertLocationIsIsolateOrInitial();
+        void onKeyboardInput(String text);
+        void onKeyPopupInput(PopupKeyCandidate popupKeyCandidate);
+        void onBackspace();
+    }
+
+    public void setKeyboardListener(KeyboardListener listener) {
+        this.mKeyboardListener = listener;
     }
 
     @Override
@@ -197,42 +204,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         }
     }
 
-    public interface KeyboardListener {
-        void onRequestNewKeyboard(String keyboardDisplayName);
-        PopupKeyCandidate[] getKeyboardCandidates();
-    }
-
-    public void setKeyboardListener(KeyboardListener listener) {
-        this.mKeyboardListener = listener;
-    }
-
-    // The activity (or some parent or controller) must give us
-    // a reference to the current EditText's InputConnection
-    public void setInputConnection(InputConnection ic) {
-        this.inputConnection = ic;
-    }
-
-    public void onUpdateSelection(int oldSelStart,
-                                  int oldSelEnd,
-                                  int newSelStart,
-                                  int newSelEnd,
-                                  int candidatesStart,
-                                  int candidatesEnd) {
-
-        // TODO in the Android source InputMethodService also handles Extracted Text here
-
-        // currently we are only using composing for popup glyph selection. If we want to be more
-        // like the standard keyboards we could do composing on the whole word.
-        if (mComposing != null && (newSelStart != candidatesEnd
-                || newSelEnd != candidatesEnd)) {
-            mComposing = null;
-            // TODO updateCandidates();
-            if (inputConnection != null) {
-                inputConnection.finishComposingText();
-            }
-        }
-    }
-
     // TODO change to 32dp
     protected Bitmap getReturnImage() {
         int imageResourceId;
@@ -267,81 +238,74 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     protected char getPreviousChar() {
-        if (inputConnection == null) return 0;
-        CharSequence previous = inputConnection.getTextBeforeCursor(1, 0);
-        if (TextUtils.isEmpty(previous)) return 0;
-        return previous.charAt(0);
+        if (mKeyboardListener == null) return 0;
+        return mKeyboardListener.getPreviousChar();
     }
 
-    // this may not actually return a whole word if the word is very long
-    protected String getPreviousMongolWord() {
-        if (inputConnection == null) return "";
-        int numberOfCharsToGet = 20;
-        CharSequence previous = inputConnection.getTextBeforeCursor(numberOfCharsToGet, 0);
-        if (TextUtils.isEmpty(previous)) return "";
-        int startIndex = previous.length() - 1;
-        char charAtIndex = previous.charAt(startIndex);
-        if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) startIndex--;
-        StringBuilder mongolWord = new StringBuilder();
-        for (int i = startIndex; i >= 0; i--) {
-            charAtIndex = previous.charAt(i);
-            if (MongolCode.isMongolian(charAtIndex)) {
-                mongolWord.insert(0, charAtIndex);
-            } else if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) {
-                break;
-            }
-        }
-        return mongolWord.toString();
-    }
-
-    protected PopupKeyCandidate[] getCandidatesForSuffix() {
-        String previousWord = getPreviousMongolWord();
-        if (TextUtils.isEmpty(previousWord)) {
-            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
-        }
-        // TODO if it is a number then return the right suffix for that
-        char lastChar = previousWord.charAt(previousWord.length() - 1);
-        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
-        if (gender == null) {
-            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
-        }
-        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
-        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
-        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
-        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
-        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
-        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
-        String uuSuffix = MongolCode.getSuffixUu(gender);
-        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
-        String udSuffix = MongolCode.getSuffixUd(gender);
-
-        String[] unicode = new String[]{
-                "" + MongolCode.Uni.NNBS,
-                uuSuffix,
-                yinUnUSuffix,
-                iYiSuffix,
-                duTuSuffix,
-                barIyarSuffix,
-                banIyanSuffix,
-                achaSuffix,
-                udSuffix};
-        return PopupKeyCandidate.createArray(unicode);
-    }
+//    // this may not actually return a whole word if the word is very long
+//    // TODO remove from here. This is only used for getting suffix candidates
+//    protected String getPreviousMongolWord() {
+//        if (inputConnection == null) return "";
+//        int numberOfCharsToGet = 20;
+//        CharSequence previous = inputConnection.getTextBeforeCursor(numberOfCharsToGet, 0);
+//        if (TextUtils.isEmpty(previous)) return "";
+//        int startIndex = previous.length() - 1;
+//        char charAtIndex = previous.charAt(startIndex);
+//        if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) startIndex--;
+//        StringBuilder mongolWord = new StringBuilder();
+//        for (int i = startIndex; i >= 0; i--) {
+//            charAtIndex = previous.charAt(i);
+//            if (MongolCode.isMongolian(charAtIndex)) {
+//                mongolWord.insert(0, charAtIndex);
+//            } else if (charAtIndex == ' ' || charAtIndex == MongolCode.Uni.NNBS) {
+//                break;
+//            }
+//        }
+//        return mongolWord.toString();
+//    }
+//
+//    protected PopupKeyCandidate[] getCandidatesForSuffix() {
+//        String previousWord = getPreviousMongolWord();
+//        if (TextUtils.isEmpty(previousWord)) {
+//            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
+//        }
+//        // TODO if it is a number then return the right suffix for that
+//        char lastChar = previousWord.charAt(previousWord.length() - 1);
+//        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+//        if (gender == null) {
+//            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
+//        }
+//        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
+//        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
+//        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
+//        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
+//        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
+//        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
+//        String uuSuffix = MongolCode.getSuffixUu(gender);
+//        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
+//        String udSuffix = MongolCode.getSuffixUd(gender);
+//
+//        String[] unicode = new String[]{
+//                "" + MongolCode.Uni.NNBS,
+//                uuSuffix,
+//                yinUnUSuffix,
+//                iYiSuffix,
+//                duTuSuffix,
+//                barIyarSuffix,
+//                banIyanSuffix,
+//                achaSuffix,
+//                udSuffix};
+//        return PopupKeyCandidate.createArray(unicode);
+//    }
 
     protected boolean isIsolateOrInitial() {
-        if (inputConnection == null) return true;
-        CharSequence before = inputConnection.getTextBeforeCursor(2, 0);
-        CharSequence after = inputConnection.getTextAfterCursor(2, 0);
-        if (before == null || after == null) return true;
-        // get Mongol word location at cursor input
-        MongolCode.Location location = MongolCode.getLocation(before, after);
-        return location == MongolCode.Location.ISOLATE ||
-                location == MongolCode.Location.INITIAL;
+        if (mKeyboardListener == null) return true;
+        return mKeyboardListener.insertLocationIsIsolateOrInitial();
     }
 
-    public PopupKeyCandidate[] getCandidatesForKeyboard() {
+    public PopupKeyCandidate[] getCandidatesForKeyboardKey() {
         if (mKeyboardListener == null) return null;
-        return mKeyboardListener.getKeyboardCandidates();
+        return mKeyboardListener.getKeyboardKeyCandidates();
     }
 
     abstract public PopupKeyCandidate[] getPopupCandidates(Key key);
@@ -468,22 +432,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     @Override
     public void onKeyInput(String text) {
-        if (inputConnection == null) return;
-        handleOldComposingText(text);
-        inputConnection.commitText(text, 1);
+        if (mKeyboardListener == null) return;
+        mKeyboardListener.onKeyboardInput(text);
     }
-
-    private void handleOldComposingText(String inputText) {
-        //if (inputConnection == null) return;
-        if (mComposing == null) return;
-        if (MongolCode.isMongolian(inputText.charAt(0))) {
-            inputConnection.commitText(mComposing, 1);
-        } else {
-            inputConnection.finishComposingText();
-        }
-        mComposing = null;
-    }
-
 
     @Override
     public boolean getIsShowingPopup() {
@@ -548,22 +499,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     private void inputPopupChoice(PopupKeyCandidate choice) {
-        if (inputConnection == null) return;
-        if (choice == null) return;
-        String composingText = choice.getComposing();
-        if (TextUtils.isEmpty(composingText)) {
-            String text = choice.getUnicode();
-            handleOldComposingText(text);
-            inputConnection.commitText(text, 1);
-        }
-        else
-            setComposing(choice);
-    }
-
-    private void setComposing(PopupKeyCandidate popupChoice) {
-        handleOldComposingText(popupChoice.getUnicode());
-        inputConnection.setComposingText(popupChoice.getComposing(), 1);
-        mComposing = popupChoice.getUnicode();
+        if (mKeyboardListener == null) return;
+        mKeyboardListener.onKeyPopupInput(choice);
     }
 
     private void dismissPopup() {
@@ -575,87 +512,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     @Override
     public void onBackspace() {
-        if (inputConnection == null) return;
-
-        if (mComposing != null) {
-            deleteComposingText();
-            return;
-        }
-
-        if (hasSelection()) {
-            doBackspace();
-            return;
-        }
-
-        String previousFourChars = getPreviousFourChars();
-        backspaceFromEndOf(previousFourChars);
-    }
-
-    private void deleteComposingText() {
-        inputConnection.commitText("", 1);
-        mComposing = null;
-    }
-
-    private boolean hasSelection() {
-        CharSequence selection = inputConnection.getSelectedText(0);
-        return selection != null && selection.length() > 0;
-    }
-
-    private String getPreviousFourChars() {
-        if (inputConnection == null) return "";
-        CharSequence previous = inputConnection.getTextBeforeCursor(4, 0);
-        return previous.toString();
-    }
-
-    private void backspaceFromEndOf(String previousChars) {
-        if (TextUtils.isEmpty(previousChars)) return;
-        int deleteIndex = previousChars.length() - 1;
-
-        // delete any invisible character directly in front of cursor
-        char currentChar = previousChars.charAt(deleteIndex);
-        if (isInvisibleChar(currentChar)){
-            doBackspace();
-            deleteIndex--;
-        }
-        if (deleteIndex < 0) return;
-
-        // always delete at least one visible character
-        doBackspace();
-        deleteIndex--;
-        if (deleteIndex < 0) return;
-
-        // also delete certain invisible characters before the just deleted character
-        currentChar = previousChars.charAt(deleteIndex);
-        if (currentChar == MongolCode.Uni.MVS) {
-            doBackspace();
-        } else if (currentChar == MongolCode.Uni.ZWJ || currentChar == MongolCode.Uni.ZWNJ) {
-            if (deleteIndex == 0) {
-                doBackspace();
-                return;
-            }
-            char previousChar = previousChars.charAt(deleteIndex - 1);
-            if (!MongolCode.isMongolian(previousChar)) {
-                doBackspace();
-            }
-        }
-    }
-
-    private boolean isInvisibleChar(char character) {
-        return character == MongolCode.Uni.MVS ||
-                MongolCode.isFVS(character) ||
-                character == MongolCode.Uni.ZWJ ||
-                character == MongolCode.Uni.ZWNJ;
-    }
-
-    private void doBackspace() {
-        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
-
-        // We could also do this with inputConnection.deleteSurroundingText(1, 0)
-        // but then we would need to be careful of not deleting too much
-        // and not deleting half a surrogate pair.
-        // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#deleteSurroundingText(int,%20int)
-        // see also https://stackoverflow.com/a/45182401
+        if (mKeyboardListener == null) return;
+        mKeyboardListener.onBackspace();
     }
 
     @Override
