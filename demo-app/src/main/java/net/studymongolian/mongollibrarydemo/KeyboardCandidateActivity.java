@@ -39,7 +39,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         imeContainer.addKeyboard(qwerty);
 
         // provide words for candidate selection
-        imeContainer.setDataAdapter(this);
+        imeContainer.setDataSource(this);
 
         // set up input method manager
         MongolInputMethodManager mimm = new MongolInputMethodManager();
@@ -47,6 +47,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         mimm.setIme(imeContainer);
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
         mimm.startInput();
+
+        mongolEditText.requestFocus(); // FIXME is this a bug to need to explicitly request focus?
     }
 
     public void onGiveKeyboardCandidatesButtonClick(View view) {
@@ -66,21 +68,25 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
     @Override
     public List<String> onRequestWordsStartingWith(String text) {
+        // This is a dummy list.
+        // In a production app you would use `text` to look up words
+        // from a database.
         List<String> animalNames = new ArrayList<>();
+        animalNames.add(text);
         animalNames.add("ᠮᠣᠷᠢ");
         animalNames.add("ᠦᠬᠡᠷ");
         animalNames.add("ᠲᠡᠮᠡᠭᠡ");
-        animalNames.add("ᠬᠣᠨᠢ");
-        animalNames.add("ᠢᠮᠠᠭ᠎ᠠ");
         return animalNames;
     }
 
     @Override
     public List<String> onRequestWordsFollowing(String word) {
+        // This is a dummy list.
+        // In a production app you would use `word` to look up in a database others words
+        // that could follow `word`.
         List<String> animalNames = new ArrayList<>();
-        animalNames.add("Lion");
-        animalNames.add("Giraffe");
-        animalNames.add("Bear");
+        animalNames.add("ᠬᠣᠨᠢ");
+        animalNames.add("ᠢᠮᠠᠭ᠎ᠠ");
         return animalNames;
     }
 }

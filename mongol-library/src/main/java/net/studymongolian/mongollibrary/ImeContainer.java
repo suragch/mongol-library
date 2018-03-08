@@ -63,8 +63,8 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     // provide a way for another class to set the listener
-    public void setDataAdapter(DataSource adapter) {
-        this.mDataSource = adapter;
+    public void setDataSource(DataSource dataSource) {
+        this.mDataSource = dataSource;
     }
 
     @Override
@@ -173,12 +173,12 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         this.mInputConnection = inputConnection;
     }
 
-//    InputConnection getInputConnection() {
-//        if (mimm == null) return null;
-//        MongolInputMethodManager imm = mimm.get();
-//        if (imm == null) return null;
-//        return imm.getCurrentInputConnection();
-//    }
+    InputConnection getInputConnection() {
+        if (mimm == null) return null;
+        MongolInputMethodManager imm = mimm.get();
+        if (imm == null) return null;
+        return imm.getCurrentInputConnection();
+    }
 
     public void onUpdateSelection(int oldSelStart,
                                   int oldSelEnd,
@@ -311,9 +311,14 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
                 mComposing = mComposing + text;
                 mInputConnection.setComposingText(mComposing, 1);
                 mInputConnection.endBatchEdit();
+                if (mDataSource != null) {
+                    List<String> candidates = mDataSource.onRequestWordsStartingWith(mComposing.toString());
+                    candidatesView.setCandidates(candidates);
+                }
             } else {
                 handleOldComposingText(text);
                 mInputConnection.commitText(text, 1);
+                candidatesView.clearCandidates();
             }
         } else {
             handleOldComposingText(text);

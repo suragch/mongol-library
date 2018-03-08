@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandidatesAdapter.ItemClickListener {
@@ -21,6 +23,8 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
     KeyboardCandidatesAdapter adapter;
     List<String> mCandidates;
     Orientation mOrientation;
+
+
 
     public enum Orientation {
         VERTICAL,
@@ -81,13 +85,18 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
     public void setOrientation(Orientation orientation) {
         this.mOrientation = orientation;
         LinearLayoutManager layoutManager;
-        if (mOrientation == Orientation.HORIZONTAL)
+        if (mOrientation == Orientation.HORIZONTAL) {
             layoutManager = new LinearLayoutManager(mContext,
                     LinearLayoutManager.HORIZONTAL, false);
-        else
+        }
+        else {
             layoutManager = new LinearLayoutManager(mContext,
                     LinearLayoutManager.VERTICAL, false);
+        }
         recyclerView.setLayoutManager(layoutManager);
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+        //        layoutManager.getOrientation());
+        //recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     public void setCandidates(List<String> candidates) {
@@ -100,6 +109,10 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
             initAdapter();
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public void clearCandidates() {
+        setCandidates(Collections.<String>emptyList());
     }
 
 

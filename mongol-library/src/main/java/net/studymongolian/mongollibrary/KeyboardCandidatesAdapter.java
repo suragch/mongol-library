@@ -51,6 +51,7 @@ class KeyboardCandidatesAdapter extends RecyclerView.Adapter<KeyboardCandidatesA
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View textView;
+        View divider;
 
         ViewHolder(View itemView) {
             super(itemView);
