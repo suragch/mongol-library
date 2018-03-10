@@ -1,25 +1,49 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class KeyboardCandidatesAdapter extends RecyclerView.Adapter<KeyboardCandidatesAdapter.ViewHolder> {
 
-    private List<String> candidates;
+    private List<String> mCandidates;
     private KeyboardCandidatesView.Orientation orientation;
     private LayoutInflater inflater;
-    private ItemClickListener mClickListener;
+    private CandidateClickListener mCandidateClickListener;
 
-    KeyboardCandidatesAdapter(Context context, List<String> words, KeyboardCandidatesView.Orientation orientation) {
+    KeyboardCandidatesAdapter(Context context) {
         this.inflater = LayoutInflater.from(context);
-        this.candidates = words;
+        //this.orientation = orientation;
+        this.mCandidates = new ArrayList<>();
+    }
+
+    interface CandidateClickListener {
+
+        void onCandidateClick(int position, String text);
+        void onCandidateLongClick(int position, String text);
+    }
+    public void setCandidates(List<String> candidates) {
+        mCandidates.clear();
+        mCandidates.addAll(candidates);
+        notifyDataSetChanged();
+    }
+
+    public void clearCandidates() {
+        mCandidates.clear();
+        notifyDataSetChanged();
+    }
+
+    public boolean hasCandidates() {
+        return mCandidates != null && mCandidates.size() > 0;
+    }
+
+    public void setOrientation(KeyboardCandidatesView.Orientation orientation) {
         this.orientation = orientation;
     }
 
@@ -40,16 +64,17 @@ class KeyboardCandidatesAdapter extends RecyclerView.Adapter<KeyboardCandidatesA
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String word = candidates.get(position);
+        String word = mCandidates.get(position);
         holder.setText(word);
     }
 
     @Override
     public int getItemCount() {
-        return candidates.size();
+        return mCandidates.size();
     }
+    public class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener {
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View textView;
         View divider;
 
@@ -57,6 +82,7 @@ class KeyboardCandidatesAdapter extends RecyclerView.Adapter<KeyboardCandidatesA
             super(itemView);
             textView = getTextView(itemView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         private View getTextView(View itemView) {
@@ -68,28 +94,38 @@ class KeyboardCandidatesAdapter extends RecyclerView.Adapter<KeyboardCandidatesA
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            if (mCandidateClickListener != null) {
+                int position = getAdapterPosition();
+                String text = getItem(position);
+                mCandidateClickListener.onCandidateClick(position, text);
+            }
         }
 
+        @Override
+        public boolean onLongClick(View v) {
+            if (mCandidateClickListener != null) {
+                int position = getAdapterPosition();
+                String text = getItem(position);
+                mCandidateClickListener.onCandidateLongClick(position, text);
+                return true;
+            }
+            return false;
+        }
         void setText(String text) {
             if (orientation == KeyboardCandidatesView.Orientation.VERTICAL) {
                 ((MongolLabel) textView).setText(text);
                 ((MongolLabel) textView).setTextSize(26); // FIXME put this somewhere else
-            }
-            else
+            } else
                 ((TextView) textView).setText(text);
         }
+
     }
 
     String getItem(int id) {
-        return candidates.get(id);
+        return mCandidates.get(id);
     }
 
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    interface ItemClickListener {
-        void onItemClick(View view, int position);
+    void setCandidateClickListener(CandidateClickListener listener) {
+        this.mCandidateClickListener = listener;
     }
 }

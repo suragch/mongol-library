@@ -30,8 +30,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         Keyboard qwerty = new KeyboardQwerty(this);
 
         // request a candidates view for each keyboard (default is NONE)
-        aeiou.setCandidatesPreference(Keyboard.CandidatesPreference.VERTICAL_LEFT);
-        qwerty.setCandidatesPreference(Keyboard.CandidatesPreference.HORIZONTAL_TOP);
+        aeiou.setCandidatesLocation(Keyboard.CandidatesLocation.VERTICAL_LEFT);
+        qwerty.setCandidatesLocation(Keyboard.CandidatesLocation.HORIZONTAL_TOP);
 
         // add keyboards to the IME container
         imeContainer = findViewById(R.id.keyboard);

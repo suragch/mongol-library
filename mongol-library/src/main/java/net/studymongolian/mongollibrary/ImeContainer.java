@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ import java.util.List;
  * ImeContainer manages switching keyboards and handling communication between the keyboard and the
  * word suggestion candidates list.
  */
-public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener {
+public class ImeContainer extends ViewGroup
+        implements Keyboard.KeyboardListener, KeyboardCandidatesAdapter.CandidateClickListener {
 
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 10f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
@@ -32,6 +34,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
     private KeyboardCandidatesView candidatesView;
+    private KeyboardCandidatesAdapter candidatesAdapter;
     private WeakReference<MongolInputMethodManager> mimm;
     private DataSource mDataSource = null;
     private CharSequence mComposing = "";
@@ -56,12 +59,10 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         this.mContext = context;
     }
 
-
     public interface DataSource {
         public List<String> onRequestWordsStartingWith(String text);
         public List<String> onRequestWordsFollowing(String word);
     }
-
     // provide a way for another class to set the listener
     public void setDataSource(DataSource dataSource) {
         this.mDataSource = dataSource;
@@ -87,7 +88,7 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
 
         if (getChildCount() == 0) return;
 
-        Keyboard.CandidatesPreference candidateLocation = getCandidateViewLocation();
+        Keyboard.CandidatesLocation candidateLocation = getCandidateViewLocation();
         switch (candidateLocation) {
             case VERTICAL_LEFT:
                 layoutWithCandidateViewAtVerticalLeft();
@@ -101,11 +102,11 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         }
     }
 
-    private Keyboard.CandidatesPreference getCandidateViewLocation() {
+    private Keyboard.CandidatesLocation getCandidateViewLocation() {
         if (candidatesView == null) {
-            return Keyboard.CandidatesPreference.NONE;
+            return Keyboard.CandidatesLocation.NONE;
         }
-        return mCurrentKeyboard.getCandidatesPreference();
+        return mCurrentKeyboard.getCandidatesLocation();
     }
 
     private void layoutWithNoCandidateView() {
@@ -201,6 +202,9 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
                 mInputConnection.finishComposingText();
             }
         }
+        if (candidatesAdapter != null && candidatesAdapter.hasCandidates()) {
+            candidatesAdapter.clearCandidates();
+        }
 
     }
 
@@ -238,25 +242,31 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
     }
 
     private void setCandidatesView() {
+        Keyboard.CandidatesLocation location = mCurrentKeyboard.getCandidatesLocation();
+        if (location == Keyboard.CandidatesLocation.NONE) return;
+        setCandidatesOrientation(location);
+        applyKeyboardThemeToCandidatesView();
+    }
 
-        //if (!mCurrentKeyboard.isRequestingCandidatesView()) return;
-        Keyboard.CandidatesPreference location = mCurrentKeyboard.getCandidatesPreference();
-        if (location == Keyboard.CandidatesPreference.NONE) return;
+    private void setCandidatesOrientation(Keyboard.CandidatesLocation location) {
         if (candidatesView == null) {
             candidatesView = new KeyboardCandidatesView(mContext);
+            candidatesAdapter = new KeyboardCandidatesAdapter(mContext);
+            candidatesView.setAdapter(candidatesAdapter);
+            candidatesAdapter.setCandidateClickListener(this);
             this.addView(candidatesView);
         }
+        KeyboardCandidatesView.Orientation orientation;
         switch (location) {
-            case VERTICAL_LEFT:
-                candidatesView.setOrientation(KeyboardCandidatesView.Orientation.VERTICAL);
-                break;
             case HORIZONTAL_TOP:
-                candidatesView.setOrientation(KeyboardCandidatesView.Orientation.HORIZONTAL);
+                orientation = KeyboardCandidatesView.Orientation.HORIZONTAL;
                 break;
-            case NONE:
+            default:
+                orientation = KeyboardCandidatesView.Orientation.VERTICAL;
                 break;
         }
-        applyKeyboardThemeToCandidatesView();
+        candidatesView.setOrientation(orientation);
+        candidatesAdapter.setOrientation(orientation);
     }
 
     private void applyKeyboardThemeToCandidatesView() {
@@ -313,12 +323,12 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
                 mInputConnection.endBatchEdit();
                 if (mDataSource != null) {
                     List<String> candidates = mDataSource.onRequestWordsStartingWith(mComposing.toString());
-                    candidatesView.setCandidates(candidates);
+                    candidatesAdapter.setCandidates(candidates);
                 }
             } else {
                 handleOldComposingText(text);
                 mInputConnection.commitText(text, 1);
-                candidatesView.clearCandidates();
+                candidatesAdapter.clearCandidates();
             }
         } else {
             handleOldComposingText(text);
@@ -360,40 +370,6 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         }
         return "";
     }
-//
-//    protected PopupKeyCandidate[] getCandidatesForSuffix() {
-//        String previousWord = getPreviousMongolWord();
-//        if (TextUtils.isEmpty(previousWord)) {
-//            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
-//        }
-//        // TODO if it is a number then return the right suffix for that
-//        char lastChar = previousWord.charAt(previousWord.length() - 1);
-//        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
-//        if (gender == null) {
-//            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
-//        }
-//        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
-//        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
-//        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
-//        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
-//        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
-//        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
-//        String uuSuffix = MongolCode.getSuffixUu(gender);
-//        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
-//        String udSuffix = MongolCode.getSuffixUd(gender);
-//
-//        String[] unicode = new String[]{
-//                "" + MongolCode.Uni.NNBS,
-//                uuSuffix,
-//                yinUnUSuffix,
-//                iYiSuffix,
-//                duTuSuffix,
-//                barIyarSuffix,
-//                banIyanSuffix,
-//                achaSuffix,
-//                udSuffix};
-//        return PopupKeyCandidate.createArray(unicode);
-//    }
 
     @Override
     public void onKeyPopupChosen(PopupKeyCandidate choice) {
@@ -522,15 +498,79 @@ public class ImeContainer extends ViewGroup implements Keyboard.KeyboardListener
         return mCurrentKeyboard;
     }
 
-//    public void updateCandidateWordList(List<String> wordList) {
-//        if (thereIsNoCandidateViewToSendWordsTo()) return;
-//        candidatesView.setCandidates(wordList);
-//    }
-//
-//    private boolean thereIsNoCandidateViewToSendWordsTo() {
-//        if (candidatesView == null) return true;
+    //    }
+//        return (candidatesPreference == Keyboard.CandidatesLocation.NONE);
+//        Keyboard.CandidatesLocation candidatesPreference = mCurrentKeyboard.getCandidatesPreference();
 //        if (mCurrentKeyboard == null) return true;
-//        Keyboard.CandidatesPreference candidatesPreference = mCurrentKeyboard.getCandidatesPreference();
-//        return (candidatesPreference == Keyboard.CandidatesPreference.NONE);
+//        if (candidatesView == null) return true;
+//    private boolean thereIsNoCandidateViewToSendWordsTo() {
+//
 //    }
+//        candidatesView.setCandidates(wordList);
+//        if (thereIsNoCandidateViewToSendWordsTo()) return;
+//    }
+//        return PopupKeyCandidate.createArray(unicode);
+//                udSuffix};
+//                achaSuffix,
+//                banIyanSuffix,
+//                barIyarSuffix,
+//                duTuSuffix,
+//                iYiSuffix,
+//                yinUnUSuffix,
+//                uuSuffix,
+//                "" + MongolCode.Uni.NNBS,
+//        String[] unicode = new String[]{
+//
+//        String udSuffix = MongolCode.getSuffixUd(gender);
+//        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
+//        String uuSuffix = MongolCode.getSuffixUu(gender);
+//        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
+//        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
+//        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
+//        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
+//        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
+//        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
+//        }
+//            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
+//        if (gender == null) {
+//        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+//        char lastChar = previousWord.charAt(previousWord.length() - 1);
+//        // TODO if it is a number then return the right suffix for that
+//        }
+//            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
+//        if (TextUtils.isEmpty(previousWord)) {
+//        String previousWord = getPreviousMongolWord();
+//    protected PopupKeyCandidate[] getCandidatesForSuffix() {
+//
+    @Override
+    public void onCandidateClick(int position, String text) {
+        MongolToast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+
+        replaceComposingWithCandidate(text);
+        suggestFollowingWords(text);
+    }
+
+    private void replaceComposingWithCandidate(String candidate) {
+        if (mInputConnection == null) return;
+        mInputConnection.commitText(candidate + " ", 1);
+        mComposing = "";
+    }
+
+    private void suggestFollowingWords(String text) {
+        if (candidatesAdapter == null) return;
+        if (mDataSource != null) {
+            List<String> followingWords = mDataSource.onRequestWordsFollowing(text);
+            candidatesAdapter.setCandidates(followingWords);
+        } else {
+            candidatesAdapter.clearCandidates();
+        }
+    }
+
+    @Override
+    public void onCandidateLongClick(int position, String text) {
+        MongolToast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
+    }
+
+//    public void updateCandidateWordList(List<String> wordList) {
 }
+

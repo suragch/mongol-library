@@ -29,7 +29,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     static final int DEFAULT_POPUP_TEXT_COLOR = Color.BLACK;
     static final int DEFAULT_POPUP_HIGHLIGHT_COLOR = Color.GRAY;
     static final Theme DEFAULT_THEME = Theme.LIGHT;
-    static final CandidatesPreference DEFAULT_CANDIDATES_PREFERENCE = CandidatesPreference.NONE;
+    static final CandidatesLocation DEFAULT_CANDIDATES_LOCATION = CandidatesLocation.NONE;
 
 
     private Theme mKeyboardTheme;
@@ -47,7 +47,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     private int mKeyBorderWidth;
     private int mKeyBorderRadius;
     private int mKeyPadding;
-    private CandidatesPreference mCandidatesPreference;
+    private CandidatesLocation mCandidatesLocation;
 
     private PopupKeyCandidatesView popupView;
     private PopupWindow popupWindow;
@@ -58,7 +58,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         LIGHT
     }
 
-    public enum CandidatesPreference {
+    public enum CandidatesLocation {
         VERTICAL_LEFT,
         HORIZONTAL_TOP,
         NONE
@@ -103,7 +103,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         mPopupBackgroundColor = style.popupBackgroundColor;
         mPopupHighlightColor = style.popupHighlightColor;
         mPopupTextColor = style.popupTextColor;
-        mCandidatesPreference = style.candidatesPreference;
+        mCandidatesLocation = style.candidatesLocation;
     }
 
     // use default values if custom constructor is not used
@@ -123,7 +123,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         mPopupBackgroundColor = DEFAULT_POPUP_COLOR;
         mPopupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
         mPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
-        mCandidatesPreference = DEFAULT_CANDIDATES_PREFERENCE;
+        mCandidatesLocation = DEFAULT_CANDIDATES_LOCATION;
     }
 
     public interface KeyboardListener {
@@ -271,7 +271,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         private float keyPrimaryTextSize = DEFAULT_PRIMARY_TEXT_SIZE;
         private int keySpacing = DEFAULT_KEY_PADDING;
         private Theme keyboardTheme = DEFAULT_THEME;
-        private CandidatesPreference candidatesPreference = DEFAULT_CANDIDATES_PREFERENCE;
+        private CandidatesLocation candidatesLocation = DEFAULT_CANDIDATES_LOCATION;
 
         public StyleBuilder setKeyTextSize(float keyTextSize) {
             this.keyPrimaryTextSize = keyTextSize;
@@ -344,18 +344,18 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
             return this;
         }
 
-        public StyleBuilder setCandidatesPreference(CandidatesPreference preference) {
-            this.candidatesPreference = preference;
+        public StyleBuilder setCandidatesLocation(CandidatesLocation location) {
+            this.candidatesLocation = location;
             return this;
         }
     }
 
-    public void setCandidatesPreference(CandidatesPreference preference) {
-        mCandidatesPreference = preference;
+    public void setCandidatesLocation(CandidatesLocation location) {
+        mCandidatesLocation = location;
     }
 
-    public CandidatesPreference getCandidatesPreference() {
-        return mCandidatesPreference;
+    public CandidatesLocation getCandidatesLocation() {
+        return mCandidatesLocation;
     }
 
     public int getKeyPadding() {

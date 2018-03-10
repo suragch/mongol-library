@@ -14,15 +14,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandidatesAdapter.ItemClickListener {
+public class KeyboardCandidatesView extends ViewGroup {
 
     private static final Orientation DEFAULT_ORIENTATION = Orientation.VERTICAL;
 
-    Context mContext;
-    RecyclerView recyclerView;
-    KeyboardCandidatesAdapter adapter;
-    List<String> mCandidates;
-    Orientation mOrientation;
+    private Context mContext;
+    private RecyclerView recyclerView;
+    //private KeyboardCandidatesAdapter adapter;
+    private List<String> mCandidates;
+    private Orientation mOrientation;
+    //private ItemListener mListener;
 
 
 
@@ -59,6 +60,15 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
         addView(recyclerView);
     }
 
+//    public interface ItemListener {
+//        public void onCandidateClick(int position, String text);
+//        public void onCandidateLongClick(int position, String text);
+//    }
+//
+//    public void setItemListener(ItemListener listener) {
+//        this.mListener = listener;
+//    }
+
     @Override
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
 
@@ -75,12 +85,14 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
         recyclerView.layout(left, top, right, bottom);
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        String item = adapter.getItem(position);
-        MongolToast.makeText(mContext, item, Toast.LENGTH_SHORT).show();
-        //Toast.makeText(mContext, item, Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onCandidateClick(View view, int position) {
+//        String text = adapter.getItem(position);
+//        MongolToast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+//        //if (mListener != null)
+//        //    mListener.onCandidateClick(position, text);
+//        //Toast.makeText(mContext, item, Toast.LENGTH_SHORT).show();
+//    }
 
     public void setOrientation(Orientation orientation) {
         this.mOrientation = orientation;
@@ -99,27 +111,30 @@ public class KeyboardCandidatesView extends ViewGroup implements KeyboardCandida
         //recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    public void setCandidates(List<String> candidates) {
-        // data to populate the RecyclerView with
-        //List<String> animalNames = new ArrayList<>();
-        mCandidates.clear();
-        mCandidates.addAll(candidates);
-
-        if (adapter == null) {
-            initAdapter();
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    public void clearCandidates() {
-        setCandidates(Collections.<String>emptyList());
-    }
+//    public void setCandidates(List<String> candidates, KeyboardCandidatesAdapter adapter) {
+//        // data to populate the RecyclerView with
+//        //List<String> animalNames = new ArrayList<>();
+//        mCandidates.clear();
+//        mCandidates.addAll(candidates);
+//
+////        if (adapter == null) {
+////            initAdapter();
+////        }
+//        adapter.notifyDataSetChanged();
+//    }
 
 
-    private void initAdapter() {
-        adapter = new KeyboardCandidatesAdapter(mContext, mCandidates, mOrientation);
-        adapter.setClickListener(this);
+//    public void clearCandidates() {
+//        setCandidates(Collections.<String>emptyList());
+//    }
+
+//    private void initAdapter() {
+//        adapter = new KeyboardCandidatesAdapter(mContext, mCandidates, mOrientation);
+//        adapter.setClickListener(this);
+//        recyclerView.setAdapter(adapter);
+//    }
+
+    public void setAdapter(KeyboardCandidatesAdapter adapter) {
         recyclerView.setAdapter(adapter);
     }
-
 }
