@@ -42,11 +42,11 @@ public class CustomKeyboard extends Keyboard {
 
     // all keyboards should include this custom constructor
     // (there was no way to force it in the abstract Keyboard class)
-    public CustomKeyboard(Context context, StyleBuilder style) {
-        super(context);
-        super.initStyle(style);
-        init(context);
-    }
+//    public CustomKeyboard(Context context, StyleBuilder style) {
+//        super(context);
+//        super.initStyle(style);
+//        init(context);
+//    }
 
     protected void init(Context context) {
 

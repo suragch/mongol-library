@@ -24,7 +24,9 @@ import java.util.List;
  * word suggestion candidates list.
  */
 public class ImeContainer extends ViewGroup
-        implements Keyboard.KeyboardListener, KeyboardCandidatesAdapter.CandidateClickListener {
+        implements Keyboard.KeyboardListener, ImeCandidatesView.CandidateClickListener {
+
+    //static final Theme DEFAULT_THEME = Theme.LIGHT;
 
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 10f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
@@ -33,8 +35,8 @@ public class ImeContainer extends ViewGroup
     private Context mContext;
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
-    private KeyboardCandidatesView candidatesView;
-    private KeyboardCandidatesAdapter candidatesAdapter;
+    private ImeCandidatesView mCandidatesView;
+    //private KeyboardCandidatesAdapter mCandidatesAdapter;
     private WeakReference<MongolInputMethodManager> mimm;
     private DataSource mDataSource = null;
     private CharSequence mComposing = "";
@@ -60,31 +62,35 @@ public class ImeContainer extends ViewGroup
     }
 
     public interface DataSource {
+
         public List<String> onRequestWordsStartingWith(String text);
+
         public List<String> onRequestWordsFollowing(String word);
     }
+
     // provide a way for another class to set the listener
     public void setDataSource(DataSource dataSource) {
         this.mDataSource = dataSource;
     }
 
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
-        //   Keyboard.CandidateLocation
-        //   VERTICAL_LEFT                    HORIZONTAL_TOP                   NONE
-        //   ___________________________      ___________________________      ___________________________
-        //   | C |                     |      |       Candidates        |      |                         |
-        //   | a |                     |      |_________________________|      |                         |
-        //   | n |                     |      |                         |      |                         |
-        //   | d |                     |      |                         |      |                         |
-        //   | i |                     |      |                         |      |                         |
-        //   | d |     Keyboard        |  or  |        Keyboard         |  or  |        Keyboard         |
-        //   | a |                     |      |                         |      |                         |
-        //   | t |                     |      |                         |      |                         |
-        //   | e |                     |      |                         |      |                         |
-        //   | s |                     |      |                         |      |                         |
-        //   ---------------------------      ---------------------------      ---------------------------
+        //  Keyboard.CandidateLocation
+        //  VERTICAL_LEFT                  HORIZONTAL_TOP                 NONE
+        //  ___________________________    ___________________________    ___________________________
+        //  | C |                     |    |       Candidates        |    |                         |
+        //  | a |                     |    |_________________________|    |                         |
+        //  | n |                     |    |                         |    |                         |
+        //  | d |                     |    |                         |    |                         |
+        //  | i |                     |    |                         |    |                         |
+        //  | d |     Keyboard        | or |        Keyboard         | or |        Keyboard         |
+        //  | a |                     |    |                         |    |                         |
+        //  | t |                     |    |                         |    |                         |
+        //  | e |                     |    |                         |    |                         |
+        //  | s |                     |    |                         |    |                         |
+        //  ---------------------------    ---------------------------    ---------------------------
 
         if (getChildCount() == 0) return;
 
@@ -103,7 +109,7 @@ public class ImeContainer extends ViewGroup
     }
 
     private Keyboard.CandidatesLocation getCandidateViewLocation() {
-        if (candidatesView == null) {
+        if (mCandidatesView == null) {
             return Keyboard.CandidatesLocation.NONE;
         }
         return mCurrentKeyboard.getCandidatesLocation();
@@ -157,9 +163,9 @@ public class ImeContainer extends ViewGroup
     private void layoutCandidateView(int left, int top, int right, int bottom) {
         int width = right - left;
         int height = bottom - top;
-        candidatesView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        mCandidatesView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-        candidatesView.layout(left, top, right, bottom);
+        mCandidatesView.layout(left, top, right, bottom);
     }
 
     private void layoutKeyboard(int left, int top, int right, int bottom) {
@@ -195,15 +201,15 @@ public class ImeContainer extends ViewGroup
         // composing on the whole word.
         if (!TextUtils.isEmpty(mComposing) &&
                 (newSelStart != candidatesEnd
-                || newSelEnd != candidatesEnd)) {
+                        || newSelEnd != candidatesEnd)) {
             mComposing = "";
             // TODO updateCandidates();
             if (mInputConnection != null) {
                 mInputConnection.finishComposingText();
             }
         }
-        if (candidatesAdapter != null && candidatesAdapter.hasCandidates()) {
-            candidatesAdapter.clearCandidates();
+        if (mCandidatesView != null && mCandidatesView.hasCandidates()) {
+            mCandidatesView.clearCandidates();
         }
 
     }
@@ -245,34 +251,41 @@ public class ImeContainer extends ViewGroup
         Keyboard.CandidatesLocation location = mCurrentKeyboard.getCandidatesLocation();
         if (location == Keyboard.CandidatesLocation.NONE) return;
         setCandidatesOrientation(location);
-        applyKeyboardThemeToCandidatesView();
+        //applyKeyboardThemeToCandidatesView();
     }
 
     private void setCandidatesOrientation(Keyboard.CandidatesLocation location) {
-        if (candidatesView == null) {
-            candidatesView = new KeyboardCandidatesView(mContext);
-            candidatesAdapter = new KeyboardCandidatesAdapter(mContext);
-            candidatesView.setAdapter(candidatesAdapter);
-            candidatesAdapter.setCandidateClickListener(this);
-            this.addView(candidatesView);
+        if (mCandidatesView == null) {
+            initCandidatesView();
         }
-        KeyboardCandidatesView.Orientation orientation;
+        ImeCandidatesView.Orientation orientation;
         switch (location) {
             case HORIZONTAL_TOP:
-                orientation = KeyboardCandidatesView.Orientation.HORIZONTAL;
+                orientation = ImeCandidatesView.Orientation.HORIZONTAL;
                 break;
             default:
-                orientation = KeyboardCandidatesView.Orientation.VERTICAL;
+                orientation = ImeCandidatesView.Orientation.VERTICAL;
                 break;
         }
-        candidatesView.setOrientation(orientation);
-        candidatesAdapter.setOrientation(orientation);
+        mCandidatesView.setOrientation(orientation);
     }
 
-    private void applyKeyboardThemeToCandidatesView() {
-        int keyColor = mCurrentKeyboard.getKeyColor();
-        candidatesView.setBackgroundColor(keyColor);
+    private void initCandidatesView() {
+        mCandidatesView = new ImeCandidatesView(mContext);
+        mCandidatesView.setCandidateClickListener(this);
+        styleCandidatesView();
+        this.addView(mCandidatesView);
     }
+
+    private void styleCandidatesView() {
+//        mCandidatesView.setCandidateBackgroundColor(mC);
+//        mCandidatesView.setBorderColor(mCurrentKeyboard.getBorderColor());
+    }
+
+//    private void applyKeyboardThemeToCandidatesView() {
+//        int keyColor = mCurrentKeyboard.getKeyColor();
+//        mCandidatesView.setBackgroundColor(keyColor);
+//    }
 
     @Override
     public PopupKeyCandidate[] getKeyboardKeyCandidates() {
@@ -323,12 +336,14 @@ public class ImeContainer extends ViewGroup
                 mInputConnection.endBatchEdit();
                 if (mDataSource != null) {
                     List<String> candidates = mDataSource.onRequestWordsStartingWith(mComposing.toString());
-                    candidatesAdapter.setCandidates(candidates);
+                    if (mCandidatesView != null)
+                        mCandidatesView.setCandidates(candidates);
                 }
             } else {
                 handleOldComposingText(text);
                 mInputConnection.commitText(text, 1);
-                candidatesAdapter.clearCandidates();
+                if (mCandidatesView != null)
+                    mCandidatesView.clearCandidates();
             }
         } else {
             handleOldComposingText(text);
@@ -379,8 +394,7 @@ public class ImeContainer extends ViewGroup
         String unicode = choice.getUnicode();
         if (TextUtils.isEmpty(composingText)) {
             onKeyboardInput(unicode);
-        }
-        else {
+        } else {
             handleOldComposingText(unicode);
             mInputConnection.setComposingText(composingText, 1);
             mComposing = unicode;
@@ -432,7 +446,7 @@ public class ImeContainer extends ViewGroup
 
         // delete any invisible character directly in front of cursor
         char currentChar = previousChars.charAt(deleteIndex);
-        if (isInvisibleChar(currentChar)){
+        if (isInvisibleChar(currentChar)) {
             doBackspace();
             deleteIndex--;
         }
@@ -557,12 +571,12 @@ public class ImeContainer extends ViewGroup
     }
 
     private void suggestFollowingWords(String text) {
-        if (candidatesAdapter == null) return;
+        if (mCandidatesView == null) return;
         if (mDataSource != null) {
             List<String> followingWords = mDataSource.onRequestWordsFollowing(text);
-            candidatesAdapter.setCandidates(followingWords);
+            mCandidatesView.setCandidates(followingWords);
         } else {
-            candidatesAdapter.clearCandidates();
+            mCandidatesView.clearCandidates();
         }
     }
 
@@ -571,6 +585,153 @@ public class ImeContainer extends ViewGroup
         MongolToast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
     }
 
+    public void applyStyle(StyleBuilder style) {
+        for (Keyboard keyboard : mKeyboards) {
+            keyboard.setPrimaryTextSize(style.keyPrimaryTextSize);
+            keyboard.setSecondaryTextSize(style.keyPrimaryTextSize / 2);
+            keyboard.setPrimaryTextColor(style.keyPrimaryTextColor);
+            keyboard.setSecondaryTextColor(style.keySecondaryTextColor);
+            keyboard.setKeyImageTheme(style.keyImageTheme);
+            keyboard.setKeyColor(style.keyBackgroundColor);
+            keyboard.setKeyPressedColor(style.keyPressedColor);
+            keyboard.setKeyBorderColor(style.keyBorderColor);
+            keyboard.setKeyBorderWidth(style.keyBorderWidth);
+            keyboard.setKeyBorderRadius(style.keyBorderRadius);
+            keyboard.setKeyPadding(style.keySpacing);
+            keyboard.setPopupBackgroundColor(style.popupBackgroundColor);
+            keyboard.setPopupHighlightColor(style.popupHighlightColor);
+            keyboard.setPopupTextColor(style.popupTextColor);
+            keyboard.setCandidatesLocation(style.candidatesLocation);
+        }
+        if (mCandidatesView != null) {
+            mCandidatesView.setCandidateBackgroundColor(style.candidateItemBackgroundColor);
+            mCandidatesView.setCandidateBackgroundPressedColor(style.candidateItemBackgroundPressedColor);
+            mCandidatesView.setCandidateTextColor(style.candidateItemTextColor);
+            mCandidatesView.setCandidateDividerColor(style.candidateDividerColor);
+            mCandidatesView.setBorderColor(style.keyBorderColor);
+            mCandidatesView.setBorderRadius(style.keyBorderRadius);
+            mCandidatesView.setBorderWidth(style.keyBorderWidth);
+        }
+    }
+
 //    public void updateCandidateWordList(List<String> wordList) {
+
+    public static class StyleBuilder {
+
+        private int keyBackgroundColor = Keyboard.DEFAULT_KEY_COLOR;
+        private int keyPressedColor = Keyboard.DEFAULT_KEY_PRESSED_COLOR;
+        private int keyBorderColor = Keyboard.DEFAULT_KEY_BORDER_COLOR;
+        private int keyBorderRadius = Keyboard.DEFAULT_KEY_BORDER_RADIUS;
+        private int keyBorderWidth = Keyboard.DEFAULT_KEY_BORDER_WIDTH;
+        private int popupBackgroundColor = Keyboard.DEFAULT_POPUP_COLOR;
+        private int popupTextColor = Keyboard.DEFAULT_POPUP_TEXT_COLOR;
+        private int popupHighlightColor = Keyboard.DEFAULT_POPUP_HIGHLIGHT_COLOR;
+        private int keyPrimaryTextColor = Keyboard.DEFAULT_PRIMARY_TEXT_COLOR;
+        private int keySecondaryTextColor = Keyboard.DEFAULT_SECONDARY_TEXT_COLOR;
+        private float keyPrimaryTextSize = Keyboard.DEFAULT_PRIMARY_TEXT_SIZE;
+        private int keySpacing = Keyboard.DEFAULT_KEY_PADDING;
+        private KeyImage.Theme keyImageTheme = Keyboard.DEFAULT_KEY_IMAGE_THEME;
+        private Keyboard.CandidatesLocation candidatesLocation = Keyboard.DEFAULT_CANDIDATES_LOCATION;
+        private int candidateItemBackgroundColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR;
+        private int candidateItemBackgroundPressedColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_BACKGROUND_PRESSED_COLOR;
+        private int candidateItemTextColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_TEXT_COLOR;
+        private int candidateDividerColor = ImeCandidatesView.DEFAULT_CANDIDATE_DIVIDER_COLOR;
+
+
+        public StyleBuilder setKeyTextSize(float keyTextSize) {
+            this.keyPrimaryTextSize = keyTextSize;
+            return this;
+        }
+
+        public StyleBuilder setKeyBackgroundColor(int keyBackgroundColor) {
+            this.keyBackgroundColor = keyBackgroundColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyBorderColor(int keyBorderColor) {
+            this.keyBorderColor = keyBorderColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyBorderRadius(int keyBorderRadius) {
+            this.keyBorderRadius = keyBorderRadius;
+            return this;
+        }
+
+        public StyleBuilder setKeyBorderWidth(int keyBorderWidth) {
+            this.keyBorderWidth = keyBorderWidth;
+            return this;
+        }
+
+        public StyleBuilder setPopupBackgroundColor(int popupBackgroundColor) {
+            this.popupBackgroundColor = popupBackgroundColor;
+            return this;
+        }
+
+        public StyleBuilder setPopupTextColor(int popupTextColor) {
+            this.popupTextColor = popupTextColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyPrimaryTextColor(int keyPrimaryTextColor) {
+            this.keyPrimaryTextColor = keyPrimaryTextColor;
+            return this;
+        }
+
+        public StyleBuilder setKeySecondaryTextColor(int keySecondaryTextColor) {
+            this.keySecondaryTextColor = keySecondaryTextColor;
+            return this;
+        }
+
+        public StyleBuilder setKeySpacing(int keySpacing) {
+            this.keySpacing = keySpacing;
+            return this;
+        }
+
+        public StyleBuilder setPopupHighlightColor(int popupHighlightColor) {
+            this.popupHighlightColor = popupHighlightColor;
+            return this;
+        }
+
+        public StyleBuilder setKeyPressedColor(int keyPressedColor) {
+            this.keyPressedColor = keyPressedColor;
+            return this;
+        }
+
+        /**
+         * @param theme Theme.DARK for a light image
+         *              or Theme.LIGHT for a dark image.
+         * @return StyleBuilder
+         */
+        public StyleBuilder setKeyImageTheme(KeyImage.Theme theme) {
+            this.keyImageTheme = theme;
+            return this;
+        }
+
+        public StyleBuilder setCandidatesLocation(Keyboard.CandidatesLocation location) {
+            this.candidatesLocation = location;
+            return this;
+        }
+
+        public StyleBuilder setCandidateItemBackgroundColor(int color) {
+            this.candidateItemBackgroundColor = color;
+            return this;
+        }
+
+        public StyleBuilder setCandidateItemBackgroundPressedColor(int color) {
+            this.candidateItemBackgroundPressedColor = color;
+            return this;
+        }
+
+        public StyleBuilder setCandidateItemTextColor(int color) {
+            this.candidateItemTextColor = color;
+            return this;
+        }
+
+        public StyleBuilder setCandidateDividerColor(int color) {
+            this.candidateDividerColor = color;
+            return this;
+        }
+    }
 }
 

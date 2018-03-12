@@ -21,6 +21,12 @@ public class KeyImage extends Key {
     private Bitmap mImageScaled;
     private boolean mNeedToScaleImage = false;
 
+    // use a light image for a DARK theme and vice-versa
+    public enum Theme {
+        DARK,
+        LIGHT;
+    }
+
     public KeyImage(Context context) {
         super(context);
         initPaints();

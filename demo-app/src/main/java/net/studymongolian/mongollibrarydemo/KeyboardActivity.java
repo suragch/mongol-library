@@ -66,6 +66,29 @@ public class KeyboardActivity extends AppCompatActivity {
         imeContainer.addKeyboard(cyrillic);
         imeContainer.addKeyboard(custom);
 
+        // Optional
+        // after the keyboards are added, apply styling
+        ImeContainer.StyleBuilder keyboardStyle = new ImeContainer.StyleBuilder();
+        keyboardStyle
+                .setKeyBackgroundColor(Color.BLUE)
+                .setKeyPressedColor(Color.RED)
+                .setKeyBorderColor(Color.BLACK)
+                .setKeyBorderRadius(40)
+                .setKeyBorderWidth(0)
+                .setPopupBackgroundColor(Color.WHITE)
+                .setPopupTextColor(Color.BLUE)
+                .setPopupHighlightColor(Color.YELLOW)
+                .setKeyPrimaryTextColor(Color.WHITE)
+                .setKeySecondaryTextColor(Color.GRAY)
+                .setKeyImageTheme(KeyImage.Theme.DARK) // for light images
+                //TODO .setKeyImageColorFilter(Color.BLUE) or (Color.BLUE, PorterDuffMode)
+                .setKeySpacing(5)
+                .setCandidateItemBackgroundColor(Color.BLUE)
+                .setCandidateItemBackgroundPressedColor(Color.RED)
+                .setCandidateItemTextColor(Color.BLACK)
+                .setCandidateDividerColor(Color.LTGRAY);
+        imeContainer.applyStyle(keyboardStyle);
+
         // The MongolInputMethodManager handles communication between the keyboards and
         // the MongolEditText (or EditText).
         MongolInputMethodManager mimm = new MongolInputMethodManager();

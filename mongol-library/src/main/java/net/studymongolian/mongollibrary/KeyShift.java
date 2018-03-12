@@ -120,9 +120,9 @@ public class KeyShift extends KeyImage {
         invalidate();
     }
 
-    public void setShiftImage(Keyboard.Theme theme) {
+    public void setShiftImage(KeyImage.Theme theme) {
         int imageResourceId;
-        if (theme == Keyboard.Theme.LIGHT) {
+        if (theme == KeyImage.Theme.LIGHT) {
             imageResourceId = R.drawable.ic_keyboard_shift_black_32dp;
         } else {
             imageResourceId = R.drawable.ic_keyboard_shift_white_32dp;
