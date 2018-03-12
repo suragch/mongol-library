@@ -251,6 +251,7 @@ public class ImeContainer extends ViewGroup
         Keyboard.CandidatesLocation location = mCurrentKeyboard.getCandidatesLocation();
         if (location == Keyboard.CandidatesLocation.NONE) return;
         setCandidatesOrientation(location);
+        styleCandidatesView();
         //applyKeyboardThemeToCandidatesView();
     }
 
@@ -273,7 +274,6 @@ public class ImeContainer extends ViewGroup
     private void initCandidatesView() {
         mCandidatesView = new ImeCandidatesView(mContext);
         mCandidatesView.setCandidateClickListener(this);
-        styleCandidatesView();
         this.addView(mCandidatesView);
     }
 

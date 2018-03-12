@@ -156,6 +156,7 @@ public class ImeCandidatesView extends ViewGroup {
     }
 
     public void setOrientation(Orientation orientation) {
+        //if (mOrientation == orientation) return;
         this.mOrientation = orientation;
         LinearLayoutManager layoutManager;
         if (mOrientation == Orientation.HORIZONTAL) {
@@ -166,11 +167,12 @@ public class ImeCandidatesView extends ViewGroup {
                     LinearLayoutManager.VERTICAL, false);
         }
         recyclerView.setLayoutManager(layoutManager);
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-        //        layoutManager.getOrientation());
-        //recyclerView.addItemDecoration(dividerItemDecoration);
         adapter = new CandidatesAdapter(mContext);
         recyclerView.setAdapter(adapter);
+//        if (adapter == null) {
+//        } else {
+//            adapter.changeOrientation();
+//        }
     }
 
     public void setCandidateBackgroundColor(int color) {
@@ -256,6 +258,10 @@ public class ImeCandidatesView extends ViewGroup {
             return mCandidates.size();
         }
 
+        public void changeOrientation() {
+
+        }
+
         public class ViewHolder extends RecyclerView.ViewHolder
                 implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
 
@@ -302,8 +308,12 @@ public class ImeCandidatesView extends ViewGroup {
                 if (mOrientation == ImeCandidatesView.Orientation.VERTICAL) {
                     ((MongolLabel) textView).setText(text);
                     ((MongolLabel) textView).setTextSize(26); // FIXME put this somewhere else
-                } else
+                } else {
                     ((TextView) textView).setText(text);
+                    ((TextView) textView).setTextSize(26);
+                    ((TextView) textView).setTextColor(Color.BLACK);
+                    ((TextView) textView).setTypeface(MongolFont.get(MongolFont.QAGAN, mContext));
+                }
             }
 
             @Override
