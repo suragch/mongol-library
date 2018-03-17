@@ -257,9 +257,9 @@ public class KeyText extends Key {
         invalidate();
     }
 
-    public void setTextSize(float sizeSP) {
-        float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                sizeSP, getResources().getDisplayMetrics());
+    public void setTextSize(float sizePx) {
+        //float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+        //        sizeSP, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(sizePx);
         invalidate();
     }
@@ -270,9 +270,9 @@ public class KeyText extends Key {
     }
 
     public void setSubTextSize(float subTextSize) {
-        float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                subTextSize, getResources().getDisplayMetrics());
-        mSubTextPaint.setTextSize(sizePx);
+        //float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+        //        subTextSize, getResources().getDisplayMetrics());
+        mSubTextPaint.setTextSize(subTextSize);
         invalidate();
     }
 

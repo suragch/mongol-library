@@ -18,7 +18,7 @@ import android.widget.PopupWindow;
 
 public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
-    static final float DEFAULT_PRIMARY_TEXT_SIZE_SP = 17;
+    static final float DEFAULT_PRIMARY_TEXT_SIZE_SP = 24;
     static final int DEFAULT_PRIMARY_TEXT_COLOR = Color.BLACK;
     static final int DEFAULT_SECONDARY_TEXT_COLOR = Color.parseColor("#61000000"); // alpha black
     static final int DEFAULT_KEY_COLOR = Color.LTGRAY;
