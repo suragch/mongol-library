@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
@@ -508,6 +509,15 @@ public class ImeContainer extends ViewGroup
         }
     }
 
+    // This method is called when subviews are added from XML
+    // TODO currently ignoring layout params. Should we use them?
+    @Override
+    public void addView(View child, LayoutParams params) {
+        if (child instanceof Keyboard) {
+            addKeyboard((Keyboard) child);
+        }
+    }
+
     public Keyboard getCurrentKeyboard() {
         return mCurrentKeyboard;
     }
@@ -585,34 +595,36 @@ public class ImeContainer extends ViewGroup
         MongolToast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
     }
 
-    public void applyStyle(StyleBuilder style) {
-        for (Keyboard keyboard : mKeyboards) {
-            keyboard.setPrimaryTextSize(style.keyPrimaryTextSize);
-            keyboard.setSecondaryTextSize(style.keyPrimaryTextSize / 2);
-            keyboard.setPrimaryTextColor(style.keyPrimaryTextColor);
-            keyboard.setSecondaryTextColor(style.keySecondaryTextColor);
-            keyboard.setKeyImageTheme(style.keyImageTheme);
-            keyboard.setKeyColor(style.keyBackgroundColor);
-            keyboard.setKeyPressedColor(style.keyPressedColor);
-            keyboard.setKeyBorderColor(style.keyBorderColor);
-            keyboard.setKeyBorderWidth(style.keyBorderWidth);
-            keyboard.setKeyBorderRadius(style.keyBorderRadius);
-            keyboard.setKeyPadding(style.keySpacing);
-            keyboard.setPopupBackgroundColor(style.popupBackgroundColor);
-            keyboard.setPopupHighlightColor(style.popupHighlightColor);
-            keyboard.setPopupTextColor(style.popupTextColor);
-            keyboard.setCandidatesLocation(style.candidatesLocation);
-        }
-        if (mCandidatesView != null) {
-            mCandidatesView.setCandidateBackgroundColor(style.candidateItemBackgroundColor);
-            mCandidatesView.setCandidateBackgroundPressedColor(style.candidateItemBackgroundPressedColor);
-            mCandidatesView.setCandidateTextColor(style.candidateItemTextColor);
-            mCandidatesView.setCandidateDividerColor(style.candidateDividerColor);
-            mCandidatesView.setBorderColor(style.keyBorderColor);
-            mCandidatesView.setBorderRadius(style.keyBorderRadius);
-            mCandidatesView.setBorderWidth(style.keyBorderWidth);
-        }
-    }
+//    public void applyStyle(StyleBuilder style) {
+//        for (Keyboard keyboard : mKeyboards) {
+//            keyboard.setPrimaryTextSize(style.keyPrimaryTextSize);
+//            keyboard.setSecondaryTextSize(style.keyPrimaryTextSize / 2);
+//            keyboard.setPrimaryTextColor(style.keyPrimaryTextColor);
+//            keyboard.setSecondaryTextColor(style.keySecondaryTextColor);
+//            keyboard.setKeyImageTheme(style.keyImageTheme);
+//            keyboard.setKeyColor(style.keyBackgroundColor);
+//            keyboard.setKeyPressedColor(style.keyPressedColor);
+//            keyboard.setKeyBorderColor(style.keyBorderColor);
+//            keyboard.setKeyBorderWidth(style.keyBorderWidth);
+//            keyboard.setKeyBorderRadius(style.keyBorderRadius);
+//            keyboard.setKeyPadding(style.keySpacing);
+//            keyboard.setPopupBackgroundColor(style.popupBackgroundColor);
+//            keyboard.setPopupHighlightColor(style.popupHighlightColor);
+//            keyboard.setPopupTextColor(style.popupTextColor);
+//            keyboard.setCandidatesLocation(style.candidatesLocation);
+//            keyboard.applyThemeToKeys();
+//        }
+//        if (mCandidatesView != null) {
+//            mCandidatesView.setCandidateBackgroundColor(style.candidateItemBackgroundColor);
+//            mCandidatesView.setCandidateBackgroundPressedColor(style.candidateItemBackgroundPressedColor);
+//            mCandidatesView.setCandidateTextColor(style.candidateItemTextColor);
+//            mCandidatesView.setCandidateDividerColor(style.candidateDividerColor);
+//            mCandidatesView.setBorderColor(style.keyBorderColor);
+//            mCandidatesView.setBorderRadius(style.keyBorderRadius);
+//            mCandidatesView.setBorderWidth(style.keyBorderWidth);
+//        }
+//        invalidate();
+//    }
 
 //    public void updateCandidateWordList(List<String> wordList) {
 
@@ -628,8 +640,8 @@ public class ImeContainer extends ViewGroup
         private int popupHighlightColor = Keyboard.DEFAULT_POPUP_HIGHLIGHT_COLOR;
         private int keyPrimaryTextColor = Keyboard.DEFAULT_PRIMARY_TEXT_COLOR;
         private int keySecondaryTextColor = Keyboard.DEFAULT_SECONDARY_TEXT_COLOR;
-        private float keyPrimaryTextSize = Keyboard.DEFAULT_PRIMARY_TEXT_SIZE;
-        private int keySpacing = Keyboard.DEFAULT_KEY_PADDING;
+        private float keyPrimaryTextSize = Keyboard.DEFAULT_PRIMARY_TEXT_SIZE_SP;
+        private int keySpacing = Keyboard.DEFAULT_KEY_SPACING;
         private KeyImage.Theme keyImageTheme = Keyboard.DEFAULT_KEY_IMAGE_THEME;
         private Keyboard.CandidatesLocation candidatesLocation = Keyboard.DEFAULT_CANDIDATES_LOCATION;
         private int candidateItemBackgroundColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR;

@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 
 public class KeyboardQwerty extends Keyboard {
@@ -84,9 +85,18 @@ public class KeyboardQwerty extends Keyboard {
     private static final String NEWLINE = "\n";
     private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
-    // Use this constructor if you want the default style
     public KeyboardQwerty(Context context) {
         super(context);
+        init(context);
+    }
+
+    public KeyboardQwerty(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public KeyboardQwerty(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init(context);
     }
 

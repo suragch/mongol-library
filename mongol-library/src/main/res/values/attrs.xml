@@ -19,4 +19,37 @@
         <attr name="textColor"/>
     </declare-styleable>
 
+    <declare-styleable name="Keyboard">
+        <attr name="primaryTextSize" format="dimension"/>
+        <attr name="primaryTextColor" format="color"/>
+        <attr name="secondaryTextColor" format="color"/>
+        <attr name="keyImageTheme">
+            <enum name="dark" value="0" />
+            <enum name="light" value="1" />
+        </attr>
+        <attr name="keyColor" format="color"/>
+        <attr name="keyPressedColor" format="color"/>
+        <attr name="keyBorderColor" format="color"/>
+        <attr name="keyBorderWidth" format="dimension"/>
+        <attr name="keyBorderRadius" format="dimension"/>
+        <attr name="keySpacing" format="dimension"/>
+        <attr name="popupBackgroundColor" format="color"/>
+        <attr name="popupHighlightColor" format="color"/>
+        <attr name="popupTextColor" format="color"/>
+        <attr name="candidatesLocation">
+            <flag name="none" value="0" />
+            <!-- these are derived from the Android Gravity constants -->
+            <flag name="vertical_left" value="0x73" />
+            <flag name="horizontal_top" value="0x31" />
+        </attr>
+    </declare-styleable>
+
+    <!--<declare-styleable name="ImeCandidatesView">-->
+        <!--<attr name="textSize"/>-->
+        <!--<attr name="textColor"/>-->
+        <!--<attr name="backgroundColor" format="color"/>-->
+        <!--<attr name="backgroundPressedColor" format="color"/>-->
+        <!--<attr name="dividerColor" format="color"/>-->
+    <!--</declare-styleable>-->
+
 </resources>

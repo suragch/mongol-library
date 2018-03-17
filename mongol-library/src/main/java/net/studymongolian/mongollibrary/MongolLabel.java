@@ -69,8 +69,7 @@ public class MongolLabel extends View {
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
         if (mTextSizePx <= 0) {
-            mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                    DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
+            mTextSizePx = getDefaultTextSizeInPixels();
         }
         mTextPaint.setTextSize(mTextSizePx);
         mTextPaint.setColor(mTextColor);
@@ -83,6 +82,10 @@ public class MongolLabel extends View {
         mGlyphText = mRenderer.unicodeToMenksoft(mUnicodeText);
     }
 
+    private float getDefaultTextSizeInPixels() {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

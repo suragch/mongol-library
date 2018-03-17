@@ -23,8 +23,21 @@ public class KeyImage extends Key {
 
     // use a light image for a DARK theme and vice-versa
     public enum Theme {
-        DARK,
-        LIGHT;
+        DARK(0),
+        LIGHT(1);
+
+        int id;
+
+        Theme(int id) {
+            this.id = id;
+        }
+
+        static Theme fromId(int id) {
+            for (Theme theme : values()) {
+                if (theme.id == id) return theme;
+            }
+            throw new IllegalArgumentException(String.valueOf(id));
+        }
     }
 
     public KeyImage(Context context) {

@@ -23,14 +23,16 @@ public class ImeCandidatesView extends ViewGroup {
     public static int DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR = Color.LTGRAY;
     public static int DEFAULT_CANDIDATE_ITEM_BACKGROUND_PRESSED_COLOR = Color.GRAY;
     public static int DEFAULT_CANDIDATE_ITEM_TEXT_COLOR = Color.BLACK;
+    public static float DEFAULT_CANDIDATE_ITEM_TEXT_SIZE = Keyboard.DEFAULT_PRIMARY_TEXT_SIZE_SP;
     public static int DEFAULT_CANDIDATE_DIVIDER_COLOR = Color.GRAY;
     static final int DEFAULT_BORDER_COLOR = Keyboard.DEFAULT_KEY_BORDER_COLOR;
     static final int DEFAULT_BORDER_WIDTH = Keyboard.DEFAULT_KEY_BORDER_WIDTH;
     static final int DEFAULT_BORDER_RADIUS = Keyboard.DEFAULT_KEY_BORDER_RADIUS;
-    static final int DEFAULT_PADDING = Keyboard.DEFAULT_KEY_PADDING;
+    static final int DEFAULT_SPACING = Keyboard.DEFAULT_KEY_SPACING;
 
     private int mTextColor;
-    private int mNormalBackgroundColor;
+    private float mTextSize;
+    private int mBackgroundColor;
     private int mPressedBackgroundColor;
     private int mDividerColor;
 
@@ -63,8 +65,6 @@ public class ImeCandidatesView extends ViewGroup {
         if (adapter != null)
             adapter.notifyDataSetChanged();
     }
-    //private ItemListener mListener;
-
 
     public enum Orientation {
         VERTICAL,
@@ -92,14 +92,13 @@ public class ImeCandidatesView extends ViewGroup {
         mContext = context;
         mCandidates = new ArrayList<>();
         mTextColor = DEFAULT_CANDIDATE_ITEM_TEXT_COLOR;
-        mNormalBackgroundColor = DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR;
+        mTextSize = DEFAULT_CANDIDATE_ITEM_TEXT_SIZE;
+        mBackgroundColor = DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR;
         mPressedBackgroundColor = DEFAULT_CANDIDATE_ITEM_BACKGROUND_PRESSED_COLOR;
         mDividerColor = DEFAULT_CANDIDATE_DIVIDER_COLOR;
         initPaints();
         mBorderRadius = DEFAULT_BORDER_RADIUS;
-        setPadding(DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING);
-
-        //this.setBackgroundColor(Color.WHITE);
+        setPadding(DEFAULT_SPACING, DEFAULT_SPACING, DEFAULT_SPACING, DEFAULT_SPACING);
 
         // set up the RecyclerView
         recyclerView = new RecyclerView(context);
@@ -140,8 +139,6 @@ public class ImeCandidatesView extends ViewGroup {
         super.onSizeChanged(w, h, oldw, oldh);
         mSizeRect = new RectF(getPaddingLeft(), getPaddingTop(),
                 w - getPaddingRight(), h - getPaddingBottom());
-        //mKeyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-        //mKeyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
     }
 
     @Override
@@ -169,14 +166,10 @@ public class ImeCandidatesView extends ViewGroup {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new CandidatesAdapter(mContext);
         recyclerView.setAdapter(adapter);
-//        if (adapter == null) {
-//        } else {
-//            adapter.changeOrientation();
-//        }
     }
 
     public void setCandidateBackgroundColor(int color) {
-        this.mNormalBackgroundColor = color;
+        this.mBackgroundColor = color;
         mPaint.setColor(color);
         invalidate();
     }
@@ -196,7 +189,6 @@ public class ImeCandidatesView extends ViewGroup {
     }
 
     public void setBorderColor(int borderColor) {
-        //this.mBorderColor = borderColor;
         mKeyBorderPaint.setColor(borderColor);
         invalidate();
     }
@@ -258,10 +250,6 @@ public class ImeCandidatesView extends ViewGroup {
             return mCandidates.size();
         }
 
-        public void changeOrientation() {
-
-        }
-
         public class ViewHolder extends RecyclerView.ViewHolder
                 implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
 
@@ -278,10 +266,18 @@ public class ImeCandidatesView extends ViewGroup {
             }
 
             private View getTextView(View itemView) {
-                if (mOrientation == ImeCandidatesView.Orientation.VERTICAL)
-                    return itemView.findViewById(R.id.mongolLabel);
-                else
-                    return itemView.findViewById(R.id.textView);
+                if (mOrientation == ImeCandidatesView.Orientation.VERTICAL){
+                    MongolLabel label = itemView.findViewById(R.id.mongolLabel);
+                    label.setTextColor(mTextColor);
+                    label.setTextSize(mTextSize);
+                    return label;
+                } else {
+                    TextView tv = itemView.findViewById(R.id.textView);
+                    tv.setTextSize(mTextSize);
+                    tv.setTextColor(mTextColor);
+                    tv.setTypeface(MongolFont.get(MongolFont.QAGAN, mContext));
+                    return tv;
+                }
             }
 
             @Override
@@ -307,12 +303,8 @@ public class ImeCandidatesView extends ViewGroup {
             void setText(String text) {
                 if (mOrientation == ImeCandidatesView.Orientation.VERTICAL) {
                     ((MongolLabel) textView).setText(text);
-                    ((MongolLabel) textView).setTextSize(26); // FIXME put this somewhere else
                 } else {
                     ((TextView) textView).setText(text);
-                    ((TextView) textView).setTextSize(26);
-                    ((TextView) textView).setTextColor(Color.BLACK);
-                    ((TextView) textView).setTypeface(MongolFont.get(MongolFont.QAGAN, mContext));
                 }
             }
 
@@ -322,13 +314,11 @@ public class ImeCandidatesView extends ViewGroup {
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
                         view.setBackgroundColor(mPressedBackgroundColor);
-                        //setPressedBackgroundColor(view);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         break;
                     default:
                         view.setBackgroundColor(Color.TRANSPARENT);
-                        //setNormalBackgroundColor(view);
                 }
                 return false;
             }

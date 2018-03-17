@@ -21,73 +21,15 @@ public class KeyboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_keyboard);
+
+        // load keyboards into IME container
+        ImeContainer imeContainer = loadKeyboardsFromXml();
+        //ImeContainer imeContainer = loadKeyboardsProgrammatically();
+
+
 
         EditText editText = findViewById(R.id.edittext);
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
-
-        // Uncomment this if you want to style the keyboard
-
-//        // keyboards style
-//        Keyboard.StyleBuilder keyboardStyle = new Keyboard.StyleBuilder();
-//        keyboardStyle
-//                .setKeyBackgroundColor(Color.BLUE)
-//                .setKeyPressedColor(Color.RED)
-//                .setKeyBorderColor(Color.BLACK)
-//                .setKeyBorderRadius(40)
-//                .setKeyBorderWidth(0)
-//                .setPopupBackgroundColor(Color.WHITE)
-//                .setPopupTextColor(Color.BLUE)
-//                .setPopupHighlightColor(Color.YELLOW)
-//                .setKeyPrimaryTextColor(Color.WHITE)
-//                .setKeySecondaryTextColor(Color.GRAY)
-//                .setKeyboardTheme(Keyboard.Theme.DARK) // for light images
-//                //TODO .setKeyImageColorFilter(Color.BLUE) or (Color.BLUE, PorterDuffMode)
-//                .setKeySpacing(5);
-//
-//        // init keyboards with styles
-//        Keyboard aeiou = new KeyboardAeiou(this, keyboardStyle);
-//        Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
-//        //Keyboard english = new KeyboardEnglish(this, keyboardStyle);
-//        Keyboard custom = new CustomKeyboard(this, keyboardStyle);
-
-        // keyboards to include (default style)
-        Keyboard aeiou = new KeyboardAeiou(this);
-        Keyboard qwerty = new KeyboardQwerty(this);
-        Keyboard english = new KeyboardEnglish(this);
-        Keyboard cyrillic = new KeyboardCyrillic(this);
-        Keyboard custom = new CustomKeyboard(this);
-
-        // add keyboards to the IME container
-        ImeContainer imeContainer = findViewById(R.id.keyboard);
-        imeContainer.addKeyboard(aeiou); // first one is the default
-        imeContainer.addKeyboard(qwerty);
-        imeContainer.addKeyboard(english);
-        imeContainer.addKeyboard(cyrillic);
-        imeContainer.addKeyboard(custom);
-
-        // Optional
-        // after the keyboards are added, apply styling
-        ImeContainer.StyleBuilder keyboardStyle = new ImeContainer.StyleBuilder();
-        keyboardStyle
-                .setKeyBackgroundColor(Color.BLUE)
-                .setKeyPressedColor(Color.RED)
-                .setKeyBorderColor(Color.BLACK)
-                .setKeyBorderRadius(40)
-                .setKeyBorderWidth(0)
-                .setPopupBackgroundColor(Color.WHITE)
-                .setPopupTextColor(Color.BLUE)
-                .setPopupHighlightColor(Color.YELLOW)
-                .setKeyPrimaryTextColor(Color.WHITE)
-                .setKeySecondaryTextColor(Color.GRAY)
-                .setKeyImageTheme(KeyImage.Theme.DARK) // for light images
-                //TODO .setKeyImageColorFilter(Color.BLUE) or (Color.BLUE, PorterDuffMode)
-                .setKeySpacing(5)
-                .setCandidateItemBackgroundColor(Color.BLUE)
-                .setCandidateItemBackgroundPressedColor(Color.RED)
-                .setCandidateItemTextColor(Color.BLACK)
-                .setCandidateDividerColor(Color.LTGRAY);
-        imeContainer.applyStyle(keyboardStyle);
 
         // The MongolInputMethodManager handles communication between the keyboards and
         // the MongolEditText (or EditText).
@@ -98,4 +40,35 @@ public class KeyboardActivity extends AppCompatActivity {
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
         mimm.startInput();
     }
+
+    private ImeContainer loadKeyboardsFromXml() {
+        setContentView(R.layout.activity_keyboard_customized);
+        return findViewById(R.id.ime_container);
+    }
+
+    // programmatically loaded keyboards will have the default style
+    private ImeContainer loadKeyboardsProgrammatically() {
+
+        // set content view without preloaded keyboards
+        setContentView(R.layout.activity_keyboard);
+
+        // keyboards to include (default style)
+        Keyboard aeiou = new KeyboardAeiou(this);
+        Keyboard qwerty = new KeyboardQwerty(this);
+        Keyboard english = new KeyboardEnglish(this);
+        Keyboard cyrillic = new KeyboardCyrillic(this);
+        Keyboard custom = new CustomKeyboard(this);
+
+        // add keyboards to the IME container
+        ImeContainer imeContainer = findViewById(R.id.ime_container);
+        imeContainer.addKeyboard(aeiou); // first one is the default
+        imeContainer.addKeyboard(qwerty);
+        imeContainer.addKeyboard(english);
+        imeContainer.addKeyboard(cyrillic);
+        imeContainer.addKeyboard(custom);
+
+        return imeContainer;
+    }
+
+
 }

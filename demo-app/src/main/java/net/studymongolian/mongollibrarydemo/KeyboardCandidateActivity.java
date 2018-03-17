@@ -1,10 +1,12 @@
 package net.studymongolian.mongollibrarydemo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import net.studymongolian.mongollibrary.ImeContainer;
+import net.studymongolian.mongollibrary.KeyImage;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
@@ -40,6 +42,28 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
         // provide words for candidate selection
         imeContainer.setDataSource(this);
+
+//        ImeContainer.StyleBuilder keyboardStyle = new ImeContainer.StyleBuilder();
+//        keyboardStyle
+//                .setKeyBackgroundColor(Color.BLUE)
+//                .setKeyPressedColor(Color.RED)
+//                .setKeyBorderColor(Color.BLACK)
+//                .setKeyBorderRadius(40)
+//                .setKeyBorderWidth(0)
+//                .setPopupBackgroundColor(Color.WHITE)
+//                .setPopupTextColor(Color.BLUE)
+//                .setPopupHighlightColor(Color.YELLOW)
+//                .setKeyPrimaryTextColor(Color.WHITE)
+//                .setKeySecondaryTextColor(Color.GRAY)
+//                .setKeyImageTheme(KeyImage.Theme.DARK) // for light images
+//                //TODO .setKeyImageColorFilter(Color.BLUE) or (Color.BLUE, PorterDuffMode)
+//                .setKeySpacing(5)
+//                .setCandidateItemBackgroundColor(Color.BLUE)
+//                .setCandidateItemBackgroundPressedColor(Color.RED)
+//                .setCandidateItemTextColor(Color.BLACK)
+//                .setCandidateDividerColor(Color.LTGRAY);
+//        imeContainer.applyStyle(keyboardStyle);
+
 
         // set up input method manager
         MongolInputMethodManager mimm = new MongolInputMethodManager();

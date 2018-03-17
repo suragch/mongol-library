@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
 
     <EditText
@@ -39,32 +39,26 @@
 
 
     <!-- Keyboard container -->
-    <!-- TODO what if someone adds children here? Can we ignore them?-->
-    <!-- or maybe any keyboards here could just be -->
     <net.studymongolian.mongollibrary.ImeContainer
         android:id="@+id/ime_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
 
-        <!-- TODO lets not allow anything here -->
-
-        <!--&lt;!&ndash; only allow one &ndash;&gt;-->
-
-        <!--&lt;!&ndash; TODO Candidates view &ndash;&gt;-->
-        <!--&lt;!&ndash; app:orientation="vertical/horizontal" &ndash;&gt;-->
-
-        <!--&lt;!&ndash; ImeContainer ignores the layout width/height attributes &ndash;&gt;-->
         <!--<net.studymongolian.mongollibrary.KeyboardAeiou-->
-            <!--android:id="@+id/aeiou_keyboard"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"-->
-            <!--android:background="@android:color/white"-->
-            <!--android:padding="2dp"/>-->
 
-        <!--&lt;!&ndash; TODO add more keyboards &ndash;&gt;-->
+            <!--/>-->
 
-    <!--</net.studymongolian.mongollibrary.ImeContainer>-->
+        <net.studymongolian.mongollibrary.KeyboardQwerty
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            />
+
+
+    </net.studymongolian.mongollibrary.ImeContainer>
 
 
 
