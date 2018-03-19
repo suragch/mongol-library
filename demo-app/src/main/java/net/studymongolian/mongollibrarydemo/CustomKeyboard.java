@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrarydemo;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 import net.studymongolian.mongollibrary.Key;
 import net.studymongolian.mongollibrary.KeyBackspace;
@@ -34,9 +35,18 @@ public class CustomKeyboard extends Keyboard {
     protected KeyText mKey0;
     protected KeyBackspace mKeyBackspace;
 
-    // Use this constructor if you want the default style
     public CustomKeyboard(Context context) {
         super(context);
+        init(context);
+    }
+
+    public CustomKeyboard(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public CustomKeyboard(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init(context);
     }
 

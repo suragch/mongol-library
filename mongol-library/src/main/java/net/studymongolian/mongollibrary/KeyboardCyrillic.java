@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 public class KeyboardCyrillic extends Keyboard {
 
@@ -65,6 +66,15 @@ public class KeyboardCyrillic extends Keyboard {
         init(context);
     }
 
+    public KeyboardCyrillic(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public KeyboardCyrillic(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context);
+    }
     // all keyboards should include this custom constructor
     // (there was no way to force it in the abstract Keyboard class)
 //    public KeyboardCyrillic(Context context, StyleBuilder style) {

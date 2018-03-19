@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-
     <EditText
         android:id="@+id/edittext"
         android:layout_width="match_parent"
@@ -45,21 +44,76 @@
         android:layout_height="0dp"
         android:layout_weight="1" >
 
-        <!--<net.studymongolian.mongollibrary.KeyboardAeiou-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
+        <!-- The order the keyboards are added below are the order they appear in the
+        keyboard chooser popup menu. The first keyboard is the default one. -->
 
-            <!--/>-->
+        <net.studymongolian.mongollibrary.KeyboardAeiou
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:candidatesLocation="none"
+            app:keyColor="@color/colorPrimary"
+            app:primaryTextColor="#ffffff"
+            app:primaryTextSize="30sp"
+            app:secondaryTextColor="#30ffffff"
+            app:keyBorderColor="#ffffff"
+            app:keyBorderRadius="5dp"
+            app:keyBorderWidth="0.5dp"
+            app:keyImageTheme="dark"
+            app:keyPressedColor="@color/colorAccent"
+            app:keySpacing="3dp"
+            app:popupBackgroundColor="#70ffffff"
+            app:popupHighlightColor="@color/colorAccent"
+            app:popupTextColor="#000000"
+            />
 
+        <!-- since no styling is set on this keyboard, default values will be used -->
         <net.studymongolian.mongollibrary.KeyboardQwerty
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             />
 
+        <net.studymongolian.mongollibrary.KeyboardEnglish
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:keyColor="#00000000"
+            app:primaryTextColor="#b5ddff"
+            app:secondaryTextColor="#40b5ddff"
+            app:keyBorderRadius="0dp"
+            app:keyBorderWidth="0dp"
+            app:keyImageTheme="dark"
+            app:keyPressedColor="#20ffffff"
+            app:keySpacing="0dp"
+            app:popupBackgroundColor="#b5ddff"
+            app:popupHighlightColor="#f4ffb6"
+            app:popupTextColor="#000000"
+            />
+
+        <net.studymongolian.mongollibrary.KeyboardCyrillic
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:keyColor="@color/colorPrimary"
+            app:keyPressedColor="#26bc4d"
+            app:primaryTextColor="#ffffff"
+            app:primaryTextSize="30sp"
+            app:secondaryTextColor="#30ffffff"
+            app:keyBorderRadius="20dp"
+            app:keyImageTheme="dark"
+            app:keySpacing="3dp"
+            app:popupBackgroundColor="#26bc4d"
+            app:popupHighlightColor="#ffffff"
+            app:popupTextColor="#000000"
+            />
+
+        <!-- Note that this keyboard is part of the Demo App, not the library -->
+        <!-- You are free to define your own Keyboard subclasses -->
+        <net.studymongolian.mongollibrarydemo.CustomKeyboard
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:keyColor="#cdc9ef"
+            app:keyPressedColor="#857dbf"
+            app:popupHighlightColor="#857dbf"
+            />
 
     </net.studymongolian.mongollibrary.ImeContainer>
-
-
 
 </LinearLayout>

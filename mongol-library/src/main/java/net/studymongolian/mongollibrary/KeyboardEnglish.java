@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrary;
 
 
 import android.content.Context;
+import android.util.AttributeSet;
 
 public class KeyboardEnglish extends Keyboard {
 
@@ -56,6 +57,16 @@ public class KeyboardEnglish extends Keyboard {
     // Use this constructor if you want the default style
     public KeyboardEnglish(Context context) {
         super(context);
+        init(context);
+    }
+
+    public KeyboardEnglish(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public KeyboardEnglish(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init(context);
     }
 

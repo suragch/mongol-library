@@ -139,11 +139,11 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 DEFAULT_KEY_PRESSED_COLOR);
         mKeyBorderColor = a.getColor(R.styleable.Keyboard_keyBorderColor,
                 DEFAULT_KEY_BORDER_COLOR);
-        mKeyBorderWidth = a.getInt(R.styleable.Keyboard_keyBorderWidth,
+        mKeyBorderWidth = a.getDimensionPixelSize(R.styleable.Keyboard_keyBorderWidth,
                 DEFAULT_KEY_BORDER_WIDTH);
-        mKeyBorderRadius = a.getInt(R.styleable.Keyboard_keyBorderRadius,
+        mKeyBorderRadius = a.getDimensionPixelSize(R.styleable.Keyboard_keyBorderRadius,
                 DEFAULT_KEY_BORDER_RADIUS);
-        mKeySpacing = a.getInt(R.styleable.Keyboard_keySpacing,
+        mKeySpacing = a.getDimensionPixelSize(R.styleable.Keyboard_keySpacing,
                 DEFAULT_KEY_SPACING);
         mPopupBackgroundColor = a.getColor(R.styleable.Keyboard_popupBackgroundColor,
                 DEFAULT_POPUP_COLOR);

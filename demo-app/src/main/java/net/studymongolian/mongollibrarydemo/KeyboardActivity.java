@@ -22,7 +22,7 @@ public class KeyboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // load keyboards into IME container
+        // load keyboards into IME container (choose one of the following two methods)
         ImeContainer imeContainer = loadKeyboardsFromXml();
         //ImeContainer imeContainer = loadKeyboardsProgrammatically();
 
