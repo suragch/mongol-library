@@ -1,16 +1,11 @@
 package net.studymongolian.mongollibrarydemo;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import net.studymongolian.mongollibrary.ImeContainer;
-import net.studymongolian.mongollibrary.KeyImage;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
-import net.studymongolian.mongollibrary.KeyboardCyrillic;
-import net.studymongolian.mongollibrary.KeyboardEnglish;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
@@ -26,11 +21,9 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // select one of the two following methods to load the Keyboards
         //loadKeyboardsProgrammatically();
         loadKeyboardsFromXml();
-
-
-
 
         // provide words for candidate selection
         imeContainer.setDataSource(this);
@@ -41,9 +34,9 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
-        mimm.startInput();
 
-        mongolEditText.requestFocus(); // FIXME is this a bug to need to explicitly request focus?
+        // FIXME is this a bug to need to explicitly request focus?
+        mongolEditText.requestFocus();
     }
 
     private void loadKeyboardsFromXml() {
@@ -90,7 +83,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     @Override
     public List<String> onRequestWordsFollowing(String word) {
         // This is a dummy list.
-        // In a production app you would use `word` to look up in a database others words
+        // In a production app you would use `word` to look up in a database other words
         // that could follow `word`.
         List<String> animalNames = new ArrayList<>();
         animalNames.add("ᠬᠣᠨᠢ");

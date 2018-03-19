@@ -6,15 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-
-import static android.content.ContentValues.TAG;
 
 
 public abstract class Key extends View {
@@ -37,7 +32,6 @@ public abstract class Key extends View {
     private int lastTouchDownX;
 
     private KeyListener mKeyListener = null;
-    //private BackspaceListener mBackspaceListener = null;
 
     public Key(Context context) {
         super(context);
@@ -58,24 +52,15 @@ public abstract class Key extends View {
     }
 
     private void initDefault() {
-        //mDisplayText = "abc";
-        //mKeyColor = Color.LTGRAY;
         mPressedColor = Color.GRAY;
-        //mTextColor = Color.BLACK;
-        //mBorderColor = Color.BLACK;
-        //mBorderWidth = 10;
-        //mBorderRadius = 30;
     }
 
     private void initPaints() {
         mKeyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mKeyPaint.setStyle(Paint.Style.FILL);
-        //mKeyPaint.setColor(mKeyColor);
 
         mKeyBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mKeyBorderPaint.setStyle(Paint.Style.STROKE);
-        //mKeyBorderPaint.setStrokeWidth(mBorderWidth);
-        //mKeyBorderPaint.setColor(mBorderColor);
     }
 
     @Override
@@ -187,7 +172,6 @@ public abstract class Key extends View {
     }
 
     public void setBorderColor(int borderColor) {
-        //this.mBorderColor = borderColor;
         mKeyBorderPaint.setColor(borderColor);
         invalidate();
     }
@@ -224,8 +208,8 @@ public abstract class Key extends View {
         mKeyListener.onKeyInput(text);
     }
     protected boolean getIsShowingPopup() {
-        if (mKeyListener == null) return false;
-        return mKeyListener.getIsShowingPopup();
+        return (mKeyListener != null)
+                && mKeyListener.getIsShowingPopup();
     }
     protected void showPopup(Key key, int xPosition) {
         if (mKeyListener == null) return;

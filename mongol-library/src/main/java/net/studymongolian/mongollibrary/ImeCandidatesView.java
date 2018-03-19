@@ -32,7 +32,6 @@ public class ImeCandidatesView extends ViewGroup {
 
     private int mTextColor;
     private float mTextSize;
-    private int mBackgroundColor;
     private int mPressedBackgroundColor;
     private int mDividerColor;
 
@@ -93,7 +92,6 @@ public class ImeCandidatesView extends ViewGroup {
         mCandidates = new ArrayList<>();
         mTextColor = DEFAULT_CANDIDATE_ITEM_TEXT_COLOR;
         mTextSize = DEFAULT_CANDIDATE_ITEM_TEXT_SIZE;
-        mBackgroundColor = DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR;
         mPressedBackgroundColor = DEFAULT_CANDIDATE_ITEM_BACKGROUND_PRESSED_COLOR;
         mDividerColor = DEFAULT_CANDIDATE_DIVIDER_COLOR;
         initPaints();
@@ -169,7 +167,6 @@ public class ImeCandidatesView extends ViewGroup {
     }
 
     public void setCandidateBackgroundColor(int color) {
-        this.mBackgroundColor = color;
         mPaint.setColor(color);
         invalidate();
     }

@@ -1,12 +1,10 @@
 package net.studymongolian.mongollibrarydemo;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import net.studymongolian.mongollibrary.ImeContainer;
-import net.studymongolian.mongollibrary.KeyImage;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.KeyboardCyrillic;
@@ -26,8 +24,6 @@ public class KeyboardActivity extends AppCompatActivity {
         ImeContainer imeContainer = loadKeyboardsFromXml();
         //ImeContainer imeContainer = loadKeyboardsProgrammatically();
 
-
-
         EditText editText = findViewById(R.id.edittext);
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
 
@@ -38,7 +34,6 @@ public class KeyboardActivity extends AppCompatActivity {
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
-        mimm.startInput();
     }
 
     private ImeContainer loadKeyboardsFromXml() {

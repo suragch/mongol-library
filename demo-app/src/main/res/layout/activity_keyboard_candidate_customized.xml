@@ -35,6 +35,8 @@
         android:layout_height="250dp"
         android:background="#dbdbdb"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true">
 
@@ -51,7 +53,6 @@
             app:candidatesLocation="vertical_left"
             style="@style/KeyboardTheme"
             />
-
 
     </net.studymongolian.mongollibrary.ImeContainer>
 

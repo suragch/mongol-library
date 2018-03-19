@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +27,6 @@ import java.util.List;
 public class ImeContainer extends ViewGroup
         implements Keyboard.KeyboardListener, ImeCandidatesView.CandidateClickListener {
 
-    //static final Theme DEFAULT_THEME = Theme.LIGHT;
-
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 8f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
     private static final int DIVIDER_ALPHA = 0x40; // 25%
@@ -39,8 +36,7 @@ public class ImeContainer extends ViewGroup
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
     private ImeCandidatesView mCandidatesView;
-    //private KeyboardCandidatesAdapter mCandidatesAdapter;
-    private WeakReference<MongolInputMethodManager> mimm;
+    //private WeakReference<MongolInputMethodManager> mimm;
     private DataSource mDataSource = null;
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
@@ -66,9 +62,9 @@ public class ImeContainer extends ViewGroup
 
     public interface DataSource {
 
-        public List<String> onRequestWordsStartingWith(String text);
+        List<String> onRequestWordsStartingWith(String text);
 
-        public List<String> onRequestWordsFollowing(String word);
+        List<String> onRequestWordsFollowing(String word);
     }
 
     // provide a way for another class to set the listener
@@ -150,7 +146,6 @@ public class ImeContainer extends ViewGroup
         // candidate view
         final int availableHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         final int candidateViewHeight = (int) (availableHeight * DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION);
-
         final int candidateLeft = getPaddingLeft();
         final int candidateTop = getPaddingTop();
         final int candidateRight = getMeasuredWidth() - getPaddingRight();
@@ -187,13 +182,6 @@ public class ImeContainer extends ViewGroup
         this.mInputConnection = inputConnection;
     }
 
-    InputConnection getInputConnection() {
-        if (mimm == null) return null;
-        MongolInputMethodManager imm = mimm.get();
-        if (imm == null) return null;
-        return imm.getCurrentInputConnection();
-    }
-
     public void onUpdateSelection(int oldSelStart,
                                   int oldSelEnd,
                                   int newSelStart,
@@ -210,7 +198,6 @@ public class ImeContainer extends ViewGroup
                 (newSelStart != candidatesEnd
                         || newSelEnd != candidatesEnd)) {
             mComposing = "";
-            // TODO updateCandidates();
             if (mInputConnection != null) {
                 mInputConnection.finishComposingText();
             }
@@ -259,7 +246,6 @@ public class ImeContainer extends ViewGroup
         if (location == Keyboard.CandidatesLocation.NONE) return;
         setCandidatesOrientation(location);
         styleCandidatesView();
-        //applyKeyboardThemeToCandidatesView();
     }
 
     private void setCandidatesOrientation(Keyboard.CandidatesLocation location) {
@@ -296,11 +282,6 @@ public class ImeContainer extends ViewGroup
         int dividerColor = ColorUtils.setAlphaComponent(textColor, DIVIDER_ALPHA);
         mCandidatesView.setDividerColor(dividerColor);
     }
-
-//    private void applyKeyboardThemeToCandidatesView() {
-//        int keyColor = mCurrentKeyboard.getKeyColor();
-//        mCandidatesView.setBackgroundColor(keyColor);
-//    }
 
     @Override
     public PopupKeyCandidate[] getKeyboardKeyCandidates() {
@@ -376,8 +357,7 @@ public class ImeContainer extends ViewGroup
     }
 
     private boolean hasCandidatesView() {
-        // FIXME get the actual value
-        return true;
+        return mCandidatesView != null;
     }
 
     protected CharSequence getComposingForPreviousMongolWord() {
@@ -506,10 +486,6 @@ public class ImeContainer extends ViewGroup
         // see also https://stackoverflow.com/a/45182401
     }
 
-    public void setInputMethodManager(MongolInputMethodManager inputMethodManager) {
-        this.mimm = new WeakReference<>(inputMethodManager);
-    }
-
     public void addKeyboard(Keyboard keyboard) {
         if (mKeyboards == null)
             mKeyboards = new ArrayList<>();
@@ -524,7 +500,7 @@ public class ImeContainer extends ViewGroup
     }
 
     // This method is called when subviews are added from XML
-    // TODO currently ignoring layout params. Should we use them?
+    // XXX currently ignoring LayoutParams. Should we use them?
     @Override
     public void addView(View child, LayoutParams params) {
         if (child instanceof Keyboard) {
@@ -536,50 +512,6 @@ public class ImeContainer extends ViewGroup
         return mCurrentKeyboard;
     }
 
-    //    }
-//        return (candidatesPreference == Keyboard.CandidatesLocation.NONE);
-//        Keyboard.CandidatesLocation candidatesPreference = mCurrentKeyboard.getCandidatesPreference();
-//        if (mCurrentKeyboard == null) return true;
-//        if (candidatesView == null) return true;
-//    private boolean thereIsNoCandidateViewToSendWordsTo() {
-//
-//    }
-//        candidatesView.setCandidates(wordList);
-//        if (thereIsNoCandidateViewToSendWordsTo()) return;
-//    }
-//        return PopupKeyCandidate.createArray(unicode);
-//                udSuffix};
-//                achaSuffix,
-//                banIyanSuffix,
-//                barIyarSuffix,
-//                duTuSuffix,
-//                iYiSuffix,
-//                yinUnUSuffix,
-//                uuSuffix,
-//                "" + MongolCode.Uni.NNBS,
-//        String[] unicode = new String[]{
-//
-//        String udSuffix = MongolCode.getSuffixUd(gender);
-//        String banIyanSuffix = MongolCode.getSuffixBanIyan(gender, lastChar);
-//        String uuSuffix = MongolCode.getSuffixUu(gender);
-//        String taiSuffix = MongolCode.getSuffixTaiTei(gender);
-//        String barIyarSuffix = MongolCode.getSuffixBarIyar(gender, lastChar);
-//        String achaSuffix = MongolCode.getSuffixAchaEche(gender);
-//        String yinUnUSuffix = MongolCode.getSuffixYinUnU(gender, lastChar);
-//        String iYiSuffix = MongolCode.getSuffixYiI(lastChar);
-//        String duTuSuffix = MongolCode.getSuffixTuDu(gender, lastChar);
-//        }
-//            return PopupKeyCandidate.createArray(MongolCode.Uni.NNBS);
-//        if (gender == null) {
-//        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
-//        char lastChar = previousWord.charAt(previousWord.length() - 1);
-//        // TODO if it is a number then return the right suffix for that
-//        }
-//            return new PopupKeyCandidate[] {new PopupKeyCandidate(MongolCode.Uni.NNBS)};
-//        if (TextUtils.isEmpty(previousWord)) {
-//        String previousWord = getPreviousMongolWord();
-//    protected PopupKeyCandidate[] getCandidatesForSuffix() {
-//
     @Override
     public void onCandidateClick(int position, String text) {
         MongolToast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
@@ -609,155 +541,5 @@ public class ImeContainer extends ViewGroup
         MongolToast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
     }
 
-//    public void applyStyle(StyleBuilder style) {
-//        for (Keyboard keyboard : mKeyboards) {
-//            keyboard.setPrimaryTextSize(style.keyPrimaryTextSize);
-//            keyboard.setSecondaryTextSize(style.keyPrimaryTextSize / 2);
-//            keyboard.setPrimaryTextColor(style.keyPrimaryTextColor);
-//            keyboard.setSecondaryTextColor(style.keySecondaryTextColor);
-//            keyboard.setKeyImageTheme(style.keyImageTheme);
-//            keyboard.setKeyColor(style.keyBackgroundColor);
-//            keyboard.setKeyPressedColor(style.keyPressedColor);
-//            keyboard.setKeyBorderColor(style.keyBorderColor);
-//            keyboard.setKeyBorderWidth(style.keyBorderWidth);
-//            keyboard.setKeyBorderRadius(style.keyBorderRadius);
-//            keyboard.setKeyPadding(style.keySpacing);
-//            keyboard.setPopupBackgroundColor(style.popupBackgroundColor);
-//            keyboard.setPopupHighlightColor(style.popupHighlightColor);
-//            keyboard.setPopupTextColor(style.popupTextColor);
-//            keyboard.setCandidatesLocation(style.candidatesLocation);
-//            keyboard.applyThemeToKeys();
-//        }
-//        if (mCandidatesView != null) {
-//            mCandidatesView.setCandidateBackgroundColor(style.candidateItemBackgroundColor);
-//            mCandidatesView.setBackgroundPressedColor(style.candidateItemBackgroundPressedColor);
-//            mCandidatesView.setTextColor(style.candidateItemTextColor);
-//            mCandidatesView.setDividerColor(style.candidateDividerColor);
-//            mCandidatesView.setBorderColor(style.keyBorderColor);
-//            mCandidatesView.setBorderRadius(style.keyBorderRadius);
-//            mCandidatesView.setBorderWidth(style.keyBorderWidth);
-//        }
-//        invalidate();
-//    }
-
-//    public void updateCandidateWordList(List<String> wordList) {
-
-    public static class StyleBuilder {
-
-        private int keyBackgroundColor = Keyboard.DEFAULT_KEY_COLOR;
-        private int keyPressedColor = Keyboard.DEFAULT_KEY_PRESSED_COLOR;
-        private int keyBorderColor = Keyboard.DEFAULT_KEY_BORDER_COLOR;
-        private int keyBorderRadius = Keyboard.DEFAULT_KEY_BORDER_RADIUS;
-        private int keyBorderWidth = Keyboard.DEFAULT_KEY_BORDER_WIDTH;
-        private int popupBackgroundColor = Keyboard.DEFAULT_POPUP_COLOR;
-        private int popupTextColor = Keyboard.DEFAULT_POPUP_TEXT_COLOR;
-        private int popupHighlightColor = Keyboard.DEFAULT_POPUP_HIGHLIGHT_COLOR;
-        private int keyPrimaryTextColor = Keyboard.DEFAULT_PRIMARY_TEXT_COLOR;
-        private int keySecondaryTextColor = Keyboard.DEFAULT_SECONDARY_TEXT_COLOR;
-        private float keyPrimaryTextSize = Keyboard.DEFAULT_PRIMARY_TEXT_SIZE_SP;
-        private int keySpacing = Keyboard.DEFAULT_KEY_SPACING;
-        private KeyImage.Theme keyImageTheme = Keyboard.DEFAULT_KEY_IMAGE_THEME;
-        private Keyboard.CandidatesLocation candidatesLocation = Keyboard.DEFAULT_CANDIDATES_LOCATION;
-        private int candidateItemBackgroundColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_BACKGROUND_COLOR;
-        private int candidateItemBackgroundPressedColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_BACKGROUND_PRESSED_COLOR;
-        private int candidateItemTextColor = ImeCandidatesView.DEFAULT_CANDIDATE_ITEM_TEXT_COLOR;
-        private int candidateDividerColor = ImeCandidatesView.DEFAULT_CANDIDATE_DIVIDER_COLOR;
-
-
-        public StyleBuilder setKeyTextSize(float keyTextSize) {
-            this.keyPrimaryTextSize = keyTextSize;
-            return this;
-        }
-
-        public StyleBuilder setKeyBackgroundColor(int keyBackgroundColor) {
-            this.keyBackgroundColor = keyBackgroundColor;
-            return this;
-        }
-
-        public StyleBuilder setKeyBorderColor(int keyBorderColor) {
-            this.keyBorderColor = keyBorderColor;
-            return this;
-        }
-
-        public StyleBuilder setKeyBorderRadius(int keyBorderRadius) {
-            this.keyBorderRadius = keyBorderRadius;
-            return this;
-        }
-
-        public StyleBuilder setKeyBorderWidth(int keyBorderWidth) {
-            this.keyBorderWidth = keyBorderWidth;
-            return this;
-        }
-
-        public StyleBuilder setPopupBackgroundColor(int popupBackgroundColor) {
-            this.popupBackgroundColor = popupBackgroundColor;
-            return this;
-        }
-
-        public StyleBuilder setPopupTextColor(int popupTextColor) {
-            this.popupTextColor = popupTextColor;
-            return this;
-        }
-
-        public StyleBuilder setKeyPrimaryTextColor(int keyPrimaryTextColor) {
-            this.keyPrimaryTextColor = keyPrimaryTextColor;
-            return this;
-        }
-
-        public StyleBuilder setKeySecondaryTextColor(int keySecondaryTextColor) {
-            this.keySecondaryTextColor = keySecondaryTextColor;
-            return this;
-        }
-
-        public StyleBuilder setKeySpacing(int keySpacing) {
-            this.keySpacing = keySpacing;
-            return this;
-        }
-
-        public StyleBuilder setPopupHighlightColor(int popupHighlightColor) {
-            this.popupHighlightColor = popupHighlightColor;
-            return this;
-        }
-
-        public StyleBuilder setKeyPressedColor(int keyPressedColor) {
-            this.keyPressedColor = keyPressedColor;
-            return this;
-        }
-
-        /**
-         * @param theme Theme.DARK for a light image
-         *              or Theme.LIGHT for a dark image.
-         * @return StyleBuilder
-         */
-        public StyleBuilder setKeyImageTheme(KeyImage.Theme theme) {
-            this.keyImageTheme = theme;
-            return this;
-        }
-
-        public StyleBuilder setCandidatesLocation(Keyboard.CandidatesLocation location) {
-            this.candidatesLocation = location;
-            return this;
-        }
-
-        public StyleBuilder setCandidateItemBackgroundColor(int color) {
-            this.candidateItemBackgroundColor = color;
-            return this;
-        }
-
-        public StyleBuilder setCandidateItemBackgroundPressedColor(int color) {
-            this.candidateItemBackgroundPressedColor = color;
-            return this;
-        }
-
-        public StyleBuilder setCandidateItemTextColor(int color) {
-            this.candidateItemTextColor = color;
-            return this;
-        }
-
-        public StyleBuilder setCandidateDividerColor(int color) {
-            this.candidateDividerColor = color;
-            return this;
-        }
-    }
 }
 
