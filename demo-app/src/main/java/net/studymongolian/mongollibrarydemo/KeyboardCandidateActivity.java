@@ -9,6 +9,8 @@ import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.KeyImage;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
+import net.studymongolian.mongollibrary.KeyboardCyrillic;
+import net.studymongolian.mongollibrary.KeyboardEnglish;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
@@ -23,9 +25,37 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_keyboard_candidate);
 
+        //loadKeyboardsProgrammatically();
+        loadKeyboardsFromXml();
+
+
+
+
+        // provide words for candidate selection
+        imeContainer.setDataSource(this);
+
+        // set up input method manager
+        MongolInputMethodManager mimm = new MongolInputMethodManager();
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
+        mimm.addEditor(mongolEditText);
+        mimm.setIme(imeContainer);
+        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
+        mimm.startInput();
+
+        mongolEditText.requestFocus(); // FIXME is this a bug to need to explicitly request focus?
+    }
+
+    private void loadKeyboardsFromXml() {
+        setContentView(R.layout.activity_keyboard_candidate_customized);
+        imeContainer = findViewById(R.id.ime_container);
+    }
+
+    // programmatically loaded keyboards will have the default style
+    private void loadKeyboardsProgrammatically() {
+
+        // set a content view without preloaded keyboards
+        setContentView(R.layout.activity_keyboard_candidate);
 
         // keyboards to include (default style)
         Keyboard aeiou = new KeyboardAeiou(this);
@@ -36,55 +66,9 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         qwerty.setCandidatesLocation(Keyboard.CandidatesLocation.HORIZONTAL_TOP);
 
         // add keyboards to the IME container
-        imeContainer = findViewById(R.id.keyboard);
-        imeContainer.addKeyboard(aeiou); // first one is the default
+        imeContainer = findViewById(R.id.ime_container);
+        imeContainer.addKeyboard(aeiou);
         imeContainer.addKeyboard(qwerty);
-
-        // provide words for candidate selection
-        imeContainer.setDataSource(this);
-
-//        ImeContainer.StyleBuilder keyboardStyle = new ImeContainer.StyleBuilder();
-//        keyboardStyle
-//                .setKeyBackgroundColor(Color.BLUE)
-//                .setKeyPressedColor(Color.RED)
-//                .setKeyBorderColor(Color.BLACK)
-//                .setKeyBorderRadius(40)
-//                .setKeyBorderWidth(0)
-//                .setPopupBackgroundColor(Color.WHITE)
-//                .setPopupTextColor(Color.BLUE)
-//                .setPopupHighlightColor(Color.YELLOW)
-//                .setKeyPrimaryTextColor(Color.WHITE)
-//                .setKeySecondaryTextColor(Color.GRAY)
-//                .setKeyImageTheme(KeyImage.Theme.DARK) // for light images
-//                //TODO .setKeyImageColorFilter(Color.BLUE) or (Color.BLUE, PorterDuffMode)
-//                .setKeySpacing(5)
-//                .setCandidateItemBackgroundColor(Color.BLUE)
-//                .setCandidateItemBackgroundPressedColor(Color.RED)
-//                .setCandidateItemTextColor(Color.BLACK)
-//                .setCandidateDividerColor(Color.LTGRAY);
-//        imeContainer.applyStyle(keyboardStyle);
-
-
-        // set up input method manager
-        MongolInputMethodManager mimm = new MongolInputMethodManager();
-        mimm.addEditor(mongolEditText);
-        mimm.setIme(imeContainer);
-        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
-        mimm.startInput();
-
-        mongolEditText.requestFocus(); // FIXME is this a bug to need to explicitly request focus?
-    }
-
-    public void onGiveKeyboardCandidatesButtonClick(View view) {
-
-    }
-
-    public void onVerticalButtonClick(View view) {
-
-    }
-
-    public void onHorizontalButtonClick(View view) {
-
     }
 
 

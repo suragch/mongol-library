@@ -35,7 +35,35 @@
         android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true">
+
+        <net.studymongolian.mongollibrary.KeyboardAeiou
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:candidatesLocation="vertical_left"
+            app:keyColor="@color/colorPrimary"
+            app:primaryTextColor="#ffffff"
+            app:primaryTextSize="30sp"
+            app:secondaryTextColor="#30ffffff"
+            app:keyBorderColor="#ffffff"
+            app:keyBorderRadius="5dp"
+            app:keyBorderWidth="0.5dp"
+            app:keyImageTheme="dark"
+            app:keyPressedColor="@color/colorAccent"
+            app:keySpacing="3dp"
+            app:popupBackgroundColor="#70ffffff"
+            app:popupHighlightColor="@color/colorAccent"
+            app:popupTextColor="#000000"
+            />
+
+        <!-- since no styling is set on this keyboard, default values will be used -->
+        <net.studymongolian.mongollibrary.KeyboardQwerty
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:candidatesLocation="horizontal_top"
+            />
+
+    </net.studymongolian.mongollibrary.ImeContainer>
 
 
 </RelativeLayout>

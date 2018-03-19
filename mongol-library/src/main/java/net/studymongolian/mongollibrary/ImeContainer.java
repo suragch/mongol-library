@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -31,6 +32,7 @@ public class ImeContainer extends ViewGroup
 
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 10f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
+    private static final int DIVIDER_ALPHA = 0x80; // 50%
 
 
     private Context mContext;
@@ -279,8 +281,16 @@ public class ImeContainer extends ViewGroup
     }
 
     private void styleCandidatesView() {
-//        mCandidatesView.setCandidateBackgroundColor(mC);
-//        mCandidatesView.setBorderColor(mCurrentKeyboard.getBorderColor());
+        mCandidatesView.setCandidateBackgroundColor(mCurrentKeyboard.getKeyColor());
+        mCandidatesView.setBackgroundPressedColor(mCurrentKeyboard.getKeyPressedColor());
+        mCandidatesView.setBorderColor(mCurrentKeyboard.getBorderColor());
+        mCandidatesView.setBorderWidth(mCurrentKeyboard.getBorderWidth());
+        mCandidatesView.setBorderRadius(mCurrentKeyboard.getBorderRadius());
+
+        int textColor = mCurrentKeyboard.getPrimaryTextColor();
+        mCandidatesView.setTextColor(textColor);
+        int dividerColor = ColorUtils.setAlphaComponent(textColor, DIVIDER_ALPHA);
+        mCandidatesView.setDividerColor(dividerColor);
     }
 
 //    private void applyKeyboardThemeToCandidatesView() {
@@ -616,9 +626,9 @@ public class ImeContainer extends ViewGroup
 //        }
 //        if (mCandidatesView != null) {
 //            mCandidatesView.setCandidateBackgroundColor(style.candidateItemBackgroundColor);
-//            mCandidatesView.setCandidateBackgroundPressedColor(style.candidateItemBackgroundPressedColor);
-//            mCandidatesView.setCandidateTextColor(style.candidateItemTextColor);
-//            mCandidatesView.setCandidateDividerColor(style.candidateDividerColor);
+//            mCandidatesView.setBackgroundPressedColor(style.candidateItemBackgroundPressedColor);
+//            mCandidatesView.setTextColor(style.candidateItemTextColor);
+//            mCandidatesView.setDividerColor(style.candidateDividerColor);
 //            mCandidatesView.setBorderColor(style.keyBorderColor);
 //            mCandidatesView.setBorderRadius(style.keyBorderRadius);
 //            mCandidatesView.setBorderWidth(style.keyBorderWidth);

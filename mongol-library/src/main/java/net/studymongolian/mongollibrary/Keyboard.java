@@ -315,6 +315,26 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mKeyColor;
     }
 
+    public int getKeyPressedColor() {
+        return mKeyPressedColor;
+    }
+
+    public int getPrimaryTextColor() {
+        return mPrimaryTextColor;
+    }
+
+    public int getBorderColor() {
+        return mKeyBorderColor;
+    }
+
+    public int getBorderWidth() {
+        return mKeyBorderWidth;
+    }
+
+    public int getBorderRadius() {
+        return mKeyBorderRadius;
+    }
+
     public KeyImage.Theme getKeyboardTheme() {
         return mKeyImageTheme;
     }

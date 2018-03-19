@@ -174,16 +174,16 @@ public class ImeCandidatesView extends ViewGroup {
         invalidate();
     }
 
-    public void setCandidateBackgroundPressedColor(int color) {
+    public void setBackgroundPressedColor(int color) {
         this.mPressedBackgroundColor = color;
     }
 
-    public void setCandidateTextColor(int color) {
+    public void setTextColor(int color) {
         this.mTextColor = color;
         invalidate();
     }
 
-    public void setCandidateDividerColor(int color) {
+    public void setDividerColor(int color) {
         this.mDividerColor = color;
         invalidate();
     }
