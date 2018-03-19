@@ -8,4 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="KeyboardTheme" parent="AppTheme">
+        <item name="keyColor">#ffffff</item>
+        <item name="keyPressedColor">#b3b3b3</item>
+        <item name="primaryTextColor">#000000</item>
+        <item name="secondaryTextColor">#b3b3b3</item>
+        <item name="keyImageTheme">light</item>
+        <item name="keySpacing">3dp</item>
+        <item name="keyBorderWidth">1px</item>
+        <item name="keyBorderColor">#000000</item>
+        <item name="keyBorderRadius">3dp</item>
+        <item name="popupTextColor">#fe9a52</item>
+        <item name="popupHighlightColor">#dbdbdb</item>
+    </style>
+
 </resources>

@@ -30,9 +30,9 @@ public class ImeContainer extends ViewGroup
 
     //static final Theme DEFAULT_THEME = Theme.LIGHT;
 
-    private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 10f;
+    private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 8f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
-    private static final int DIVIDER_ALPHA = 0x80; // 50%
+    private static final int DIVIDER_ALPHA = 0x40; // 25%
 
 
     private Context mContext;
@@ -134,6 +134,8 @@ public class ImeContainer extends ViewGroup
         final int candidateTop = getPaddingTop();
         final int candidateRight = candidateLeft + candidateViewWidth;
         final int candidateBottom = getMeasuredHeight() - getPaddingBottom();
+        final int padding = mCurrentKeyboard.getKeySpacing();
+        mCandidatesView.setPadding(padding, padding, 0, padding);
         layoutCandidateView(candidateLeft, candidateTop, candidateRight, candidateBottom);
 
         // keyboard
@@ -153,6 +155,8 @@ public class ImeContainer extends ViewGroup
         final int candidateTop = getPaddingTop();
         final int candidateRight = getMeasuredWidth() - getPaddingRight();
         final int candidateBottom = getPaddingTop() + candidateViewHeight;
+        final int padding = mCurrentKeyboard.getKeySpacing();
+        mCandidatesView.setPadding(padding, padding, padding, 0);
         layoutCandidateView(candidateLeft, candidateTop, candidateRight, candidateBottom);
 
         // keyboard

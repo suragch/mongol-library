@@ -335,6 +335,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mKeyBorderRadius;
     }
 
+    public int getKeySpacing() {
+        return mKeySpacing;
+    }
+
     public KeyImage.Theme getKeyboardTheme() {
         return mKeyImageTheme;
     }
