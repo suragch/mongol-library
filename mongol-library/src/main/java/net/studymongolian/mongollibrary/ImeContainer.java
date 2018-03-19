@@ -65,6 +65,8 @@ public class ImeContainer extends ViewGroup
         List<String> onRequestWordsStartingWith(String text);
 
         List<String> onRequestWordsFollowing(String word);
+
+        void onCandidateLongClick(int position, String text);
     }
 
     // provide a way for another class to set the listener
@@ -514,8 +516,6 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void onCandidateClick(int position, String text) {
-        MongolToast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
-
         replaceComposingWithCandidate(text);
         suggestFollowingWords(text);
     }
@@ -538,7 +538,8 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void onCandidateLongClick(int position, String text) {
-        MongolToast.makeText(mContext, position + "", Toast.LENGTH_SHORT).show();
+        if (mDataSource == null) return;
+        mDataSource.onCandidateLongClick(position, text);
     }
 
 }

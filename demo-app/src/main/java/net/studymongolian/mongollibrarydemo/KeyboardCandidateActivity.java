@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrarydemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.Keyboard;
@@ -9,6 +10,7 @@ import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
+import net.studymongolian.mongollibrary.MongolToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,5 +91,10 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         animalNames.add("ᠬᠣᠨᠢ");
         animalNames.add("ᠢᠮᠠᠭ᠎ᠠ");
         return animalNames;
+    }
+
+    @Override
+    public void onCandidateLongClick(int position, String text) {
+        MongolToast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }
