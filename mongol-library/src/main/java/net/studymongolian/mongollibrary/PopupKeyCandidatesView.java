@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 class PopupKeyCandidatesView extends ViewGroup {
 
     private static final int LABEL_PADDING = 5; // dp
@@ -17,14 +19,14 @@ class PopupKeyCandidatesView extends ViewGroup {
     private int mHighlightColor = Color.DKGRAY;
     private int mTextColor = Color.BLACK;
     private int mTextSize = DEFAULT_TEXT_SIZE;
-    private PopupKeyCandidate[] mCandidates;
+    private List<PopupKeyCandidate> mCandidates;
 
     public PopupKeyCandidatesView(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public void setCandidates(PopupKeyCandidate[] candidates) {
+    public void setCandidates(List<PopupKeyCandidate> candidates) {
         this.mCandidates = candidates;
         initDisplay();
     }
@@ -166,7 +168,7 @@ class PopupKeyCandidatesView extends ViewGroup {
     public PopupKeyCandidate getCurrentItem(int touchPositionX) {
         int highlightedIndex = getSelectedCandidateIndex(touchPositionX);
         if (highlightedIndex >= 0 && mCandidates != null) {
-            return mCandidates[highlightedIndex];
+            return mCandidates.get(highlightedIndex);
         }
         return null;
     }

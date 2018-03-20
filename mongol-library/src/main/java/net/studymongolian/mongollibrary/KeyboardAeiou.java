@@ -3,6 +3,9 @@ package net.studymongolian.mongollibrary;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KeyboardAeiou extends Keyboard {
 
     // name to use in the keyboard popup chooser
@@ -375,27 +378,27 @@ public class KeyboardAeiou extends Keyboard {
         addView(mKeyBackspace);
     }
 
-    public PopupKeyCandidate[] getPopupCandidates(Key key) {
+    public List<PopupKeyCandidate> getPopupCandidates(Key key) {
 
         // get the appropriate candidates based on the key pressed
         if (key == mKeyA) {
-            return getCandidatesForA(isIsolateOrInitial());
+            return getCandidatesForA();
         } else if (key == mKeyE) {
-            return getCandidatesForE(isIsolateOrInitial());
+            return getCandidatesForE();
         } else if (key == mKeyI) {
-            return getCandidatesForI(isIsolateOrInitial());
+            return getCandidatesForI();
         } else if (key == mKeyO) {
-            return getCandidatesForO(isIsolateOrInitial());
+            return getCandidatesForO();
         } else if (key == mKeyU) {
-            return getCandidatesForU(isIsolateOrInitial());
+            return getCandidatesForU();
         } else if (key == mKeyNA) {
-            return getCandidatesForNA(isIsolateOrInitial());
+            return getCandidatesForNA();
         } else if (key == mKeyBA) {
             return getCandidatesForBA();
         } else if (key == mKeyQA) {
             return getCandidatesForQA();
         } else if (key == mKeyGA) {
-            return getCandidatesForGA(isIsolateOrInitial());
+            return getCandidatesForGA();
         } else if (key == mKeyMA) {
             return getCandidatesForMA();
         } else if (key == mKeyLA) {
@@ -403,13 +406,13 @@ public class KeyboardAeiou extends Keyboard {
         } else if (key == mKeySA) {
             return getCandidatesForSA();
         } else if (key == mKeyTADA) {
-            return getCandidatesForTADA(isIsolateOrInitial());
+            return getCandidatesForTADA();
         } else if (key == mKeyCHA) {
             return getCandidatesForCHA();
         } else if (key == mKeyJA) {
             return getCandidatesForJA();
         } else if (key == mKeyYA) {
-            return getCandidatesForYA(isIsolateOrInitial());
+            return getCandidatesForYA();
         } else if (key == mKeyRA) {
             return getCandidatesForRA();
         } else if (key == mKeyKeyboard) {
@@ -423,77 +426,87 @@ public class KeyboardAeiou extends Keyboard {
         return null;
     }
 
-    private PopupKeyCandidate[] getCandidatesForA(boolean isIsolateOrInitial) {
+    private List<PopupKeyCandidate> getCandidatesForA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            return PopupKeyCandidate.createArray(KEY_A_PUNCT_SUB);
+            candidates.add(new PopupKeyCandidate(KEY_A_PUNCT_SUB));
+            return candidates;
         }
 
-        if (isIsolateOrInitial) {
-            return PopupKeyCandidate.createArray(new String[]{
-                    "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                    "" + MongolCode.Uni.MONGOLIAN_NIRUGU});
-        }
-
-        // medial || final
-        PopupKeyCandidate medial_A_FVS1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
         PopupKeyCandidate nirugu = new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_NIRUGU);
+
+        if (isIsolateOrInitial()) {
+            candidates.add(new PopupKeyCandidate("" + MongolCode.Uni.A + MongolCode.Uni.FVS1));
+            candidates.add(nirugu);
+            return candidates;
+        }
+
+        // MVS-A
         char previousChar = getPreviousChar();
         if (MongolCode.isMvsConsonant(previousChar)) {
             PopupKeyCandidate mvs_a = new PopupKeyCandidate(
                     "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
                     "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,
                     null);
-            // include MVS
-            return new PopupKeyCandidate[]{mvs_a, medial_A_FVS1, nirugu};
-        } else {
-            return new PopupKeyCandidate[]{medial_A_FVS1, nirugu};
+            candidates.add(mvs_a);
         }
+
+        PopupKeyCandidate medial_A_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        candidates.add(medial_A_FVS1);
+
+        candidates.add(nirugu);
+        return candidates;
     }
 
 
-    private PopupKeyCandidate[] getCandidatesForE(boolean isIsolateOrInitial) {
+    private List<PopupKeyCandidate> getCandidatesForE() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            return PopupKeyCandidate.createArray(KEY_E_PUNCT_SUB);
+            candidates.add(new PopupKeyCandidate(KEY_E_PUNCT_SUB));
+            return candidates;
         }
 
-        if (isIsolateOrInitial) {
-            return PopupKeyCandidate.createArray(MongolCode.Uni.EE);
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
+
+        if (isIsolateOrInitial()) {
+            return candidates;
         }
 
-        // medial || final
+        // MVS
         char previousChar = getPreviousChar();
-        PopupKeyCandidate ee = new PopupKeyCandidate(MongolCode.Uni.EE);
         if (MongolCode.isMvsConsonant(previousChar)
                 && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
             PopupKeyCandidate mvs_E = new PopupKeyCandidate(
                     "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
                     "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E);
-            return new PopupKeyCandidate[]{mvs_E, ee};
-        } else {
-            return new PopupKeyCandidate[]{ee};
+            candidates.add(mvs_E);
         }
 
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForI(boolean isIsolateOrInitial) {
+    private List<PopupKeyCandidate> getCandidatesForI() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            return PopupKeyCandidate.createArray(KEY_I_PUNCT_SUB);
+            candidates.add(new PopupKeyCandidate(KEY_I_PUNCT_SUB));
+            return candidates;
         }
 
-        if (isIsolateOrInitial)
-            return null;
+        if (isIsolateOrInitial())
+            return candidates;
 
-        // medial/final
         PopupKeyCandidate medial_I_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.I + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        candidates.add(medial_I_FVS1);
+
         char prevChar = getPreviousChar();
         if (MongolCode.isVowel(prevChar)) {
             // override double tooth I after vowel (Unicode 10.0 deviation)
@@ -502,134 +515,185 @@ public class KeyboardAeiou extends Keyboard {
                     "" + MongolCode.Uni.I + MongolCode.Uni.FVS2,
                     "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
                     "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
-            return new PopupKeyCandidate[]{medial_I_FVS2, medial_I_FVS1};
-        } else {
-            return new PopupKeyCandidate[]{medial_I_FVS1};
+            candidates.add(medial_I_FVS2);
         }
 
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForO(boolean isIsolateOrInitial) {
+    private List<PopupKeyCandidate> getCandidatesForO() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            return PopupKeyCandidate.createArray(KEY_O_PUNCT_SUB);
+            candidates.add(new PopupKeyCandidate(KEY_O_PUNCT_SUB));
+            return candidates;
         }
 
-        if (isIsolateOrInitial) {
-            return PopupKeyCandidate.createArray(MongolCode.Uni.O);
+        if (isIsolateOrInitial()) {
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.O));
+            return candidates;
         }
 
-        // medial/final
         PopupKeyCandidate medial_U_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        candidates.add(medial_U_FVS1);
+
         PopupKeyCandidate final_U_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1);
-        return new PopupKeyCandidate[]{medial_U_FVS1, final_U_FVS1};
+        candidates.add(final_U_FVS1);
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForU(boolean isIsolateOrInitial) {
+    private List<PopupKeyCandidate> getCandidatesForU() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            return PopupKeyCandidate.createArray(KEY_U_PUNCT_SUB);
+            candidates.add(new PopupKeyCandidate(KEY_U_PUNCT_SUB));
+            return candidates;
         }
 
-        if (isIsolateOrInitial) {
-            return PopupKeyCandidate.createArray(MongolCode.Uni.OE);
+        if (isIsolateOrInitial()) {
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.OE));
+            return candidates;
         }
 
-        // medial/final
         PopupKeyCandidate medial_UE_FVS2 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
+        candidates.add(medial_UE_FVS2);
+
         PopupKeyCandidate final_UE_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1);
-        return new PopupKeyCandidate[]{medial_UE_FVS2, final_UE_FVS1};
+        candidates.add(final_UE_FVS1);
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForNA(boolean isIsolateOrInitial) {
+    private List<PopupKeyCandidate> getCandidatesForNA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            return PopupKeyCandidate.createArray(KEY_NA_PUNCT_SUB);
+            candidates.add(new PopupKeyCandidate(KEY_NA_PUNCT_SUB));
+            return candidates;
         }
 
-        if (isIsolateOrInitial) {
-            return PopupKeyCandidate.createArray(MongolCode.Uni.ANG);
+        if (isIsolateOrInitial()) {
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.ANG));
+            return candidates;
         }
 
-        // medial/final
-        PopupKeyCandidate ang = new PopupKeyCandidate(MongolCode.Uni.ANG);
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.ANG));
+
         // only(?) way to override dotted N before vowel in Unicode 10.0
         PopupKeyCandidate na_zwj = new PopupKeyCandidate(
                 "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ);
+        candidates.add(na_zwj);
+
         PopupKeyCandidate na_fvs1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        return new PopupKeyCandidate[]{ang, na_zwj, na_fvs1};
+        candidates.add(na_fvs1);
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForBA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_BA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(new String[]{"" + MongolCode.Uni.PA, "" + MongolCode.Uni.FA});
-    }
+    private List<PopupKeyCandidate> getCandidatesForBA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
 
-    private PopupKeyCandidate[] getCandidatesForQA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_QA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(MongolCode.Uni.HAA);
-    }
-
-    private PopupKeyCandidate[] getCandidatesForGA(boolean isIsolateOrInitial) {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_GA_PUNCT_SUB);
-
-        if (isIsolateOrInitial) {
-            return PopupKeyCandidate.createArray(MongolCode.Uni.KA);
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_BA_PUNCT_SUB));
+            return candidates;
         }
 
-        // medial/final
-        PopupKeyCandidate ka = new PopupKeyCandidate(MongolCode.Uni.KA);
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.PA));
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.FA));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForQA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_QA_PUNCT_SUB));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.HAA));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForGA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_GA_PUNCT_SUB));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.KA));
+
+        if (isIsolateOrInitial()) {
+            return candidates;
+        }
+
         // see note on MongolCode(FINA_GA_FVS1)
         PopupKeyCandidate ga_fvs1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.GA + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS1);
+        candidates.add(ga_fvs1);
+
         // see note on MongolCode(FINA_GA_FVS2)
         PopupKeyCandidate ga_fvs2 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.GA + MongolCode.Uni.FVS2,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2);
-        return new PopupKeyCandidate[]{ka, ga_fvs1, ga_fvs2};
+        candidates.add(ga_fvs2);
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForMA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_MA_PUNCT_SUB);
-        return null;
+    private List<PopupKeyCandidate> getCandidatesForMA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_MA_PUNCT_SUB));
+            return candidates;
+        }
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForLA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_LA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(MongolCode.Uni.LHA);
+    private List<PopupKeyCandidate> getCandidatesForLA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_LA_PUNCT_SUB));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.LHA));
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForSA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_SA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(MongolCode.Uni.SHA);
+    private List<PopupKeyCandidate> getCandidatesForSA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_SA_PUNCT_SUB));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.SHA));
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForTADA(boolean isIsolateOrInitial) {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_DA_PUNCT_SUB);
+    private List<PopupKeyCandidate> getCandidatesForTADA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_DA_PUNCT_SUB));
+            return candidates;
+        }
 
-        if (isIsolateOrInitial) {
+        if (isIsolateOrInitial()) {
             char prevChar = getPreviousChar();
             String unicode;
             if (prevChar == MongolCode.Uni.NNBS) {
@@ -640,81 +704,110 @@ public class KeyboardAeiou extends Keyboard {
             PopupKeyCandidate initial_da = new PopupKeyCandidate(
                     unicode,
                     "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-            return new PopupKeyCandidate[]{initial_da};
+            candidates.add(initial_da);
+            return candidates;
             // TODO if this turns out to be an isolate then the FVS1 should be removed
         }
 
-        // medial/final
         PopupKeyCandidate medial_ta_fvs1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
                         MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        candidates.add(medial_ta_fvs1);
+
         PopupKeyCandidate final_ta = new PopupKeyCandidate(
                 "" + MongolCode.Uni.TA,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA);
+        candidates.add(final_ta);
+
         PopupKeyCandidate final_da_fvs1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1);
-        return new PopupKeyCandidate[]{medial_ta_fvs1, final_ta, final_da_fvs1};
+        candidates.add(final_da_fvs1);
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForCHA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_CHA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(new String[]{
-                "" + MongolCode.Uni.ZA,
-                "" + MongolCode.Uni.TSA,
-                "" + MongolCode.Uni.CHI});
+    private List<PopupKeyCandidate> getCandidatesForCHA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_CHA_PUNCT_SUB));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.ZA));
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.TSA));
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.CHI));
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForJA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_JA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(new String[]{
-                "" + MongolCode.Uni.ZHI});
+    private List<PopupKeyCandidate> getCandidatesForJA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_JA_PUNCT_SUB));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.ZHI));
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForYA(boolean isIsolateOrInitial) {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_YA_PUNCT_SUB);
+    private List<PopupKeyCandidate> getCandidatesForYA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_YA_PUNCT_SUB));
+            return candidates;
+        }
 
-        PopupKeyCandidate wa = new PopupKeyCandidate(MongolCode.Uni.WA);
-        if (isIsolateOrInitial) {
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.WA));
+
+        if (isIsolateOrInitial()) {
             PopupKeyCandidate initial_YA_FVS1 = new PopupKeyCandidate(
                     "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1,
                     "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                     "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-            return new PopupKeyCandidate[]{wa, initial_YA_FVS1};
+
+            candidates.add(initial_YA_FVS1);
+            return candidates;
         }
 
-        // medial/final
         PopupKeyCandidate medial_YA_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                 "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        return new PopupKeyCandidate[]{wa, medial_YA_FVS1};
+        candidates.add(medial_YA_FVS1);
+
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForRA() {
-        if (mIsShowingPunctuation)
-            return PopupKeyCandidate.createArray(KEY_RA_PUNCT_SUB);
-        return PopupKeyCandidate.createArray(MongolCode.Uni.ZRA);
+    private List<PopupKeyCandidate> getCandidatesForRA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(KEY_RA_PUNCT_SUB));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.ZRA));
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForComma() {
-        return PopupKeyCandidate.createArray(new String[]{
-                "" + MongolCode.Uni.VERTICAL_QUESTION_MARK,
-                "" + MongolCode.Uni.MONGOLIAN_FULL_STOP,
-                "" + MongolCode.Uni.VERTICAL_EXCLAMATION_MARK});
+    private List<PopupKeyCandidate> getCandidatesForComma() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_QUESTION_MARK));
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_FULL_STOP));
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK));
+        return candidates;
     }
 
-    private PopupKeyCandidate[] getCandidatesForSpace() {
+    private List<PopupKeyCandidate> getCandidatesForSpace() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
         PopupKeyCandidate nnbs = new PopupKeyCandidate(
                 "" + MongolCode.Uni.NNBS,
                 KEY_SPACE_SUB_DISPLAY,
                 " ");
-        return new PopupKeyCandidate[]{nnbs};
+        candidates.add(nnbs);
+        return candidates;
     }
 
     @Override

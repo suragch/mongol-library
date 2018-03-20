@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import java.util.List;
+
 
 public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
@@ -170,7 +172,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     public interface KeyboardListener {
 
         void onRequestNewKeyboard(String keyboardDisplayName);
-        PopupKeyCandidate[] getKeyboardKeyCandidates();
+        List<PopupKeyCandidate> getKeyboardKeyCandidates();
         char getPreviousChar();
         boolean insertLocationIsIsolateOrInitial();
         void onKeyboardInput(String text);
@@ -286,12 +288,12 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mKeyboardListener.insertLocationIsIsolateOrInitial();
     }
 
-    public PopupKeyCandidate[] getCandidatesForKeyboardKey() {
+    public List<PopupKeyCandidate> getCandidatesForKeyboardKey() {
         if (mKeyboardListener == null) return null;
         return mKeyboardListener.getKeyboardKeyCandidates();
     }
 
-    abstract public PopupKeyCandidate[] getPopupCandidates(Key key);
+    abstract public List<PopupKeyCandidate> getPopupCandidates(Key key);
 
     // subclasses should return the name of the keyboard to display in the
     // keyboard chooser popup
@@ -428,8 +430,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     @Override
     public void showPopup(Key key, final int xPosition) {
-        PopupKeyCandidate[] popupCandidates = getPopupCandidates(key);
-        if (popupCandidates == null || popupCandidates.length == 0) return;
+        List<PopupKeyCandidate> popupCandidates = getPopupCandidates(key);
+        if (popupCandidates == null || popupCandidates.size() == 0) return;
         popupView = getPopupView();
         popupView.setCandidates(popupCandidates);
         layoutAndShowPopupWindow(key, xPosition);

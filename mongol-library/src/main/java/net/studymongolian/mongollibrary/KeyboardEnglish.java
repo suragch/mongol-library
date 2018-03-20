@@ -4,6 +4,8 @@ package net.studymongolian.mongollibrary;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import java.util.List;
+
 public class KeyboardEnglish extends Keyboard {
 
     // name to use in the keyboard popup chooser
@@ -567,7 +569,7 @@ public class KeyboardEnglish extends Keyboard {
         addView(mKeyReturn);
     }
 
-    public PopupKeyCandidate[] getPopupCandidates(Key key) {
+    public List<PopupKeyCandidate> getPopupCandidates(Key key) {
         // get the appropriate candidates based on the key pressed
         if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();

@@ -49,9 +49,9 @@ public class PopupKeyCandidate {
         this.composing = composing;
     }
 
-    public boolean isEmpty() {
-        return TextUtils.isEmpty(unicode);
-    }
+//    public boolean isEmpty() {
+//        return TextUtils.isEmpty(unicode);
+//    }
 
     public String getUnicode() {
         return unicode;
@@ -65,20 +65,20 @@ public class PopupKeyCandidate {
         return composing;
     }
 
-    public static PopupKeyCandidate[] createArray(char unicode) {
-        return new PopupKeyCandidate[] { new PopupKeyCandidate(unicode)};
-    }
+//    public static PopupKeyCandidate[] createArray(char unicode) {
+//        return new PopupKeyCandidate[] { new PopupKeyCandidate(unicode)};
+//    }
+//
+//    public static PopupKeyCandidate[] createArray(String unicode) {
+//        return new PopupKeyCandidate[] { new PopupKeyCandidate(unicode)};
+//    }
 
-    public static PopupKeyCandidate[] createArray(String unicode) {
-        return new PopupKeyCandidate[] { new PopupKeyCandidate(unicode)};
-    }
-
-    public static PopupKeyCandidate[] createArray(String[] unicodeCandidates) {
-        PopupKeyCandidate[] candidates = new PopupKeyCandidate[unicodeCandidates.length];
-        for (int i = 0; i < unicodeCandidates.length; i++) {
-            candidates[i] = new PopupKeyCandidate(unicodeCandidates[i]);
-        }
-        return candidates;
-    }
+//    public static PopupKeyCandidate[] createArray(String[] unicodeCandidates) {
+//        PopupKeyCandidate[] candidates = new PopupKeyCandidate[unicodeCandidates.length];
+//        for (int i = 0; i < unicodeCandidates.length; i++) {
+//            candidates[i] = new PopupKeyCandidate(unicodeCandidates[i]);
+//        }
+//        return candidates;
+//    }
 
 }

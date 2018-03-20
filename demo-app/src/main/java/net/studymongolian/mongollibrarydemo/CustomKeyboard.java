@@ -10,6 +10,8 @@ import net.studymongolian.mongollibrary.KeyText;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.PopupKeyCandidate;
 
+import java.util.List;
+
 public class CustomKeyboard extends Keyboard {
 
     // name to use in the keyboard popup chooser
@@ -186,7 +188,7 @@ public class CustomKeyboard extends Keyboard {
         addView(mKeyBackspace);
     }
 
-    public PopupKeyCandidate[] getPopupCandidates(Key key) {
+    public List<PopupKeyCandidate> getPopupCandidates(Key key) {
         // this keyboard has no popups except for the keyboard key
         if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();

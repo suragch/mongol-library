@@ -36,7 +36,6 @@ public class ImeContainer extends ViewGroup
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
     private ImeCandidatesView mCandidatesView;
-    //private WeakReference<MongolInputMethodManager> mimm;
     private DataSource mDataSource = null;
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
@@ -182,6 +181,7 @@ public class ImeContainer extends ViewGroup
 
     public void setInputConnection(InputConnection inputConnection) {
         this.mInputConnection = inputConnection;
+        mComposing = "";
     }
 
     public void onUpdateSelection(int oldSelStart,
@@ -286,20 +286,18 @@ public class ImeContainer extends ViewGroup
     }
 
     @Override
-    public PopupKeyCandidate[] getKeyboardKeyCandidates() {
+    public List<PopupKeyCandidate> getKeyboardKeyCandidates() {
         int numberOfOtherKeyboards = mKeyboards.size() - 1;
-        if (numberOfOtherKeyboards < 1) return null;
-        String[] names = new String[numberOfOtherKeyboards];
-        int nameIndex = 0;
-        for (int i = 0; i < mKeyboards.size(); i++) {
-            Keyboard keyboard = mKeyboards.get(i);
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (numberOfOtherKeyboards < 1) return candidates;
+        for (Keyboard keyboard : mKeyboards) {
             if (keyboard == mCurrentKeyboard) {
                 continue;
             }
-            names[nameIndex] = keyboard.getDisplayName();
-            nameIndex++;
+            PopupKeyCandidate item = new PopupKeyCandidate(keyboard.getDisplayName());
+            candidates.add(item);
         }
-        return PopupKeyCandidate.createArray(names);
+        return candidates;
     }
 
     @Override
