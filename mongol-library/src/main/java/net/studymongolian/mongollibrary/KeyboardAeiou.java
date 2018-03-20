@@ -195,10 +195,10 @@ public class KeyboardAeiou extends Keyboard {
         mKeyTADA.setSubText(MongolCode.Uni.DA);
 
         mKeyCHA.setText(MongolCode.Uni.CHA);
-        mKeyCHA.setSubText(MongolCode.Uni.TSA);
+        mKeyCHA.setSubText(MongolCode.Uni.ZA);
 
         mKeyJA.setText(MongolCode.Uni.JA);
-        mKeyJA.setSubText(MongolCode.Uni.ZA);
+        mKeyJA.setSubText(MongolCode.Uni.ZHI);
 
         mKeyYA.setText(MongolCode.Uni.YA);
         mKeyYA.setSubText(MongolCode.Uni.WA);
@@ -663,6 +663,7 @@ public class KeyboardAeiou extends Keyboard {
         if (mIsShowingPunctuation)
             return PopupKeyCandidate.createArray(KEY_CHA_PUNCT_SUB);
         return PopupKeyCandidate.createArray(new String[]{
+                "" + MongolCode.Uni.ZA,
                 "" + MongolCode.Uni.TSA,
                 "" + MongolCode.Uni.CHI});
     }
@@ -671,7 +672,6 @@ public class KeyboardAeiou extends Keyboard {
         if (mIsShowingPunctuation)
             return PopupKeyCandidate.createArray(KEY_JA_PUNCT_SUB);
         return PopupKeyCandidate.createArray(new String[]{
-                "" + MongolCode.Uni.ZA,
                 "" + MongolCode.Uni.ZHI});
     }
 

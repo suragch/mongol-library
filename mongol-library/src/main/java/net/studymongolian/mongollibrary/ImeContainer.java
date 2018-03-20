@@ -8,7 +8,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputConnection;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ public class ImeContainer extends ViewGroup
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 8f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
     private static final int DIVIDER_ALPHA = 0x40; // 25%
+    private static final int MAX_CHARS_BEFORE_CURSOR = 128;
 
 
     private Context mContext;
@@ -325,62 +325,30 @@ public class ImeContainer extends ViewGroup
     @Override
     public void onKeyboardInput(String text) {
         if (mInputConnection == null) return;
-        if (hasCandidatesView()) {
-            if (isMongol(text)) {
-                mInputConnection.beginBatchEdit();
-                mComposing = getComposingForPreviousMongolWord();
-                mComposing = mComposing + text;
-                mInputConnection.setComposingText(mComposing, 1);
-                mInputConnection.endBatchEdit();
-                if (mDataSource != null) {
-                    List<String> candidates = mDataSource.onRequestWordsStartingWith(mComposing.toString());
-                    if (mCandidatesView != null)
-                        mCandidatesView.setCandidates(candidates);
-                }
-            } else {
-                handleOldComposingText(text);
-                mInputConnection.commitText(text, 1);
-                if (mCandidatesView != null)
-                    mCandidatesView.clearCandidates();
-            }
-        } else {
-            handleOldComposingText(text);
-            mInputConnection.commitText(text, 1);
+        if (TextUtils.isEmpty(text)) return;
+        boolean isMongol = MongolCode.isMongolian(text.charAt(0));
+        handleOldComposingText(isMongol);
+        mInputConnection.commitText(text, 1);
+        updateCandidatesView();
+    }
+
+    private void updateCandidatesView() {
+        if (mCandidatesView == null || mDataSource == null) return;
+        String mongolWord = getMongolWordBeforeCursor();
+        if (TextUtils.isEmpty(mongolWord)) {
+            mCandidatesView.clearCandidates();
+            return;
         }
+        List<String> candidates = mDataSource.onRequestWordsStartingWith(mongolWord);
+        mCandidatesView.setCandidates(candidates);
     }
 
-    private boolean isMongol(String text) {
-        if (TextUtils.isEmpty(text)) return false;
-        for (char character : text.toCharArray()) {
-            if (!MongolCode.isMongolian(character))
-                return false;
-        }
-        return true;
-    }
-
-    private boolean hasCandidatesView() {
-        return mCandidatesView != null;
-    }
-
-    protected CharSequence getComposingForPreviousMongolWord() {
-        if (mInputConnection == null) return "";
-        int numberOfCharsToGet = Integer.MAX_VALUE;
-        CharSequence previous = mInputConnection.getTextBeforeCursor(numberOfCharsToGet, 0);
+    private String getMongolWordBeforeCursor() {
+        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
         if (TextUtils.isEmpty(previous)) return "";
         int endIndex = previous.length();
-        int startIndex = endIndex;
-        for (int i = endIndex - 1; i >= 0; i--) {
-            if (MongolCode.isMongolian(previous.charAt(i))) {
-                startIndex = i;
-            } else {
-                break;
-            }
-        }
-        mInputConnection.setComposingRegion(startIndex, endIndex);
-        if (startIndex < endIndex) {
-            return previous.subSequence(startIndex, endIndex);
-        }
-        return "";
+        int startIndex = getStartIndex(endIndex, previous);
+        return previous.subSequence(startIndex, endIndex).toString();
     }
 
     @Override
@@ -392,15 +360,16 @@ public class ImeContainer extends ViewGroup
         if (TextUtils.isEmpty(composingText)) {
             onKeyboardInput(unicode);
         } else {
-            handleOldComposingText(unicode);
+            boolean isMongol = MongolCode.isMongolian(unicode.charAt(0));
+            handleOldComposingText(isMongol);
             mInputConnection.setComposingText(composingText, 1);
             mComposing = unicode;
         }
     }
 
-    private void handleOldComposingText(String inputText) {
+    private void handleOldComposingText(boolean newInputIsMongol) {
         if (TextUtils.isEmpty(mComposing)) return;
-        if (MongolCode.isMongolian(inputText.charAt(0))) {
+        if (newInputIsMongol) {
             mInputConnection.commitText(mComposing, 1);
         } else {
             mInputConnection.finishComposingText();
@@ -424,6 +393,8 @@ public class ImeContainer extends ViewGroup
 
         String previousFourChars = getPreviousFourChars();
         backspaceFromEndOf(previousFourChars);
+
+        clearCandidates();
     }
 
     private boolean hasSelection() {
@@ -432,7 +403,6 @@ public class ImeContainer extends ViewGroup
     }
 
     private String getPreviousFourChars() {
-        if (mInputConnection == null) return "";
         CharSequence previous = mInputConnection.getTextBeforeCursor(4, 0);
         return previous.toString();
     }
@@ -488,6 +458,11 @@ public class ImeContainer extends ViewGroup
         // see also https://stackoverflow.com/a/45182401
     }
 
+    private void clearCandidates() {
+        if (mCandidatesView == null) return;
+        mCandidatesView.clearCandidates();
+    }
+
     public void addKeyboard(Keyboard keyboard) {
         if (mKeyboards == null)
             mKeyboards = new ArrayList<>();
@@ -516,14 +491,57 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void onCandidateClick(int position, String text) {
-        replaceComposingWithCandidate(text);
+        if (currentWordIsPrefixedWith(text)) {
+            replaceMongolWordBeforeCursor(text);
+        } else {
+            insertFollowingWord(text);
+        }
         suggestFollowingWords(text);
     }
 
-    private void replaceComposingWithCandidate(String candidate) {
+    private boolean currentWordIsPrefixedWith(String text) {
+        String currentWord = getMongolWordBeforeCursor();
+        return text.startsWith(currentWord);
+    }
+
+    private void insertFollowingWord(String text) {
         if (mInputConnection == null) return;
-        mInputConnection.commitText(candidate + " ", 1);
-        mComposing = "";
+        char previousChar = getPreviousChar();
+        String insertWord = text;
+        if (previousChar != ' ') {
+            insertWord = " " + insertWord;
+        }
+        mInputConnection.commitText(insertWord, 1);
+    }
+
+
+    private void replaceMongolWordBeforeCursor(String text) {
+        if (mInputConnection == null) return;
+        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
+        if (previous == null) return;
+        int endIndex = previous.length();
+        int startIndex = getStartIndex(endIndex, previous);
+        int length = endIndex - startIndex;
+        mInputConnection.beginBatchEdit();
+        mInputConnection.deleteSurroundingText(length, 0);
+        mInputConnection.commitText(text, 1);
+        mInputConnection.endBatchEdit();
+    }
+
+    private int getStartIndex(int endIndex, CharSequence previous) {
+        int startIndex = endIndex;
+        for (int i = endIndex - 1; i >= 0; i--) {
+            char previousChar = previous.charAt(i);
+            if (MongolCode.isMongolian(previousChar)) {
+                startIndex = i;
+            } else if (previousChar == MongolCode.Uni.NNBS) {
+                startIndex = i;
+                break;
+            } else {
+                break;
+            }
+        }
+        return startIndex;
     }
 
     private void suggestFollowingWords(String text) {

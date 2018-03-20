@@ -301,7 +301,8 @@ public class ImeCandidatesView extends ViewGroup {
                 if (mOrientation == ImeCandidatesView.Orientation.VERTICAL) {
                     ((MongolLabel) textView).setText(text);
                 } else {
-                    ((TextView) textView).setText(text);
+                    String renderedText = MongolCode.INSTANCE.unicodeToMenksoft(text);
+                    ((TextView) textView).setText(renderedText);
                 }
             }
 

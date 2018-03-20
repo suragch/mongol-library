@@ -570,6 +570,10 @@ public final class MongolCode {
                 || character == Uni.ZWJ|| character == Uni.ZWNJ);
     }
 
+//    public static boolean isMongolianOrNNBS(char character) {
+//        return isMongolian(character) || character == Uni.NNBS;
+//    }
+
     // not MVS, FVS
     static boolean isRenderedGlyph(char character) {
         //return !(character == Uni.MVS || isFVS(character)
