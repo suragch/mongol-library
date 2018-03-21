@@ -309,6 +309,42 @@ public class ImeContainer extends ViewGroup
     }
 
     @Override
+    public String getPreviousMongolWord(boolean allowSingleSpace) {
+        if (mInputConnection == null) return "";
+        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
+        if (TextUtils.isEmpty(previous)) return "";
+        int endIndex = previous.length();
+        if (allowSingleSpace && endsWithSpace(previous)) {
+            endIndex--;
+        }
+        int startIndex = getStartIndex(endIndex, previous);
+        return previous.subSequence(startIndex, endIndex).toString();
+    }
+
+    private boolean endsWithSpace(CharSequence text) {
+        int length = text.length();
+        if (length < 1) return false;
+        char lastChar = text.charAt(length - 1);
+        return (lastChar == ' ' || lastChar == MongolCode.Uni.NNBS);
+    }
+
+    private int getStartIndex(int endIndex, CharSequence previous) {
+        int startIndex = endIndex;
+        for (int i = endIndex - 1; i >= 0; i--) {
+            char previousChar = previous.charAt(i);
+            if (MongolCode.isMongolian(previousChar)) {
+                startIndex = i;
+            } else if (previousChar == MongolCode.Uni.NNBS) {
+                startIndex = i;
+                break;
+            } else {
+                break;
+            }
+        }
+        return startIndex;
+    }
+
+    @Override
     public boolean insertLocationIsIsolateOrInitial() {
         if (mInputConnection == null) return true;
         CharSequence before = mInputConnection.getTextBeforeCursor(2, 0);
@@ -332,7 +368,7 @@ public class ImeContainer extends ViewGroup
 
     private void updateCandidatesView() {
         if (mCandidatesView == null || mDataSource == null) return;
-        String mongolWord = getMongolWordBeforeCursor();
+        String mongolWord = getPreviousMongolWord(false);
         if (TextUtils.isEmpty(mongolWord)) {
             mCandidatesView.clearCandidates();
             return;
@@ -341,13 +377,13 @@ public class ImeContainer extends ViewGroup
         mCandidatesView.setCandidates(candidates);
     }
 
-    private String getMongolWordBeforeCursor() {
-        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
-        if (TextUtils.isEmpty(previous)) return "";
-        int endIndex = previous.length();
-        int startIndex = getStartIndex(endIndex, previous);
-        return previous.subSequence(startIndex, endIndex).toString();
-    }
+//    private String getMongolWordBeforeCursor() {
+//        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
+//        if (TextUtils.isEmpty(previous)) return "";
+//        int endIndex = previous.length();
+//        int startIndex = getStartIndex(endIndex, previous);
+//        return previous.subSequence(startIndex, endIndex).toString();
+//    }
 
     @Override
     public void onKeyPopupChosen(PopupKeyCandidate choice) {
@@ -498,7 +534,7 @@ public class ImeContainer extends ViewGroup
     }
 
     private boolean currentWordIsPrefixedWith(String text) {
-        String currentWord = getMongolWordBeforeCursor();
+        String currentWord = getPreviousMongolWord(false);
         return text.startsWith(currentWord);
     }
 
@@ -526,21 +562,7 @@ public class ImeContainer extends ViewGroup
         mInputConnection.endBatchEdit();
     }
 
-    private int getStartIndex(int endIndex, CharSequence previous) {
-        int startIndex = endIndex;
-        for (int i = endIndex - 1; i >= 0; i--) {
-            char previousChar = previous.charAt(i);
-            if (MongolCode.isMongolian(previousChar)) {
-                startIndex = i;
-            } else if (previousChar == MongolCode.Uni.NNBS) {
-                startIndex = i;
-                break;
-            } else {
-                break;
-            }
-        }
-        return startIndex;
-    }
+
 
     private void suggestFollowingWords(String text) {
         if (mCandidatesView == null) return;

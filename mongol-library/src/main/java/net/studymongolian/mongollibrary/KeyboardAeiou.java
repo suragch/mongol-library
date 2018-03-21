@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
@@ -473,21 +474,33 @@ public class KeyboardAeiou extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
-        if (isIsolateOrInitial()) {
-            return candidates;
+        if (!isIsolateOrInitial()) {
+            // MVS
+            char previousChar = getPreviousChar();
+            if (MongolCode.isMvsConsonant(previousChar)
+                    && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
+                PopupKeyCandidate mvs_E = new PopupKeyCandidate(
+                        "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
+                        "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E);
+                candidates.add(mvs_E);
+            }
         }
 
-        // MVS
-        char previousChar = getPreviousChar();
-        if (MongolCode.isMvsConsonant(previousChar)
-                && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
-            PopupKeyCandidate mvs_E = new PopupKeyCandidate(
-                    "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
-                    "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.E);
-            candidates.add(mvs_E);
+        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+            candidates.addAll(getSuffixForKeyE());
         }
 
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyE() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+        String achaEche = MongolCode.getSuffixAchaEche(gender);
+        suffixes.add(new PopupKeyCandidate(achaEche));
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForI() {
@@ -498,27 +511,68 @@ public class KeyboardAeiou extends Keyboard {
             return candidates;
         }
 
-        if (isIsolateOrInitial())
-            return candidates;
+        if (!isIsolateOrInitial()) {
 
-        PopupKeyCandidate medial_I_FVS1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        candidates.add(medial_I_FVS1);
+            PopupKeyCandidate medial_I_FVS1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+            candidates.add(medial_I_FVS1);
 
-        char prevChar = getPreviousChar();
-        if (MongolCode.isVowel(prevChar)) {
-            // override double tooth I after vowel (Unicode 10.0 deviation)
-            // ("" + MongolCode.Uni.ZWJ + MongolCode.Uni.I) is an alternate method to override double tooth I
-            PopupKeyCandidate medial_I_FVS2 = new PopupKeyCandidate(
-                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS2,
-                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
-                    "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
-            candidates.add(medial_I_FVS2);
+            char prevChar = getPreviousChar();
+            if (MongolCode.isVowel(prevChar)) {
+                // override double tooth I after vowel (Unicode 10.0 deviation)
+                // ("" + MongolCode.Uni.ZWJ + MongolCode.Uni.I) is an alternate method to override double tooth I
+                PopupKeyCandidate medial_I_FVS2 = new PopupKeyCandidate(
+                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS2,
+                        "" + MongolCode.Uni.ZWJ + MongolCode.Uni.I + MongolCode.Uni.ZWJ,
+                        "" + MongolCode.Uni.I + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
+                candidates.add(medial_I_FVS2);
+            }
+
+        }
+
+        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+            candidates.addAll(getSuffixForKeyI());
         }
 
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyI() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+
+        if (TextUtils.isEmpty(previousWord)) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.I));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.YI));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.YIN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.IYAR));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.IYAN));
+            return suffixes;
+        }
+
+        // YI I
+        char lastChar = previousWord.charAt(previousWord.length() - 1);
+        String iYi = MongolCode.getSuffixYiI(lastChar);
+        suffixes.add(new PopupKeyCandidate(iYi));
+
+        // YIN
+        suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.YIN));
+
+        // IYAR and IYAN
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+        if (gender == MongolCode.Gender.FEMININE) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.IYER));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.IYEN));
+        } else {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.IYAR));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.IYAN));
+        }
+
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForO() {
@@ -531,21 +585,45 @@ public class KeyboardAeiou extends Keyboard {
 
         if (isIsolateOrInitial()) {
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.O));
-            return candidates;
+        } else {
+
+            PopupKeyCandidate medial_U_FVS1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+            candidates.add(medial_U_FVS1);
+
+            PopupKeyCandidate final_U_FVS1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1);
+            candidates.add(final_U_FVS1);
+
         }
 
-        PopupKeyCandidate medial_U_FVS1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.U + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        candidates.add(medial_U_FVS1);
-
-        PopupKeyCandidate final_U_FVS1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.U + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.U + MongolCode.Uni.FVS1);
-        candidates.add(final_U_FVS1);
+        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+            candidates.addAll(getSuffixForKeyO());
+        }
 
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyO() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+
+        if (gender == MongolCode.Gender.FEMININE) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UED));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UEUE));
+        } else {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UD));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UU));
+        }
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForU() {
@@ -583,26 +661,49 @@ public class KeyboardAeiou extends Keyboard {
             return candidates;
         }
 
-        if (isIsolateOrInitial()) {
-            candidates.add(new PopupKeyCandidate(MongolCode.Uni.ANG));
-            return candidates;
-        }
-
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.ANG));
 
-        // only(?) way to override dotted N before vowel in Unicode 10.0
-        PopupKeyCandidate na_zwj = new PopupKeyCandidate(
-                "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ);
-        candidates.add(na_zwj);
+        if (!isIsolateOrInitial()) {
 
-        PopupKeyCandidate na_fvs1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        candidates.add(na_fvs1);
+            // only(?) way to override dotted N before vowel in Unicode 10.0
+            PopupKeyCandidate na_zwj = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ);
+            candidates.add(na_zwj);
+
+            PopupKeyCandidate na_fvs1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+            candidates.add(na_fvs1);
+        }
+
+        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+            candidates.addAll(getSuffixForKeyNA());
+        }
 
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyNA() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+
+        if (gender == MongolCode.Gender.FEMININE) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.UE));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.NUEGUED));
+        } else if (gender == MongolCode.Gender.MASCULINE) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.U));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.NUGUD));
+        } else {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.U));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.NUGUD));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.NUEGUED));
+        }
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForBA() {
@@ -615,7 +716,29 @@ public class KeyboardAeiou extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.PA));
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.FA));
+
+        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+            candidates.addAll(getSuffixForKeyBA());
+        }
+
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyBA() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+
+        if (gender == MongolCode.Gender.FEMININE) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.BER));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.BEN));
+        } else {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.BAR));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.BAN));
+        }
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForQA() {
@@ -705,28 +828,62 @@ public class KeyboardAeiou extends Keyboard {
                     unicode,
                     "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
             candidates.add(initial_da);
-            return candidates;
             // TODO if this turns out to be an isolate then the FVS1 should be removed
+        } else {
+            PopupKeyCandidate medial_ta_fvs1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
+                            MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+            candidates.add(medial_ta_fvs1);
+
+            PopupKeyCandidate final_ta = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.TA,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA);
+            candidates.add(final_ta);
+
+            PopupKeyCandidate final_da_fvs1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1);
+            candidates.add(final_da_fvs1);
         }
 
-        PopupKeyCandidate medial_ta_fvs1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.MONGOLIAN_NIRUGU +
-                        MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.TA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        candidates.add(medial_ta_fvs1);
-
-        PopupKeyCandidate final_ta = new PopupKeyCandidate(
-                "" + MongolCode.Uni.TA,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.TA);
-        candidates.add(final_ta);
-
-        PopupKeyCandidate final_da_fvs1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.DA + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.DA + MongolCode.Uni.FVS1);
-        candidates.add(final_da_fvs1);
+        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+            candidates.addAll(getSuffixForKeyTADA());
+        }
 
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyTADA() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+
+        if (gender == null) {
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TU));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DU));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAI));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAGAN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAGAN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEGEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DEGEN));
+            return suffixes;
+        }
+
+        char lastChar = previousWord.charAt(previousWord.length() - 1);
+        String tuDu = MongolCode.getSuffixTuDu(gender, lastChar);
+        suffixes.add(new PopupKeyCandidate(tuDu));
+
+        String taiTei = MongolCode.getSuffixTaiTei(gender);
+        suffixes.add(new PopupKeyCandidate(taiTei));
+
+        String taganDagan = MongolCode.getSuffixTaganDagan(gender, lastChar);
+        suffixes.add(new PopupKeyCandidate(taganDagan));
+
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForCHA() {

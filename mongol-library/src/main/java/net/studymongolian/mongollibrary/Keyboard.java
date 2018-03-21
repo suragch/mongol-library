@@ -35,8 +35,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     static final int DEFAULT_POPUP_HIGHLIGHT_COLOR = Color.GRAY;
     static final CandidatesLocation DEFAULT_CANDIDATES_LOCATION = CandidatesLocation.NONE;
 
-
-
     private KeyImage.Theme mKeyImageTheme;
     private int mPopupBackgroundColor;
     private int mPopupHighlightColor;
@@ -52,8 +50,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     private int mKeyBorderWidth;
     private int mKeyBorderRadius;
     private int mKeySpacing;
-
-    // this is not set with styling
     private CandidatesLocation mCandidatesLocation;
 
     private PopupKeyCandidatesView popupView;
@@ -174,6 +170,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         void onRequestNewKeyboard(String keyboardDisplayName);
         List<PopupKeyCandidate> getKeyboardKeyCandidates();
         char getPreviousChar();
+        String getPreviousMongolWord(boolean allowSingleSpace);
         boolean insertLocationIsIsolateOrInitial();
         void onKeyboardInput(String text);
         void onKeyPopupChosen(PopupKeyCandidate popupKeyCandidate);
@@ -344,6 +341,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     public KeyImage.Theme getKeyboardTheme() {
         return mKeyImageTheme;
     }
+
+//    public CandidatesLocation getCandidatesLocation() {
+//        return mCandidatesLocation;
+//    }
 
 //    public void setSecondaryTextSize(float secondaryTextSize) {
 //        this.mSecondaryTextSizePx = secondaryTextSize;

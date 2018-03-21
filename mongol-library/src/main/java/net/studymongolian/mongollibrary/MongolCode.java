@@ -29,9 +29,6 @@ public final class MongolCode {
     // this is a singleton class (should it just be a static class?)
     public final static MongolCode INSTANCE = new MongolCode();
 
-
-
-
     public enum Location {
         ISOLATE, INITIAL, MEDIAL, FINAL
     }
@@ -634,6 +631,21 @@ public final class MongolCode {
         }
     }
 
+    public static String getSuffixTaganDagan(Gender previousWordGender, char previousWordLastChar) {
+        if (isBGDRS(previousWordLastChar)) {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.TAGAN;
+            } else {
+                return Suffix.TEGEN;
+            }
+        } else {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.DAGAN;
+            } else {
+                return Suffix.DEGEN;
+            }
+        }
+    }
 
     // Yi comes after a vowel, I comes after a consonant.
     static String getSuffixYiI(char previousWordLastChar) {

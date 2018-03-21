@@ -1714,9 +1714,10 @@ class MongolWord {
     static MongolCode.Gender getGender(CharSequence word) {
         // check that word is valid mongolian
         if (word == null || word.length() == 0) return null;
-        int lastIndex = word.length() - 1;
-        if (!MongolCode.isMongolian(word.charAt(lastIndex))) return null;
-        return getWordGenderAboveIndex(lastIndex, word);
+        int length = word.length();
+        char lastChar = word.charAt(length - 1);
+        if (!MongolCode.isMongolian(lastChar)) return null;
+        return getWordGenderAboveIndex(length, word);
     }
 
     // assumes that word is valid mongolian
