@@ -411,6 +411,9 @@ public class KeyboardQwerty extends Keyboard {
         mKeyExclamation.setText(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK);
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
         mKeySpace.setText(" ");
+        if (hasCandidatesView()) {
+            mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
+        }
         mKeyPeriod.setText(MongolCode.Uni.MONGOLIAN_FULL_STOP);
         mKeyQuestion.setText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeyReturn.setText(NEWLINE);
@@ -623,7 +626,7 @@ public class KeyboardQwerty extends Keyboard {
             }
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyE());
         }
 
@@ -666,7 +669,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(medial_ta_fvs1);
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyT());
         }
 
@@ -773,7 +776,7 @@ public class KeyboardQwerty extends Keyboard {
             }
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyI());
         }
 
@@ -921,7 +924,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(final_da_fvs1);
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyD());
         }
 
@@ -1112,7 +1115,7 @@ public class KeyboardQwerty extends Keyboard {
 
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyV());
         }
 
@@ -1145,7 +1148,7 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyB());
         }
 
@@ -1192,7 +1195,7 @@ public class KeyboardQwerty extends Keyboard {
 
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyN());
         }
 

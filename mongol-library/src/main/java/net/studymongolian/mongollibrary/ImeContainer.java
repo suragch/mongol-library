@@ -358,12 +358,25 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void onKeyboardInput(String text) {
-        if (mInputConnection == null) return;
         if (TextUtils.isEmpty(text)) return;
         boolean isMongol = MongolCode.isMongolian(text.charAt(0));
         handleOldComposingText(isMongol);
-        mInputConnection.commitText(text, 1);
+        commitText(text);
         updateCandidatesView();
+    }
+
+    private void commitText(String text) {
+        if (mInputConnection == null) return;
+        mInputConnection.beginBatchEdit();
+        char previousChar = getPreviousChar();
+        if (previousChar == ' ' || previousChar == MongolCode.Uni.NNBS) {
+            char initialChar = text.charAt(0);
+            if (initialChar == MongolCode.Uni.NNBS) {
+                mInputConnection.deleteSurroundingText(1, 0);
+            }
+        }
+        mInputConnection.commitText(text, 1);
+        mInputConnection.endBatchEdit();
     }
 
     private void updateCandidatesView() {

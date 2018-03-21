@@ -304,9 +304,13 @@ public class KeyboardAeiou extends Keyboard {
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
         mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeySpace.setText(" ");
-        mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
+        if (hasCandidatesView()) {
+            mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
+        }
         mKeyReturn.setText(NEWLINE);
     }
+
+
 
     private void setKeyImages() {
         mKeyBackspace.setImage(getBackspaceImage());
@@ -486,7 +490,7 @@ public class KeyboardAeiou extends Keyboard {
             }
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyE());
         }
 
@@ -532,7 +536,7 @@ public class KeyboardAeiou extends Keyboard {
 
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyI());
         }
 
@@ -600,7 +604,7 @@ public class KeyboardAeiou extends Keyboard {
 
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyO());
         }
 
@@ -678,7 +682,7 @@ public class KeyboardAeiou extends Keyboard {
             candidates.add(na_fvs1);
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyNA());
         }
 
@@ -717,7 +721,7 @@ public class KeyboardAeiou extends Keyboard {
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.PA));
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.FA));
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyBA());
         }
 
@@ -848,7 +852,7 @@ public class KeyboardAeiou extends Keyboard {
             candidates.add(final_da_fvs1);
         }
 
-        if (getCandidatesLocation() == CandidatesLocation.NONE) {
+        if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyTADA());
         }
 

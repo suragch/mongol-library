@@ -300,7 +300,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         mCandidatesLocation = location;
     }
 
-
+    public boolean hasCandidatesView() {
+        return mCandidatesLocation != CandidatesLocation.NONE;
+    }
 
     public CandidatesLocation getCandidatesLocation() {
         return mCandidatesLocation;
