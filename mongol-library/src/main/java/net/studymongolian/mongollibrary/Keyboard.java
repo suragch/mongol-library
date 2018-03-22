@@ -215,11 +215,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         for (int i = 0; i < getChildCount(); i++) {
             Key child = (Key) getChildAt(i);
             if (child instanceof KeyText) {
-                ((KeyText) child).setTypeFace(mTypeface);
                 ((KeyText) child).setTextSize(mPrimaryTextSizePx);
-                ((KeyText) child).setSubTextSize(mSecondaryTextSizePx);
                 ((KeyText) child).setTextColor(mPrimaryTextColor);
-                ((KeyText) child).setSubTextColor(mSecondaryTextColor);
             } else if (child instanceof KeyImage) {
                 // TODO apply theme to key image
 
@@ -228,6 +225,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 }
             }
 
+            child.setTypeFace(mTypeface);
+            child.setSubTextSize(mSecondaryTextSizePx);
+            child.setSubTextColor(mSecondaryTextColor);
             child.setKeyColor(mKeyColor);
             child.setPressedColor(mKeyPressedColor);
             child.setBorderColor(mKeyBorderColor);

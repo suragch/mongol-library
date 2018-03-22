@@ -275,17 +275,17 @@ public class KeyboardQwerty extends Keyboard {
     }
 
     private void rotatePrimaryText() {
-        mKeyQ.setRotatedPrimaryText(true);
-        mKeyW.setRotatedPrimaryText(true);
-        mKeyE.setRotatedPrimaryText(true);
-        mKeyR.setRotatedPrimaryText(true);
-        mKeyT.setRotatedPrimaryText(true);
-        mKeyY.setRotatedPrimaryText(true);
-        mKeyU.setRotatedPrimaryText(true);
-        mKeyI.setRotatedPrimaryText(true);
-        mKeyO.setRotatedPrimaryText(true);
-        mKeyP.setRotatedPrimaryText(true);
-        mKeyH.setRotatedPrimaryText(true);
+        mKeyQ.setIsRotatedPrimaryText(true);
+        mKeyW.setIsRotatedPrimaryText(true);
+        mKeyE.setIsRotatedPrimaryText(true);
+        mKeyR.setIsRotatedPrimaryText(true);
+        mKeyT.setIsRotatedPrimaryText(true);
+        mKeyY.setIsRotatedPrimaryText(true);
+        mKeyU.setIsRotatedPrimaryText(true);
+        mKeyI.setIsRotatedPrimaryText(true);
+        mKeyO.setIsRotatedPrimaryText(true);
+        mKeyP.setIsRotatedPrimaryText(true);
+        mKeyH.setIsRotatedPrimaryText(true);
     }
 
     private void setPuncuationKeyValues() {
@@ -384,17 +384,17 @@ public class KeyboardQwerty extends Keyboard {
     }
 
     private void dontRotatePrimaryTextForSelectKeys() {
-        mKeyQ.setRotatedPrimaryText(false);
-        mKeyW.setRotatedPrimaryText(false);
-        mKeyE.setRotatedPrimaryText(false);
-        mKeyR.setRotatedPrimaryText(false);
-        mKeyT.setRotatedPrimaryText(false);
-        mKeyY.setRotatedPrimaryText(false);
-        mKeyU.setRotatedPrimaryText(false);
-        mKeyI.setRotatedPrimaryText(false);
-        mKeyO.setRotatedPrimaryText(false);
-        mKeyP.setRotatedPrimaryText(false);
-        mKeyH.setRotatedPrimaryText(false);
+        mKeyQ.setIsRotatedPrimaryText(false);
+        mKeyW.setIsRotatedPrimaryText(false);
+        mKeyE.setIsRotatedPrimaryText(false);
+        mKeyR.setIsRotatedPrimaryText(false);
+        mKeyT.setIsRotatedPrimaryText(false);
+        mKeyY.setIsRotatedPrimaryText(false);
+        mKeyU.setIsRotatedPrimaryText(false);
+        mKeyI.setIsRotatedPrimaryText(false);
+        mKeyO.setIsRotatedPrimaryText(false);
+        mKeyP.setIsRotatedPrimaryText(false);
+        mKeyH.setIsRotatedPrimaryText(false);
     }
 
     private void setNonChangingKeyValues() {

@@ -10,8 +10,6 @@ import android.util.AttributeSet;
 
 public class KeyImage extends Key {
 
-    private String mPrimaryText;
-
     private TextPaint mImagePaint;
     private Bitmap mImage;
     private Bitmap mImageScaled;
@@ -38,25 +36,23 @@ public class KeyImage extends Key {
 
     public KeyImage(Context context) {
         super(context);
-        initPaints();
+        init();
     }
 
     public KeyImage(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initPaints();
+        init();
     }
 
     public KeyImage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initPaints();
+        init();
     }
 
-    private void initPaints() {
-
+    private void init() {
         mImagePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mImagePaint.setFilterBitmap(true);
         mImagePaint.setDither(true);
-
     }
 
 
@@ -90,12 +86,15 @@ public class KeyImage extends Key {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawImage(canvas);
+    }
 
+    private void drawImage(Canvas canvas) {
         // calculate position for centered image
         int keyHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         int keyWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
 
-        // automatically resize text that is too large
+        // automatically resize image that is too large
         if (mNeedToScaleImage) {
             float x = getPaddingLeft() + (keyWidth - mImageScaled.getWidth()) / 2;
             float y = getPaddingTop() + (keyHeight - mImageScaled.getHeight()) / 2;
@@ -105,26 +104,9 @@ public class KeyImage extends Key {
             float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2;
             canvas.drawBitmap(mImage, x, y, mImagePaint);
         }
-
     }
 
     public void setImage (Bitmap bitmap) {
         mImage = bitmap;
-    }
-
-    @Override
-    protected void onActionUp(int xPosition) {
-        if (getIsShowingPopup())
-            finishPopup(xPosition);
-        else if (mPrimaryText != null)
-            sendTextToKeyboard(mPrimaryText);
-    }
-
-    public void setText(char text) {
-        setText(String.valueOf(text));
-    }
-
-    public void setText(String text) {
-        mPrimaryText = text;
     }
 }

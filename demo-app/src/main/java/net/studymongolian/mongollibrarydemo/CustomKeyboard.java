@@ -129,16 +129,16 @@ public class CustomKeyboard extends Keyboard {
     }
 
     private void dontRotatePrimaryText() {
-        mKey1.setRotatedPrimaryText(false);
-        mKey2.setRotatedPrimaryText(false);
-        mKey3.setRotatedPrimaryText(false);
-        mKey4.setRotatedPrimaryText(false);
-        mKey5.setRotatedPrimaryText(false);
-        mKey6.setRotatedPrimaryText(false);
-        mKey7.setRotatedPrimaryText(false);
-        mKey8.setRotatedPrimaryText(false);
-        mKey9.setRotatedPrimaryText(false);
-        mKey0.setRotatedPrimaryText(false);
+        mKey1.setIsRotatedPrimaryText(false);
+        mKey2.setIsRotatedPrimaryText(false);
+        mKey3.setIsRotatedPrimaryText(false);
+        mKey4.setIsRotatedPrimaryText(false);
+        mKey5.setIsRotatedPrimaryText(false);
+        mKey6.setIsRotatedPrimaryText(false);
+        mKey7.setIsRotatedPrimaryText(false);
+        mKey8.setIsRotatedPrimaryText(false);
+        mKey9.setIsRotatedPrimaryText(false);
+        mKey0.setIsRotatedPrimaryText(false);
     }
 
 

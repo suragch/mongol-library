@@ -4,8 +4,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Handler;
+import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +19,7 @@ import android.view.ViewConfiguration;
 public abstract class Key extends View {
 
     public static final float MAX_CONTENT_PROPORTION = 0.8f;
+    private static final float SUBTEXT_INDENT = 3; // dp
 
     protected boolean mStatePressed = false;
     protected Paint mKeyPaint;
@@ -25,6 +30,14 @@ public abstract class Key extends View {
     protected RectF mSizeRect;
     protected int mKeyHeight;
     protected int mKeyWidth;
+
+    protected MongolCode renderer = MongolCode.INSTANCE;
+    protected String mKeyInputText;
+    private String mSubTextDisplay;
+    private boolean mIsRotatedSubText;
+    private Rect mSubTextBounds;
+    private TextPaint mSubTextPaint;
+    private float mSubtextIndent;
 
     private final int LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private Handler mHandler = new Handler();
@@ -53,6 +66,10 @@ public abstract class Key extends View {
 
     private void initDefault() {
         mPressedColor = Color.GRAY;
+        mIsRotatedSubText = true;
+        mSubTextBounds = new Rect();
+        //mSubTextDisplay = "";
+        mSubtextIndent = SUBTEXT_INDENT * getResources().getDisplayMetrics().density;
     }
 
     private void initPaints() {
@@ -61,6 +78,9 @@ public abstract class Key extends View {
 
         mKeyBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mKeyBorderPaint.setStyle(Paint.Style.STROKE);
+
+        mSubTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mSubTextPaint.setTextSize(90);
     }
 
     @Override
@@ -75,12 +95,89 @@ public abstract class Key extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawBackgroundAndBorder(canvas);
+        drawSubText(canvas);
+    }
 
-        // draw background and border
+    private void drawBackgroundAndBorder(Canvas canvas) {
         canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyPaint);
         if (mKeyBorderPaint.getStrokeWidth() > 0) {
             canvas.drawRoundRect(mSizeRect, mBorderRadius, mBorderRadius, mKeyBorderPaint);
         }
+    }
+
+    private void drawSubText(Canvas canvas) {
+        if (TextUtils.isEmpty(mSubTextDisplay)) return;
+        if (mIsRotatedSubText) {
+            drawRotatedSubText(canvas);
+        } else {
+            drawNonRotatedSubText(canvas);
+        }
+    }
+
+    private void drawRotatedSubText(Canvas canvas) {
+        // get text size
+        mSubTextPaint.getTextBounds(mSubTextDisplay, 0, mSubTextDisplay.length(), mSubTextBounds);
+
+        // automatically resize text that is too large
+        final float widthProportion = MAX_CONTENT_PROPORTION * mKeyWidth / mSubTextBounds.height();
+        final float heightProportion = MAX_CONTENT_PROPORTION * mKeyHeight / mSubTextBounds.width();
+        float proportion = Math.min(heightProportion, widthProportion);
+        if (proportion < 1) {
+            mSubTextPaint.setTextSize(mSubTextPaint.getTextSize() * proportion);
+            mSubTextPaint.getTextBounds(mSubTextDisplay, 0, mSubTextDisplay.length(), mSubTextBounds);
+        }
+
+        // make sure a large border radius doesn't overlap the subtext
+        float indent = mSubtextIndent;
+        float radiusAdjustment = (float) (mBorderRadius * ( 1 - (1 / Math.sqrt(2))));
+        indent += radiusAdjustment;
+
+        int dx = getPaddingTop() - mSubTextBounds.left        // align top edge
+                + mKeyHeight - mSubTextBounds.width()         // align bottom edge
+                - (int) indent;                               // move a little up
+        int dy = - getPaddingLeft() - mSubTextBounds.bottom   // align left edge
+                - mKeyWidth + mSubTextBounds.height()         // align right edge
+                + (int) indent;                               // move a little left
+
+        // draw text
+        canvas.save();
+        canvas.rotate(90);
+        canvas.translate(dx, dy);
+        canvas.drawText(mSubTextDisplay, 0, 0, mSubTextPaint);
+        canvas.restore();
+    }
+
+    private void drawNonRotatedSubText(Canvas canvas) {
+        // get text size
+        mSubTextPaint.getTextBounds(mSubTextDisplay, 0, mSubTextDisplay.length(), mSubTextBounds);
+
+        // resize text if too big
+        final float widthProportion = MAX_CONTENT_PROPORTION * mKeyWidth / mSubTextBounds.width();
+        final float heightProportion = MAX_CONTENT_PROPORTION * mKeyHeight / mSubTextBounds.height();
+        float proportion = Math.min(heightProportion, widthProportion);
+        if (proportion < 1) {
+            mSubTextPaint.setTextSize(mSubTextPaint.getTextSize() * proportion);
+            mSubTextPaint.getTextBounds(mSubTextDisplay, 0, mSubTextDisplay.length(), mSubTextBounds);
+        }
+
+        // make sure a large border radius doesn't overlap the subtext
+        float indent = mSubtextIndent;
+        float radiusAdjustment = (float) (mBorderRadius * ( 1 - (1 / Math.sqrt(2))));
+        indent += radiusAdjustment;
+
+        int dx = getPaddingLeft() - mSubTextBounds.left      // align left edge
+                + mKeyWidth - mSubTextBounds.width()         // align right edge
+                - (int) indent;                              // move a little left
+        int dy = getPaddingTop() - mSubTextBounds.top        // align top edge
+                + mKeyHeight - mSubTextBounds.height()       // align bottom edge
+                - (int) indent;                              // move a little up
+
+        // draw text
+        canvas.save();
+        canvas.translate(dx, dy);
+        canvas.drawText(mSubTextDisplay, 0, 0, mSubTextPaint);
+        canvas.restore();
     }
 
     @Override
@@ -136,7 +233,10 @@ public abstract class Key extends View {
 
 
     protected void onActionUp(int xPosition) {
-        finishPopup(xPosition);
+        if (getIsShowingPopup())
+            finishPopup(xPosition);
+        else if (mKeyInputText != null)
+            sendTextToKeyboard(mKeyInputText);
     }
 
     @Override
@@ -183,6 +283,43 @@ public abstract class Key extends View {
 
     public void setBorderRadius(int borderRadius) {
         this.mBorderRadius = borderRadius;
+        invalidate();
+    }
+
+    public void setText(char text) {
+        setText(String.valueOf(text));
+    }
+
+    public void setText(String text) {
+        this.mKeyInputText = text;
+    }
+
+    public void setIsRotatedSubText(boolean isRotated) {
+        this.mIsRotatedSubText = isRotated;
+        invalidate();
+    }
+
+    public void setSubText(String text) {
+        this.mSubTextDisplay = renderer.unicodeToMenksoft(text);
+        invalidate();
+    }
+
+    public void setSubText(char text) {
+        setSubText(String.valueOf(text));
+    }
+
+    public void setTypeFace(Typeface typeface) {
+        mSubTextPaint.setTypeface(typeface);
+        invalidate();
+    }
+
+    public void setSubTextSize(float subTextSize) {
+        mSubTextPaint.setTextSize(subTextSize);
+        invalidate();
+    }
+
+    public void setSubTextColor(int subTextColor) {
+        mSubTextPaint.setColor(subTextColor);
         invalidate();
     }
 
@@ -239,5 +376,4 @@ public abstract class Key extends View {
         if (mKeyListener == null) return;
         mKeyListener.onShiftChanged(isShiftOn);
     }
-
 }

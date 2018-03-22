@@ -523,49 +523,49 @@ public class KeyboardCyrillic extends Keyboard {
     private void dontRotatePrimaryTextForSelectKeys() {
 
         // Row 1
-        mKey_f.setRotatedPrimaryText(false);
-        mKey_ts.setRotatedPrimaryText(false);
-        mKey_u.setRotatedPrimaryText(false);
-        mKey_j.setRotatedPrimaryText(false);
-        mKey_e.setRotatedPrimaryText(false);
-        mKey_n.setRotatedPrimaryText(false);
-        mKey_g.setRotatedPrimaryText(false);
-        mKey_sh.setRotatedPrimaryText(false);
-        mKey_u7.setRotatedPrimaryText(false);
-        mKey_z.setRotatedPrimaryText(false);
-        mKey_k.setRotatedPrimaryText(false);
-        mKey_i_xatuu.setRotatedPrimaryText(false);
+        mKey_f.setIsRotatedPrimaryText(false);
+        mKey_ts.setIsRotatedPrimaryText(false);
+        mKey_u.setIsRotatedPrimaryText(false);
+        mKey_j.setIsRotatedPrimaryText(false);
+        mKey_e.setIsRotatedPrimaryText(false);
+        mKey_n.setIsRotatedPrimaryText(false);
+        mKey_g.setIsRotatedPrimaryText(false);
+        mKey_sh.setIsRotatedPrimaryText(false);
+        mKey_u7.setIsRotatedPrimaryText(false);
+        mKey_z.setIsRotatedPrimaryText(false);
+        mKey_k.setIsRotatedPrimaryText(false);
+        mKey_i_xatuu.setIsRotatedPrimaryText(false);
 
         // Row 2
-        mKey_i_xagas.setRotatedPrimaryText(false);
-        mKey_y.setRotatedPrimaryText(false);
-        mKey_b.setRotatedPrimaryText(false);
-        mKey_o6.setRotatedPrimaryText(false);
-        mKey_a.setRotatedPrimaryText(false);
-        mKey_kh.setRotatedPrimaryText(false);
-        mKey_r.setRotatedPrimaryText(false);
-        mKey_o.setRotatedPrimaryText(false);
-        mKey_l.setRotatedPrimaryText(false);
-        mKey_d.setRotatedPrimaryText(false);
-        mKey_p.setRotatedPrimaryText(false);
-        mKey_ye.setRotatedPrimaryText(false);
+        mKey_i_xagas.setIsRotatedPrimaryText(false);
+        mKey_y.setIsRotatedPrimaryText(false);
+        mKey_b.setIsRotatedPrimaryText(false);
+        mKey_o6.setIsRotatedPrimaryText(false);
+        mKey_a.setIsRotatedPrimaryText(false);
+        mKey_kh.setIsRotatedPrimaryText(false);
+        mKey_r.setIsRotatedPrimaryText(false);
+        mKey_o.setIsRotatedPrimaryText(false);
+        mKey_l.setIsRotatedPrimaryText(false);
+        mKey_d.setIsRotatedPrimaryText(false);
+        mKey_p.setIsRotatedPrimaryText(false);
+        mKey_ye.setIsRotatedPrimaryText(false);
 
         // Row 3
-        mKey_ya.setRotatedPrimaryText(false);
-        mKey_ch.setRotatedPrimaryText(false);
-        mKey_yo.setRotatedPrimaryText(false);
-        mKey_s.setRotatedPrimaryText(false);
-        mKey_m.setRotatedPrimaryText(false);
-        mKey_i.setRotatedPrimaryText(false);
-        mKey_t.setRotatedPrimaryText(false);
-        mKey_i_joolen.setRotatedPrimaryText(false);
-        mKey_v.setRotatedPrimaryText(false);
+        mKey_ya.setIsRotatedPrimaryText(false);
+        mKey_ch.setIsRotatedPrimaryText(false);
+        mKey_yo.setIsRotatedPrimaryText(false);
+        mKey_s.setIsRotatedPrimaryText(false);
+        mKey_m.setIsRotatedPrimaryText(false);
+        mKey_i.setIsRotatedPrimaryText(false);
+        mKey_t.setIsRotatedPrimaryText(false);
+        mKey_i_joolen.setIsRotatedPrimaryText(false);
+        mKey_v.setIsRotatedPrimaryText(false);
 
         // Row 4
-        mKeyComma.setRotatedPrimaryText(false);
-        mKeySpace.setRotatedPrimaryText(false);
-        mKeyPeriod.setRotatedPrimaryText(false);
-        mKey_yu.setRotatedPrimaryText(false);
+        mKeyComma.setIsRotatedPrimaryText(false);
+        mKeySpace.setIsRotatedPrimaryText(false);
+        mKeyPeriod.setIsRotatedPrimaryText(false);
+        mKey_yu.setIsRotatedPrimaryText(false);
     }
 
     private void setKeyImages() {
