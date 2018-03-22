@@ -10,7 +10,7 @@ Android UI components for vertical Mongolian text
     * [MongolTextView](https://github.com/suragch/mongol-library#mongoltextview) 
     * [MongolLabel](https://github.com/suragch/mongol-library#mongollabel)
     * [MongolEditText](https://github.com/suragch/mongol-library#mongoledittext)
-    * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
+    * [Keyboards](https://github.com/suragch/mongol-library#keyboards)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
     * [Horizontal RecyclerView](https://github.com/suragch/mongol-library#horizontal-recyclerview)
