@@ -68,7 +68,6 @@ public abstract class Key extends View {
         mPressedColor = Color.GRAY;
         mIsRotatedSubText = true;
         mSubTextBounds = new Rect();
-        //mSubTextDisplay = "";
         mSubtextIndent = SUBTEXT_INDENT * getResources().getDisplayMetrics().density;
     }
 
@@ -80,7 +79,6 @@ public abstract class Key extends View {
         mKeyBorderPaint.setStyle(Paint.Style.STROKE);
 
         mSubTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mSubTextPaint.setTextSize(90);
     }
 
     @Override

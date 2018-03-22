@@ -37,7 +37,6 @@ public class KeyText extends Key {
 
     private void init() {
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextSize(90);
         mTextBounds = new Rect();
         mIsRotatedPrimaryText = true;
     }
