@@ -7,10 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-
-import static android.content.ContentValues.TAG;
 
 public class KeyImage extends Key {
 

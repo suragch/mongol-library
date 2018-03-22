@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -105,14 +104,6 @@ public class KeyboardQwerty extends Keyboard {
         init(context);
     }
 
-    // all keyboards should include this custom constructor
-    // (there was no way to force it in the abstract Keyboard class)
-//    public KeyboardQwerty(Context context, StyleBuilder style) {
-//        super(context);
-//        super.initStyle(style);
-//        init(context);
-//    }
-
     protected void init(Context context) {
 
         // keyboard layout
@@ -141,7 +132,6 @@ public class KeyboardQwerty extends Keyboard {
         setListeners();
         addKeysToKeyboard();
         applyThemeToKeys();
-        //setPreferredCandidateLocation(CandidateLocation.HORIZONTAL_TOP);
     }
 
     private void instantiateKeys(Context context) {

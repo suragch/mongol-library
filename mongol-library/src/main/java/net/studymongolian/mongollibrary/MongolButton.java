@@ -31,7 +31,6 @@ public class MongolButton extends MongolTextView {
 
     }
 
-
     @Override
     public CharSequence getAccessibilityClassName() {
         return MongolButton.class.getName();

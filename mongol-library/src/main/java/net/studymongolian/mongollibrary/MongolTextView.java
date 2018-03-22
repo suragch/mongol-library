@@ -4,36 +4,36 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.text.Selection;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 
 // TODO how to speed this up
 // use array instead of mLinesInfo list
-// only rerender changed words
+// only re-render changed words
 // only redraw changed lines
 
 public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawListener {
 
     private final static int DEFAULT_FONT_SIZE_SP = 20;
     private static final int STICKY_WIDTH_UNDEFINED = -1;
-    private static final String TAG = "MongolTextView";
+
+    private static final int OLD_WIDTH_SPEC_INDEX = 0;
+    private static final int OLD_CHOSEN_HEIGHT_INDEX = 1;
+    private static final int OLD_DESIRED_WIDTH_INDEX = 2;
+    private static final int NEW_WIDTH_SPEC_INDEX = 3;
+    private static final int NEW_CHOSEN_HEIGHT_INDEX = 4;
+    private static final int NEW_DESIRED_WIDTH_INDEX = 5;
 
     private Context mContext;
     private int mTextColor;
@@ -157,15 +157,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         setMeasuredDimension(width, height);
     }
 
-    private static final int OLD_WIDTH_SPEC_INDEX = 0;
-    private static final int OLD_CHOSEN_HEIGHT_INDEX = 1;
-    private static final int OLD_DESIRED_WIDTH_INDEX = 2;
-    private static final int NEW_WIDTH_SPEC_INDEX = 3;
-    private static final int NEW_CHOSEN_HEIGHT_INDEX = 4;
-    private static final int NEW_DESIRED_WIDTH_INDEX = 5;
     private void recordMeasureResults(int widthMeasureSpec, int chosenHeight, int desiredWidth) {
         // this keeps track of the last two onMeasure passes
-
         mOnMeasureData[OLD_WIDTH_SPEC_INDEX] = mOnMeasureData[NEW_WIDTH_SPEC_INDEX];
         mOnMeasureData[OLD_CHOSEN_HEIGHT_INDEX] = mOnMeasureData[NEW_CHOSEN_HEIGHT_INDEX];
         mOnMeasureData[OLD_DESIRED_WIDTH_INDEX] = mOnMeasureData[NEW_DESIRED_WIDTH_INDEX];
@@ -244,24 +237,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         }
 
         return super.onTouchEvent(event);
-
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_UP:
-//
-//                int x = (int) event.getX();
-//                int y = (int) event.getY();
-//                int offset = getOffsetForPosition(x, y);
-//
-//                final ClickableSpan[] links = mTextStorage.getSpans(offset, offset, ClickableSpan.class);
-//
-//                if (links.length > 0) {
-//                    links[0].onClick(this);
-//                    return true;
-//                }
-//                break;
-//        }
-//
-//        return true;
     }
 
     public CharSequence getText() {

@@ -3,9 +3,6 @@ package net.studymongolian.mongollibrary;
 import android.text.Editable;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.InputMethodManager;
-
 
 // MongolEditText Input Connection
 // Allows the MongolEditText to receive input from system keyboards

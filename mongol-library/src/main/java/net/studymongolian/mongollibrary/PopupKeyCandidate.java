@@ -1,8 +1,5 @@
 package net.studymongolian.mongollibrary;
 
-import android.text.TextUtils;
-
-
 /**
  * these are the choices for a popup key
  */
@@ -48,11 +45,6 @@ public class PopupKeyCandidate {
         this.display = display;
         this.composing = composing;
     }
-
-//    public boolean isEmpty() {
-//        return TextUtils.isEmpty(unicode);
-//    }
-
     public String getUnicode() {
         return unicode;
     }
@@ -64,21 +56,5 @@ public class PopupKeyCandidate {
     public String getComposing() {
         return composing;
     }
-
-//    public static PopupKeyCandidate[] createArray(char unicode) {
-//        return new PopupKeyCandidate[] { new PopupKeyCandidate(unicode)};
-//    }
-//
-//    public static PopupKeyCandidate[] createArray(String unicode) {
-//        return new PopupKeyCandidate[] { new PopupKeyCandidate(unicode)};
-//    }
-
-//    public static PopupKeyCandidate[] createArray(String[] unicodeCandidates) {
-//        PopupKeyCandidate[] candidates = new PopupKeyCandidate[unicodeCandidates.length];
-//        for (int i = 0; i < unicodeCandidates.length; i++) {
-//            candidates[i] = new PopupKeyCandidate(unicodeCandidates[i]);
-//        }
-//        return candidates;
-//    }
 
 }

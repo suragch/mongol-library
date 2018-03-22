@@ -76,5 +76,4 @@ public class MongolToast {
     private static float getTypedValueInDP(Context context, float value) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, context.getResources().getDisplayMetrics());
     }
-
 }

@@ -12,6 +12,7 @@ package net.studymongolian.mongollibrary;
 // XXX can we keep this class package private?
 // Is it actually needed by app developers?
 
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
@@ -48,7 +49,7 @@ public class MongolTextStorage implements Editable {
         void onSpanChanged(Spanned buf, Object what, int oldStart, int newStart, int oldEnd, int newEnd);
     }
 
-    public void setOnChangeListener(OnChangeListener listener) {
+    void setOnChangeListener(OnChangeListener listener) {
         this.mChangelistener = listener;
     }
 
@@ -398,6 +399,7 @@ public class MongolTextStorage implements Editable {
     }
 
     @Override
+    @NonNull
     public String toString() {
         return (mUnicodeText != null) ? mUnicodeText.toString() : "";
     }

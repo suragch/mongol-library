@@ -77,13 +77,6 @@ public class KeyboardCyrillic extends Keyboard {
         super(context, attrs, defStyle);
         init(context);
     }
-    // all keyboards should include this custom constructor
-    // (there was no way to force it in the abstract Keyboard class)
-//    public KeyboardCyrillic(Context context, StyleBuilder style) {
-//        super(context);
-//        super.initStyle(style);
-//        init(context);
-//    }
 
     protected void init(Context context) {
 

@@ -14,8 +14,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 class MongolTextLine {
+
     private static final String TAG = "MongolTextLine";
     private static final float UNDERLINE_THICKNESS_PROPORTION = 1 / 16f;
+
+    private final static int MONGOL_QUICKCHECK_START = 0x1800;
+    private final static int MONGOL_QUICKCHECK_END = 0x2060;
+    private final static int KOREAN_JAMO_START = 0x1100;
+    private final static int KOREAN_JAMO_END = 0x11FF;
+    private final static int CJK_RADICAL_SUPPLEMENT_START = 0x2E80;
+    private final static int CJK_SYMBOLS_AND_PUNCTUATION_START = 0x3000;
+    private final static int CJK_SYMBOLS_AND_PUNCTUATION_MENKSOFT_END = 0x301C;
+    private final static int CIRCLE_NUMBER_21 = 0x3251;
+    private final static int CIRCLE_NUMBER_35 = 0x325F;
+    private final static int CIRCLE_NUMBER_36 = 0x32B1;
+    private final static int CIRCLE_NUMBER_50 = 0x32BF;
+    private final static int CJK_UNIFIED_IDEOGRAPHS_END = 0x9FFF;
+    private final static int HANGUL_SYLLABLES_START = 0xAC00;
+    private final static int HANGUL_JAMO_EXTENDED_B_END = 0xD7FF;
+    private final static int CJK_COMPATIBILITY_IDEOGRAPHS_START = 0xF900;
+    private final static int CJK_COMPATIBILITY_IDEOGRAPHS_END = 0xFAFF;
+    private static final int UNICODE_EMOJI_START = 0x1F000;
 
     private TextPaint mPaint;
     private CharSequence mText;
@@ -85,7 +104,6 @@ class MongolTextLine {
     static MongolTextLine recycle(MongolTextLine tl) {
         tl.mText = null;
         tl.mPaint = null;
-        //tl.mHighlightPaint = null;
         tl.mTextRuns = null;
         synchronized(sCached) {
             for (int i = 0; i < sCached.length; ++i) {
@@ -151,24 +169,6 @@ class MongolTextLine {
             mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
         }
     }
-
-    private final static int MONGOL_QUICKCHECK_START = 0x1800;
-    private final static int MONGOL_QUICKCHECK_END = 0x2060;
-    private final static int KOREAN_JAMO_START = 0x1100;
-    private final static int KOREAN_JAMO_END = 0x11FF;
-    private final static int CJK_RADICAL_SUPPLEMENT_START = 0x2E80;
-    private final static int CJK_SYMBOLS_AND_PUNCTUATION_START = 0x3000;
-    private final static int CJK_SYMBOLS_AND_PUNCTUATION_MENKSOFT_END = 0x301C;
-    private final static int CIRCLE_NUMBER_21 = 0x3251;
-    private final static int CIRCLE_NUMBER_35 = 0x325F;
-    private final static int CIRCLE_NUMBER_36 = 0x32B1;
-    private final static int CIRCLE_NUMBER_50 = 0x32BF;
-    private final static int CJK_UNIFIED_IDEOGRAPHS_END = 0x9FFF;
-    private final static int HANGUL_SYLLABLES_START = 0xAC00;
-    private final static int HANGUL_JAMO_EXTENDED_B_END = 0xD7FF;
-    private final static int CJK_COMPATIBILITY_IDEOGRAPHS_START = 0xF900;
-    private final static int CJK_COMPATIBILITY_IDEOGRAPHS_END = 0xFAFF;
-    private static final int UNICODE_EMOJI_START = 0x1F000;
 
     private static boolean isRotated(int codepoint) {
 

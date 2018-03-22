@@ -1,7 +1,5 @@
 package net.studymongolian.mongollibrary;
 
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,7 +12,6 @@ import android.os.Parcelable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -39,6 +36,7 @@ import java.util.ArrayList;
 public class MongolEditText extends MongolTextView {
 
     private Paint mCursorPaint;
+    // TODO either make this a local variable or allow users to change it
     private boolean mCursorVisible = true;
     private boolean mIsBlinkOn = true;
     private Handler mBlinkHandler;
@@ -203,13 +201,14 @@ public class MongolEditText extends MongolTextView {
     public void showSystemKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm == null) return;
         imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
     }
 
     //////////// custom listener to send events to the MongolInputMethodManager //////////////////
 
     public interface OnMongolEditTextInputEventListener {
-        public void updateSelection(View view, int selStart, int selEnd,
+        void updateSelection(View view, int selStart, int selEnd,
                                     int candidatesStart, int candidatesEnd);
     }
 
@@ -300,8 +299,7 @@ public class MongolEditText extends MongolTextView {
                     selectionEnd.top - distanceAwayPx,
                     selectionEnd.right + distanceAwayPx,
                     selectionEnd.bottom + distanceAwayPx);
-            if (nearbyEnd.contains(x, y)) return true;
-            return false;
+            return (nearbyEnd.contains(x, y));
         }
 
         @Override
@@ -396,9 +394,7 @@ public class MongolEditText extends MongolTextView {
                 view.requestDisallowInterceptTouchEvent(false);
         }
 
-        boolean result = mDetector.onTouchEvent(event);
-        // <-- if result is false (event not detected) then add custom detection code here
-        return result;
+        return mDetector.onTouchEvent(event);
     }
 
     @Override
@@ -432,13 +428,6 @@ public class MongolEditText extends MongolTextView {
             }
         }
     }
-
-//    @Override
-//    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-//        // TODO start blinking here? Then don't need to call start blinking elsewhere.
-//        return super.requestFocus(direction, previouslyFocusedRect);
-//    }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -541,14 +530,10 @@ public class MongolEditText extends MongolTextView {
 
     private boolean shouldBlink() {
         if (!mCursorVisible || !isFocused()) return false;
-
         final int start = getSelectionStart();
         if (start < 0) return false;
-
         final int end = getSelectionEnd();
-        if (end < 0) return false;
-
-        return start == end;
+        return end >= 0 && start == end;
     }
 
     // FIXME How do I cancel this when user leaves app? Check logging
@@ -563,7 +548,6 @@ public class MongolEditText extends MongolTextView {
                 if (mLayout != null && !mLayout.getNeedsLineUpdate()) {
                     //Log.i("TAG", "mBlink: ");
                     MongolEditText.this.invalidateCursorPath();
-                    //MongolEditText.this.invalidate();
                     mIsBlinkOn = !mIsBlinkOn;
                 }
 
@@ -639,9 +623,7 @@ public class MongolEditText extends MongolTextView {
 
             if (freezesText) {
                 if (mTextStorage instanceof Spanned) {
-                    final Spannable sp = new SpannableStringBuilder(mTextStorage);
-
-                    ss.text = sp;
+                    ss.text = new SpannableStringBuilder(mTextStorage);
                 } else {
                     ss.text = mTextStorage.toString();
                 }
@@ -704,12 +686,6 @@ public class MongolEditText extends MongolTextView {
 
     public void setAllowSystemKeyboard(boolean whether) {
         mAllowSystemKeyboard = whether;
-//        if (!mAllowSystemKeyboard) {
-//            InputMethodManager inputMethodManager = (InputMethodManager)
-//                    this.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-//            if (inputMethodManager == null) return;
-//            inputMethodManager.hideSoftInputFromWindow(this.getWindowToken(), 0);
-//        }
     }
 
 

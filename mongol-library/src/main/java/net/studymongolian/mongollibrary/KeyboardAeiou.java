@@ -80,14 +80,6 @@ public class KeyboardAeiou extends Keyboard {
         init(context);
     }
 
-    // all keyboards should include this custom constructor
-    // (there was no way to force it in the abstract Keyboard class)
-//    public KeyboardAeiou(Context context, StyleBuilder style) {
-//        super(context);
-//        super.initStyle(style);
-//        init(context);
-//    }
-
     protected void init(Context context) {
 
         // | A  | E  | I |  O |  U |    Row 1
@@ -112,7 +104,6 @@ public class KeyboardAeiou extends Keyboard {
         setListeners();
         addKeysToKeyboard();
         applyThemeToKeys();
-        //setPreferredCandidateLocation(CandidateLocation.VERTICAL_LEFT);
     }
 
     private void instantiateKeys(Context context) {
@@ -225,7 +216,7 @@ public class KeyboardAeiou extends Keyboard {
         mKeyYA.setRotatedPrimaryText(true);
     }
 
-    private void setPuncuationKeyValues() {
+    private void setPunctuationKeyValues() {
 
         dontRotatePrimaryTextForSelectKeys();
 
@@ -980,7 +971,7 @@ public class KeyboardAeiou extends Keyboard {
     public void onKeyboardKeyClick() {
         mIsShowingPunctuation = !mIsShowingPunctuation;
         if (mIsShowingPunctuation) {
-            setPuncuationKeyValues();
+            setPunctuationKeyValues();
         } else {
             setKeyValues();
         }

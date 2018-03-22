@@ -31,7 +31,6 @@ public class ImeContainer extends ViewGroup
     private static final int DIVIDER_ALPHA = 0x40; // 25%
     private static final int MAX_CHARS_BEFORE_CURSOR = 128;
 
-
     private Context mContext;
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
@@ -72,7 +71,6 @@ public class ImeContainer extends ViewGroup
     public void setDataSource(DataSource dataSource) {
         this.mDataSource = dataSource;
     }
-
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -184,6 +182,7 @@ public class ImeContainer extends ViewGroup
         mComposing = "";
     }
 
+    @SuppressWarnings("unused")
     public void onUpdateSelection(int oldSelStart,
                                   int oldSelEnd,
                                   int newSelStart,
@@ -390,14 +389,6 @@ public class ImeContainer extends ViewGroup
         mCandidatesView.setCandidates(candidates);
     }
 
-//    private String getMongolWordBeforeCursor() {
-//        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
-//        if (TextUtils.isEmpty(previous)) return "";
-//        int endIndex = previous.length();
-//        int startIndex = getStartIndex(endIndex, previous);
-//        return previous.subSequence(startIndex, endIndex).toString();
-//    }
-
     @Override
     public void onKeyPopupChosen(PopupKeyCandidate choice) {
         if (mInputConnection == null) return;
@@ -574,8 +565,6 @@ public class ImeContainer extends ViewGroup
         mInputConnection.commitText(text, 1);
         mInputConnection.endBatchEdit();
     }
-
-
 
     private void suggestFollowingWords(String text) {
         if (mCandidatesView == null) return;

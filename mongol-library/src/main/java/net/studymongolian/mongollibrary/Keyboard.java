@@ -11,7 +11,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-//import android.view.inputmethod.InputConnection;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -54,8 +53,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     private PopupKeyCandidatesView popupView;
     private PopupWindow popupWindow;
-
-
 
     public enum CandidatesLocation {
         // WARNING: these values are also defined in attrs.xml
@@ -102,9 +99,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     private void init(Context context) {
-        //mTypeface = MongolFont.get(MongolFont.QAGAN, context);
         mPrimaryTextSizePx = getDefaultPrimaryTextSizeInPixels();
-        //mSecondaryTextSizePx = mPrimaryTextSizePx / 2;
         mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
         mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
         mKeyImageTheme = DEFAULT_KEY_IMAGE_THEME;
@@ -281,8 +276,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     protected boolean isIsolateOrInitial() {
-        if (mKeyboardListener == null) return true;
-        return mKeyboardListener.insertLocationIsIsolateOrInitial();
+        return mKeyboardListener == null ||
+                mKeyboardListener.insertLocationIsIsolateOrInitial();
     }
 
     public List<PopupKeyCandidate> getCandidatesForKeyboardKey() {
@@ -343,80 +338,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     public KeyImage.Theme getKeyboardTheme() {
         return mKeyImageTheme;
     }
-
-//    public CandidatesLocation getCandidatesLocation() {
-//        return mCandidatesLocation;
-//    }
-
-//    public void setSecondaryTextSize(float secondaryTextSize) {
-//        this.mSecondaryTextSizePx = secondaryTextSize;
-//        invalidate();
-//    }
-//
-//    public void setPrimaryTextColor(int primaryTextColor) {
-//        this.mPrimaryTextColor = primaryTextColor;
-//        invalidate();
-//    }
-//
-//    public void setPrimaryTextSize(float size) {
-//        this.mPrimaryTextSizePx = size;
-//        invalidate();
-//    }
-//
-//    public void setSecondaryTextColor(int secondaryTextColor) {
-//        this.mSecondaryTextColor = secondaryTextColor;
-//        invalidate();
-//    }
-//
-//    public void setKeyImageTheme(KeyImage.Theme keyImageTheme) {
-//        this.mKeyImageTheme = keyImageTheme;
-//        invalidate();
-//    }
-//
-//    public void setKeyColor(int keyColor) {
-//        this.mKeyColor = keyColor;
-//        invalidate();
-//    }
-//
-//    public void setKeyPressedColor(int keyPressedColor) {
-//        this.mKeyPressedColor = keyPressedColor;
-//        invalidate();
-//    }
-//
-//    public void setKeyBorderColor(int keyBorderColor) {
-//        this.mKeyBorderColor = keyBorderColor;
-//        invalidate();
-//    }
-//
-//    public void setKeyBorderWidth(int keyBorderWidth) {
-//        this.mKeyBorderWidth = keyBorderWidth;
-//        invalidate();
-//    }
-//
-//    public void setKeyBorderRadius(int keyBorderRadius) {
-//        this.mKeyBorderRadius = keyBorderRadius;
-//        invalidate();
-//    }
-//
-//    public void setKeyPadding(int keyPadding) {
-//        this.mKeySpacing = keyPadding;
-//        invalidate();
-//    }
-//
-//    public void setPopupBackgroundColor(int popupBackgroundColor) {
-//        this.mPopupBackgroundColor = popupBackgroundColor;
-//        invalidate();
-//    }
-//
-//    public void setPopupHighlightColor(int popupHighlightColor) {
-//        this.mPopupHighlightColor = popupHighlightColor;
-//        invalidate();
-//    }
-//
-//    public void setPopupTextColor(int popupTextColor) {
-//        this.mPopupTextColor = popupTextColor;
-//        invalidate();
-//    }
 
     // KeyListener methods
 

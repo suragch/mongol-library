@@ -5,17 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.view.ViewConfiguration;
-import android.widget.PopupWindow;
-
-import static android.content.ContentValues.TAG;
 
 public class KeyText extends Key {
 
@@ -258,8 +250,6 @@ public class KeyText extends Key {
     }
 
     public void setTextSize(float sizePx) {
-        //float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-        //        sizeSP, getResources().getDisplayMetrics());
         mTextPaint.setTextSize(sizePx);
         invalidate();
     }
@@ -270,8 +260,6 @@ public class KeyText extends Key {
     }
 
     public void setSubTextSize(float subTextSize) {
-        //float sizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-        //        subTextSize, getResources().getDisplayMetrics());
         mSubTextPaint.setTextSize(subTextSize);
         invalidate();
     }

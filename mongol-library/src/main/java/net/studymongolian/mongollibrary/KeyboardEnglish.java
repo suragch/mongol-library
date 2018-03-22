@@ -72,14 +72,6 @@ public class KeyboardEnglish extends Keyboard {
         init(context);
     }
 
-    // all keyboards should include this custom constructor
-    // (there was no way to force it in the abstract Keyboard class)
-//    public KeyboardEnglish(Context context, StyleBuilder style) {
-//        super(context);
-//        super.initStyle(style);
-//        init(context);
-//    }
-
     protected void init(Context context) {
 
         // keyboard layout

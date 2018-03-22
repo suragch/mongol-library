@@ -10,7 +10,6 @@ import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 
 
@@ -30,7 +29,6 @@ public class MongolLabel extends View {
     private Typeface mTypeface;
     private int mTextColor;
     private float mTextSizePx;
-    //private int mGravity = Gravity.CENTER_VERTICAL;
     private TextPaint mTextPaint;
     private MongolCode mRenderer;
 
@@ -40,7 +38,6 @@ public class MongolLabel extends View {
         mTextSizePx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         mTextColor = Color.BLACK;
-        //mGravity = Gravity.TOP;
         mContext = context;
         init();
     }
@@ -56,7 +53,6 @@ public class MongolLabel extends View {
             mUnicodeText = text;
             mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolLabel_textSize, 0);
             mTextColor = a.getColor(R.styleable.MongolLabel_textColor, Color.BLACK);
-            //mGravity = a.getInteger(R.styleable.MongolLabel_gravity, Gravity.TOP);
         } finally {
             a.recycle();
         }

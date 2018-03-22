@@ -219,7 +219,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
 
         private WeakReference<DialogInterface> mDialog;
 
-        public ButtonHandler(DialogInterface dialog) {
+        ButtonHandler(DialogInterface dialog) {
             mDialog = new WeakReference<>(dialog);
         }
 
@@ -250,6 +250,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
                 getContext().getResources().getDisplayMetrics());
 
         Rect displayRectangle = new Rect();
+        if (getWindow() == null) return;
         getWindow().getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
         int windowHeight = displayRectangle.height();
 

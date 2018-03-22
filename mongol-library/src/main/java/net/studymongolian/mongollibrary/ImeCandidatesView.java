@@ -151,7 +151,6 @@ public class ImeCandidatesView extends ViewGroup {
     }
 
     public void setOrientation(Orientation orientation) {
-        //if (mOrientation == orientation) return;
         this.mOrientation = orientation;
         LinearLayoutManager layoutManager;
         if (mOrientation == Orientation.HORIZONTAL) {
@@ -326,7 +325,5 @@ public class ImeCandidatesView extends ViewGroup {
         String getItem(int id) {
             return mCandidates.get(id);
         }
-
-
     }
 }

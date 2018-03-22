@@ -5,13 +5,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.text.Layout;
-import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
-
-import org.w3c.dom.Text;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;
@@ -19,7 +15,6 @@ import java.util.List;
 
 // lines use width/height in horizontal orientation
 // layout uses width/height in vertical orientation
-
 
 public class MongolLayout {
 
@@ -121,12 +116,9 @@ public class MongolLayout {
 
         // TODO for now draw all the lines. Should we only draw the visible lines?
         // (see Layout source code)
-        //int firstLine = 0;
         int lastLine = mLinesInfo.size() - 1;
         if (lastLine < 0) return;
 
-//        drawBackground(canvas, highlight, highlightPaint, cursorOffsetVertical,
-//                firstLine, lastLine);
         drawText(canvas);
     }
 
@@ -181,12 +173,6 @@ public class MongolLayout {
 
         MongolTextLine.recycle(tl);
     }
-
-
-//    public void drawBackground(Canvas canvas, Path highlight, Paint highlightPaint,
-//                               int cursorOffsetVertical, int firstLine, int lastLine) {
-//        // TODO
-//    }
 
     // adding this because cursor blinking crashes on rotation
     // because it is trying to get info before line is ready
@@ -319,7 +305,7 @@ public class MongolLayout {
     /**
      * Call this if the height has not changed but something else like the font size has.
      */
-    public void reflowLines() {
+    void reflowLines() {
         needsLineUpdate = true;
     }
 
@@ -478,7 +464,6 @@ public class MongolLayout {
 
         int line = getLineForOffset(offset);
         int start = getLineStart(line);
-        //int end = getLineEnd(line);
 
         MongolTextLine tl = MongolTextLine.obtain();
         tl.set(mTextPaint, mText, start, offset);
