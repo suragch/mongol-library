@@ -647,6 +647,22 @@ public final class MongolCode {
         }
     }
 
+    public static String getSuffixTaqiDaqi(Gender previousWordGender, char previousWordLastChar) {
+        if (isBGDRS(previousWordLastChar)) {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.TAQI;
+            } else {
+                return Suffix.TEQI;
+            }
+        } else {
+            if (previousWordGender == Gender.MASCULINE) {
+                return Suffix.DAQI;
+            } else {
+                return Suffix.DEQI;
+            }
+        }
+    }
+
     // Yi comes after a vowel, I comes after a consonant.
     static String getSuffixYiI(char previousWordLastChar) {
         if (isVowel(previousWordLastChar)) {

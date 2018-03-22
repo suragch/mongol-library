@@ -53,7 +53,6 @@ public class KeyboardActivity extends AppCompatActivity {
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
-        mimm.startInput();
 
 
     }

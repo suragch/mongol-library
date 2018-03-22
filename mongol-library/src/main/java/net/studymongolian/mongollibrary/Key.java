@@ -229,7 +229,6 @@ public abstract class Key extends View {
         updatePopup(xPosition);
     }
 
-
     protected void onActionUp(int xPosition) {
         if (getIsShowingPopup())
             finishPopup(xPosition);

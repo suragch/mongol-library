@@ -677,15 +677,18 @@ public class KeyboardQwerty extends Keyboard {
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TU));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAI));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAGAN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAQI));
         } else if (gender == MongolCode.Gender.FEMININE) {
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TUE));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEI));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEGEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEQI));
         } else {
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TU));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAI));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAGAN));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEGEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAQI));
         }
         return suffixes;
     }
@@ -931,13 +934,16 @@ public class KeyboardQwerty extends Keyboard {
         if (gender == MongolCode.Gender.MASCULINE) {
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DU));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAGAN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAQI));
         } else if (gender == MongolCode.Gender.FEMININE) {
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DUE));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DEGEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DEQI));
         } else {
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DU));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAGAN));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DEGEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAQI));
         }
         return suffixes;
     }

@@ -857,14 +857,19 @@ public class KeyboardAeiou extends Keyboard {
         String previousWord = mKeyboardListener.getPreviousMongolWord(true);
         MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
 
+        // there were too many choices when there is no context
+        // so I'm removing the ones that can be entered without
+        // any special formatting characters
         if (gender == null) {
-            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TU));
+            //suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TU));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DU));
-            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAI));
-            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAGAN));
+            //suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAI));
+            //suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAGAN));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAGAN));
-            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEGEN));
+            //suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TEGEN));
             suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DEGEN));
+            suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.DAQI));
+            //suffixes.add(new PopupKeyCandidate(MongolCode.Suffix.TAQI));
             return suffixes;
         }
 
@@ -877,6 +882,9 @@ public class KeyboardAeiou extends Keyboard {
 
         String taganDagan = MongolCode.getSuffixTaganDagan(gender, lastChar);
         suffixes.add(new PopupKeyCandidate(taganDagan));
+
+        String taqiDaqi = MongolCode.getSuffixTaqiDaqi(gender, lastChar);
+        suffixes.add(new PopupKeyCandidate(taqiDaqi));
 
         return suffixes;
     }

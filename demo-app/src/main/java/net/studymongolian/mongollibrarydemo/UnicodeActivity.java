@@ -588,8 +588,8 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
                 .append("MINGG(MVS)AN").append("\n\n")
 
                 // break context with FVS2 for single tooth I (Unicode 10.0 deviation)
-                .append("\u1828\u1820\u180C\u1822\u182E\u1820").append("\n")
-                .append("NA(FVS2)IMA").append("\n\n")
+                .append("\u1828\u1820\u1822\u180C\u182E\u1820").append("\n")
+                .append("NAI(FVS2)MA").append("\n\n")
 
                 // double touth AI diphthong
                 .append("\u1828\u1820\u1822\u1835\u1820").append("\n")
