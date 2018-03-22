@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 public class KeyKeyboardChooser extends KeyImage {
 
     private static final char ELLIPSIS = '…';
+    private static final float ELLIPSIS_SIZE_MULTIPLIER = 1.5f;
 
     public KeyKeyboardChooser(Context context) {
         super(context);
@@ -36,4 +37,9 @@ public class KeyKeyboardChooser extends KeyImage {
             clickKeyboardKey();
     }
 
+    @Override
+    public void setSubTextSize(float subTextSize) {
+        float scaledSize = subTextSize * ELLIPSIS_SIZE_MULTIPLIER;
+        super.setSubTextSize(scaledSize);
+    }
 }
