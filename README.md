@@ -10,7 +10,7 @@ Android UI components for vertical Mongolian text
     * [MongolTextView](https://github.com/suragch/mongol-library#mongoltextview) 
     * [MongolLabel](https://github.com/suragch/mongol-library#mongollabel)
     * [MongolEditText](https://github.com/suragch/mongol-library#mongoledittext)
-    * [Keyboards](https://github.com/suragch/mongol-library#keyboard)
+    * [Keyboards](https://github.com/suragch/mongol-library#keyboards)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
     * [Horizontal RecyclerView](https://github.com/suragch/mongol-library#horizontal-recyclerview)
@@ -27,11 +27,9 @@ Android UI components for vertical Mongolian text
 
 This Android library is a collection of UI components that support vertical Mongolian text. 
 
-All of the native Android UI components only support horizontal text. In addition to this, Android support for Mongolian Unicode rendering is inadequate. These challenges at a big hurdle for new Mongolian app developers to overcome. Most of the established Mongolian tech companies do not share their source code. While this is understandable since they must make a profit, new developers must reinvent all the basic UI text components from scratch. This makes the Mongolian app development process very slow. 
+All of the native Android UI components only support horizontal text. In addition to this, Android support for Mongolian Unicode rendering is inadequate. These challenges are a big hurdle for new Mongolian app developers to overcome. This makes the Mongolian app development process very slow. 
 
-The purpose of this library is to make it easy to include vetical Mongolian Unicode text in your app. Developers can simply import the mongol-library module and then just focus on the content of their project.
-
-Although this library is currently usable, there are still many improvements which need to be made. It is hoped that both novice and experienced developers will contribute with issue notifications and pull requests. Feel free to fork your own version, too. This library is desctibuted under the most permissive licence that I could find: the MIT licence. I believe that freely sharing information and source code will benefit everyone and help to make ancient Mongolian relevant in the modern world.
+The purpose of this library is to make it easy to include vertical Mongolian text in your app. You only need to import the `mongol-library` module. 
  
 ## Installing
 
@@ -41,7 +39,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:0.9.16'
+    implementation 'net.studymongolian:mongol-library:1.0.0'
 }
 ```
 
@@ -49,11 +47,11 @@ If you are still using Android Studio 2.x, you should use `compile` rather than 
 
 #### Note
 
-**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library. The reason this choice was made is because the support library for Android O also only covers down to API 14. However, if you still want to support lower versions in your app, you can copy the source code from this library into your project. With a little bit of editing it shouldn't be too difficult to support down to API 9 or perhaps lower.
+**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library.
 
 ## UI Componants
 
-The following are the primary UI componants in the library. If you don't understand how to use any of them, open an issue and I will improve the documentation. See also the [Demo App](../tree/master/demo-app). 
+The following are the primary UI componants in the library. See also the [Demo App](https://github.com/suragch/mongol-library/tree/master/demo-app/release) for an example of how they are used. 
 
 ### MongolTextView 
 
@@ -226,11 +224,11 @@ String text = mongolEditText.getText().toString();
 * Unicode indexing (handles glyph indexing internally) 
 * also supports Menksoft code
 
-### Keyboard
+### Keyboards
 
 It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delehi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include an in-app keyboard. 
 
-Currently the AEIOU and QWERTY keyboard layouts are finished (with improvements still to be made). Additionally, Cyrillic and English keyboards will be added for convenient language switching options in the near future. Punctuation is shown by clicking the keyboard button. Keyboard layouts can be switched by long pressing the keyboard button.
+This library includes four keyboard layouts: two traditional Mongolian ones (AEIOU and QWERTY) and Cyrillic and English keyboards. Punctuation is shown by clicking the keyboard button. Keyboard layouts can be switched by long pressing the keyboard button. 
 
 ##### AEIOU keyboard
 
@@ -244,57 +242,101 @@ The philosophy behind the AEIOU keyboard is to make input as easy as possible. T
 
 This keyboard copies the layout of a computer keyboard (with the addition of Mongolian Unicode ANG). Users can differentiate O/U, OE/UE, and T/D.
 
+##### English keyboard
+
+![English keyboard](docs/images/keyboard-english.png)
+
+
+##### Cyrillic keyboard
+
+![Cyrillic keyboard](docs/images/keyboard-cyrillic.png)
+
 ##### Custom keyboard
 
 Is is possible to use your own custom keyboard layout. You just need to extend `Keyboard` and implement the appropriate methods. Start with a copy of the source code for one of the library keyboards and modify it to suite your needs. An example of a custom keyboard is [included in the Demo App](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/java/net/studymongolian/mongollibrarydemo/KeyboardActivity.java).
 
 #### Basic usage
 
-The system keyboard can be hidden by default by adding the following to your AndroidManifest for the activity that you are using your keyboard in. After that keyboard switching (including for the system keyboard) will be handled by `MongolInputMethodManager`. 
-
-```xml
-<activity ...
-          android:windowSoftInputMode="stateHidden"/>
-```
-
-The keyboards are in an `ImeContainer` to allow for keyboard switching and candidate word suggestions. (Currently candidate word suggestion support is not finished yet, though.)
+The keyboards are added to an `ImeContainer` to allow for keyboard switching and candidate word suggestions. This can be done programmatically or in XML. However, if you want to style your keyboard, you must do it in XML.
 
 XML layout
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <HorizontalScrollView
         android:id="@+id/hsvEditTextContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_margin="20dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/ime_container"
+        android:layout_margin="16dp"
         android:fillViewport="true">
 
         <net.studymongolian.mongollibrary.MongolEditText
             android:id="@+id/mongoledittext"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="@android:color/white"
             android:padding="10dp"
             app:textSize="30sp"
-            android:background="@android:color/white"/>
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="128dp" />
 
     </HorizontalScrollView>
-   
-    <!-- Keyboard container -->
-    <net.studymongolian.mongollibrary.ImeContainer
-        android:id="@+id/keyboard"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 
-</LinearLayout>
+    <net.studymongolian.mongollibrary.ImeContainer
+        android:id="@+id/ime_container"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#dbdbdb"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true">
+
+        <net.studymongolian.mongollibrary.KeyboardQwerty
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/KeyboardTheme"
+            />
+
+        <net.studymongolian.mongollibrary.KeyboardAeiou
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:primaryTextSize="30sp"
+            style="@style/KeyboardTheme"
+            />
+
+    </net.studymongolian.mongollibrary.ImeContainer>
+
+</RelativeLayout>
+```
+You could style each keyboard seperately, but in the above example a single style is used.
+
+```xml
+<style name="KeyboardTheme" parent="AppTheme">
+    <item name="keyColor">#ffffff</item>
+    <item name="keyPressedColor">#b3b3b3</item>
+    <item name="primaryTextColor">#000000</item>
+    <item name="secondaryTextColor">#b3b3b3</item>
+    <item name="keyImageTheme">light</item>
+    <item name="keySpacing">3dp</item>
+    <item name="keyBorderWidth">1px</item>
+    <item name="keyBorderColor">#000000</item>
+    <item name="keyBorderRadius">3dp</item>
+    <item name="popupTextColor">#fe9a52</item>
+    <item name="popupHighlightColor">#dbdbdb</item>
+</style>
 ```
 
 Code
@@ -307,54 +349,74 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keyboard);
 
+        ImeContainer imeContainer = findViewById(R.id.ime_container);
         EditText editText = findViewById(R.id.edittext);
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
 
-        // keyboards to include
-        Keyboard aeiou = new KeyboardAeiou(this);
-        Keyboard qwerty = new KeyboardQwerty(this);
-
-        // add keyboards to the IME container
-        ImeContainer imeContainer = findViewById(R.id.keyboard);
-        imeContainer.addKeyboard(aeiou); // first one is shown first
-        imeContainer.addKeyboard(qwerty);
-
-        // The MongolInputMethodManager handles communication between the keyboards and 
-        // the MongolEditText (or EditText).
+        // The MongolInputMethodManager handles communication between the 
+        // ImeContainer (keyboards) and the MongolEditText (or EditText).
         MongolInputMethodManager mimm = new MongolInputMethodManager();
+        mimm.addEditor(editText);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
-        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS); // don't show system keyboard
-        mimm.startInput();
+        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
     }
 }
 ```
+#### Support keyboard candidates
 
-This will produce the following setup with the ability to switch to the QWERTY keyboard by long pressing the keyboard button.
+You can provide word suggestions in a candidates view while the user is typing. You will need to suply your own word database, though.
 
-![AEIOU keyboard example](docs/images/keyboard-example.png)
+![keyboard candidates](docs/images/keyboard-candidates.png)
 
-If you would like to style your keyboards then you can use the alternate Keyboard constructor `KeyboardXXX(Context context, StyleBuilder style)` where the `StyleBuilder` is used to set any parameters you want to change from the defaults. Here is an example:
+To do this you need to set `KeyboardCandidateView` location in XML for each keyboard that is using it.
+
+```xml
+<net.studymongolian.mongollibrary.KeyboardQwerty
+    ...
+    app:candidatesLocation="horizontal_top"
+    ...
+    />
+    
+<net.studymongolian.mongollibrary.KeyboardAeiou
+    ...
+    app:candidatesLocation="vertical_left"
+    ...
+    />
+```
+
+Then implement `ImeContainer.DataSource` in your activity to provide the requested word suggestion list.
 
 ```java
-// keyboards style
-Keyboard.StyleBuilder keyboardStyle = new Keyboard.StyleBuilder();
-keyboardStyle.setKeyBackgroundColor(Color.BLUE)
-        .setKeyPressedColor(Color.RED)
-        .setKeyBorderColor(Color.BLACK)
-        .setKeyBorderRadius(40)
-        .setKeyBorderWidth(2)
-        .setPopupBackgroundColor(Color.BLACK)
-        .setPopupTextColor(Color.WHITE)
-        .setPopupHighlightColor(Color.BLUE)
-        .setKeyPrimaryTextColor(Color.WHITE)
-        .setKeySecondaryTextColor(Color.GRAY)
-        .setKeyImageTheme(KeyImage.Theme.DARK) // for a light image
-        .setKeySpacing(10);
+public class MyActivity extends AppCompatActivity implements ImeContainer.DataSource {
 
-// init keyboards with styles
-Keyboard aeiou = new KeyboardAeiou(this, keyboardStyle);
-Keyboard qwerty = new KeyboardQwerty(this, keyboardStyle);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // ...
+        
+        // provide words for candidate selection
+        imeContainer.setDataSource(this);
+
+        // ...
+    }
+
+    // ImeContainer.DataSource methods
+
+    @Override
+    public List<String> onRequestWordsStartingWith(String text) {
+        // return word list
+    }
+
+    @Override
+    public List<String> onRequestWordsFollowing(String word) {
+        // return words that could follow the last chosen word
+    }
+
+    @Override
+    public void onCandidateLongClick(int position, String text) {
+        // user long clicked a candidate item
+    }
+}
 ```
 
 ### MongolToast 
@@ -553,11 +615,12 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] add `MongolToolbar` with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] The vertical punctuation characters shouldn't be rotated.
-* [ ] English and Cyrillic keyboards.
+* [X] English and Cyrillic keyboards.
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 
 #### Version changes 
 
+* `1.0.0`: All basic components are working. Major upgrade to the Keyboard system.
 * `0.9.16`: Support for II spelling of double tooth I
 * `0.9.15`: Changed `MongolCode` rendering and Keyboards to support medial `I + FVS2` for words like NAIMA. (This is a Unicode 10.0 deviation.)
 * `0.9.14`: Added full `TextWatcher` support (text change listener)
