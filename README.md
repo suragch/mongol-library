@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-#### Support keyboard candidate
+#### Support keyboard candidates
 
 You can provide word suggestions in a candidates view while the user is typing. You will need to suply your own word database, though.
 
@@ -371,6 +371,7 @@ You can provide word suggestions in a candidates view while the user is typing. 
 
 To do this you need to set `KeyboardCandidateView` location in XML for each keyboard that is using it.
 
+```xml
 <net.studymongolian.mongollibrary.KeyboardQwerty
     ...
     app:candidatesLocation="horizontal_top"
@@ -382,6 +383,7 @@ To do this you need to set `KeyboardCandidateView` location in XML for each keyb
     app:candidatesLocation="vertical_left"
     ...
     />
+```
 
 Then implement `ImeContainer.DataSource` in your activity to provide the requested word suggestion list.
 
