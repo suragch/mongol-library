@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MongolTextView mongolTextView = (MongolTextView) findViewById(R.id.mongol_text_view_id);
+        MongolTextView mongolTextView = findViewById(R.id.mongol_text_view_id);
         mongolTextView.setText("ᠮᠣᠩᠭᠣᠯ");
         mongolTextView.setTextColor(Color.BLUE);
     }
