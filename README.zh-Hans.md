@@ -22,8 +22,8 @@
 
 此Android库让开发者在应用里轻松地使用竖写的蒙古文。组件包括文本框、编辑文本框、对话框等常用的文本控件。另外，有蒙文键盘和输入法，对键盘布局不满意的开发者还可以自定键盘布局。所有的控件都支持国际编码和蒙科立编码。
 
-- 下载演示app体验以下
-- 浏览演示app源码
+- [下载演示app体验以下](https://github.com/suragch/mongol-library/blob/master/demo-app/release/demo-app-release.apk)
+- [浏览演示app源码](https://github.com/suragch/mongol-library/tree/master/demo-app/src/main)
 
 ## 使用指南
 
@@ -64,8 +64,22 @@ XML
 - 词库只包含蒙科立的[白体字库](http://www.menksoft.com/mdls/am/amview.aspx?pid=0&alias=menkcms&iid=168137&mid=15302&wv=U)。开发者可以自己添加更多字体：
 
 ```java
-    String AMGLANG = "fonts/Ms/met-example.png)
+    String AMGLANG = "fonts/MAM8102.ttf";
+    Typeface customFont = MongolFont.get(AMGLANG, getApplicationContext());
+    mongolTextView.setTypeface(customFont);
+```
 
+- `MongolTextView`支持表情、中文、日文、韩文等文字的正确方向。
+
+![MongolTextView (Demo App)](docs/images/mtv-demo.png)
+
+- 不需要任何文字转向或span格式的情况下，也可以用`MongolLabel`来代替。
+
+## `MongolEditText` 
+
+蒙文编辑文本框
+
+![MongolEditText](docs/images/met-example.png)
 
 `MongolEditText`支持系统键盘的输入，就像上面的图片所示。（蒙科立公司和德力海公司的第三方输入法）
 
