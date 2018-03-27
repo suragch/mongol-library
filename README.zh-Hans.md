@@ -1,4 +1,4 @@
-*中文不是我的母语，求读者的纠正*
+*中文不是我的母语，求读者纠正错误*
 
 # mongol-library
 
@@ -10,7 +10,7 @@
 - [使用指南](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)
 - 组件
     - [`MongolTextView` 蒙文文本框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoltextview)
-    - [`MongolEditText` 蒙文编辑文本框]
+    - [`MongolEditText` 蒙文编辑文本框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoledittext)
     - [`ImeContainer` 键盘包](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#imecontainer)
     - [`MongolAlertDialog` 蒙文对话框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongolalertdialog)
     - [`MongolToast` 蒙文Toast提示框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoltoast)
