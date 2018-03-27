@@ -2,7 +2,7 @@
 
 # mongol-library
 
-蒙古文的Android控件库
+竖写蒙古文的Android控件库
 
 ## 目录
 
@@ -11,7 +11,7 @@
 - 组件
     - [`MongolTextView` 蒙文文本框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoltextview)
     - [`MongolEditText` 蒙文编辑文本框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoledittext)
-    - [`ImeContainer` 键盘包](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#imecontainer)
+    - [`ImeContainer` 键盘包，输入法](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#imecontainer)
     - [`MongolAlertDialog` 蒙文对话框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongolalertdialog)
     - [`MongolToast` 蒙文Toast提示框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoltoast)
 - [`MongolCode` 蒙文国际编码处理器](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongolcode)
@@ -20,9 +20,9 @@
 
 ## 简介
 
-此Android库让开发者在应用里轻松地使用竖写的蒙古文。组件包括文本框、编辑文本框、对话框等常用的文本控件。另外，有蒙文键盘和输入法，对键盘布局不满意的开发者还可以自定键盘布局。所有的控件都支持国际编码和蒙科立编码。
+此Android库让开发者在应用里轻松地使用竖写的蒙古文。组件包括文本框、编辑文本框、对话框、键盘等常用的文本控件。所有的控件都支持国际编码和蒙科立编码。
 
-- [下载演示app体验以下](https://github.com/suragch/mongol-library/blob/master/demo-app/release/demo-app-release.apk)
+- [下载演示app体验以下](https://github.com/suragch/mongol-library/raw/master/demo-app/release/demo-app-release.apk)
 - [浏览演示app源码](https://github.com/suragch/mongol-library/tree/master/demo-app/src/main)
 
 ## 使用指南
@@ -30,7 +30,7 @@
 要求：
 
 - Android Studio 3.0以上 （因为需要gradle和jcenter）
-- 最低sdk版本14以上
+- 最低sdk版本(`minSdkVersion`)14以上
 
 导入方式
 
@@ -49,6 +49,32 @@ dependencies {
 ![MongolTextView example](docs/images/mtv-example.png)
 
 XML
+
+```xml
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+    
+    <net.studymongolian.mongollibrary.MongolTextView
+        android:id="@+id/mongol_text_view_id"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:text="ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖"
+        app:textSize="24sp"
+        app:textColor="@android:color/black"/>
+    
+</LinearLayout>
+```
+
+Java
+
+```java
+public class MainActivity extends AppCompatActivity {
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -58,6 +84,7 @@ XML
         mongolTextView.setTextColor(Color.BLUE);
     }
 }
+```
 
 #### 备注
 
@@ -119,7 +146,7 @@ String text = mongolEditText.getText().toString();
 
 ![Keyboards](docs/images/keyboard-four.png)
 
-`ImeContainer`的工作是管理键盘。此库有四种默认键盘布局，不是系统的，是可以嵌入在你的应用里。这样的话，如果用户没有安装第三方的蒙文输入法还能用你给提供的键盘来输入蒙文。你还可以定制别的键盘布局，只需要复制一个键盘的源码然后改一下，用法都一样。
+`ImeContainer`的工作是管理键盘。此库有四种默认键盘布局，不是系统键盘，是可以嵌入到你的应用里。这样的话，如果用户没有安装第三方的蒙文输入法，还能用你给提供的键盘来输入蒙文。你还可以定制别的键盘布局，只需要复制键盘[源码](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/KeyboardQwerty.java)然后改一下，用法都一样。
 
 XML
 
@@ -228,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
 
 #### 候选试图
 
-`ImeContainer`也有候选试图，如果你有单词库的话用户在输入的时候你可以提供候选词。
+`ImeContainer`也有候选试图，如果你有单词库的话，用户在输入的时候你可以提供候选词。
 
 ![keyboard candidates](docs/images/keyboard-candidates.png)
 
