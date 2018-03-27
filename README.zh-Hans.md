@@ -6,20 +6,24 @@
 
 ## 目录
 
-- 简介
-- 使用指南
+- [简介](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#%E7%AE%80%E4%BB%8B)
+- [使用指南]
 - 组件
-    - `MongolTextView` 蒙文文本框
-    - `MongolEditText` 蒙文编辑文本框
-    - `ImeContainer` 键盘包
-    - `MongolAlertDialog` 蒙文对话框
-    - `MongolToast` 蒙文Toast
-- `MongolCode` 蒙文国际编码处理器
-- 如何参与
+    - [`MongolTextView` 蒙文文本框]
+    - [`MongolEditText` 蒙文编辑文本框]
+    - [`ImeContainer` 键盘包]
+    - [`MongolAlertDialog` 蒙文对话框]
+    - [`MongolToast` 蒙文Toast提示框]
+- [`MongolCode` 蒙文国际编码处理器]
+- [如何参与]
+- [使用此库的应用]
 
 ## 简介
 
 此Android库让开发者在应用里轻松地使用竖写的蒙古文。组件包括文本框、编辑文本框、对话框等常用的文本控件。另外，有蒙文键盘和输入法，对键盘布局不满意的开发者还可以自定键盘布局。所有的控件都支持国际编码和蒙科立编码。
+
+- 下载演示app体验以下
+- 浏览演示app源码
 
 ## 使用指南
 
@@ -60,22 +64,8 @@ XML
 - 词库只包含蒙科立的[白体字库](http://www.menksoft.com/mdls/am/amview.aspx?pid=0&alias=menkcms&iid=168137&mid=15302&wv=U)。开发者可以自己添加更多字体：
 
 ```java
-    String AMGLANG = "fonts/MAM8102.ttf";
-    Typeface customFont = MongolFont.get(AMGLANG, getApplicationContext());
-    mongolTextView.setTypeface(customFont);
-```
+    String AMGLANG = "fonts/Ms/met-example.png)
 
-- `MongolTextView`支持表情、中文、日文、韩文等文字的正确方向。
-
-![MongolTextView (Demo App)](docs/images/mtv-demo.png)
-
-- 不需要任何文字转向或span格式的情况下，也可以用`MongolLabel`来代替。
-
-## `MongolEditText` 
-
-蒙文编辑文本框
-
-![MongolEditText](docs/images/met-example.png)
 
 `MongolEditText`支持系统键盘的输入，就像上面的图片所示。（蒙科立公司和德力海公司的第三方输入法）
 
@@ -278,3 +268,106 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
 }
 ```
 
+## `MongolAlertDialog` 
+
+蒙文对话框
+
+![MongolToast example](docs/images/mad-example.png)
+
+Java
+
+```java
+// setup the alert builder
+MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);
+builder.setMessage("ᠵᠠᠮᠤᠭ ᠰᠠᠢᠲᠠᠢ ᠨᠠᠭᠤᠷ ᠲᠤ ᠵᠢᠭᠠᠰᠤ ᠤᠯᠠᠨ᠂\nᠵᠠᠩ ᠰᠠᠢᠲᠠᠢ ᠬᠦᠮᠦᠨ ᠳᠦ ᠨᠦᠬᠦᠷ ᠤᠯᠠᠨ᠃");
+
+// add the button
+builder.setPositiveButton("ᠮᠡᠳᠡᠯ᠎ᠡ", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        // do sth
+    }
+});
+
+// create and show the alert dialog
+ MongolAlertDialog dialog = builder.create();
+ dialog.show();
+ ```
+ 
+ ## `MongolToast`
+ 
+ 蒙文Toast提示框
+ 
+![MongolToast example](docs/images/mt-example.png)
+
+Java
+
+```java
+MongolToast.makeText(getApplicationContext(), "ᠰᠠᠢᠨ ᠪᠠᠢᠨ᠎ᠠ ᠤᠤ︖", MongolToast.LENGTH_LONG).show();
+```
+
+## `MongolCode`
+
+蒙文国际编码处理器
+
+#### Unicode
+
+上面的控件都用`MongolCode`来处理国际编码并渲染文本，而不用字体的逻辑。此库在大多数情况下按照Unicode 10处理文本,但是有两个例外：
+
+- Final MONGOLIAN LETTER GA + FVS1 and FVS2 (`\u182D` + `\u180B`/`\u180C`)， 跟大部分字体一样
+- Medial MONGOLIAN LETTER I + FVS2 (`\u1822` + `\u180C`)， 跟蒙科立字体一样
+
+双园音的两个写法都支持
+
+- SAIN
+- SAYIN
+
+#### 编码转换
+
+```java
+MongolCode converter = MongolCode.INSTANCE;
+String unicode;
+String menksoftCode;
+        
+// 国际编码 -> 蒙科立编码
+unicode = "ᠮᠣᠩᠭᠣᠯ";
+menksoftCode = converter.unicodeToMenksoft(unicode);
+        
+// 蒙科立编码 -> 国际编码
+menksoftCode = "\uE2F2\uE289\uE2BC\uE2EC\uE289\uE2F9";
+unicode = converter.menksoftToUnicode(menksoftCode);
+```
+
+#### 静态字符和字符串
+
+```java
+char unicodeLetter = MongolCode.Uni.MA;                         // '\u182E'
+char unicodePunctuation = MongolCode.Uni.MONGOLIAN_FULL_STOP;   // '\u1803'
+String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822\u1836\u1821\u1837"
+```
+
+#### 静态方法
+
+* `boolean isMongolian(char character)`
+* `boolean isConsonant(char character)`
+* `boolean isVowel(char character)`
+* `boolean isMasculineVowel(char character)`
+* `boolean isFeminineVowel(char character)`
+* `boolean isFVS(char character)`
+* `boolean isMvsConsonant(char character)`
+* `boolean isMenksoft(char character)`
+
+## 如何参与
+
+`mongol-library`还在开发中，虽然此版本已经比较稳定，知道的和不知道的故障都有，请大家原谅。如果你发现故障联系我，或者你自己修更好。如果有人想合作加新功能，下面有需要：
+
+- 拼写正确的单词库
+- `CheckBox`, `RadioButton`
+- `ToolBar`, `Menu`
+- Android和junit自动化测试
+
+## 使用此库的应用
+
+- [Demo app 演示应用](https://github.com/suragch/mongol-library/tree/master/demo-app)
+- [Suryaa 外语记忆卡篇](https://github.com/suragch/Suryaa) 
+- *加你的应用。。。*
