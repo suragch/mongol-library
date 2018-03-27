@@ -1,5 +1,7 @@
 # Mongol Library
 
+[[中文]](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md)
+
 Android UI components for vertical Mongolian text 
 
 ## Table of Contents 
