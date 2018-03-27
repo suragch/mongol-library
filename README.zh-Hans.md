@@ -2,6 +2,8 @@
 
 # mongol-library
 
+[[English]](https://github.com/suragch/mongol-library/blob/master/README.md)
+
 竖写蒙古文的Android控件库
 
 ## 目录
