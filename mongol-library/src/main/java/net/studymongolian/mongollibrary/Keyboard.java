@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -33,6 +34,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     static final int DEFAULT_POPUP_TEXT_COLOR = Color.BLACK;
     static final int DEFAULT_POPUP_HIGHLIGHT_COLOR = Color.GRAY;
     static final CandidatesLocation DEFAULT_CANDIDATES_LOCATION = CandidatesLocation.NONE;
+    private static final int DEFAULT_HEIGHT_DP = 240;
 
     private KeyImage.Theme mKeyImageTheme;
     private int mPopupBackgroundColor;
@@ -81,7 +83,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     protected float[] mInsetWeightInRow;
     protected float[] mKeyWeights;
-    protected KeyboardListener mKeyboardListener = null;
+    protected OnKeyboardListener mKeyboardListener = null;
 
     public Keyboard(Context context) {
         super(context);
@@ -160,19 +162,56 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 DEFAULT_PRIMARY_TEXT_SIZE_SP, getResources().getDisplayMetrics());
     }
 
-    public interface KeyboardListener {
-
+    public interface OnKeyboardListener {
+        List<PopupKeyCandidate> getAllKeyboardNames();
         void onRequestNewKeyboard(String keyboardDisplayName);
-        List<PopupKeyCandidate> getKeyboardKeyCandidates();
-        char getPreviousChar();
-        String getPreviousMongolWord(boolean allowSingleSpace);
-        boolean insertLocationIsIsolateOrInitial();
         void onKeyboardInput(String text);
         void onKeyPopupChosen(PopupKeyCandidate popupKeyCandidate);
         void onBackspace();
+        CharSequence getTextBeforeCursor(int numberOfChars);
+        CharSequence getTextAfterCursor(int numberOfChars);
+        String getPreviousMongolWord(boolean allowSingleSpaceBeforeCursor);
     }
-    public void setKeyboardListener(KeyboardListener listener) {
+
+    public void setOnKeyboardListener(OnKeyboardListener listener) {
         this.mKeyboardListener = listener;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int desiredWidth = Integer.MAX_VALUE;
+        int desiredHeight = getDefaultHeight();
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int width;
+        int height;
+
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            width = desiredWidth;
+        }
+
+        if (heightMode == MeasureSpec.EXACTLY) {
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            height = desiredHeight;
+        }
+
+        setMeasuredDimension(width, height);
+    }
+
+    public int getDefaultHeight() {
+        return (int) (DEFAULT_HEIGHT_DP * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -272,17 +311,23 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     protected char getPreviousChar() {
         if (mKeyboardListener == null) return 0;
-        return mKeyboardListener.getPreviousChar();
+        CharSequence before = mKeyboardListener.getTextBeforeCursor(1);
+        if (TextUtils.isEmpty(before)) return 0;
+        return before.charAt(0);
     }
 
     protected boolean isIsolateOrInitial() {
-        return mKeyboardListener == null ||
-                mKeyboardListener.insertLocationIsIsolateOrInitial();
+        if (mKeyboardListener == null) return true;
+        CharSequence before = mKeyboardListener.getTextBeforeCursor(2);
+        CharSequence after = mKeyboardListener.getTextAfterCursor(2);
+        MongolCode.Location location = MongolCode.getLocation(before, after);
+        return location == MongolCode.Location.ISOLATE ||
+                location == MongolCode.Location.INITIAL;
     }
 
     public List<PopupKeyCandidate> getCandidatesForKeyboardKey() {
         if (mKeyboardListener == null) return null;
-        return mKeyboardListener.getKeyboardKeyCandidates();
+        return mKeyboardListener.getAllKeyboardNames();
     }
 
     abstract public List<PopupKeyCandidate> getPopupCandidates(Key key);
@@ -360,7 +405,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         popupView.setCandidates(popupCandidates);
         layoutAndShowPopupWindow(key, xPosition);
         highlightCurrentItemAfterPopupWindowHasLoaded(key, xPosition);
-
     }
 
     private PopupKeyCandidatesView getPopupView() {
@@ -376,7 +420,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         int location[] = new int[2];
-        key.getLocationOnScreen(location);
+        key.getLocationInWindow(location);
         int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         popupView.measure(measureSpec, measureSpec);
         int popupWidth = popupView.getMeasuredWidth();
@@ -435,6 +479,11 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         dismissPopup();
         if (selectedKeyboard == null) return;
         mKeyboardListener.onRequestNewKeyboard(selectedKeyboard.getUnicode());
+    }
+
+    protected void requestNewKeyboard() {
+        if (mKeyboardListener == null) return;
+        mKeyboardListener.onRequestNewKeyboard(null);
     }
 
     @Override

@@ -506,6 +506,9 @@ public final class MongolCode {
 
         // TODO should we be using this in convertWordToMenksoftCode?
 
+        if (textBefore == null) textBefore = "";
+        if (textAfter == null) textAfter = "";
+
         boolean beforeIsMongolian = false;
         boolean afterIsMongolian = false;
 
@@ -596,7 +599,7 @@ public final class MongolCode {
 //    }
 
     // YIN comes after a vowel, UN comes after a consonant, U comes after N.
-    static String getSuffixYinUnU(Gender previousWordGender, char previousWordLastChar) {
+    public static String getSuffixYinUnU(Gender previousWordGender, char previousWordLastChar) {
         if (isVowel(previousWordLastChar)) {
             return Suffix.YIN;
         } else if (previousWordLastChar == Uni.NA) {
@@ -615,7 +618,7 @@ public final class MongolCode {
     }
 
     // TU after B, G, D, R, S. Others are DU.
-    static String getSuffixTuDu(Gender previousWordGender, char previousWordLastChar) {
+    public static String getSuffixTuDu(Gender previousWordGender, char previousWordLastChar) {
         if (isBGDRS(previousWordLastChar)) {
             if (previousWordGender == Gender.MASCULINE) {
                 return Suffix.TU;
@@ -664,7 +667,7 @@ public final class MongolCode {
     }
 
     // Yi comes after a vowel, I comes after a consonant.
-    static String getSuffixYiI(char previousWordLastChar) {
+    public static String getSuffixYiI(char previousWordLastChar) {
         if (isVowel(previousWordLastChar)) {
             return Suffix.YI;
         }
@@ -672,7 +675,7 @@ public final class MongolCode {
     }
 
     // BAR comes after a vowel, IYAR comes after a consonant.
-    static String getSuffixBarIyar(Gender previousWordGender, char previousWordLastChar) {
+    public static String getSuffixBarIyar(Gender previousWordGender, char previousWordLastChar) {
         if (isVowel(previousWordLastChar)) {
             if (previousWordGender == Gender.MASCULINE) {
                 return Suffix.IYAR;
@@ -689,7 +692,7 @@ public final class MongolCode {
     }
 
     // BAN comes after a vowel, IYAN comes after a consonant.
-    static String getSuffixBanIyan(Gender previousWordGender, char previousWordLastChar) {
+    public static String getSuffixBanIyan(Gender previousWordGender, char previousWordLastChar) {
         if (isVowel(previousWordLastChar)) {
             if (previousWordGender == Gender.MASCULINE) {
                 return Suffix.IYAN;
@@ -705,7 +708,7 @@ public final class MongolCode {
         }
     }
 
-    static String getSuffixAchaEche(Gender previousWordGender) {
+    public static String getSuffixAchaEche(Gender previousWordGender) {
         if (previousWordGender == Gender.MASCULINE) {
             return Suffix.ACHA;
         } else {
@@ -713,7 +716,7 @@ public final class MongolCode {
         }
     }
 
-    static String getSuffixTaiTei(Gender previousWordGender) {
+    public static String getSuffixTaiTei(Gender previousWordGender) {
         if (previousWordGender == Gender.MASCULINE) {
             return Suffix.TAI;
         } else {
@@ -721,7 +724,7 @@ public final class MongolCode {
         }
     }
 
-    static String getSuffixUu(Gender previousWordGender) {
+    public static String getSuffixUu(Gender previousWordGender) {
         if (previousWordGender == Gender.MASCULINE) {
             return Suffix.UU;
         } else {
@@ -729,7 +732,7 @@ public final class MongolCode {
         }
     }
 
-    static String getSuffixUd(Gender previousWordGender) {
+    public static String getSuffixUd(Gender previousWordGender) {
         if (previousWordGender == Gender.MASCULINE) {
             return Suffix.UD;
         } else {
@@ -737,7 +740,7 @@ public final class MongolCode {
         }
     }
 
-    static String getSuffixNugud(Gender previousWordGender) {
+    public static String getSuffixNugud(Gender previousWordGender) {
         if (previousWordGender == Gender.MASCULINE) {
             return Suffix.NUGUD;
         } else {
@@ -748,7 +751,7 @@ public final class MongolCode {
     // Starts at the end of the word and works up
     // if mixed genders only reports the first one from the bottom
     // returns null if word does not end in a valid Mongolian character
-    static Gender getWordGender(String word) {
+    public static Gender getWordGender(String word) {
         return MongolWord.getGender(word);
     }
 

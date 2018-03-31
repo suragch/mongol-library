@@ -5,12 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import net.studymongolian.mongollibrary.MongolTextView;
 
 import java.util.ArrayList;
 
@@ -37,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolButton");
         apiDemos.add("MongolAlertDialog");
         apiDemos.add("Horizontal RecyclerView");
+        apiDemos.add("Custom System Keyboard");
         //apiDemos.add("Testing");
 
 
@@ -105,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 break;
             case 11: // Horizontal RecyclerView
                 intent = new Intent(this, HorizontalRecyclerViewActivity.class);
+                startActivity(intent);
+                break;
+            case 12: // Custom System Keyboard
+                intent = new Intent(this, CustomSystemKeyboardActivity.class);
                 startActivity(intent);
                 break;
 //            case 12: // Testing

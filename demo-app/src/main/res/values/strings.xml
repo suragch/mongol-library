@@ -33,6 +33,7 @@
     <string name="font_name_svgvnag">ᠰᠤᠭᠤᠨᠠᠭ ᠲᠢᠭ</string>
     <string name="font_name_svlbiya">ᠰᠤᠯᠪᠢᠶ᠎ᠠ ᠲᠢᠭ</string>
     <string name="font_name_jclgq">ᠵᠣᠯᠭᠠᠴᠠ ᠲᠢᠭ</string>
+    <string name="keyboard_custom_system_activity_title">Custom System Keyboard</string>
 
 
     <!--<string name="long_string">123 456 678 890 101112 131415 161718 192021 222324 252627 282930 313233 343536 373839 404142 434445 464748 495051 525354 555657 585960 616263 646566 676869 707172 737475 767778.</string>-->

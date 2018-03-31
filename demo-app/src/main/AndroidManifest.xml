@@ -55,6 +55,37 @@
         <activity
             android:name=".HorizontalRecyclerViewActivity"
             android:label="@string/horizontal_recyclerview_activity_title" />
+        <activity
+            android:name=".CustomSystemKeyboardActivity"
+            android:label="@string/keyboard_custom_system_activity_title" />
+
+        <!-- System keyboard example one (single keyboard using Keyboard) -->
+
+        <service
+            android:name=".KeyboardInputMethodService"
+            android:label="Keyboard example"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method"/>
+        </service>
+
+        <!-- System keyboard example one (multiple keyboard using ImeContainer) -->
+
+        <service
+            android:name=".ImeContainerInputMethodService"
+            android:label="ImeContainer example"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method"/>
+        </service>
     </application>
 
 </manifest>

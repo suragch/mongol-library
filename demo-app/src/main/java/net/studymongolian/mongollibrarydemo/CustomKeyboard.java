@@ -8,33 +8,29 @@ import net.studymongolian.mongollibrary.KeyBackspace;
 import net.studymongolian.mongollibrary.KeyKeyboardChooser;
 import net.studymongolian.mongollibrary.KeyText;
 import net.studymongolian.mongollibrary.Keyboard;
+import net.studymongolian.mongollibrary.MongolCode;
 import net.studymongolian.mongollibrary.PopupKeyCandidate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomKeyboard extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "ᠲᠤᠭ᠎ᠠ";
+    private static final String DISPLAY_NAME = "CustomKeyboard";
+    private static final int DEFAULT_HEIGHT_DP = 120;
 
     // Row 1
     protected KeyText mKey1;
     protected KeyText mKey2;
     protected KeyText mKey3;
+    protected KeyText mKeyA;
+    protected KeyText mKeyE;
+    protected KeyText mKeyI;
 
     // Row 2
-    protected KeyText mKey4;
-    protected KeyText mKey5;
-    protected KeyText mKey6;
-
-    // Row 3
-    protected KeyText mKey7;
-    protected KeyText mKey8;
-    protected KeyText mKey9;
-
-    // Row 4
     protected KeyKeyboardChooser mKeyKeyboard;
-    protected KeyText mKey0;
+    protected KeyText mKeySpace;
     protected KeyBackspace mKeyBackspace;
 
     public CustomKeyboard(Context context) {
@@ -52,29 +48,17 @@ public class CustomKeyboard extends Keyboard {
         init(context);
     }
 
-    // all keyboards should include this custom constructor
-    // (there was no way to force it in the abstract Keyboard class)
-//    public CustomKeyboard(Context context, StyleBuilder style) {
-//        super(context);
-//        super.initStyle(style);
-//        init(context);
-//    }
-
     protected void init(Context context) {
 
-        // | 7 | 8 | 9 |    Row 1
-        // | 4 | 5 | 6 |    Row 2
-        // | 1 | 2 | 3 |    Row 3
-        // |kbd| 0 |del|    Row 4
+        // | 1 | 2 | 3 | A | E | I |    Row 1
+        // |  kbd  | space |  del  |    Row 2
 
         // actual layout work is done by Keyboard superclass's onLayout
-        mNumberOfKeysInRow = new int[]{3, 3, 3, 3};
+        mNumberOfKeysInRow = new int[]{6, 3};
         // the key weights for each row should sum to 1
         mKeyWeights = new float[]{
-                1 / 3f, 1 / 3f, 1 / 3f,   // row 0
-                1 / 3f, 1 / 3f, 1 / 3f,   // row 1
-                1 / 3f, 1 / 3f, 1 / 3f,   // row 2
-                1 / 3f, 1 / 3f, 1 / 3f};  // row 3
+                1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f, 1 / 6f,   // row 1
+                1 / 3f, 1 / 3f, 1 / 3f};              // row 2
 
 
         // Make sure that the total keys added to this ViewGroup below equals
@@ -94,20 +78,13 @@ public class CustomKeyboard extends Keyboard {
         mKey1 = new KeyText(context);
         mKey2 = new KeyText(context);
         mKey3 = new KeyText(context);
-
-        // Row 2
-        mKey4 = new KeyText(context);
-        mKey5 = new KeyText(context);
-        mKey6 = new KeyText(context);
-
-        // Row 3
-        mKey7 = new KeyText(context);
-        mKey8 = new KeyText(context);
-        mKey9 = new KeyText(context);
+        mKeyA = new KeyText(context);
+        mKeyE = new KeyText(context);
+        mKeyI = new KeyText(context);
 
         // Row 4
         mKeyKeyboard = new KeyKeyboardChooser(context);
-        mKey0 = new KeyText(context);
+        mKeySpace = new KeyText(context);
         mKeyBackspace = new KeyBackspace(context);
     }
 
@@ -116,29 +93,20 @@ public class CustomKeyboard extends Keyboard {
         mKey1.setText("1");
         mKey2.setText("2");
         mKey3.setText("3");
-        mKey4.setText("4");
-        mKey5.setText("5");
-        mKey6.setText("6");
-        mKey7.setText("7");
-        mKey8.setText("8");
-        mKey9.setText("9");
-        mKey0.setText("0");
+        mKeyA.setText(MongolCode.Uni.A);
+        mKeyE.setText(MongolCode.Uni.E);
+        mKeyI.setText(MongolCode.Uni.I);
 
         mKeyBackspace.setImage(getBackspaceImage());
+        mKeySpace.setText(" ");
         mKeyKeyboard.setImage(getKeyboardImage());
+        mKeyKeyboard.setSubText("");
     }
 
     private void dontRotatePrimaryText() {
         mKey1.setIsRotatedPrimaryText(false);
         mKey2.setIsRotatedPrimaryText(false);
         mKey3.setIsRotatedPrimaryText(false);
-        mKey4.setIsRotatedPrimaryText(false);
-        mKey5.setIsRotatedPrimaryText(false);
-        mKey6.setIsRotatedPrimaryText(false);
-        mKey7.setIsRotatedPrimaryText(false);
-        mKey8.setIsRotatedPrimaryText(false);
-        mKey9.setIsRotatedPrimaryText(false);
-        mKey0.setIsRotatedPrimaryText(false);
     }
 
 
@@ -148,20 +116,13 @@ public class CustomKeyboard extends Keyboard {
         mKey1.setKeyListener(this);
         mKey2.setKeyListener(this);
         mKey3.setKeyListener(this);
+        mKeyA.setKeyListener(this);
+        mKeyE.setKeyListener(this);
+        mKeyI.setKeyListener(this);
 
         // Row 2
-        mKey4.setKeyListener(this);
-        mKey5.setKeyListener(this);
-        mKey6.setKeyListener(this);
-
-        // Row 3
-        mKey7.setKeyListener(this);
-        mKey8.setKeyListener(this);
-        mKey9.setKeyListener(this);
-
-        // Row 4
         mKeyKeyboard.setKeyListener(this);
-        mKey0.setKeyListener(this);
+        mKeySpace.setKeyListener(this);
         mKeyBackspace.setKeyListener(this);
     }
 
@@ -171,20 +132,13 @@ public class CustomKeyboard extends Keyboard {
         addView(mKey1);
         addView(mKey2);
         addView(mKey3);
+        addView(mKeyA);
+        addView(mKeyE);
+        addView(mKeyI);
 
         // Row 2
-        addView(mKey4);
-        addView(mKey5);
-        addView(mKey6);
-
-        // Row 3
-        addView(mKey7);
-        addView(mKey8);
-        addView(mKey9);
-
-        // Row 4
         addView(mKeyKeyboard);
-        addView(mKey0);
+        addView(mKeySpace);
         addView(mKeyBackspace);
     }
 
@@ -192,8 +146,38 @@ public class CustomKeyboard extends Keyboard {
         // this keyboard has no popups except for the keyboard key
         if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();
+        } else if (key == mKeyA) {
+            return getCandidatesForA();
+        } else if (key == mKeyE) {
+            return getCandidatesForE();
+        } else if (key == mKeyI) {
+            return getCandidatesForI();
         }
+
         return null;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        candidates.add(new PopupKeyCandidate("ᠰᠠᠶᠢᠨ"));
+        candidates.add(new PopupKeyCandidate("ᠪᠠᠶᠢᠨ᠎ᠠ"));
+        candidates.add(new PopupKeyCandidate(" ᠤᠤ"));
+        return candidates;
+    }
+
+
+    private List<PopupKeyCandidate> getCandidatesForE() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        candidates.add(new PopupKeyCandidate("ᠧ"));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForI() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        candidates.add(new PopupKeyCandidate(" ᠢ"));
+        candidates.add(new PopupKeyCandidate(" ᠶᠢ"));
+        candidates.add(new PopupKeyCandidate(" ᠶᠢᠨ"));
+        return candidates;
     }
 
     @Override
@@ -203,6 +187,11 @@ public class CustomKeyboard extends Keyboard {
 
     @Override
     public void onKeyboardKeyClick() {
-        // this keyboard doesn't have punctuation key values
+        requestNewKeyboard();
+    }
+
+    @Override
+    public int getDefaultHeight() {
+        return (int) (DEFAULT_HEIGHT_DP * getResources().getDisplayMetrics().density);
     }
 }

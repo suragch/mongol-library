@@ -50,6 +50,8 @@ public class PopupKeyCandidate {
     }
 
     public String getDisplay() {
+        if (display == null)
+            return unicode;
         return display;
     }
 

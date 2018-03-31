@@ -24,20 +24,23 @@ import java.util.List;
  * word suggestion candidates list.
  */
 public class ImeContainer extends ViewGroup
-        implements Keyboard.KeyboardListener, ImeCandidatesView.CandidateClickListener {
+        implements Keyboard.OnKeyboardListener, ImeCandidatesView.CandidateClickListener {
 
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 8f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
     private static final int DIVIDER_ALPHA = 0x40; // 25%
     private static final int MAX_CHARS_BEFORE_CURSOR = 128;
+    private static final int DEFAULT_HEIGHT_DP = 240;
 
     private Context mContext;
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
     private ImeCandidatesView mCandidatesView;
     private DataSource mDataSource = null;
+    private OnSystemImeListener mSystemImeListener = null;
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
+    private PopupKeyCandidate mShowSystemKeyboardsOption;
 
     public ImeContainer(Context context) {
         super(context, null, 0);
@@ -70,6 +73,54 @@ public class ImeContainer extends ViewGroup
     // provide a way for another class to set the listener
     public void setDataSource(DataSource dataSource) {
         this.mDataSource = dataSource;
+    }
+
+    public interface OnSystemImeListener {
+        InputConnection getInputConnection();
+        void onChooseNewSystemKeyboard();
+    }
+
+    public void setOnSystemImeListener(OnSystemImeListener listener) {
+        this.mSystemImeListener = listener;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int desiredWidth = Integer.MAX_VALUE;
+        int desiredHeight = getDefaultHeight();
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int width;
+        int height;
+
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            width = desiredWidth;
+        }
+
+        if (heightMode == MeasureSpec.EXACTLY) {
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            height = desiredHeight;
+        }
+
+        setMeasuredDimension(width, height);
+    }
+
+    private int getDefaultHeight() {
+        if (mCurrentKeyboard != null)
+            return mCurrentKeyboard.getDefaultHeight();
+        return (int) (DEFAULT_HEIGHT_DP * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -177,6 +228,12 @@ public class ImeContainer extends ViewGroup
         mCurrentKeyboard.layout(left, top, right, bottom);
     }
 
+    public InputConnection getInputConnection() {
+        if (mSystemImeListener != null)
+            return mSystemImeListener.getInputConnection();
+        return mInputConnection;
+    }
+
     public void setInputConnection(InputConnection inputConnection) {
         this.mInputConnection = inputConnection;
         mComposing = "";
@@ -199,8 +256,9 @@ public class ImeContainer extends ViewGroup
                 (newSelStart != candidatesEnd
                         || newSelEnd != candidatesEnd)) {
             mComposing = "";
-            if (mInputConnection != null) {
-                mInputConnection.finishComposingText();
+            InputConnection ic = getInputConnection();
+            if (ic != null) {
+                ic.finishComposingText();
             }
         }
         if (mCandidatesView != null && mCandidatesView.hasCandidates()) {
@@ -211,11 +269,26 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void onRequestNewKeyboard(String keyboardDisplayName) {
-
+        if (isSystemKeyboardRequest(keyboardDisplayName)) {
+            chooseSystemKeyboard();
+        }
         Keyboard newKeyboard = getKeyboardFromDisplayName(keyboardDisplayName);
         if (newKeyboard == null) return;
         setCurrentKeyboard(newKeyboard);
         setCandidatesView();
+    }
+
+    private boolean isSystemKeyboardRequest(String requestedName) {
+        if (mShowSystemKeyboardsOption == null) return false;
+        String system = mShowSystemKeyboardsOption.getUnicode();
+        return system != null && system.equals(requestedName);
+    }
+
+    private void chooseSystemKeyboard() {
+        if (mSystemImeListener != null) {
+            mSystemImeListener.onChooseNewSystemKeyboard();
+        }
+        // TODO else who can we request a system keyboard from? MongolInputMethodManager?
     }
 
     private Keyboard getKeyboardFromDisplayName(String keyboardDisplayName) {
@@ -238,8 +311,12 @@ public class ImeContainer extends ViewGroup
 
     private void addNewCurrentKeyboard(Keyboard keyboard) {
         mCurrentKeyboard = keyboard;
-        keyboard.setKeyboardListener(this);
+        keyboard.setOnKeyboardListener(this);
         this.addView(keyboard);
+    }
+
+    public void showSystemKeyboardsOption(String title) {
+        mShowSystemKeyboardsOption = new PopupKeyCandidate(title);
     }
 
     private void setCandidatesView() {
@@ -285,7 +362,7 @@ public class ImeContainer extends ViewGroup
     }
 
     @Override
-    public List<PopupKeyCandidate> getKeyboardKeyCandidates() {
+    public List<PopupKeyCandidate> getAllKeyboardNames() {
         int numberOfOtherKeyboards = mKeyboards.size() - 1;
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (numberOfOtherKeyboards < 1) return candidates;
@@ -296,24 +373,28 @@ public class ImeContainer extends ViewGroup
             PopupKeyCandidate item = new PopupKeyCandidate(keyboard.getDisplayName());
             candidates.add(item);
         }
+        if (mShowSystemKeyboardsOption != null) {
+            candidates.add(mShowSystemKeyboardsOption);
+        }
         return candidates;
     }
 
-    @Override
-    public char getPreviousChar() {
-        if (mInputConnection == null) return 0;
-        CharSequence previous = mInputConnection.getTextBeforeCursor(1, 0);
+    private char getPreviousChar() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return 0;
+        CharSequence previous = ic.getTextBeforeCursor(1, 0);
         if (TextUtils.isEmpty(previous)) return 0;
         return previous.charAt(0);
     }
 
     @Override
-    public String getPreviousMongolWord(boolean allowSingleSpace) {
-        if (mInputConnection == null) return "";
-        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
+    public String getPreviousMongolWord(boolean allowSingleSpaceBeforeCursor) {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return "";
+        CharSequence previous = ic.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
         if (TextUtils.isEmpty(previous)) return "";
         int endIndex = previous.length();
-        if (allowSingleSpace && endsWithSpace(previous)) {
+        if (allowSingleSpaceBeforeCursor && endsWithSpace(previous)) {
             endIndex--;
         }
         int startIndex = getStartIndex(endIndex, previous);
@@ -344,18 +425,6 @@ public class ImeContainer extends ViewGroup
     }
 
     @Override
-    public boolean insertLocationIsIsolateOrInitial() {
-        if (mInputConnection == null) return true;
-        CharSequence before = mInputConnection.getTextBeforeCursor(2, 0);
-        CharSequence after = mInputConnection.getTextAfterCursor(2, 0);
-        if (before == null || after == null) return true;
-        // get Mongol word location at cursor input
-        MongolCode.Location location = MongolCode.getLocation(before, after);
-        return location == MongolCode.Location.ISOLATE ||
-                location == MongolCode.Location.INITIAL;
-    }
-
-    @Override
     public void onKeyboardInput(String text) {
         if (TextUtils.isEmpty(text)) return;
         boolean isMongol = MongolCode.isMongolian(text.charAt(0));
@@ -365,17 +434,18 @@ public class ImeContainer extends ViewGroup
     }
 
     private void commitText(String text) {
-        if (mInputConnection == null) return;
-        mInputConnection.beginBatchEdit();
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.beginBatchEdit();
         char previousChar = getPreviousChar();
         if (previousChar == ' ' || previousChar == MongolCode.Uni.NNBS) {
             char initialChar = text.charAt(0);
             if (initialChar == MongolCode.Uni.NNBS) {
-                mInputConnection.deleteSurroundingText(1, 0);
+                ic.deleteSurroundingText(1, 0);
             }
         }
-        mInputConnection.commitText(text, 1);
-        mInputConnection.endBatchEdit();
+        ic.commitText(text, 1);
+        ic.endBatchEdit();
     }
 
     private void updateCandidatesView() {
@@ -391,7 +461,8 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void onKeyPopupChosen(PopupKeyCandidate choice) {
-        if (mInputConnection == null) return;
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
         if (choice == null) return;
         String composingText = choice.getComposing();
         String unicode = choice.getUnicode();
@@ -400,27 +471,29 @@ public class ImeContainer extends ViewGroup
         } else {
             boolean isMongol = MongolCode.isMongolian(unicode.charAt(0));
             handleOldComposingText(isMongol);
-            mInputConnection.setComposingText(composingText, 1);
+            ic.setComposingText(composingText, 1);
             mComposing = unicode;
         }
     }
 
     private void handleOldComposingText(boolean newInputIsMongol) {
+        InputConnection ic = getInputConnection();
         if (TextUtils.isEmpty(mComposing)) return;
         if (newInputIsMongol) {
-            mInputConnection.commitText(mComposing, 1);
+            ic.commitText(mComposing, 1);
         } else {
-            mInputConnection.finishComposingText();
+            ic.finishComposingText();
         }
         mComposing = "";
     }
 
     @Override
     public void onBackspace() {
-        if (mInputConnection == null) return;
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
 
         if (!TextUtils.isEmpty(mComposing)) {
-            mInputConnection.commitText(mComposing, 1);
+            ic.commitText(mComposing, 1);
             mComposing = "";
         }
 
@@ -429,23 +502,33 @@ public class ImeContainer extends ViewGroup
             return;
         }
 
-        String previousFourChars = getPreviousFourChars();
+        CharSequence previousFourChars = getTextBeforeCursor(4);
         backspaceFromEndOf(previousFourChars);
 
         clearCandidates();
     }
 
+    @Override
+    public CharSequence getTextBeforeCursor(int numberOfChars) {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return "";
+        return ic.getTextBeforeCursor(numberOfChars, 0);
+    }
+
+    @Override
+    public CharSequence getTextAfterCursor(int numberOfChars) {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return "";
+        return ic.getTextAfterCursor(numberOfChars, 0);
+    }
+
     private boolean hasSelection() {
-        CharSequence selection = mInputConnection.getSelectedText(0);
+        InputConnection ic = getInputConnection();
+        CharSequence selection = ic.getSelectedText(0);
         return selection != null && selection.length() > 0;
     }
 
-    private String getPreviousFourChars() {
-        CharSequence previous = mInputConnection.getTextBeforeCursor(4, 0);
-        return previous.toString();
-    }
-
-    private void backspaceFromEndOf(String previousChars) {
+    private void backspaceFromEndOf(CharSequence previousChars) {
         if (TextUtils.isEmpty(previousChars)) return;
         int deleteIndex = previousChars.length() - 1;
 
@@ -486,8 +569,9 @@ public class ImeContainer extends ViewGroup
     }
 
     private void doBackspace() {
-        mInputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-        mInputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+        InputConnection ic = getInputConnection();
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
 
         // We could also do this with inputConnection.deleteSurroundingText(1, 0)
         // but then we would need to be careful of not deleting too much
@@ -543,27 +627,29 @@ public class ImeContainer extends ViewGroup
     }
 
     private void insertFollowingWord(String text) {
-        if (mInputConnection == null) return;
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
         char previousChar = getPreviousChar();
         String insertWord = text;
         if (previousChar != ' ') {
             insertWord = " " + insertWord;
         }
-        mInputConnection.commitText(insertWord, 1);
+        ic.commitText(insertWord, 1);
     }
 
 
     private void replaceMongolWordBeforeCursor(String text) {
-        if (mInputConnection == null) return;
-        CharSequence previous = mInputConnection.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        CharSequence previous = ic.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
         if (previous == null) return;
         int endIndex = previous.length();
         int startIndex = getStartIndex(endIndex, previous);
         int length = endIndex - startIndex;
-        mInputConnection.beginBatchEdit();
-        mInputConnection.deleteSurroundingText(length, 0);
-        mInputConnection.commitText(text, 1);
-        mInputConnection.endBatchEdit();
+        ic.beginBatchEdit();
+        ic.deleteSurroundingText(length, 0);
+        ic.commitText(text, 1);
+        ic.endBatchEdit();
     }
 
     private void suggestFollowingWords(String text) {
