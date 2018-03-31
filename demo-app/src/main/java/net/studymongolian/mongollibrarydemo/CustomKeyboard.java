@@ -17,7 +17,7 @@ import java.util.List;
 public class CustomKeyboard extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "CustomKeyboard";
+    private static final String DISPLAY_NAME = "ᠮᠢᠨᠤ ᠳᠠᠷᠤᠭᠤᠯ";
     private static final int DEFAULT_HEIGHT_DP = 120;
 
     // Row 1
