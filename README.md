@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.0.0'
+    implementation 'net.studymongolian:mongol-library:1.1.0'
 }
 ```
 
