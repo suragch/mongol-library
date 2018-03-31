@@ -622,6 +622,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.1.0`: Added support for making custom system keyboards
 * `1.0.0`: All basic components are working. Major upgrade to the Keyboard system.
 * `0.9.16`: Support for II spelling of double tooth I
 * `0.9.15`: Changed `MongolCode` rendering and Keyboards to support medial `I + FVS2` for words like NAIMA. (This is a Unicode 10.0 deviation.)
