@@ -65,7 +65,7 @@ implementation 'net.studymongolian:mongol-library:1.1.0'
 
 ## 5、 InputMethodService类
 
-创建一个java文件，把它命名为`WodeInputMethodService.java`，要继承`InputMethodService`，还要实现`ImeContainer.OnSystemImeListener`。内容如下：
+创建一个java文件，把它命名为`WodeInputMethodService.java`，要继承`InputMethodService`，还要实现`ImeContainer.OnSystemImeListener`接口。内容如下：
 
 ```java
 public class WodeInputMethodService extends InputMethodService implements ImeContainer.OnSystemImeListener {
@@ -74,10 +74,12 @@ public class WodeInputMethodService extends InputMethodService implements ImeCon
     public View onCreateInputView() {
         LayoutInflater inflater = getLayoutInflater();
         ImeContainer jianpan = (ImeContainer) inflater.inflate(R.layout.jianpan_yangshi, null, false);
-        jianpan.showSystemKeyboardsOption("ᠰᠢᠰᠲ᠋ᠧᠮ");
+        jianpan.showSystemKeyboardsOption("ᠰᠢᠰᠲ᠋ᠧᠮ"); // 长按键盘键可以切换到别的系统输入法
         jianpan.setOnSystemImeListener(this);
         return jianpan;
     }
+
+    // ImeContainer.OnSystemImeListener的方法
 
     @Override
     public InputConnection getInputConnection() {
@@ -95,5 +97,39 @@ public class WodeInputMethodService extends InputMethodService implements ImeCon
 
 **备注**
 
-- 也可以实现Keyboard.On...
+- 如果你不想用`ImeContainer`或者你想自己控制键盘的输入法，从`onCreateInputView()`也可以返回一个`Keyboard`视图，这样的话要你的`InputMethodService`要实现`Keyboard.OnKeyboardListener`接口，就是要实现的方法较多一点。
 
+## 6、 输入法子类型
+
+在`res/xml/`里创建一个xml文件，把它命名为`method.xml`。内容如下：
+
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<input-method
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <subtype
+        android:imeSubtypeMode="keyboard"/>
+
+</input-method>
+```
+
+# 7、 申明输入法
+
+在`AndroidManifest.xml`里要申明你的输入法
+
+```java
+</application>
+      <service
+        android:name=".ImeContainerInputMethodService"
+        android:label="ImeContainer example"
+        android:permission="android.permission.BIND_INPUT_METHOD">
+        <intent-filter>
+            <action android:name="android.view.InputMethod"/>
+        </intent-filter>
+        <meta-data
+            android:name="android.view.im"
+            android:resource="@xml/method"/>
+    </service>
+</application>
+```
