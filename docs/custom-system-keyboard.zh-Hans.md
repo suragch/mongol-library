@@ -51,9 +51,9 @@ implementation 'net.studymongolian:mongol-library:1.1.0'
         app:keySpacing="3dp"
         app:popupHighlightColor="#dbdbdb"
         app:popupTextColor="#fe9a52"
-        app:primaryTextColor="000000"
+        app:primaryTextColor="#000000"
         app:primaryTextSize="30sp"
-        app:secondaryTextColor="b3b3b3" />
+        app:secondaryTextColor="#b3b3b3" />
 
 </net.studymongolian.mongollibrary.ImeContainer>
 ```
@@ -116,13 +116,15 @@ public class WodeInputMethodService extends InputMethodService implements ImeCon
 
 # 7、 申明输入法
 
-在`AndroidManifest.xml`里要申明你的输入法
+在`AndroidManifest.xml`里要申明你的输入法：
 
 ```java
 </application>
-      <service
-        android:name=".ImeContainerInputMethodService"
-        android:label="ImeContainer example"
+    ...
+    
+    <service
+        android:name=".WodeInputMethodService"
+        android:label="自定义输入法"
         android:permission="android.permission.BIND_INPUT_METHOD">
         <intent-filter>
             <action android:name="android.view.InputMethod"/>
@@ -133,3 +135,9 @@ public class WodeInputMethodService extends InputMethodService implements ImeCon
     </service>
 </application>
 ```
+
+你的键盘的基本功能已经完成了，但是`MainActivity`里可以加一些设置项目或帮助。
+
+# 8、 激活输入法
+
+在系统设置里用户都要激活你的输入法。
