@@ -20,19 +20,40 @@ import java.util.List;
 
 public class MongolInputMethodManager {
 
+    /**
+     * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
+     * This will be removed in the future.
+     */
+    @Deprecated
     public static final int NO_EDITORS = 0;
+
+    /**
+     * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
+     * This will be removed in the future.
+     */
+    @Deprecated
     public static final int ALL_EDITORS = 1;
+
+    /**
+     * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
+     * This will be removed in the future.
+     */
+    @Deprecated
     public static final int SYSTEM_EDITOR_ONLY = 2;
+
+    /**
+     * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
+     * This will be removed in the future.
+     */
+    @Deprecated
     public static final int MONGOL_EDITOR_ONLY = 3;
 
     private static final boolean DEBUG = false;
     private static final String TAG = "MongolImeManager";
 
-    public MongolInputMethodManager() {}
-
-    private List<View> mRegisteredEditors;
+    private List<RegisteredEditor> mRegisteredEditors;
     private ImeContainer mImeContainer;
-    private int mAllowSystemKeyboard = NO_EDITORS;
+    //private int mAllowSystemKeyboard = NO_EDITORS;
 
     // this is the edit text that is receiving input
     private View mCurrentEditor;
@@ -42,14 +63,19 @@ public class MongolInputMethodManager {
     private int mCursorCandidateStart;
     private int mCursorCandidateEnd;
 
+    /**
+     * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
+     * This method will be removed in the future.
+     */
+    @Deprecated
     public void setAllowSystemSoftInput(int allowSystemKeyboard) {
-        this.mAllowSystemKeyboard = allowSystemKeyboard;
+        //this.mAllowSystemKeyboard = allowSystemKeyboard;
 
         if (mRegisteredEditors == null || mRegisteredEditors.size() == 0) return;
 
-        for (View editor : mRegisteredEditors) {
-            if (editor instanceof EditText) {
-                EditText editText = (EditText) editor;
+        for (RegisteredEditor editor : mRegisteredEditors) {
+            if (editor.view instanceof EditText) {
+                EditText editText = (EditText) editor.view;
 
                 // TODO this needs to be tested on lower versions!
                 // https://stackoverflow.com/a/45229457
@@ -74,13 +100,13 @@ public class MongolInputMethodManager {
                         editText.setTextIsSelectable(true);
                     }
                 }
-            } else if (editor instanceof MongolEditText) {
+            } else if (editor.view instanceof MongolEditText) {
                 boolean showSystemSoftIme =
                         allowSystemKeyboard == ALL_EDITORS ||
                         allowSystemKeyboard == MONGOL_EDITOR_ONLY;
-                ((MongolEditText) editor).setAllowSystemKeyboard(showSystemSoftIme);
+                ((MongolEditText) editor.view).setAllowSystemKeyboard(showSystemSoftIme);
                 if (!showSystemSoftIme) {
-                    Activity activity = getActivity(editor.getContext());
+                    Activity activity = getActivity(editor.view.getContext());
                     if (activity != null) {
                         // TODO do I need to do this for EditText also?
                         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -97,7 +123,23 @@ public class MongolInputMethodManager {
         return null;
     }
 
+    /**
+     * convenience method for addEditor(View editor, boolean allowSystemKeyboard)
+     * allowSystemKeyboard defaults to false
+     *
+     * @param editor EditText or MongolEditText
+     */
     public void addEditor(View editor) {
+        addEditor(editor, false);
+    }
+
+    /**
+     * Registers an editor to receive input from the custom keyboard
+     *
+     * @param editor EditText or MongolEditText
+     * @param allowSystemKeyboard sets whether the system keyboard will popup when an editor is focused
+     */
+    public void addEditor(View editor, boolean allowSystemKeyboard) {
 
         // editor must be MongolEditText or EditText
         if (!(editor instanceof EditText) && !(editor instanceof MongolEditText)) {
@@ -111,8 +153,8 @@ public class MongolInputMethodManager {
         }
 
         // don't add the same view twice
-        for (View view : mRegisteredEditors) {
-            if (view == editor) return;
+        for (RegisteredEditor item : mRegisteredEditors) {
+            if (item.view == editor) return;
         }
 
         // give the editor's input connection to the keyboard when editor is focused
@@ -126,32 +168,80 @@ public class MongolInputMethodManager {
         }
 
         // TODO set allow system keyboard to show if hasn't been set
+        setAllowSystemKeyboard(editor, allowSystemKeyboard);
 
         // add editor
-        mRegisteredEditors.add(editor);
+        mRegisteredEditors.add(new RegisteredEditor(editor, allowSystemKeyboard));
         mCurrentEditor = editor;
+    }
+
+    private void setAllowSystemKeyboard(View editor, boolean allowSystemKeyboard) {
+        if (editor instanceof EditText) {
+            setAllowSystemKeyboardOnEditText((EditText) editor, allowSystemKeyboard);
+        } else if (editor instanceof MongolEditText) {
+            ((MongolEditText) editor).setAllowSystemKeyboard(allowSystemKeyboard);
+        }
+    }
+
+    private void setAllowSystemKeyboardOnEditText(EditText editText, boolean allowSystemKeyboard) {
+        // TODO this needs to be tested on lower versions!
+        // https://stackoverflow.com/a/45229457
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // api 21+
+            editText.setShowSoftInputOnFocus(allowSystemKeyboard);
+        } else { // api 11+
+            if (allowSystemKeyboard) {
+                // re-enable keyboard (see https://stackoverflow.com/a/45228867)
+                // FIXME this does not necessarily always work
+                editText.setTextIsSelectable(false);
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                editText.setClickable(true);
+                editText.setLongClickable(true);
+                editText.setMovementMethod(ArrowKeyMovementMethod.getInstance());
+                editText.setText(editText.getText(), TextView.BufferType.SPANNABLE);
+            } else {
+                // disable keyboard
+                editText.setTextIsSelectable(true);
+            }
+        }
     }
 
     private View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                mCurrentEditor = v;
-                EditorInfo tba = getEditorInfo(v);
-                InputConnection ic = v.onCreateInputConnection(tba);
-                mCurrentEditorInfo = tba;
-                if (mImeContainer != null) {
-                    mImeContainer.setInputConnection(ic);
-                }
+                setInputConnection(v);
+                hideSystemKeyboardIfNeeded(v);
+            }
+        }
 
-                if (mAllowSystemKeyboard == SYSTEM_EDITOR_ONLY
-                        && v instanceof MongolEditText) {
-                    InputMethodManager imm = (InputMethodManager)
-                            v.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    if (imm != null)
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        private void setInputConnection(View v) {
+            mCurrentEditor = v;
+            EditorInfo tba = getEditorInfo(v);
+            InputConnection ic = v.onCreateInputConnection(tba);
+            mCurrentEditorInfo = tba;
+            if (mImeContainer != null) {
+                mImeContainer.setInputConnection(ic);
+                mImeContainer.onStartInput(tba, false);
+            }
+        }
+
+        private void hideSystemKeyboardIfNeeded(View v) {
+            for (RegisteredEditor item : mRegisteredEditors) {
+                if (item.view == v) {
+                    if (!item.allowSystemKeyboard)
+                        hideSystemKeyboard(v);
+                    break;
                 }
             }
+        }
+
+        private void hideSystemKeyboard(View v) {
+            InputMethodManager imm = (InputMethodManager)
+                    v.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
     };
 
@@ -196,6 +286,16 @@ public class MongolInputMethodManager {
 
     public void setIme(ImeContainer imeContainer) {
         this.mImeContainer = imeContainer;
+    }
+
+    private class RegisteredEditor {
+        View view;
+        boolean allowSystemKeyboard;
+
+        RegisteredEditor(View editor, boolean allowSystemKeyboard) {
+            this.view = editor;
+            this.allowSystemKeyboard = allowSystemKeyboard;
+        }
     }
 
 }

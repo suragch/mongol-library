@@ -2,11 +2,13 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.support.v4.graphics.ColorUtils;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 import java.util.ArrayList;
@@ -267,14 +269,41 @@ public class ImeContainer extends ViewGroup
 
     }
 
+    /**
+     * subclasses can override this method to choose a specific keyboard based on
+     * the InputType of the current editor
+     *
+     * @param attribute information passed in by the current EditText or MongolEditText
+     * @param restarting this parameter is currently not implemented
+     */
+    public void onStartInput(EditorInfo attribute, boolean restarting) {
+        // subclasses can override this method to choose a specific keyboard
+        // based on the InputType of the current editor
+
+        //switch (attribute.inputType) {
+        //    case InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PHONETIC:
+        //        // keyboard indexes are in the order added in xml or programmatically
+        //        requestNewKeyboard(1);
+        //        break;
+        //    default:
+        //        requestNewKeyboard(0);
+        //}
+    }
+
     @Override
     public void onRequestNewKeyboard(String keyboardDisplayName) {
         if (isSystemKeyboardRequest(keyboardDisplayName)) {
             chooseSystemKeyboard();
         }
-        Keyboard newKeyboard = getKeyboardFromDisplayName(keyboardDisplayName);
-        if (newKeyboard == null) return;
-        setCurrentKeyboard(newKeyboard);
+        int newKeyboardIndex = getKeyboardIndexFromDisplayName(keyboardDisplayName);
+        requestNewKeyboard(newKeyboardIndex);
+    }
+
+    public void requestNewKeyboard(int index) {
+        if (index < 0 || index >= mKeyboards.size())
+            return;
+        Keyboard keyboard = mKeyboards.get(index);
+        setCurrentKeyboard(keyboard);
         setCandidatesView();
     }
 
@@ -291,12 +320,12 @@ public class ImeContainer extends ViewGroup
         // TODO else who can we request a system keyboard from? MongolInputMethodManager?
     }
 
-    private Keyboard getKeyboardFromDisplayName(String keyboardDisplayName) {
-        for (Keyboard keyboard : mKeyboards) {
-            if (keyboard.getDisplayName().equals(keyboardDisplayName))
-                return keyboard;
+    private int getKeyboardIndexFromDisplayName(String keyboardDisplayName) {
+        for (int i = 0; i < mKeyboards.size(); i++) {
+            if (mKeyboards.get(i).getDisplayName().equals(keyboardDisplayName))
+                return i;
         }
-        return null;
+        return -1;
     }
 
     private void setCurrentKeyboard(Keyboard keyboard) {
@@ -313,6 +342,14 @@ public class ImeContainer extends ViewGroup
         mCurrentKeyboard = keyboard;
         keyboard.setOnKeyboardListener(this);
         this.addView(keyboard);
+    }
+
+    public int getKeyboardCount() {
+        return mKeyboards.size();
+    }
+
+    public Keyboard getKeyboardAt(int index) {
+        return mKeyboards.get(index);
     }
 
     public void showSystemKeyboardsOption(String title) {
