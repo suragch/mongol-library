@@ -1,7 +1,9 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -9,12 +11,14 @@ import java.util.List;
 
 class PopupKeyCandidatesView extends ViewGroup {
 
-    private static final int LABEL_PADDING = 5; // dp
-    private static final int DEFAULT_KEY_HEIGHT = 60; // dp
-    public static final int DEFAULT_TEXT_SIZE = 30; // sp
+    private static final int LABEL_PADDING_DP = 5;
+    private static final int BORDER_WIDTH_DP = 1;
+    private static final int DEFAULT_KEY_HEIGHT_DP = 60;
+    public static final int DEFAULT_TEXT_SIZE = 30;
 
     private final Context mContext;
 
+    private Paint mBorderPaint;
     private int mHeight = 0;
     private int mHighlightColor = Color.DKGRAY;
     private int mTextColor = Color.BLACK;
@@ -24,6 +28,15 @@ class PopupKeyCandidatesView extends ViewGroup {
     public PopupKeyCandidatesView(Context context) {
         super(context);
         this.mContext = context;
+        this.mBorderPaint = new Paint();
+        initPaint();
+    }
+
+    private void initPaint() {
+        mBorderPaint.setColor(Color.BLACK);
+        int strokeWidthPx = (int) (BORDER_WIDTH_DP * getResources().getDisplayMetrics().density);
+        mBorderPaint.setStrokeWidth(strokeWidthPx);
+        mBorderPaint.setStyle(Paint.Style.STROKE);
     }
 
     public void setCandidates(List<PopupKeyCandidate> candidates) {
@@ -32,7 +45,7 @@ class PopupKeyCandidatesView extends ViewGroup {
     }
 
     private void initDisplay() {
-        int paddingPX = (int) (LABEL_PADDING * getResources().getDisplayMetrics().density);
+        int paddingPX = (int) (LABEL_PADDING_DP * getResources().getDisplayMetrics().density);
         for (PopupKeyCandidate candidate : mCandidates) {
             MongolLabel label = new MongolLabel(mContext);
             String text = (candidate.getDisplay() != null) ? candidate.getDisplay() : candidate.getUnicode();
@@ -74,7 +87,7 @@ class PopupKeyCandidatesView extends ViewGroup {
             maxHeight = Math.max(maxHeight, child.getMeasuredHeight());
         }
 
-        mHeight = (int) (DEFAULT_KEY_HEIGHT * getResources().getDisplayMetrics().density);
+        mHeight = (int) (DEFAULT_KEY_HEIGHT_DP * getResources().getDisplayMetrics().density);
         if (mHeight < maxHeight) {
             mHeight = maxHeight;
         }
@@ -131,6 +144,14 @@ class PopupKeyCandidatesView extends ViewGroup {
             child.layout(leftOffset, topOffset, rightOffset, bottomOffset);
             leftOffset = rightOffset;
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        // draw border
+        canvas.drawRect(0, 0, getWidth(), getHeight(), mBorderPaint);
     }
 
     public void updateTouchPosition(int x) {
