@@ -9,7 +9,7 @@ import java.util.List;
 public class KeyboardEnglish extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "ᠠᠩᠭᠯᠢ";
+    private static final String DEFAULT_DISPLAY_NAME = "ᠠᠩᠭᠯᠢ";
 
     // Row 1
     protected KeyText mKeyQ;
@@ -572,7 +572,9 @@ public class KeyboardEnglish extends Keyboard {
 
     @Override
     public String getDisplayName() {
-        return DISPLAY_NAME;
+        if (mDisplayName == null)
+            return DEFAULT_DISPLAY_NAME;
+        return mDisplayName;
     }
 
     @Override

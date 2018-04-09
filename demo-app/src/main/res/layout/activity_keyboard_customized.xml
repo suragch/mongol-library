@@ -50,6 +50,7 @@
         <net.studymongolian.mongollibrary.KeyboardAeiou
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:displayName="aeiou"
             app:candidatesLocation="none"
             app:keyColor="@color/colorPrimary"
             app:keyPressedColor="@color/colorAccent"
@@ -75,6 +76,7 @@
         <net.studymongolian.mongollibrary.KeyboardEnglish
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:displayName="English"
             app:keyColor="#00000000"
             app:primaryTextColor="#b5ddff"
             app:secondaryTextColor="#40b5ddff"

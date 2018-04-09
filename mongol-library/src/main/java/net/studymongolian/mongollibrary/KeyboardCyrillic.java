@@ -8,7 +8,7 @@ import java.util.List;
 public class KeyboardCyrillic extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "ᠺᠢᠷᠢᠯ";
+    private static final String DEFAULT_DISPLAY_NAME = "ᠺᠢᠷᠢᠯ";
 
     // Row 1
     protected KeyText mKey_f;
@@ -690,7 +690,9 @@ public class KeyboardCyrillic extends Keyboard {
 
     @Override
     public String getDisplayName() {
-        return DISPLAY_NAME;
+        if (mDisplayName == null)
+            return DEFAULT_DISPLAY_NAME;
+        return mDisplayName;
     }
 
     @Override

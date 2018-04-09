@@ -36,6 +36,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     static final CandidatesLocation DEFAULT_CANDIDATES_LOCATION = CandidatesLocation.NONE;
     private static final int DEFAULT_HEIGHT_DP = 240;
 
+    protected String mDisplayName;
     private KeyImage.Theme mKeyImageTheme;
     private int mPopupBackgroundColor;
     private int mPopupHighlightColor;
@@ -101,6 +102,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     private void init(Context context) {
+        mDisplayName = getDisplayName();
         mPrimaryTextSizePx = getDefaultPrimaryTextSizeInPixels();
         mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
         mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
@@ -120,6 +122,8 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Keyboard, defStyleAttr, 0);
+        mDisplayName = a.getString(R.styleable.Keyboard_displayName);
+        if (mDisplayName == null) mDisplayName = getDisplayName();
         mPrimaryTextSizePx =  a.getDimensionPixelSize(R.styleable.Keyboard_primaryTextSize,
                 getDefaultPrimaryTextSizeInPixels());
         mPrimaryTextColor = a.getColor(R.styleable.Keyboard_primaryTextColor,
@@ -332,7 +336,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     abstract public List<PopupKeyCandidate> getPopupCandidates(Key key);
 
-    // subclasses should return the name of the keyboard to display in the
+    // subclasses should return the default name of the keyboard to display in the
     // keyboard chooser popup
     abstract public String getDisplayName();
 

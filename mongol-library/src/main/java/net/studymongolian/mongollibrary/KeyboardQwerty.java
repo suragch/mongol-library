@@ -11,7 +11,7 @@ import java.util.List;
 public class KeyboardQwerty extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DISPLAY_NAME = "ᠺᠣᠮᠫᠢᠦ᠋ᠲ᠋ᠧᠷ";
+    private static final String DEFAULT_DISPLAY_NAME = "ᠺᠣᠮᠫᠢᠦ᠋ᠲ᠋ᠧᠷ";
 
     // Row 1
     protected KeyText mKeyQ;
@@ -1242,7 +1242,9 @@ public class KeyboardQwerty extends Keyboard {
 
     @Override
     public String getDisplayName() {
-        return DISPLAY_NAME;
+        if (mDisplayName == null)
+            return DEFAULT_DISPLAY_NAME;
+        return mDisplayName;
     }
 
     @Override
