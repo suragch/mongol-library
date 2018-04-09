@@ -419,6 +419,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         popupWindow = new PopupWindow(popupView,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setClippingEnabled(false);
         int location[] = new int[2];
         key.getLocationInWindow(location);
         int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -428,6 +429,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         int x = xPosition - popupWidth / popupView.getChildCount() / 2;
         int y = location[1] - popupView.getMeasuredHeight() - spaceAboveKey;
         popupWindow.showAtLocation(key, Gravity.NO_GRAVITY, x, y);
+        //popupWindow.showAsDropDown(key, 0, -500);
     }
 
     private void highlightCurrentItemAfterPopupWindowHasLoaded(Key key, final int xPosition) {
