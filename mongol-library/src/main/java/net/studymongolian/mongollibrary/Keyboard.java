@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -431,9 +433,19 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         int popupWidth = popupView.getMeasuredWidth();
         int spaceAboveKey = key.getHeight() / 4;
         int x = xPosition - popupWidth / popupView.getChildCount() / 2;
+        int screenWidth = getScreenWidth();
+        if (x < 0) {
+            x = 0;
+        } else if (x + popupWidth > screenWidth) {
+            x = screenWidth - popupWidth;
+        }
         int y = location[1] - popupView.getMeasuredHeight() - spaceAboveKey;
         popupWindow.showAtLocation(key, Gravity.NO_GRAVITY, x, y);
         //popupWindow.showAsDropDown(key, 0, -500);
+    }
+
+    private static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     private void highlightCurrentItemAfterPopupWindowHasLoaded(Key key, final int xPosition) {
