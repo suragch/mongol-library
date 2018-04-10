@@ -21,6 +21,7 @@
 
     <declare-styleable name="Keyboard">
         <attr name="displayName" format="string"/>
+        <attr name="fontAssetFile" format="string"/>
         <attr name="primaryTextSize" format="dimension"/>
         <attr name="primaryTextColor" format="color"/>
         <attr name="secondaryTextColor" format="color"/>

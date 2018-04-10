@@ -105,6 +105,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     private void init(Context context) {
         mDisplayName = getDisplayName();
+        mTypeface = MongolFont.get(MongolFont.QAGAN, context);
         mPrimaryTextSizePx = getDefaultPrimaryTextSizeInPixels();
         mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
         mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
@@ -126,6 +127,9 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Keyboard, defStyleAttr, 0);
         mDisplayName = a.getString(R.styleable.Keyboard_displayName);
         if (mDisplayName == null) mDisplayName = getDisplayName();
+        String fontFile = a.getString(R.styleable.Keyboard_fontAssetFile);
+        mTypeface = MongolFont.get(fontFile, context);
+        if (mTypeface == null) mTypeface = MongolFont.get(MongolFont.QAGAN, context);
         mPrimaryTextSizePx =  a.getDimensionPixelSize(R.styleable.Keyboard_primaryTextSize,
                 getDefaultPrimaryTextSizeInPixels());
         mPrimaryTextColor = a.getColor(R.styleable.Keyboard_primaryTextColor,
@@ -159,7 +163,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     private void setCommonDefaults(Context context) {
-        mTypeface = MongolFont.get(MongolFont.QAGAN, context);
         mSecondaryTextSizePx = mPrimaryTextSizePx / 2;
     }
 
@@ -418,6 +421,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         popupView.setBackgroundColor(mPopupBackgroundColor);
         popupView.setTextColor(mPopupTextColor);
         popupView.setHighlightColor(mPopupHighlightColor);
+        popupView.setTypeface(mTypeface);
         return popupView;
     }
 

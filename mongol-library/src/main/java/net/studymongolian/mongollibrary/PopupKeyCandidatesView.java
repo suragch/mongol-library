@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,6 +24,7 @@ class PopupKeyCandidatesView extends ViewGroup {
     private int mHighlightColor = Color.DKGRAY;
     private int mTextColor = Color.BLACK;
     private int mTextSize = DEFAULT_TEXT_SIZE;
+    private Typeface mTypeface;
     private List<PopupKeyCandidate> mCandidates;
 
     public PopupKeyCandidatesView(Context context) {
@@ -52,6 +54,8 @@ class PopupKeyCandidatesView extends ViewGroup {
             label.setText(text);
             label.setTextSize(mTextSize);
             label.setTextColor(mTextColor);
+            if (mTypeface != null)
+                label.setTypeface(mTypeface);
             label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
             addView(label);
         }
@@ -71,6 +75,10 @@ class PopupKeyCandidatesView extends ViewGroup {
 
     public void setTextSize(int textSize) {
         this.mTextSize = textSize;
+    }
+
+    public void setTypeface(Typeface typeface) {
+        this.mTypeface = typeface;
     }
 
     @Override

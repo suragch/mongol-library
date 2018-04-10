@@ -29,6 +29,7 @@ public class MongolFont {
     private static Hashtable<String, Typeface> fontCache = new Hashtable<>();
 
     public static Typeface get(String name, Context context) {
+        if (name == null) return null;
         Typeface tf = fontCache.get(name);
         if (tf == null) {
             try {

@@ -30,21 +30,21 @@ public class MongolFontActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mongol_font);
 
-        MongolLabel label1 = (MongolLabel) findViewById(R.id.mongolLabel1);
-        MongolLabel label2 = (MongolLabel) findViewById(R.id.mongolLabel2);
-        MongolLabel label3 = (MongolLabel) findViewById(R.id.mongolLabel3);
-        MongolLabel label4 = (MongolLabel) findViewById(R.id.mongolLabel4);
-        MongolLabel label5 = (MongolLabel) findViewById(R.id.mongolLabel5);
-        MongolLabel label6 = (MongolLabel) findViewById(R.id.mongolLabel6);
-        MongolLabel label7 = (MongolLabel) findViewById(R.id.mongolLabel7);
-        MongolLabel label8 = (MongolLabel) findViewById(R.id.mongolLabel8);
-        MongolLabel label9 = (MongolLabel) findViewById(R.id.mongolLabel9);
-        MongolLabel label10 = (MongolLabel) findViewById(R.id.mongolLabel10);
-        MongolLabel label11 = (MongolLabel) findViewById(R.id.mongolLabel11);
-        MongolLabel label12 = (MongolLabel) findViewById(R.id.mongolLabel12);
-        MongolLabel label13 = (MongolLabel) findViewById(R.id.mongolLabel13);
-        MongolLabel label14 = (MongolLabel) findViewById(R.id.mongolLabel14);
-        MongolLabel label15 = (MongolLabel) findViewById(R.id.mongolLabel15);
+        MongolLabel label1 = findViewById(R.id.mongolLabel1);
+        MongolLabel label2 = findViewById(R.id.mongolLabel2);
+        MongolLabel label3 = findViewById(R.id.mongolLabel3);
+        MongolLabel label4 = findViewById(R.id.mongolLabel4);
+        MongolLabel label5 = findViewById(R.id.mongolLabel5);
+        MongolLabel label6 = findViewById(R.id.mongolLabel6);
+        MongolLabel label7 = findViewById(R.id.mongolLabel7);
+        MongolLabel label8 = findViewById(R.id.mongolLabel8);
+        MongolLabel label9 = findViewById(R.id.mongolLabel9);
+        MongolLabel label10 = findViewById(R.id.mongolLabel10);
+        MongolLabel label11 = findViewById(R.id.mongolLabel11);
+        MongolLabel label12 = findViewById(R.id.mongolLabel12);
+        MongolLabel label13 = findViewById(R.id.mongolLabel13);
+        MongolLabel label14 = findViewById(R.id.mongolLabel14);
+        MongolLabel label15 = findViewById(R.id.mongolLabel15);
 
         // library font (this is the default so specifying the font is not actually necessary)
         label1.setTypeface(MongolFont.get(MongolFont.QAGAN, this));
