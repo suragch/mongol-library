@@ -293,6 +293,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
     public void setPadding (int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
+        if (mLayout == null) return;
         mLayout.reflowLines();
         invalidate();
         requestLayout();
