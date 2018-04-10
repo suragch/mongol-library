@@ -315,7 +315,6 @@ class MongolTextLine {
 
 
     int getOffsetForAdvance (float advance) {
-        Log.i(TAG, "getOffsetForAdvance: " + advance);
         boolean hasSpan = mText instanceof Spanned;
         int offset = 0;
         float oldWidth = 0;
