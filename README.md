@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.1.0'
+    implementation 'net.studymongolian:mongol-library:1.2.0'
 }
 ```
 
@@ -617,11 +617,11 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] add `MongolToolbar` with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] The vertical punctuation characters shouldn't be rotated.
-* [X] English and Cyrillic keyboards.
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 
 #### Version changes 
 
+* `1.2.0`: Fixed system keyboard popup clipping, support for naming keyboards and setting fonts in xml, ability to change keyboard based on editor's `InputType`.
 * `1.1.0`: Added support for making custom system keyboards
 * `1.0.0`: All basic components are working. Major upgrade to the Keyboard system.
 * `0.9.16`: Support for II spelling of double tooth I
