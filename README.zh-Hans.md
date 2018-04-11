@@ -249,8 +249,6 @@ public class MainActivity extends AppCompatActivity {
         MongolInputMethodManager mimm = new MongolInputMethodManager();
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
-        // 不让系统键盘出来
-        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
     }
 }
 ```
