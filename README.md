@@ -361,7 +361,6 @@ public class MainActivity extends AppCompatActivity {
         mimm.addEditor(editText);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
-        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
     }
 }
 ```
