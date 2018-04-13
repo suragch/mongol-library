@@ -4797,7 +4797,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void kinoWord() throws Exception {
         String unicode = "ᠺᠢᠨᠣ᠋"; // KINO(FVS1)
         String result = convert(unicode);
-        String expected = "\uE333\uE27F\uE2BA\uE286";
+        String expected = "\uE333\uE27F\uE2B9\uE286";
         assertEquals(expected, result);
     }
 

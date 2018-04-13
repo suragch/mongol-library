@@ -1982,7 +1982,8 @@ public final class MongolCode {
                         // *** dot N before vowel rule ***
                         if (isVowel(charBelow)) {
                             // *** don't dot N if final letter before vowel of compound name ***
-                            if (positionInWord < length - 2 && isFVS(inputWord.charAt(positionInWord + 2)) &&
+                            if (positionInWord < length - 3 && // the next char should not be final either (ie, KINO)
+                                    isFVS(inputWord.charAt(positionInWord + 2)) &&
                                     isTwoPartNameInitialVowel(charBelow, charBelowFvs)) {
                                 // This will work for names whose second part starts with
                                 // A, I, O, U, OE, and UE. But it won't work if it starts
@@ -3036,8 +3037,8 @@ public final class MongolCode {
                     (vowel == Uni.I && fvs == Uni.FVS1) ||
                     (vowel == Uni.O && fvs == Uni.FVS1) ||
                     (vowel == Uni.U && fvs == Uni.FVS1) ||
-                    (vowel == Uni.OE && fvs == Uni.FVS3) ||
-                    (vowel == Uni.UE && fvs == Uni.FVS3);
+                    (vowel == Uni.OE && fvs == Uni.FVS2) ||
+                    (vowel == Uni.UE && fvs == Uni.FVS2);
         }
 
         private static boolean isOuVowel(char character) {
