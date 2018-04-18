@@ -13,5 +13,9 @@
     <net.studymongolian.mongollibrary.MongolEditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="300dp"
+        android:padding="10dp"
+        android:background="@android:color/white"
+        />
+
 </LinearLayout>

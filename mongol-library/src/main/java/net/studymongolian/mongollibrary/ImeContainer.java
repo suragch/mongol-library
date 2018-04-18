@@ -402,13 +402,14 @@ public class ImeContainer extends ViewGroup
     public List<PopupKeyCandidate> getAllKeyboardNames() {
         int numberOfOtherKeyboards = mKeyboards.size() - 1;
         List<PopupKeyCandidate> candidates = new ArrayList<>();
-        if (numberOfOtherKeyboards < 1) return candidates;
-        for (Keyboard keyboard : mKeyboards) {
-            if (keyboard == mCurrentKeyboard) {
-                continue;
+        if (numberOfOtherKeyboards >= 1) {
+            for (Keyboard keyboard : mKeyboards) {
+                if (keyboard == mCurrentKeyboard) {
+                    continue;
+                }
+                PopupKeyCandidate item = new PopupKeyCandidate(keyboard.getDisplayName());
+                candidates.add(item);
             }
-            PopupKeyCandidate item = new PopupKeyCandidate(keyboard.getDisplayName());
-            candidates.add(item);
         }
         if (mShowSystemKeyboardsOption != null) {
             candidates.add(mShowSystemKeyboardsOption);

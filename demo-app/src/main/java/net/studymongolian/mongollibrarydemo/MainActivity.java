@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 intent = new Intent(this, CustomSystemKeyboardActivity.class);
                 startActivity(intent);
                 break;
-//            case 12: // Testing
+//            case 13: // Testing
 //                intent = new Intent(this, TestingActivity.class);
 //                startActivity(intent);
 //                break;
