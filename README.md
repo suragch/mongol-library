@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.2.0'
+    implementation 'net.studymongolian:mongol-library:1.3.0'
 }
 ```
 
@@ -502,6 +502,8 @@ The `MongolCode` rendering engine seeks to conform to the [Unicode 10.0 standard
 
 * MONGOLIAN LETTER I, third medial form. This is undefined in Unicode 10.0. In this library it is being used the same way that the Menksoft fonts use it, that is, as a single long tooth medial I. This decision was made to support the correct rendering of existing Mongolian text files. The `I + FVS2` coding is used in the Menksoft IME to override the context and render a single tooth I in words like NAIMA (eight). There is another solution for input, and that is to use `A + ZWJ + I`. However, that does not solve the problem of rendering existing text. This library's Keyboard IMEs now use the `I + FVS2` rather than `ZWJ + I` encoding. Note that this will cause [incorrect rendering with other fonts](https://r12a.github.io/mongolian-variants/#char1822), many of which use `I + FVS2` to specify a double long-tooth I. 
 
+Todo Script is now supported and rendering is handled completely by the font.
+
 ###### Other issues
 
 The Unicode standard does not specify how diphthongs should be encoded (or whether diphthongs exist at all in written Mongolian). For example, the AI of SAIN is sometimes encoded as AI (`\u1820\u1821`) and sometimes encoded as AYI (`\u1820\u1836\u1821`). For this reason, both of these encodings are supported. However, this creates a problem for rendering the AI of NAIMA (eight). The solution this library takes for the NAIMA problem was discussed above in MONGOLIAN LETTER I.
@@ -552,8 +554,6 @@ There are a number of static methods that may also be useful.
 * `boolean isFVS(char character)`
 * `boolean isMvsConsonant(char character)`
 * `boolean isMenksoft(char character)`
-
-TODO add Xinjiang Tod Mongol script support. 
 
 ## Fonts
 
@@ -607,7 +607,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### TODO 
 
-* [ ] translate this documentation into Mongolian and Chinese
+* [ ] translate this documentation into Mongolian and correct the Chinese translation
 * [ ] `MongolTextView` line spacing
 * [ ] `MongolTextView` or its helper classes need optimization. Slow rendering time for long text strings.
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
@@ -620,6 +620,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.3.0`: Added support for Todo Script; removed internal glyph index mapping (glyph and unicode text is one-to-one now)
 * `1.2.0`: Fixed system keyboard popup clipping, support for naming keyboards and setting fonts in xml, ability to change keyboard based on editor's `InputType`.
 * `1.1.0`: Added support for making custom system keyboards
 * `1.0.0`: All basic components are working. Major upgrade to the Keyboard system.
