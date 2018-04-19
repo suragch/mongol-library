@@ -27,7 +27,7 @@ public class MongolTextStorage implements Editable {
     private CharSequence mUnicodeText;
     private CharSequence mGlyphText;
     private MongolCode mRenderer;
-    private ArrayList<Integer> mGlyphIndexes; // item number is unicode index, value is glyph index
+    //private ArrayList<Integer> mGlyphIndexes; // item number is unicode index, value is glyph index
     private OnChangeListener mChangelistener;
 
     MongolTextStorage() {
@@ -76,41 +76,41 @@ public class MongolTextStorage implements Editable {
     private void updateGlyphTextForUnicodeRange(int start, int end) {
         // initialize glyph indexes
         final int lengthUnicode = mUnicodeText.length();
-        if (mGlyphIndexes == null) {
-            mGlyphIndexes = new ArrayList<>(lengthUnicode);
-            for (int i = 0; i < lengthUnicode; i++) {
-                mGlyphIndexes.add(i, i);
-            }
-        } else if (mGlyphIndexes.size() < lengthUnicode) {
-            final int size = mGlyphIndexes.size();
-            for (int i = size; i < lengthUnicode; i++) {
-                mGlyphIndexes.add(i, i);
-            }
-        }
+//        if (mGlyphIndexes == null) {
+//            mGlyphIndexes = new ArrayList<>(lengthUnicode);
+//            for (int i = 0; i < lengthUnicode; i++) {
+//                mGlyphIndexes.add(i, i);
+//            }
+//        } else if (mGlyphIndexes.size() < lengthUnicode) {
+//            final int size = mGlyphIndexes.size();
+//            for (int i = size; i < lengthUnicode; i++) {
+//                mGlyphIndexes.add(i, i);
+//            }
+//        }
 
         // update glyph indexes
         // Non rendered characters (mvs, fvs) follow rendered chars
         //    Exception: non rendered chars at the beginning of the string
         // FIXME: can produce index mismatches when mvs or fvs in illegal position (ex: SA + MVS + " " + MVS + SA)
-        boolean indexingHasStarted = false;
-        int glyphIndex = 0;
-        if (start > 0) {
-            glyphIndex = getGlyphIndexForUnicodeIndex(start - 1);
-
-            if (glyphIndex > 0 || MongolCode.isRenderedGlyph(mUnicodeText.charAt(0))) {
-                indexingHasStarted = true;
-            }
-        }
-        for (int i = start; i < lengthUnicode; i++) {
-            final char currentChar = mUnicodeText.charAt(i);
-            if (MongolCode.isRenderedGlyph(currentChar)) {
-                if (indexingHasStarted) {
-                    glyphIndex++;
-                }
-                indexingHasStarted = true;
-            }
-            mGlyphIndexes.set(i, glyphIndex);
-        }
+//        boolean indexingHasStarted = false;
+//        int glyphIndex = 0;
+//        if (start > 0) {
+//            glyphIndex = getGlyphIndexForUnicodeIndex(start - 1);
+//
+//            if (glyphIndex > 0 || MongolCode.isRenderedGlyph(mUnicodeText.charAt(0))) {
+//                indexingHasStarted = true;
+//            }
+//        }
+//        for (int i = start; i < lengthUnicode; i++) {
+//            final char currentChar = mUnicodeText.charAt(i);
+//            if (MongolCode.isRenderedGlyph(currentChar)) {
+//                if (indexingHasStarted) {
+//                    glyphIndex++;
+//                }
+//                indexingHasStarted = true;
+//            }
+//            mGlyphIndexes.set(i, glyphIndex);
+//        }
 
         if (!(mUnicodeText instanceof Spanned)) return;
 
@@ -119,32 +119,32 @@ public class MongolTextStorage implements Editable {
         for (CharacterStyle span : spans) {
             final int unicodeStart = ((Spanned) mUnicodeText).getSpanStart(span);
             final int unicodeEnd = ((Spanned) mUnicodeText).getSpanEnd(span);
-            final int glyphStart = getGlyphIndexForUnicodeIndex(unicodeStart);
-            final int glyphEnd = getGlyphIndexForUnicodeIndex(unicodeEnd);
-            ((SpannableStringBuilder) mGlyphText).setSpan(span, glyphStart, glyphEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            //final int glyphStart = getGlyphIndexForUnicodeIndex(unicodeStart);
+            //final int glyphEnd = getGlyphIndexForUnicodeIndex(unicodeEnd);
+            ((SpannableStringBuilder) mGlyphText).setSpan(span, unicodeStart, unicodeEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
 
-    int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
-        // allow an index one past the end to support cursor selection
-        if (unicodeIndex == 0) {
-            return 0;
-        } else if (unicodeIndex == mUnicodeText.length()) {
-            return mGlyphText.length();
-        }
-        return mGlyphIndexes.get(unicodeIndex);
-    }
+//    int getGlyphIndexForUnicodeIndex(int unicodeIndex) {
+//        // allow an index one past the end to support cursor selection
+//        if (unicodeIndex == 0) {
+//            return 0;
+//        } else if (unicodeIndex == mUnicodeText.length()) {
+//            return mGlyphText.length();
+//        }
+//        return mGlyphIndexes.get(unicodeIndex);
+//    }
 
-    int getUnicodeIndexForGlyphIndex(int glyphIndex) {
-        // calculating the glyph index when needed rather than maintaining a second index
-        int length = mUnicodeText.length();
-        for (int i = glyphIndex; i < length; i++) {
-            if (mGlyphIndexes.get(i) == glyphIndex) {
-                return i;
-            }
-        }
-        return length;
-    }
+//    int getUnicodeIndexForGlyphIndex(int glyphIndex) {
+//        // calculating the glyph index when needed rather than maintaining a second index
+//        int length = mUnicodeText.length();
+//        for (int i = glyphIndex; i < length; i++) {
+//            if (mGlyphIndexes.get(i) == glyphIndex) {
+//                return i;
+//            }
+//        }
+//        return length;
+//    }
 
     // go to the start of the Mongol word from the indicated position
     private int getMongolWordStart(int position, CharSequence source) {
@@ -212,13 +212,13 @@ public class MongolTextStorage implements Editable {
         // replace glyphs (expand to the whole word preceding and following)
         int wordStart = getMongolWordStart(st, mUnicodeText);
         int wordEnd = getMongolWordEnd(en, mUnicodeText);
-        int glyphStart = getGlyphIndexForUnicodeIndex(wordStart);
-        int glyphEnd = getGlyphIndexForUnicodeIndex(wordEnd);
+        //int glyphStart = getGlyphIndexForUnicodeIndex(wordStart);
+        //int glyphEnd = getGlyphIndexForUnicodeIndex(wordEnd);
         ((SpannableStringBuilder) mUnicodeText).replace(st, en, source, start, end);
         int adjustedEnd = wordEnd + (end - start) - (en - st);
         CharSequence unicodeReplacement = mUnicodeText.subSequence(wordStart, adjustedEnd);
-        String glyphReplacement = mRenderer.unicodeToMenksoft(unicodeReplacement);
-        ((SpannableStringBuilder) mGlyphText).replace(glyphStart, glyphEnd, glyphReplacement);
+        String glyphReplacement = mRenderer.unicodeToMenksoftSameIndex(unicodeReplacement);
+        ((SpannableStringBuilder) mGlyphText).replace(wordStart, wordEnd, glyphReplacement);
         updateGlyphTextForUnicodeRange(wordStart, adjustedEnd);
 
         if (mChangelistener != null) {
@@ -319,9 +319,9 @@ public class MongolTextStorage implements Editable {
             mGlyphText = new SpannableStringBuilder(mGlyphText);
         }
         ((SpannableStringBuilder) mUnicodeText).setSpan(what, start, end, flags);
-        int glyphStart = getGlyphIndexForUnicodeIndex(start);
-        int glyphEnd = getGlyphIndexForUnicodeIndex(end);
-        ((SpannableStringBuilder) mGlyphText).setSpan(what, glyphStart, glyphEnd, flags);
+        //int glyphStart = getGlyphIndexForUnicodeIndex(start);
+        //int glyphEnd = getGlyphIndexForUnicodeIndex(end);
+        ((SpannableStringBuilder) mGlyphText).setSpan(what, start, end, flags);
 
         if (mChangelistener != null)
             mChangelistener.onSpanChanged((Spanned) mUnicodeText, what, start, start, end, end);

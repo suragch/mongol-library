@@ -18,15 +18,16 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
 
     @Test
-    public void emptyString() throws Exception {
+    public void emptyString() {
         String unicode = "";
         String result = convert(unicode);
         String expected = "";
         assertEquals(expected, result);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Test
-    public void nullString() throws Exception {
+    public void nullString() {
         String unicode = null;
         String result = convert(unicode);
         String expected = null;
@@ -34,7 +35,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void englishKeyboardChars() throws Exception {
+    public void englishKeyboardChars() {
         String unicode = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+`~;:'\" ,./<>?";
         String result = convert(unicode);
         String expected = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+`~;:'\" ,./<>?";
@@ -42,7 +43,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chineseChars() throws Exception {
+    public void chineseChars() {
         String unicode = "中文";
         String result = convert(unicode);
         String expected = "中文";
@@ -50,7 +51,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void emojiChars() throws Exception {
+    public void emojiChars() {
         String unicode = "\uD83D\uDE04\uD83D\uDD90\uD83C\uDFFC\uD83C\uDDF3\uD83C\uDDF4";
         String result = convert(unicode);
         String expected = "\uD83D\uDE04\uD83D\uDD90\uD83C\uDFFC\uD83C\uDDF3\uD83C\uDDF4";
@@ -58,7 +59,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void menksoftString() throws Exception {
+    public void menksoftString() {
         String unicode = "\uE2F2\uE291\uE2BC\uE2EC\uE291\uE2F9";
         String result = convert(unicode);
         String expected = "\uE2F2\uE291\uE2BC\uE2EC\uE291\uE2F9";
@@ -68,7 +69,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     // nirugu
 
     @Test
-    public void niruguChar() throws Exception {
+    public void niruguChar() {
         String unicode = "\u180A";
         String result = convert(unicode);
         String expected = "\uE23E";
@@ -78,7 +79,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     // tests for all combinations of Unicode+FVS (even undefined ones)
 
     @Test
-    public void aIsol() throws Exception {
+    public void aIsol() {
         String unicode = "ᠠ";
         String result = convert(unicode);
         String expected = "";
@@ -86,7 +87,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aInit() throws Exception {
+    public void aInit() {
         String unicode = "ᠠ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -94,7 +95,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aMedi() throws Exception {
+    public void aMedi() {
         String unicode = "‍ᠠ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -102,7 +103,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aFina() throws Exception {
+    public void aFina() {
         String unicode = "‍ᠠ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -110,7 +111,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aIsolFvs1() throws Exception {
+    public void aIsolFvs1() {
         String unicode = "ᠠ";
         String result = convert(unicode);
         String expected = "";
@@ -118,7 +119,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aInitFvs1() throws Exception {
+    public void aInitFvs1() {
         String unicode = "ᠠ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -126,7 +127,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aMediFvs1() throws Exception {
+    public void aMediFvs1() {
         String unicode = "‍ᠠ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -134,7 +135,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aFinaFvs1() throws Exception {
+    public void aFinaFvs1() {
         String unicode = "‍ᠠ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -142,7 +143,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aIsolFvs2() throws Exception {
+    public void aIsolFvs2() {
         String unicode = "ᠠ";
         String result = convert(unicode);
         String expected = "";
@@ -150,7 +151,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aInitFvs2() throws Exception {
+    public void aInitFvs2() {
         String unicode = "ᠠ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -158,7 +159,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aMediFvs2() throws Exception {
+    public void aMediFvs2() {
         String unicode = "‍ᠠ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -166,7 +167,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aFinaFvs2() throws Exception {
+    public void aFinaFvs2() {
         String unicode = "‍ᠠ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -174,7 +175,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aIsolFvs3() throws Exception {
+    public void aIsolFvs3() {
         String unicode = "ᠠ";
         String result = convert(unicode);
         String expected = "";
@@ -182,7 +183,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aInitFvs3() throws Exception {
+    public void aInitFvs3() {
         String unicode = "ᠠ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -190,7 +191,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aMediFvs3() throws Exception {
+    public void aMediFvs3() {
         String unicode = "‍ᠠ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -198,7 +199,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void aFinaFvs3() throws Exception {
+    public void aFinaFvs3() {
         String unicode = "‍ᠠ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -206,7 +207,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eIsol() throws Exception {
+    public void eIsol() {
         String unicode = "ᠡ";
         String result = convert(unicode);
         String expected = "";
@@ -214,7 +215,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eInit() throws Exception {
+    public void eInit() {
         String unicode = "ᠡ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -222,7 +223,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eMedi() throws Exception {
+    public void eMedi() {
         String unicode = "‍ᠡ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -230,7 +231,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eFina() throws Exception {
+    public void eFina() {
         String unicode = "‍ᠡ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -238,7 +239,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eIsolFvs1() throws Exception {
+    public void eIsolFvs1() {
         String unicode = "ᠡ";
         String result = convert(unicode);
         String expected = "";
@@ -246,7 +247,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eInitFvs1() throws Exception {
+    public void eInitFvs1() {
         String unicode = "ᠡ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -254,7 +255,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eMediFvs1() throws Exception {
+    public void eMediFvs1() {
         String unicode = "‍ᠡ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -262,7 +263,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eFinaFvs1() throws Exception {
+    public void eFinaFvs1() {
         String unicode = "‍ᠡ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -270,7 +271,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eIsolFvs2() throws Exception {
+    public void eIsolFvs2() {
         String unicode = "ᠡ";
         String result = convert(unicode);
         String expected = "";
@@ -278,7 +279,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eInitFvs2() throws Exception {
+    public void eInitFvs2() {
         String unicode = "ᠡ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -286,7 +287,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eMediFvs2() throws Exception {
+    public void eMediFvs2() {
         String unicode = "‍ᠡ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -294,7 +295,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eFinaFvs2() throws Exception {
+    public void eFinaFvs2() {
         String unicode = "‍ᠡ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -302,7 +303,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eIsolFvs3() throws Exception {
+    public void eIsolFvs3() {
         String unicode = "ᠡ";
         String result = convert(unicode);
         String expected = "";
@@ -310,7 +311,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eInitFvs3() throws Exception {
+    public void eInitFvs3() {
         String unicode = "ᠡ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -318,7 +319,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eMediFvs3() throws Exception {
+    public void eMediFvs3() {
         String unicode = "‍ᠡ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -326,7 +327,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eFinaFvs3() throws Exception {
+    public void eFinaFvs3() {
         String unicode = "‍ᠡ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -334,7 +335,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iIsol() throws Exception {
+    public void iIsol() {
         String unicode = "ᠢ";
         String result = convert(unicode);
         String expected = "";
@@ -342,7 +343,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iInit() throws Exception {
+    public void iInit() {
         String unicode = "ᠢ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -350,7 +351,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iMedi() throws Exception {
+    public void iMedi() {
         String unicode = "‍ᠢ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -358,7 +359,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iFina() throws Exception {
+    public void iFina() {
         String unicode = "‍ᠢ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -366,7 +367,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iIsolFvs1() throws Exception {
+    public void iIsolFvs1() {
         String unicode = "ᠢ";
         String result = convert(unicode);
         String expected = "";
@@ -374,7 +375,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iInitFvs1() throws Exception {
+    public void iInitFvs1() {
         String unicode = "ᠢ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -382,7 +383,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iMediFvs1() throws Exception {
+    public void iMediFvs1() {
         String unicode = "‍ᠢ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -390,7 +391,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iFinaFvs1() throws Exception {
+    public void iFinaFvs1() {
         String unicode = "‍ᠢ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -398,7 +399,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iIsolFvs2() throws Exception {
+    public void iIsolFvs2() {
         String unicode = "ᠢ";
         String result = convert(unicode);
         String expected = "";
@@ -406,7 +407,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iInitFvs2() throws Exception {
+    public void iInitFvs2() {
         String unicode = "ᠢ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -414,7 +415,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iMediFvs2() throws Exception {
+    public void iMediFvs2() {
         String unicode = "‍ᠢ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -422,7 +423,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iFinaFvs2() throws Exception {
+    public void iFinaFvs2() {
         String unicode = "‍ᠢ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -430,7 +431,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iIsolFvs3() throws Exception {
+    public void iIsolFvs3() {
         String unicode = "ᠢ";
         String result = convert(unicode);
         String expected = "";
@@ -438,7 +439,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iInitFvs3() throws Exception {
+    public void iInitFvs3() {
         String unicode = "ᠢ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -446,7 +447,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iMediFvs3() throws Exception {
+    public void iMediFvs3() {
         String unicode = "‍ᠢ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -454,7 +455,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iFinaFvs3() throws Exception {
+    public void iFinaFvs3() {
         String unicode = "‍ᠢ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -462,7 +463,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oIsol() throws Exception {
+    public void oIsol() {
         String unicode = "ᠣ";
         String result = convert(unicode);
         String expected = "";
@@ -470,7 +471,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oInit() throws Exception {
+    public void oInit() {
         String unicode = "ᠣ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -478,7 +479,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oMedi() throws Exception {
+    public void oMedi() {
         String unicode = "‍ᠣ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -486,7 +487,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oFina() throws Exception {
+    public void oFina() {
         String unicode = "‍ᠣ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -494,7 +495,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oIsolFvs1() throws Exception {
+    public void oIsolFvs1() {
         String unicode = "ᠣ";
         String result = convert(unicode);
         String expected = "";
@@ -502,7 +503,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oInitFvs1() throws Exception {
+    public void oInitFvs1() {
         String unicode = "ᠣ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -510,7 +511,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oMediFvs1() throws Exception {
+    public void oMediFvs1() {
         String unicode = "‍ᠣ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -518,7 +519,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oFinaFvs1() throws Exception {
+    public void oFinaFvs1() {
         String unicode = "‍ᠣ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -526,7 +527,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oIsolFvs2() throws Exception {
+    public void oIsolFvs2() {
         String unicode = "ᠣ";
         String result = convert(unicode);
         String expected = "";
@@ -534,7 +535,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oInitFvs2() throws Exception {
+    public void oInitFvs2() {
         String unicode = "ᠣ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -542,7 +543,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oMediFvs2() throws Exception {
+    public void oMediFvs2() {
         String unicode = "‍ᠣ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -550,7 +551,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oFinaFvs2() throws Exception {
+    public void oFinaFvs2() {
         String unicode = "‍ᠣ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -558,7 +559,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oIsolFvs3() throws Exception {
+    public void oIsolFvs3() {
         String unicode = "ᠣ";
         String result = convert(unicode);
         String expected = "";
@@ -566,7 +567,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oInitFvs3() throws Exception {
+    public void oInitFvs3() {
         String unicode = "ᠣ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -574,7 +575,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oMediFvs3() throws Exception {
+    public void oMediFvs3() {
         String unicode = "‍ᠣ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -582,7 +583,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oFinaFvs3() throws Exception {
+    public void oFinaFvs3() {
         String unicode = "‍ᠣ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -590,7 +591,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uIsol() throws Exception {
+    public void uIsol() {
         String unicode = "ᠤ";
         String result = convert(unicode);
         String expected = "";
@@ -598,7 +599,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uInit() throws Exception {
+    public void uInit() {
         String unicode = "ᠤ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -606,7 +607,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uMedi() throws Exception {
+    public void uMedi() {
         String unicode = "‍ᠤ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -614,7 +615,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uFina() throws Exception {
+    public void uFina() {
         String unicode = "‍ᠤ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -622,7 +623,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uIsolFvs1() throws Exception {
+    public void uIsolFvs1() {
         String unicode = "ᠤ";
         String result = convert(unicode);
         String expected = "";
@@ -630,7 +631,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uInitFvs1() throws Exception {
+    public void uInitFvs1() {
         String unicode = "ᠤ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -638,7 +639,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uMediFvs1() throws Exception {
+    public void uMediFvs1() {
         String unicode = "‍ᠤ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -646,7 +647,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uFinaFvs1() throws Exception {
+    public void uFinaFvs1() {
         String unicode = "‍ᠤ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -654,7 +655,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uIsolFvs2() throws Exception {
+    public void uIsolFvs2() {
         String unicode = "ᠤ";
         String result = convert(unicode);
         String expected = "";
@@ -662,7 +663,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uInitFvs2() throws Exception {
+    public void uInitFvs2() {
         String unicode = "ᠤ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -670,7 +671,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uMediFvs2() throws Exception {
+    public void uMediFvs2() {
         String unicode = "‍ᠤ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -678,7 +679,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uFinaFvs2() throws Exception {
+    public void uFinaFvs2() {
         String unicode = "‍ᠤ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -686,7 +687,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uIsolFvs3() throws Exception {
+    public void uIsolFvs3() {
         String unicode = "ᠤ";
         String result = convert(unicode);
         String expected = "";
@@ -694,7 +695,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uInitFvs3() throws Exception {
+    public void uInitFvs3() {
         String unicode = "ᠤ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -702,7 +703,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uMediFvs3() throws Exception {
+    public void uMediFvs3() {
         String unicode = "‍ᠤ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -710,7 +711,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uFinaFvs3() throws Exception {
+    public void uFinaFvs3() {
         String unicode = "‍ᠤ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -718,7 +719,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeIsol() throws Exception {
+    public void oeIsol() {
         String unicode = "ᠥ";
         String result = convert(unicode);
         String expected = "";
@@ -726,7 +727,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeInit() throws Exception {
+    public void oeInit() {
         String unicode = "ᠥ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -734,7 +735,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeMedi() throws Exception {
+    public void oeMedi() {
         String unicode = "‍ᠥ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -742,7 +743,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeFina() throws Exception {
+    public void oeFina() {
         String unicode = "‍ᠥ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -750,7 +751,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeIsolFvs1() throws Exception {
+    public void oeIsolFvs1() {
         String unicode = "ᠥ";
         String result = convert(unicode);
         String expected = "";
@@ -758,7 +759,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeInitFvs1() throws Exception {
+    public void oeInitFvs1() {
         String unicode = "ᠥ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -766,7 +767,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeMediFvs1() throws Exception {
+    public void oeMediFvs1() {
         String unicode = "‍ᠥ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -774,7 +775,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeFinaFvs1() throws Exception {
+    public void oeFinaFvs1() {
         String unicode = "‍ᠥ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -782,7 +783,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeIsolFvs2() throws Exception {
+    public void oeIsolFvs2() {
         String unicode = "ᠥ";
         String result = convert(unicode);
         String expected = "";
@@ -790,7 +791,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeInitFvs2() throws Exception {
+    public void oeInitFvs2() {
         String unicode = "ᠥ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -798,7 +799,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeMediFvs2() throws Exception {
+    public void oeMediFvs2() {
         String unicode = "‍ᠥ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -806,7 +807,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeFinaFvs2() throws Exception {
+    public void oeFinaFvs2() {
         String unicode = "‍ᠥ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -814,7 +815,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeIsolFvs3() throws Exception {
+    public void oeIsolFvs3() {
         String unicode = "ᠥ";
         String result = convert(unicode);
         String expected = "";
@@ -822,7 +823,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeInitFvs3() throws Exception {
+    public void oeInitFvs3() {
         String unicode = "ᠥ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -830,7 +831,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeMediFvs3() throws Exception {
+    public void oeMediFvs3() {
         String unicode = "‍ᠥ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -838,7 +839,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void oeFinaFvs3() throws Exception {
+    public void oeFinaFvs3() {
         String unicode = "‍ᠥ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -846,7 +847,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueIsol() throws Exception {
+    public void ueIsol() {
         String unicode = "ᠦ";
         String result = convert(unicode);
         String expected = "";
@@ -854,7 +855,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueInit() throws Exception {
+    public void ueInit() {
         String unicode = "ᠦ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -862,7 +863,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueMedi() throws Exception {
+    public void ueMedi() {
         String unicode = "‍ᠦ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -870,7 +871,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueFina() throws Exception {
+    public void ueFina() {
         String unicode = "‍ᠦ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -878,7 +879,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueIsolFvs1() throws Exception {
+    public void ueIsolFvs1() {
         String unicode = "ᠦ";
         String result = convert(unicode);
         String expected = "";
@@ -886,7 +887,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueInitFvs1() throws Exception {
+    public void ueInitFvs1() {
         String unicode = "ᠦ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -894,7 +895,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueMediFvs1() throws Exception {
+    public void ueMediFvs1() {
         String unicode = "‍ᠦ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -902,7 +903,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueFinaFvs1() throws Exception {
+    public void ueFinaFvs1() {
         String unicode = "‍ᠦ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -910,7 +911,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueIsolFvs2() throws Exception {
+    public void ueIsolFvs2() {
         String unicode = "ᠦ";
         String result = convert(unicode);
         String expected = "";
@@ -918,7 +919,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueInitFvs2() throws Exception {
+    public void ueInitFvs2() {
         String unicode = "ᠦ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -926,7 +927,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueMediFvs2() throws Exception {
+    public void ueMediFvs2() {
         String unicode = "‍ᠦ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -934,7 +935,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueFinaFvs2() throws Exception {
+    public void ueFinaFvs2() {
         String unicode = "‍ᠦ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -942,7 +943,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueIsolFvs3() throws Exception {
+    public void ueIsolFvs3() {
         String unicode = "ᠦ";
         String result = convert(unicode);
         String expected = "";
@@ -950,7 +951,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueInitFvs3() throws Exception {
+    public void ueInitFvs3() {
         String unicode = "ᠦ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -958,7 +959,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueMediFvs3() throws Exception {
+    public void ueMediFvs3() {
         String unicode = "‍ᠦ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -966,7 +967,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueFinaFvs3() throws Exception {
+    public void ueFinaFvs3() {
         String unicode = "‍ᠦ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -974,7 +975,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeIsol() throws Exception {
+    public void eeIsol() {
         String unicode = "ᠧ";
         String result = convert(unicode);
         String expected = "";
@@ -982,7 +983,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeInit() throws Exception {
+    public void eeInit() {
         String unicode = "ᠧ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -990,7 +991,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeMedi() throws Exception {
+    public void eeMedi() {
         String unicode = "‍ᠧ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -998,7 +999,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeFina() throws Exception {
+    public void eeFina() {
         String unicode = "‍ᠧ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1006,7 +1007,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeIsolFvs1() throws Exception {
+    public void eeIsolFvs1() {
         String unicode = "ᠧ";
         String result = convert(unicode);
         String expected = "";
@@ -1014,7 +1015,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeInitFvs1() throws Exception {
+    public void eeInitFvs1() {
         String unicode = "ᠧ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1022,7 +1023,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeMediFvs1() throws Exception {
+    public void eeMediFvs1() {
         String unicode = "‍ᠧ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1030,7 +1031,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeFinaFvs1() throws Exception {
+    public void eeFinaFvs1() {
         String unicode = "‍ᠧ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1038,7 +1039,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeIsolFvs2() throws Exception {
+    public void eeIsolFvs2() {
         String unicode = "ᠧ";
         String result = convert(unicode);
         String expected = "";
@@ -1046,7 +1047,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeInitFvs2() throws Exception {
+    public void eeInitFvs2() {
         String unicode = "ᠧ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1054,7 +1055,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeMediFvs2() throws Exception {
+    public void eeMediFvs2() {
         String unicode = "‍ᠧ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1062,7 +1063,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeFinaFvs2() throws Exception {
+    public void eeFinaFvs2() {
         String unicode = "‍ᠧ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1070,7 +1071,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeIsolFvs3() throws Exception {
+    public void eeIsolFvs3() {
         String unicode = "ᠧ";
         String result = convert(unicode);
         String expected = "";
@@ -1078,7 +1079,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeInitFvs3() throws Exception {
+    public void eeInitFvs3() {
         String unicode = "ᠧ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1086,7 +1087,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeMediFvs3() throws Exception {
+    public void eeMediFvs3() {
         String unicode = "‍ᠧ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1094,7 +1095,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eeFinaFvs3() throws Exception {
+    public void eeFinaFvs3() {
         String unicode = "‍ᠧ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1102,7 +1103,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nIsol() throws Exception {
+    public void nIsol() {
         String unicode = "ᠨ";
         String result = convert(unicode);
         String expected = "";
@@ -1110,7 +1111,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nInit() throws Exception {
+    public void nInit() {
         String unicode = "ᠨ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1118,7 +1119,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nMedi() throws Exception {
+    public void nMedi() {
         String unicode = "‍ᠨ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1126,7 +1127,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nFina() throws Exception {
+    public void nFina() {
         String unicode = "‍ᠨ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1134,7 +1135,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nIsolFvs1() throws Exception {
+    public void nIsolFvs1() {
         String unicode = "ᠨ";
         String result = convert(unicode);
         String expected = "";
@@ -1142,7 +1143,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nInitFvs1() throws Exception {
+    public void nInitFvs1() {
         String unicode = "ᠨ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1150,7 +1151,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nMediFvs1() throws Exception {
+    public void nMediFvs1() {
         String unicode = "‍ᠨ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1158,7 +1159,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nFinaFvs1() throws Exception {
+    public void nFinaFvs1() {
         String unicode = "‍ᠨ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1166,7 +1167,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nIsolFvs2() throws Exception {
+    public void nIsolFvs2() {
         String unicode = "ᠨ";
         String result = convert(unicode);
         String expected = "";
@@ -1174,7 +1175,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nInitFvs2() throws Exception {
+    public void nInitFvs2() {
         String unicode = "ᠨ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1182,7 +1183,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nMediFvs2() throws Exception {
+    public void nMediFvs2() {
         String unicode = "‍ᠨ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1190,7 +1191,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nFinaFvs2() throws Exception {
+    public void nFinaFvs2() {
         String unicode = "‍ᠨ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1198,7 +1199,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nIsolFvs3() throws Exception {
+    public void nIsolFvs3() {
         String unicode = "ᠨ";
         String result = convert(unicode);
         String expected = "";
@@ -1206,7 +1207,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nInitFvs3() throws Exception {
+    public void nInitFvs3() {
         String unicode = "ᠨ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1214,7 +1215,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nMediFvs3() throws Exception {
+    public void nMediFvs3() {
         String unicode = "‍ᠨ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1222,7 +1223,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nFinaFvs3() throws Exception {
+    public void nFinaFvs3() {
         String unicode = "‍ᠨ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1230,7 +1231,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngIsol() throws Exception {
+    public void ngIsol() {
         String unicode = "ᠩ";
         String result = convert(unicode);
         String expected = "";
@@ -1238,7 +1239,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngInit() throws Exception {
+    public void ngInit() {
         String unicode = "ᠩ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1246,7 +1247,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngMedi() throws Exception {
+    public void ngMedi() {
         String unicode = "‍ᠩ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1254,7 +1255,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngFina() throws Exception {
+    public void ngFina() {
         String unicode = "‍ᠩ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1262,7 +1263,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngIsolFvs1() throws Exception {
+    public void ngIsolFvs1() {
         String unicode = "ᠩ";
         String result = convert(unicode);
         String expected = "";
@@ -1270,7 +1271,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngInitFvs1() throws Exception {
+    public void ngInitFvs1() {
         String unicode = "ᠩ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1278,7 +1279,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngMediFvs1() throws Exception {
+    public void ngMediFvs1() {
         String unicode = "‍ᠩ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1286,7 +1287,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngFinaFvs1() throws Exception {
+    public void ngFinaFvs1() {
         String unicode = "‍ᠩ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1294,7 +1295,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngIsolFvs2() throws Exception {
+    public void ngIsolFvs2() {
         String unicode = "ᠩ";
         String result = convert(unicode);
         String expected = "";
@@ -1302,7 +1303,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngInitFvs2() throws Exception {
+    public void ngInitFvs2() {
         String unicode = "ᠩ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1310,7 +1311,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngMediFvs2() throws Exception {
+    public void ngMediFvs2() {
         String unicode = "‍ᠩ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1318,7 +1319,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngFinaFvs2() throws Exception {
+    public void ngFinaFvs2() {
         String unicode = "‍ᠩ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1326,7 +1327,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngIsolFvs3() throws Exception {
+    public void ngIsolFvs3() {
         String unicode = "ᠩ";
         String result = convert(unicode);
         String expected = "";
@@ -1334,7 +1335,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngInitFvs3() throws Exception {
+    public void ngInitFvs3() {
         String unicode = "ᠩ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1342,7 +1343,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngMediFvs3() throws Exception {
+    public void ngMediFvs3() {
         String unicode = "‍ᠩ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1350,7 +1351,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ngFinaFvs3() throws Exception {
+    public void ngFinaFvs3() {
         String unicode = "‍ᠩ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1358,7 +1359,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bIsol() throws Exception {
+    public void bIsol() {
         String unicode = "ᠪ";
         String result = convert(unicode);
         String expected = "";
@@ -1366,7 +1367,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bInit() throws Exception {
+    public void bInit() {
         String unicode = "ᠪ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1374,7 +1375,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bMedi() throws Exception {
+    public void bMedi() {
         String unicode = "‍ᠪ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1382,7 +1383,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bFina() throws Exception {
+    public void bFina() {
         String unicode = "‍ᠪ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1390,7 +1391,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bIsolFvs1() throws Exception {
+    public void bIsolFvs1() {
         String unicode = "ᠪ";
         String result = convert(unicode);
         String expected = "";
@@ -1398,7 +1399,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bInitFvs1() throws Exception {
+    public void bInitFvs1() {
         String unicode = "ᠪ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1406,7 +1407,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bMediFvs1() throws Exception {
+    public void bMediFvs1() {
         String unicode = "‍ᠪ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1414,7 +1415,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bFinaFvs1() throws Exception {
+    public void bFinaFvs1() {
         String unicode = "‍ᠪ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1422,7 +1423,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bIsolFvs2() throws Exception {
+    public void bIsolFvs2() {
         String unicode = "ᠪ";
         String result = convert(unicode);
         String expected = "";
@@ -1430,7 +1431,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bInitFvs2() throws Exception {
+    public void bInitFvs2() {
         String unicode = "ᠪ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1438,7 +1439,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bMediFvs2() throws Exception {
+    public void bMediFvs2() {
         String unicode = "‍ᠪ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1446,7 +1447,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bFinaFvs2() throws Exception {
+    public void bFinaFvs2() {
         String unicode = "‍ᠪ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1454,7 +1455,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bIsolFvs3() throws Exception {
+    public void bIsolFvs3() {
         String unicode = "ᠪ";
         String result = convert(unicode);
         String expected = "";
@@ -1462,7 +1463,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bInitFvs3() throws Exception {
+    public void bInitFvs3() {
         String unicode = "ᠪ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1470,7 +1471,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bMediFvs3() throws Exception {
+    public void bMediFvs3() {
         String unicode = "‍ᠪ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1478,7 +1479,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bFinaFvs3() throws Exception {
+    public void bFinaFvs3() {
         String unicode = "‍ᠪ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1486,7 +1487,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pIsol() throws Exception {
+    public void pIsol() {
         String unicode = "ᠫ";
         String result = convert(unicode);
         String expected = "";
@@ -1494,7 +1495,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pInit() throws Exception {
+    public void pInit() {
         String unicode = "ᠫ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1502,7 +1503,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pMedi() throws Exception {
+    public void pMedi() {
         String unicode = "‍ᠫ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1510,7 +1511,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pFina() throws Exception {
+    public void pFina() {
         String unicode = "‍ᠫ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1518,7 +1519,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pIsolFvs1() throws Exception {
+    public void pIsolFvs1() {
         String unicode = "ᠫ";
         String result = convert(unicode);
         String expected = "";
@@ -1526,7 +1527,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pInitFvs1() throws Exception {
+    public void pInitFvs1() {
         String unicode = "ᠫ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1534,7 +1535,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pMediFvs1() throws Exception {
+    public void pMediFvs1() {
         String unicode = "‍ᠫ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1542,7 +1543,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pFinaFvs1() throws Exception {
+    public void pFinaFvs1() {
         String unicode = "‍ᠫ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1550,7 +1551,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pIsolFvs2() throws Exception {
+    public void pIsolFvs2() {
         String unicode = "ᠫ";
         String result = convert(unicode);
         String expected = "";
@@ -1558,7 +1559,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pInitFvs2() throws Exception {
+    public void pInitFvs2() {
         String unicode = "ᠫ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1566,7 +1567,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pMediFvs2() throws Exception {
+    public void pMediFvs2() {
         String unicode = "‍ᠫ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1574,7 +1575,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pFinaFvs2() throws Exception {
+    public void pFinaFvs2() {
         String unicode = "‍ᠫ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1582,7 +1583,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pIsolFvs3() throws Exception {
+    public void pIsolFvs3() {
         String unicode = "ᠫ";
         String result = convert(unicode);
         String expected = "";
@@ -1590,7 +1591,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pInitFvs3() throws Exception {
+    public void pInitFvs3() {
         String unicode = "ᠫ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1598,7 +1599,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pMediFvs3() throws Exception {
+    public void pMediFvs3() {
         String unicode = "‍ᠫ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1606,7 +1607,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void pFinaFvs3() throws Exception {
+    public void pFinaFvs3() {
         String unicode = "‍ᠫ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1614,7 +1615,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qIsol() throws Exception {
+    public void qIsol() {
         String unicode = "ᠬ";
         String result = convert(unicode);
         String expected = "";
@@ -1622,7 +1623,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qInit() throws Exception {
+    public void qInit() {
         String unicode = "ᠬ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1630,7 +1631,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qMedi() throws Exception {
+    public void qMedi() {
         String unicode = "‍ᠬ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1638,7 +1639,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qFina() throws Exception {
+    public void qFina() {
         String unicode = "‍ᠬ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1646,7 +1647,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qIsolFvs1() throws Exception {
+    public void qIsolFvs1() {
         String unicode = "ᠬ";
         String result = convert(unicode);
         String expected = "";
@@ -1654,7 +1655,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qInitFvs1() throws Exception {
+    public void qInitFvs1() {
         String unicode = "ᠬ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1662,7 +1663,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qMediFvs1() throws Exception {
+    public void qMediFvs1() {
         String unicode = "‍ᠬ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1670,7 +1671,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qFinaFvs1() throws Exception {
+    public void qFinaFvs1() {
         String unicode = "‍ᠬ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1678,7 +1679,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qIsolFvs2() throws Exception {
+    public void qIsolFvs2() {
         String unicode = "ᠬ";
         String result = convert(unicode);
         String expected = "";
@@ -1686,7 +1687,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qInitFvs2() throws Exception {
+    public void qInitFvs2() {
         String unicode = "ᠬ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1694,7 +1695,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qMediFvs2() throws Exception {
+    public void qMediFvs2() {
         String unicode = "‍ᠬ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1702,7 +1703,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qFinaFvs2() throws Exception {
+    public void qFinaFvs2() {
         String unicode = "‍ᠬ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1710,7 +1711,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qIsolFvs3() throws Exception {
+    public void qIsolFvs3() {
         String unicode = "ᠬ";
         String result = convert(unicode);
         String expected = "";
@@ -1718,7 +1719,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qInitFvs3() throws Exception {
+    public void qInitFvs3() {
         String unicode = "ᠬ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1726,7 +1727,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qMediFvs3() throws Exception {
+    public void qMediFvs3() {
         String unicode = "‍ᠬ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1734,7 +1735,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qFinaFvs3() throws Exception {
+    public void qFinaFvs3() {
         String unicode = "‍ᠬ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1742,7 +1743,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gIsol() throws Exception {
+    public void gIsol() {
         String unicode = "ᠭ";
         String result = convert(unicode);
         String expected = "";
@@ -1750,7 +1751,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gInit() throws Exception {
+    public void gInit() {
         String unicode = "ᠭ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1758,7 +1759,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gMedi() throws Exception {
+    public void gMedi() {
         String unicode = "‍ᠭ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1766,7 +1767,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gFina() throws Exception {
+    public void gFina() {
         String unicode = "‍ᠭ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1774,7 +1775,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gIsolFvs1() throws Exception {
+    public void gIsolFvs1() {
         String unicode = "ᠭ";
         String result = convert(unicode);
         String expected = "";
@@ -1782,7 +1783,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gInitFvs1() throws Exception {
+    public void gInitFvs1() {
         String unicode = "ᠭ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1790,7 +1791,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gMediFvs1() throws Exception {
+    public void gMediFvs1() {
         String unicode = "‍ᠭ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1798,7 +1799,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gFinaFvs1() throws Exception {
+    public void gFinaFvs1() {
         String unicode = "‍ᠭ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1806,7 +1807,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gIsolFvs2() throws Exception {
+    public void gIsolFvs2() {
         String unicode = "ᠭ";
         String result = convert(unicode);
         String expected = "";
@@ -1814,7 +1815,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gInitFvs2() throws Exception {
+    public void gInitFvs2() {
         String unicode = "ᠭ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1822,7 +1823,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gMediFvs2() throws Exception {
+    public void gMediFvs2() {
         String unicode = "‍ᠭ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1830,7 +1831,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gFinaFvs2() throws Exception {
+    public void gFinaFvs2() {
         String unicode = "‍ᠭ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1838,7 +1839,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gIsolFvs3() throws Exception {
+    public void gIsolFvs3() {
         String unicode = "ᠭ";
         String result = convert(unicode);
         String expected = "";
@@ -1846,7 +1847,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gInitFvs3() throws Exception {
+    public void gInitFvs3() {
         String unicode = "ᠭ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1854,7 +1855,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gMediFvs3() throws Exception {
+    public void gMediFvs3() {
         String unicode = "‍ᠭ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1862,7 +1863,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gFinaFvs3() throws Exception {
+    public void gFinaFvs3() {
         String unicode = "‍ᠭ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1870,7 +1871,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mIsol() throws Exception {
+    public void mIsol() {
         String unicode = "ᠮ";
         String result = convert(unicode);
         String expected = "";
@@ -1878,7 +1879,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mInit() throws Exception {
+    public void mInit() {
         String unicode = "ᠮ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -1886,7 +1887,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mMedi() throws Exception {
+    public void mMedi() {
         String unicode = "‍ᠮ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1894,7 +1895,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mFina() throws Exception {
+    public void mFina() {
         String unicode = "‍ᠮ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1902,7 +1903,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mIsolFvs1() throws Exception {
+    public void mIsolFvs1() {
         String unicode = "ᠮ";
         String result = convert(unicode);
         String expected = "";
@@ -1910,7 +1911,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mInitFvs1() throws Exception {
+    public void mInitFvs1() {
         String unicode = "ᠮ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1918,7 +1919,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mMediFvs1() throws Exception {
+    public void mMediFvs1() {
         String unicode = "‍ᠮ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1926,7 +1927,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mFinaFvs1() throws Exception {
+    public void mFinaFvs1() {
         String unicode = "‍ᠮ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1934,7 +1935,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mIsolFvs2() throws Exception {
+    public void mIsolFvs2() {
         String unicode = "ᠮ";
         String result = convert(unicode);
         String expected = "";
@@ -1942,7 +1943,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mInitFvs2() throws Exception {
+    public void mInitFvs2() {
         String unicode = "ᠮ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1950,7 +1951,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mMediFvs2() throws Exception {
+    public void mMediFvs2() {
         String unicode = "‍ᠮ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1958,7 +1959,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mFinaFvs2() throws Exception {
+    public void mFinaFvs2() {
         String unicode = "‍ᠮ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1966,7 +1967,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mIsolFvs3() throws Exception {
+    public void mIsolFvs3() {
         String unicode = "ᠮ";
         String result = convert(unicode);
         String expected = "";
@@ -1974,7 +1975,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mInitFvs3() throws Exception {
+    public void mInitFvs3() {
         String unicode = "ᠮ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -1982,7 +1983,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mMediFvs3() throws Exception {
+    public void mMediFvs3() {
         String unicode = "‍ᠮ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -1990,7 +1991,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mFinaFvs3() throws Exception {
+    public void mFinaFvs3() {
         String unicode = "‍ᠮ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -1998,7 +1999,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lIsol() throws Exception {
+    public void lIsol() {
         String unicode = "ᠯ";
         String result = convert(unicode);
         String expected = "";
@@ -2006,7 +2007,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lInit() throws Exception {
+    public void lInit() {
         String unicode = "ᠯ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2014,7 +2015,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lMedi() throws Exception {
+    public void lMedi() {
         String unicode = "‍ᠯ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2022,7 +2023,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lFina() throws Exception {
+    public void lFina() {
         String unicode = "‍ᠯ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2030,7 +2031,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lIsolFvs1() throws Exception {
+    public void lIsolFvs1() {
         String unicode = "ᠯ";
         String result = convert(unicode);
         String expected = "";
@@ -2038,7 +2039,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lInitFvs1() throws Exception {
+    public void lInitFvs1() {
         String unicode = "ᠯ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2046,7 +2047,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lMediFvs1() throws Exception {
+    public void lMediFvs1() {
         String unicode = "‍ᠯ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2054,7 +2055,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lFinaFvs1() throws Exception {
+    public void lFinaFvs1() {
         String unicode = "‍ᠯ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2062,7 +2063,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lIsolFvs2() throws Exception {
+    public void lIsolFvs2() {
         String unicode = "ᠯ";
         String result = convert(unicode);
         String expected = "";
@@ -2070,7 +2071,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lInitFvs2() throws Exception {
+    public void lInitFvs2() {
         String unicode = "ᠯ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2078,7 +2079,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lMediFvs2() throws Exception {
+    public void lMediFvs2() {
         String unicode = "‍ᠯ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2086,7 +2087,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lFinaFvs2() throws Exception {
+    public void lFinaFvs2() {
         String unicode = "‍ᠯ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2094,7 +2095,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lIsolFvs3() throws Exception {
+    public void lIsolFvs3() {
         String unicode = "ᠯ";
         String result = convert(unicode);
         String expected = "";
@@ -2102,7 +2103,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lInitFvs3() throws Exception {
+    public void lInitFvs3() {
         String unicode = "ᠯ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2110,7 +2111,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lMediFvs3() throws Exception {
+    public void lMediFvs3() {
         String unicode = "‍ᠯ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2118,7 +2119,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lFinaFvs3() throws Exception {
+    public void lFinaFvs3() {
         String unicode = "‍ᠯ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2126,7 +2127,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sIsol() throws Exception {
+    public void sIsol() {
         String unicode = "ᠰ";
         String result = convert(unicode);
         String expected = "";
@@ -2134,7 +2135,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sInit() throws Exception {
+    public void sInit() {
         String unicode = "ᠰ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2142,7 +2143,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sMedi() throws Exception {
+    public void sMedi() {
         String unicode = "‍ᠰ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2150,7 +2151,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sFina() throws Exception {
+    public void sFina() {
         String unicode = "‍ᠰ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2158,7 +2159,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sIsolFvs1() throws Exception {
+    public void sIsolFvs1() {
         String unicode = "ᠰ";
         String result = convert(unicode);
         String expected = "";
@@ -2166,7 +2167,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sInitFvs1() throws Exception {
+    public void sInitFvs1() {
         String unicode = "ᠰ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2174,7 +2175,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sMediFvs1() throws Exception {
+    public void sMediFvs1() {
         String unicode = "‍ᠰ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2182,7 +2183,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sFinaFvs1() throws Exception {
+    public void sFinaFvs1() {
         String unicode = "‍ᠰ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2190,7 +2191,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sIsolFvs2() throws Exception {
+    public void sIsolFvs2() {
         String unicode = "ᠰ";
         String result = convert(unicode);
         String expected = "";
@@ -2198,7 +2199,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sInitFvs2() throws Exception {
+    public void sInitFvs2() {
         String unicode = "ᠰ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2206,7 +2207,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sMediFvs2() throws Exception {
+    public void sMediFvs2() {
         String unicode = "‍ᠰ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2214,7 +2215,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sFinaFvs2() throws Exception {
+    public void sFinaFvs2() {
         String unicode = "‍ᠰ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2222,7 +2223,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sIsolFvs3() throws Exception {
+    public void sIsolFvs3() {
         String unicode = "ᠰ";
         String result = convert(unicode);
         String expected = "";
@@ -2230,7 +2231,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sInitFvs3() throws Exception {
+    public void sInitFvs3() {
         String unicode = "ᠰ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2238,7 +2239,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sMediFvs3() throws Exception {
+    public void sMediFvs3() {
         String unicode = "‍ᠰ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2246,7 +2247,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sFinaFvs3() throws Exception {
+    public void sFinaFvs3() {
         String unicode = "‍ᠰ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2254,7 +2255,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shIsol() throws Exception {
+    public void shIsol() {
         String unicode = "ᠱ";
         String result = convert(unicode);
         String expected = "";
@@ -2262,7 +2263,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shInit() throws Exception {
+    public void shInit() {
         String unicode = "ᠱ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2270,7 +2271,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shMedi() throws Exception {
+    public void shMedi() {
         String unicode = "‍ᠱ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2278,7 +2279,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shFina() throws Exception {
+    public void shFina() {
         String unicode = "‍ᠱ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2286,7 +2287,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shIsolFvs1() throws Exception {
+    public void shIsolFvs1() {
         String unicode = "ᠱ";
         String result = convert(unicode);
         String expected = "";
@@ -2294,7 +2295,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shInitFvs1() throws Exception {
+    public void shInitFvs1() {
         String unicode = "ᠱ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2302,7 +2303,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shMediFvs1() throws Exception {
+    public void shMediFvs1() {
         String unicode = "‍ᠱ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2310,7 +2311,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shFinaFvs1() throws Exception {
+    public void shFinaFvs1() {
         String unicode = "‍ᠱ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2318,7 +2319,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shIsolFvs2() throws Exception {
+    public void shIsolFvs2() {
         String unicode = "ᠱ";
         String result = convert(unicode);
         String expected = "";
@@ -2326,7 +2327,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shInitFvs2() throws Exception {
+    public void shInitFvs2() {
         String unicode = "ᠱ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2334,7 +2335,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shMediFvs2() throws Exception {
+    public void shMediFvs2() {
         String unicode = "‍ᠱ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2342,7 +2343,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shFinaFvs2() throws Exception {
+    public void shFinaFvs2() {
         String unicode = "‍ᠱ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2350,7 +2351,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shIsolFvs3() throws Exception {
+    public void shIsolFvs3() {
         String unicode = "ᠱ";
         String result = convert(unicode);
         String expected = "";
@@ -2358,7 +2359,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shInitFvs3() throws Exception {
+    public void shInitFvs3() {
         String unicode = "ᠱ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2366,7 +2367,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shMediFvs3() throws Exception {
+    public void shMediFvs3() {
         String unicode = "‍ᠱ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2374,7 +2375,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void shFinaFvs3() throws Exception {
+    public void shFinaFvs3() {
         String unicode = "‍ᠱ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2382,7 +2383,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tIsol() throws Exception {
+    public void tIsol() {
         String unicode = "ᠲ";
         String result = convert(unicode);
         String expected = "";
@@ -2390,7 +2391,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tInit() throws Exception {
+    public void tInit() {
         String unicode = "ᠲ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2398,7 +2399,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tMedi() throws Exception {
+    public void tMedi() {
         String unicode = "‍ᠲ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2406,7 +2407,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tFina() throws Exception {
+    public void tFina() {
         String unicode = "‍ᠲ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2414,7 +2415,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tIsolFvs1() throws Exception {
+    public void tIsolFvs1() {
         String unicode = "ᠲ";
         String result = convert(unicode);
         String expected = "";
@@ -2422,7 +2423,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tInitFvs1() throws Exception {
+    public void tInitFvs1() {
         String unicode = "ᠲ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2430,7 +2431,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tMediFvs1() throws Exception {
+    public void tMediFvs1() {
         String unicode = "‍ᠲ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2438,7 +2439,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tFinaFvs1() throws Exception {
+    public void tFinaFvs1() {
         String unicode = "‍ᠲ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2446,7 +2447,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tIsolFvs2() throws Exception {
+    public void tIsolFvs2() {
         String unicode = "ᠲ";
         String result = convert(unicode);
         String expected = "";
@@ -2454,7 +2455,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tInitFvs2() throws Exception {
+    public void tInitFvs2() {
         String unicode = "ᠲ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2462,7 +2463,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tMediFvs2() throws Exception {
+    public void tMediFvs2() {
         String unicode = "‍ᠲ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2470,7 +2471,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tFinaFvs2() throws Exception {
+    public void tFinaFvs2() {
         String unicode = "‍ᠲ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2478,7 +2479,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tIsolFvs3() throws Exception {
+    public void tIsolFvs3() {
         String unicode = "ᠲ";
         String result = convert(unicode);
         String expected = "";
@@ -2486,7 +2487,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tInitFvs3() throws Exception {
+    public void tInitFvs3() {
         String unicode = "ᠲ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2494,7 +2495,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tMediFvs3() throws Exception {
+    public void tMediFvs3() {
         String unicode = "‍ᠲ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2502,7 +2503,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tFinaFvs3() throws Exception {
+    public void tFinaFvs3() {
         String unicode = "‍ᠲ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2510,7 +2511,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dIsol() throws Exception {
+    public void dIsol() {
         String unicode = "ᠳ";
         String result = convert(unicode);
         String expected = "";
@@ -2518,7 +2519,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dInit() throws Exception {
+    public void dInit() {
         String unicode = "ᠳ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2526,7 +2527,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dMedi() throws Exception {
+    public void dMedi() {
         String unicode = "‍ᠳ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2534,7 +2535,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dFina() throws Exception {
+    public void dFina() {
         String unicode = "‍ᠳ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2542,7 +2543,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dIsolFvs1() throws Exception {
+    public void dIsolFvs1() {
         String unicode = "ᠳ";
         String result = convert(unicode);
         String expected = "";
@@ -2550,7 +2551,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dInitFvs1() throws Exception {
+    public void dInitFvs1() {
         String unicode = "ᠳ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2558,7 +2559,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dMediFvs1() throws Exception {
+    public void dMediFvs1() {
         String unicode = "‍ᠳ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2566,7 +2567,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dFinaFvs1() throws Exception {
+    public void dFinaFvs1() {
         String unicode = "‍ᠳ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2574,7 +2575,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dIsolFvs2() throws Exception {
+    public void dIsolFvs2() {
         String unicode = "ᠳ";
         String result = convert(unicode);
         String expected = "";
@@ -2582,7 +2583,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dInitFvs2() throws Exception {
+    public void dInitFvs2() {
         String unicode = "ᠳ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2590,7 +2591,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dMediFvs2() throws Exception {
+    public void dMediFvs2() {
         String unicode = "‍ᠳ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2598,7 +2599,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dFinaFvs2() throws Exception {
+    public void dFinaFvs2() {
         String unicode = "‍ᠳ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2606,7 +2607,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dIsolFvs3() throws Exception {
+    public void dIsolFvs3() {
         String unicode = "ᠳ";
         String result = convert(unicode);
         String expected = "";
@@ -2614,7 +2615,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dInitFvs3() throws Exception {
+    public void dInitFvs3() {
         String unicode = "ᠳ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2622,7 +2623,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dMediFvs3() throws Exception {
+    public void dMediFvs3() {
         String unicode = "‍ᠳ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2630,7 +2631,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dFinaFvs3() throws Exception {
+    public void dFinaFvs3() {
         String unicode = "‍ᠳ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2638,7 +2639,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chIsol() throws Exception {
+    public void chIsol() {
         String unicode = "ᠴ";
         String result = convert(unicode);
         String expected = "";
@@ -2646,7 +2647,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chInit() throws Exception {
+    public void chInit() {
         String unicode = "ᠴ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2654,7 +2655,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chMedi() throws Exception {
+    public void chMedi() {
         String unicode = "‍ᠴ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2662,7 +2663,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chFina() throws Exception {
+    public void chFina() {
         String unicode = "‍ᠴ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2670,7 +2671,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chIsolFvs1() throws Exception {
+    public void chIsolFvs1() {
         String unicode = "ᠴ";
         String result = convert(unicode);
         String expected = "";
@@ -2678,7 +2679,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chInitFvs1() throws Exception {
+    public void chInitFvs1() {
         String unicode = "ᠴ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2686,7 +2687,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chMediFvs1() throws Exception {
+    public void chMediFvs1() {
         String unicode = "‍ᠴ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2694,7 +2695,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chFinaFvs1() throws Exception {
+    public void chFinaFvs1() {
         String unicode = "‍ᠴ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2702,7 +2703,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chIsolFvs2() throws Exception {
+    public void chIsolFvs2() {
         String unicode = "ᠴ";
         String result = convert(unicode);
         String expected = "";
@@ -2710,7 +2711,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chInitFvs2() throws Exception {
+    public void chInitFvs2() {
         String unicode = "ᠴ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2718,7 +2719,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chMediFvs2() throws Exception {
+    public void chMediFvs2() {
         String unicode = "‍ᠴ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2726,7 +2727,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chFinaFvs2() throws Exception {
+    public void chFinaFvs2() {
         String unicode = "‍ᠴ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2734,7 +2735,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chIsolFvs3() throws Exception {
+    public void chIsolFvs3() {
         String unicode = "ᠴ";
         String result = convert(unicode);
         String expected = "";
@@ -2742,7 +2743,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chInitFvs3() throws Exception {
+    public void chInitFvs3() {
         String unicode = "ᠴ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2750,7 +2751,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chMediFvs3() throws Exception {
+    public void chMediFvs3() {
         String unicode = "‍ᠴ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2758,7 +2759,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chFinaFvs3() throws Exception {
+    public void chFinaFvs3() {
         String unicode = "‍ᠴ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2766,7 +2767,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jIsol() throws Exception {
+    public void jIsol() {
         String unicode = "ᠵ";
         String result = convert(unicode);
         String expected = "";
@@ -2774,7 +2775,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jInit() throws Exception {
+    public void jInit() {
         String unicode = "ᠵ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2782,7 +2783,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jMedi() throws Exception {
+    public void jMedi() {
         String unicode = "‍ᠵ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2790,7 +2791,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jFina() throws Exception {
+    public void jFina() {
         String unicode = "‍ᠵ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2798,7 +2799,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jIsolFvs1() throws Exception {
+    public void jIsolFvs1() {
         String unicode = "ᠵ";
         String result = convert(unicode);
         String expected = "";
@@ -2806,7 +2807,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jInitFvs1() throws Exception {
+    public void jInitFvs1() {
         String unicode = "ᠵ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2814,7 +2815,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jMediFvs1() throws Exception {
+    public void jMediFvs1() {
         String unicode = "‍ᠵ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2822,7 +2823,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jFinaFvs1() throws Exception {
+    public void jFinaFvs1() {
         String unicode = "‍ᠵ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2830,7 +2831,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jIsolFvs2() throws Exception {
+    public void jIsolFvs2() {
         String unicode = "ᠵ";
         String result = convert(unicode);
         String expected = "";
@@ -2838,7 +2839,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jInitFvs2() throws Exception {
+    public void jInitFvs2() {
         String unicode = "ᠵ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2846,7 +2847,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jMediFvs2() throws Exception {
+    public void jMediFvs2() {
         String unicode = "‍ᠵ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2854,7 +2855,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jFinaFvs2() throws Exception {
+    public void jFinaFvs2() {
         String unicode = "‍ᠵ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2862,7 +2863,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jIsolFvs3() throws Exception {
+    public void jIsolFvs3() {
         String unicode = "ᠵ";
         String result = convert(unicode);
         String expected = "";
@@ -2870,7 +2871,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jInitFvs3() throws Exception {
+    public void jInitFvs3() {
         String unicode = "ᠵ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2878,7 +2879,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jMediFvs3() throws Exception {
+    public void jMediFvs3() {
         String unicode = "‍ᠵ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2886,7 +2887,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jFinaFvs3() throws Exception {
+    public void jFinaFvs3() {
         String unicode = "‍ᠵ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2894,7 +2895,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yIsol() throws Exception {
+    public void yIsol() {
         String unicode = "ᠶ";
         String result = convert(unicode);
         String expected = "";
@@ -2902,7 +2903,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yInit() throws Exception {
+    public void yInit() {
         String unicode = "ᠶ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -2910,7 +2911,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yMedi() throws Exception {
+    public void yMedi() {
         String unicode = "‍ᠶ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2918,7 +2919,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yFina() throws Exception {
+    public void yFina() {
         String unicode = "‍ᠶ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2926,7 +2927,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yIsolFvs1() throws Exception {
+    public void yIsolFvs1() {
         String unicode = "ᠶ";
         String result = convert(unicode);
         String expected = "";
@@ -2934,7 +2935,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yInitFvs1() throws Exception {
+    public void yInitFvs1() {
         String unicode = "ᠶ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2942,7 +2943,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yMediFvs1() throws Exception {
+    public void yMediFvs1() {
         String unicode = "‍ᠶ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2950,7 +2951,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yFinaFvs1() throws Exception {
+    public void yFinaFvs1() {
         String unicode = "‍ᠶ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2958,7 +2959,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yIsolFvs2() throws Exception {
+    public void yIsolFvs2() {
         String unicode = "ᠶ";
         String result = convert(unicode);
         String expected = "";
@@ -2966,7 +2967,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yInitFvs2() throws Exception {
+    public void yInitFvs2() {
         String unicode = "ᠶ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -2974,7 +2975,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yMediFvs2() throws Exception {
+    public void yMediFvs2() {
         String unicode = "‍ᠶ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -2982,7 +2983,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yFinaFvs2() throws Exception {
+    public void yFinaFvs2() {
         String unicode = "‍ᠶ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -2990,7 +2991,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yIsolFvs3() throws Exception {
+    public void yIsolFvs3() {
         String unicode = "ᠶ";
         String result = convert(unicode);
         String expected = "";
@@ -2998,7 +2999,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yInitFvs3() throws Exception {
+    public void yInitFvs3() {
         String unicode = "ᠶ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3006,7 +3007,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yMediFvs3() throws Exception {
+    public void yMediFvs3() {
         String unicode = "‍ᠶ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3014,7 +3015,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yFinaFvs3() throws Exception {
+    public void yFinaFvs3() {
         String unicode = "‍ᠶ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3022,7 +3023,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rIsol() throws Exception {
+    public void rIsol() {
         String unicode = "ᠷ";
         String result = convert(unicode);
         String expected = "";
@@ -3030,7 +3031,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rInit() throws Exception {
+    public void rInit() {
         String unicode = "ᠷ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3038,7 +3039,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rMedi() throws Exception {
+    public void rMedi() {
         String unicode = "‍ᠷ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3046,7 +3047,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rFina() throws Exception {
+    public void rFina() {
         String unicode = "‍ᠷ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3054,7 +3055,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rIsolFvs1() throws Exception {
+    public void rIsolFvs1() {
         String unicode = "ᠷ";
         String result = convert(unicode);
         String expected = "";
@@ -3062,7 +3063,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rInitFvs1() throws Exception {
+    public void rInitFvs1() {
         String unicode = "ᠷ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3070,7 +3071,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rMediFvs1() throws Exception {
+    public void rMediFvs1() {
         String unicode = "‍ᠷ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3078,7 +3079,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rFinaFvs1() throws Exception {
+    public void rFinaFvs1() {
         String unicode = "‍ᠷ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3086,7 +3087,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rIsolFvs2() throws Exception {
+    public void rIsolFvs2() {
         String unicode = "ᠷ";
         String result = convert(unicode);
         String expected = "";
@@ -3094,7 +3095,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rInitFvs2() throws Exception {
+    public void rInitFvs2() {
         String unicode = "ᠷ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3102,7 +3103,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rMediFvs2() throws Exception {
+    public void rMediFvs2() {
         String unicode = "‍ᠷ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3110,7 +3111,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rFinaFvs2() throws Exception {
+    public void rFinaFvs2() {
         String unicode = "‍ᠷ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3118,7 +3119,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rIsolFvs3() throws Exception {
+    public void rIsolFvs3() {
         String unicode = "ᠷ";
         String result = convert(unicode);
         String expected = "";
@@ -3126,7 +3127,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rInitFvs3() throws Exception {
+    public void rInitFvs3() {
         String unicode = "ᠷ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3134,7 +3135,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rMediFvs3() throws Exception {
+    public void rMediFvs3() {
         String unicode = "‍ᠷ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3142,7 +3143,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void rFinaFvs3() throws Exception {
+    public void rFinaFvs3() {
         String unicode = "‍ᠷ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3150,7 +3151,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wIsol() throws Exception {
+    public void wIsol() {
         String unicode = "ᠸ";
         String result = convert(unicode);
         String expected = "";
@@ -3158,7 +3159,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wInit() throws Exception {
+    public void wInit() {
         String unicode = "ᠸ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3166,7 +3167,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wMedi() throws Exception {
+    public void wMedi() {
         String unicode = "‍ᠸ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3174,7 +3175,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wFina() throws Exception {
+    public void wFina() {
         String unicode = "‍ᠸ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3182,7 +3183,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wIsolFvs1() throws Exception {
+    public void wIsolFvs1() {
         String unicode = "ᠸ";
         String result = convert(unicode);
         String expected = "";
@@ -3190,7 +3191,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wInitFvs1() throws Exception {
+    public void wInitFvs1() {
         String unicode = "ᠸ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3198,7 +3199,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wMediFvs1() throws Exception {
+    public void wMediFvs1() {
         String unicode = "‍ᠸ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3206,7 +3207,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wFinaFvs1() throws Exception {
+    public void wFinaFvs1() {
         String unicode = "‍ᠸ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3214,7 +3215,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wIsolFvs2() throws Exception {
+    public void wIsolFvs2() {
         String unicode = "ᠸ";
         String result = convert(unicode);
         String expected = "";
@@ -3222,7 +3223,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wInitFvs2() throws Exception {
+    public void wInitFvs2() {
         String unicode = "ᠸ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3230,7 +3231,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wMediFvs2() throws Exception {
+    public void wMediFvs2() {
         String unicode = "‍ᠸ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3238,7 +3239,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wFinaFvs2() throws Exception {
+    public void wFinaFvs2() {
         String unicode = "‍ᠸ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3246,7 +3247,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wIsolFvs3() throws Exception {
+    public void wIsolFvs3() {
         String unicode = "ᠸ";
         String result = convert(unicode);
         String expected = "";
@@ -3254,7 +3255,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wInitFvs3() throws Exception {
+    public void wInitFvs3() {
         String unicode = "ᠸ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3262,7 +3263,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wMediFvs3() throws Exception {
+    public void wMediFvs3() {
         String unicode = "‍ᠸ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3270,7 +3271,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void wFinaFvs3() throws Exception {
+    public void wFinaFvs3() {
         String unicode = "‍ᠸ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3278,7 +3279,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fIsol() throws Exception {
+    public void fIsol() {
         String unicode = "ᠹ";
         String result = convert(unicode);
         String expected = "";
@@ -3286,7 +3287,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fInit() throws Exception {
+    public void fInit() {
         String unicode = "ᠹ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3294,7 +3295,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fMedi() throws Exception {
+    public void fMedi() {
         String unicode = "‍ᠹ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3302,7 +3303,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fFina() throws Exception {
+    public void fFina() {
         String unicode = "‍ᠹ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3310,7 +3311,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fIsolFvs1() throws Exception {
+    public void fIsolFvs1() {
         String unicode = "ᠹ";
         String result = convert(unicode);
         String expected = "";
@@ -3318,7 +3319,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fInitFvs1() throws Exception {
+    public void fInitFvs1() {
         String unicode = "ᠹ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3326,7 +3327,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fMediFvs1() throws Exception {
+    public void fMediFvs1() {
         String unicode = "‍ᠹ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3334,7 +3335,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fFinaFvs1() throws Exception {
+    public void fFinaFvs1() {
         String unicode = "‍ᠹ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3342,7 +3343,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fIsolFvs2() throws Exception {
+    public void fIsolFvs2() {
         String unicode = "ᠹ";
         String result = convert(unicode);
         String expected = "";
@@ -3350,7 +3351,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fInitFvs2() throws Exception {
+    public void fInitFvs2() {
         String unicode = "ᠹ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3358,7 +3359,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fMediFvs2() throws Exception {
+    public void fMediFvs2() {
         String unicode = "‍ᠹ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3366,7 +3367,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fFinaFvs2() throws Exception {
+    public void fFinaFvs2() {
         String unicode = "‍ᠹ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3374,7 +3375,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fIsolFvs3() throws Exception {
+    public void fIsolFvs3() {
         String unicode = "ᠹ";
         String result = convert(unicode);
         String expected = "";
@@ -3382,7 +3383,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fInitFvs3() throws Exception {
+    public void fInitFvs3() {
         String unicode = "ᠹ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3390,7 +3391,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fMediFvs3() throws Exception {
+    public void fMediFvs3() {
         String unicode = "‍ᠹ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3398,7 +3399,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void fFinaFvs3() throws Exception {
+    public void fFinaFvs3() {
         String unicode = "‍ᠹ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3406,7 +3407,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kIsol() throws Exception {
+    public void kIsol() {
         String unicode = "ᠺ";
         String result = convert(unicode);
         String expected = "";
@@ -3414,7 +3415,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kInit() throws Exception {
+    public void kInit() {
         String unicode = "ᠺ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3422,7 +3423,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kMedi() throws Exception {
+    public void kMedi() {
         String unicode = "‍ᠺ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3430,7 +3431,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kFina() throws Exception {
+    public void kFina() {
         String unicode = "‍ᠺ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3438,7 +3439,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kIsolFvs1() throws Exception {
+    public void kIsolFvs1() {
         String unicode = "ᠺ";
         String result = convert(unicode);
         String expected = "";
@@ -3446,7 +3447,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kInitFvs1() throws Exception {
+    public void kInitFvs1() {
         String unicode = "ᠺ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3454,7 +3455,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kMediFvs1() throws Exception {
+    public void kMediFvs1() {
         String unicode = "‍ᠺ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3462,7 +3463,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kFinaFvs1() throws Exception {
+    public void kFinaFvs1() {
         String unicode = "‍ᠺ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3470,7 +3471,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kIsolFvs2() throws Exception {
+    public void kIsolFvs2() {
         String unicode = "ᠺ";
         String result = convert(unicode);
         String expected = "";
@@ -3478,7 +3479,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kInitFvs2() throws Exception {
+    public void kInitFvs2() {
         String unicode = "ᠺ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3486,7 +3487,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kMediFvs2() throws Exception {
+    public void kMediFvs2() {
         String unicode = "‍ᠺ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3494,7 +3495,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kFinaFvs2() throws Exception {
+    public void kFinaFvs2() {
         String unicode = "‍ᠺ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3502,7 +3503,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kIsolFvs3() throws Exception {
+    public void kIsolFvs3() {
         String unicode = "ᠺ";
         String result = convert(unicode);
         String expected = "";
@@ -3510,7 +3511,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kInitFvs3() throws Exception {
+    public void kInitFvs3() {
         String unicode = "ᠺ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3518,7 +3519,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kMediFvs3() throws Exception {
+    public void kMediFvs3() {
         String unicode = "‍ᠺ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3526,7 +3527,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kFinaFvs3() throws Exception {
+    public void kFinaFvs3() {
         String unicode = "‍ᠺ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3534,7 +3535,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khIsol() throws Exception {
+    public void khIsol() {
         String unicode = "ᠻ";
         String result = convert(unicode);
         String expected = "";
@@ -3542,7 +3543,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khInit() throws Exception {
+    public void khInit() {
         String unicode = "ᠻ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3550,7 +3551,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khMedi() throws Exception {
+    public void khMedi() {
         String unicode = "‍ᠻ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3558,7 +3559,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khFina() throws Exception {
+    public void khFina() {
         String unicode = "‍ᠻ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3566,7 +3567,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khIsolFvs1() throws Exception {
+    public void khIsolFvs1() {
         String unicode = "ᠻ";
         String result = convert(unicode);
         String expected = "";
@@ -3574,7 +3575,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khInitFvs1() throws Exception {
+    public void khInitFvs1() {
         String unicode = "ᠻ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3582,7 +3583,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khMediFvs1() throws Exception {
+    public void khMediFvs1() {
         String unicode = "‍ᠻ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3590,7 +3591,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khFinaFvs1() throws Exception {
+    public void khFinaFvs1() {
         String unicode = "‍ᠻ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3598,7 +3599,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khIsolFvs2() throws Exception {
+    public void khIsolFvs2() {
         String unicode = "ᠻ";
         String result = convert(unicode);
         String expected = "";
@@ -3606,7 +3607,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khInitFvs2() throws Exception {
+    public void khInitFvs2() {
         String unicode = "ᠻ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3614,7 +3615,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khMediFvs2() throws Exception {
+    public void khMediFvs2() {
         String unicode = "‍ᠻ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3622,7 +3623,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khFinaFvs2() throws Exception {
+    public void khFinaFvs2() {
         String unicode = "‍ᠻ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3630,7 +3631,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khIsolFvs3() throws Exception {
+    public void khIsolFvs3() {
         String unicode = "ᠻ";
         String result = convert(unicode);
         String expected = "";
@@ -3638,7 +3639,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khInitFvs3() throws Exception {
+    public void khInitFvs3() {
         String unicode = "ᠻ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3646,7 +3647,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khMediFvs3() throws Exception {
+    public void khMediFvs3() {
         String unicode = "‍ᠻ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3654,7 +3655,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void khFinaFvs3() throws Exception {
+    public void khFinaFvs3() {
         String unicode = "‍ᠻ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3662,7 +3663,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsIsol() throws Exception {
+    public void tsIsol() {
         String unicode = "ᠼ";
         String result = convert(unicode);
         String expected = "";
@@ -3670,7 +3671,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsInit() throws Exception {
+    public void tsInit() {
         String unicode = "ᠼ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3678,7 +3679,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsMedi() throws Exception {
+    public void tsMedi() {
         String unicode = "‍ᠼ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3686,7 +3687,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsFina() throws Exception {
+    public void tsFina() {
         String unicode = "‍ᠼ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3694,7 +3695,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsIsolFvs1() throws Exception {
+    public void tsIsolFvs1() {
         String unicode = "ᠼ";
         String result = convert(unicode);
         String expected = "";
@@ -3702,7 +3703,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsInitFvs1() throws Exception {
+    public void tsInitFvs1() {
         String unicode = "ᠼ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3710,7 +3711,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsMediFvs1() throws Exception {
+    public void tsMediFvs1() {
         String unicode = "‍ᠼ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3718,7 +3719,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsFinaFvs1() throws Exception {
+    public void tsFinaFvs1() {
         String unicode = "‍ᠼ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3726,7 +3727,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsIsolFvs2() throws Exception {
+    public void tsIsolFvs2() {
         String unicode = "ᠼ";
         String result = convert(unicode);
         String expected = "";
@@ -3734,7 +3735,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsInitFvs2() throws Exception {
+    public void tsInitFvs2() {
         String unicode = "ᠼ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3742,7 +3743,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsMediFvs2() throws Exception {
+    public void tsMediFvs2() {
         String unicode = "‍ᠼ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3750,7 +3751,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsFinaFvs2() throws Exception {
+    public void tsFinaFvs2() {
         String unicode = "‍ᠼ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3758,7 +3759,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsIsolFvs3() throws Exception {
+    public void tsIsolFvs3() {
         String unicode = "ᠼ";
         String result = convert(unicode);
         String expected = "";
@@ -3766,7 +3767,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsInitFvs3() throws Exception {
+    public void tsInitFvs3() {
         String unicode = "ᠼ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3774,7 +3775,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsMediFvs3() throws Exception {
+    public void tsMediFvs3() {
         String unicode = "‍ᠼ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3782,7 +3783,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsFinaFvs3() throws Exception {
+    public void tsFinaFvs3() {
         String unicode = "‍ᠼ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3790,7 +3791,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zIsol() throws Exception {
+    public void zIsol() {
         String unicode = "ᠽ";
         String result = convert(unicode);
         String expected = "";
@@ -3798,7 +3799,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zInit() throws Exception {
+    public void zInit() {
         String unicode = "ᠽ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3806,7 +3807,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zMedi() throws Exception {
+    public void zMedi() {
         String unicode = "‍ᠽ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3814,7 +3815,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zFina() throws Exception {
+    public void zFina() {
         String unicode = "‍ᠽ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3822,7 +3823,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zIsolFvs1() throws Exception {
+    public void zIsolFvs1() {
         String unicode = "ᠽ";
         String result = convert(unicode);
         String expected = "";
@@ -3830,7 +3831,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zInitFvs1() throws Exception {
+    public void zInitFvs1() {
         String unicode = "ᠽ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3838,7 +3839,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zMediFvs1() throws Exception {
+    public void zMediFvs1() {
         String unicode = "‍ᠽ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3846,7 +3847,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zFinaFvs1() throws Exception {
+    public void zFinaFvs1() {
         String unicode = "‍ᠽ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3854,7 +3855,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zIsolFvs2() throws Exception {
+    public void zIsolFvs2() {
         String unicode = "ᠽ";
         String result = convert(unicode);
         String expected = "";
@@ -3862,7 +3863,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zInitFvs2() throws Exception {
+    public void zInitFvs2() {
         String unicode = "ᠽ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3870,7 +3871,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zMediFvs2() throws Exception {
+    public void zMediFvs2() {
         String unicode = "‍ᠽ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3878,7 +3879,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zFinaFvs2() throws Exception {
+    public void zFinaFvs2() {
         String unicode = "‍ᠽ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3886,7 +3887,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zIsolFvs3() throws Exception {
+    public void zIsolFvs3() {
         String unicode = "ᠽ";
         String result = convert(unicode);
         String expected = "";
@@ -3894,7 +3895,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zInitFvs3() throws Exception {
+    public void zInitFvs3() {
         String unicode = "ᠽ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3902,7 +3903,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zMediFvs3() throws Exception {
+    public void zMediFvs3() {
         String unicode = "‍ᠽ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3910,7 +3911,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zFinaFvs3() throws Exception {
+    public void zFinaFvs3() {
         String unicode = "‍ᠽ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3918,7 +3919,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaIsol() throws Exception {
+    public void haaIsol() {
         String unicode = "ᠾ";
         String result = convert(unicode);
         String expected = "";
@@ -3926,7 +3927,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaInit() throws Exception {
+    public void haaInit() {
         String unicode = "ᠾ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -3934,7 +3935,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaMedi() throws Exception {
+    public void haaMedi() {
         String unicode = "‍ᠾ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3942,7 +3943,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaFina() throws Exception {
+    public void haaFina() {
         String unicode = "‍ᠾ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3950,7 +3951,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaIsolFvs1() throws Exception {
+    public void haaIsolFvs1() {
         String unicode = "ᠾ";
         String result = convert(unicode);
         String expected = "";
@@ -3958,7 +3959,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaInitFvs1() throws Exception {
+    public void haaInitFvs1() {
         String unicode = "ᠾ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3966,7 +3967,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaMediFvs1() throws Exception {
+    public void haaMediFvs1() {
         String unicode = "‍ᠾ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -3974,7 +3975,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaFinaFvs1() throws Exception {
+    public void haaFinaFvs1() {
         String unicode = "‍ᠾ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -3982,7 +3983,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaIsolFvs2() throws Exception {
+    public void haaIsolFvs2() {
         String unicode = "ᠾ";
         String result = convert(unicode);
         String expected = "";
@@ -3990,7 +3991,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaInitFvs2() throws Exception {
+    public void haaInitFvs2() {
         String unicode = "ᠾ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -3998,7 +3999,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaMediFvs2() throws Exception {
+    public void haaMediFvs2() {
         String unicode = "‍ᠾ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4006,7 +4007,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaFinaFvs2() throws Exception {
+    public void haaFinaFvs2() {
         String unicode = "‍ᠾ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4014,7 +4015,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaIsolFvs3() throws Exception {
+    public void haaIsolFvs3() {
         String unicode = "ᠾ";
         String result = convert(unicode);
         String expected = "";
@@ -4022,7 +4023,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaInitFvs3() throws Exception {
+    public void haaInitFvs3() {
         String unicode = "ᠾ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4030,7 +4031,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaMediFvs3() throws Exception {
+    public void haaMediFvs3() {
         String unicode = "‍ᠾ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4038,7 +4039,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void haaFinaFvs3() throws Exception {
+    public void haaFinaFvs3() {
         String unicode = "‍ᠾ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4046,7 +4047,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrIsol() throws Exception {
+    public void zrIsol() {
         String unicode = "ᠿ";
         String result = convert(unicode);
         String expected = "";
@@ -4054,7 +4055,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrInit() throws Exception {
+    public void zrInit() {
         String unicode = "ᠿ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -4062,7 +4063,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrMedi() throws Exception {
+    public void zrMedi() {
         String unicode = "‍ᠿ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4070,7 +4071,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrFina() throws Exception {
+    public void zrFina() {
         String unicode = "‍ᠿ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4078,7 +4079,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrIsolFvs1() throws Exception {
+    public void zrIsolFvs1() {
         String unicode = "ᠿ";
         String result = convert(unicode);
         String expected = "";
@@ -4086,7 +4087,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrInitFvs1() throws Exception {
+    public void zrInitFvs1() {
         String unicode = "ᠿ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4094,7 +4095,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrMediFvs1() throws Exception {
+    public void zrMediFvs1() {
         String unicode = "‍ᠿ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4102,7 +4103,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrFinaFvs1() throws Exception {
+    public void zrFinaFvs1() {
         String unicode = "‍ᠿ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4110,7 +4111,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrIsolFvs2() throws Exception {
+    public void zrIsolFvs2() {
         String unicode = "ᠿ";
         String result = convert(unicode);
         String expected = "";
@@ -4118,7 +4119,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrInitFvs2() throws Exception {
+    public void zrInitFvs2() {
         String unicode = "ᠿ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4126,7 +4127,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrMediFvs2() throws Exception {
+    public void zrMediFvs2() {
         String unicode = "‍ᠿ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4134,7 +4135,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrFinaFvs2() throws Exception {
+    public void zrFinaFvs2() {
         String unicode = "‍ᠿ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4142,7 +4143,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrIsolFvs3() throws Exception {
+    public void zrIsolFvs3() {
         String unicode = "ᠿ";
         String result = convert(unicode);
         String expected = "";
@@ -4150,7 +4151,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrInitFvs3() throws Exception {
+    public void zrInitFvs3() {
         String unicode = "ᠿ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4158,7 +4159,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrMediFvs3() throws Exception {
+    public void zrMediFvs3() {
         String unicode = "‍ᠿ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4166,7 +4167,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zrFinaFvs3() throws Exception {
+    public void zrFinaFvs3() {
         String unicode = "‍ᠿ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4174,7 +4175,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhIsol() throws Exception {
+    public void lhIsol() {
         String unicode = "ᡀ";
         String result = convert(unicode);
         String expected = "";
@@ -4182,7 +4183,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhInit() throws Exception {
+    public void lhInit() {
         String unicode = "ᡀ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -4190,7 +4191,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhMedi() throws Exception {
+    public void lhMedi() {
         String unicode = "‍ᡀ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4198,7 +4199,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhFina() throws Exception {
+    public void lhFina() {
         String unicode = "‍ᡀ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4206,7 +4207,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhIsolFvs1() throws Exception {
+    public void lhIsolFvs1() {
         String unicode = "ᡀ";
         String result = convert(unicode);
         String expected = "";
@@ -4214,7 +4215,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhInitFvs1() throws Exception {
+    public void lhInitFvs1() {
         String unicode = "ᡀ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4222,7 +4223,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhMediFvs1() throws Exception {
+    public void lhMediFvs1() {
         String unicode = "‍ᡀ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4230,7 +4231,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhFinaFvs1() throws Exception {
+    public void lhFinaFvs1() {
         String unicode = "‍ᡀ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4238,7 +4239,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhIsolFvs2() throws Exception {
+    public void lhIsolFvs2() {
         String unicode = "ᡀ";
         String result = convert(unicode);
         String expected = "";
@@ -4246,7 +4247,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhInitFvs2() throws Exception {
+    public void lhInitFvs2() {
         String unicode = "ᡀ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4254,7 +4255,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhMediFvs2() throws Exception {
+    public void lhMediFvs2() {
         String unicode = "‍ᡀ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4262,7 +4263,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhFinaFvs2() throws Exception {
+    public void lhFinaFvs2() {
         String unicode = "‍ᡀ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4270,7 +4271,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhIsolFvs3() throws Exception {
+    public void lhIsolFvs3() {
         String unicode = "ᡀ";
         String result = convert(unicode);
         String expected = "";
@@ -4278,7 +4279,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhInitFvs3() throws Exception {
+    public void lhInitFvs3() {
         String unicode = "ᡀ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4286,7 +4287,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhMediFvs3() throws Exception {
+    public void lhMediFvs3() {
         String unicode = "‍ᡀ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4294,7 +4295,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhFinaFvs3() throws Exception {
+    public void lhFinaFvs3() {
         String unicode = "‍ᡀ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4302,7 +4303,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiIsol() throws Exception {
+    public void zhiIsol() {
         String unicode = "ᡁ";
         String result = convert(unicode);
         String expected = "";
@@ -4310,7 +4311,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiInit() throws Exception {
+    public void zhiInit() {
         String unicode = "ᡁ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -4318,7 +4319,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiMedi() throws Exception {
+    public void zhiMedi() {
         String unicode = "‍ᡁ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4326,7 +4327,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiFina() throws Exception {
+    public void zhiFina() {
         String unicode = "‍ᡁ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4334,7 +4335,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiIsolFvs1() throws Exception {
+    public void zhiIsolFvs1() {
         String unicode = "ᡁ";
         String result = convert(unicode);
         String expected = "";
@@ -4342,7 +4343,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiInitFvs1() throws Exception {
+    public void zhiInitFvs1() {
         String unicode = "ᡁ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4350,7 +4351,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiMediFvs1() throws Exception {
+    public void zhiMediFvs1() {
         String unicode = "‍ᡁ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4358,7 +4359,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiFinaFvs1() throws Exception {
+    public void zhiFinaFvs1() {
         String unicode = "‍ᡁ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4366,7 +4367,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiIsolFvs2() throws Exception {
+    public void zhiIsolFvs2() {
         String unicode = "ᡁ";
         String result = convert(unicode);
         String expected = "";
@@ -4374,7 +4375,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiInitFvs2() throws Exception {
+    public void zhiInitFvs2() {
         String unicode = "ᡁ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4382,7 +4383,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiMediFvs2() throws Exception {
+    public void zhiMediFvs2() {
         String unicode = "‍ᡁ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4390,7 +4391,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiFinaFvs2() throws Exception {
+    public void zhiFinaFvs2() {
         String unicode = "‍ᡁ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4398,7 +4399,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiIsolFvs3() throws Exception {
+    public void zhiIsolFvs3() {
         String unicode = "ᡁ";
         String result = convert(unicode);
         String expected = "";
@@ -4406,7 +4407,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiInitFvs3() throws Exception {
+    public void zhiInitFvs3() {
         String unicode = "ᡁ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4414,7 +4415,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiMediFvs3() throws Exception {
+    public void zhiMediFvs3() {
         String unicode = "‍ᡁ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4422,7 +4423,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void zhiFinaFvs3() throws Exception {
+    public void zhiFinaFvs3() {
         String unicode = "‍ᡁ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4430,7 +4431,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiIsol() throws Exception {
+    public void chiIsol() {
         String unicode = "ᡂ";
         String result = convert(unicode);
         String expected = "";
@@ -4438,7 +4439,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiInit() throws Exception {
+    public void chiInit() {
         String unicode = "ᡂ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D";
@@ -4446,7 +4447,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiMedi() throws Exception {
+    public void chiMedi() {
         String unicode = "‍ᡂ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4454,7 +4455,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiFina() throws Exception {
+    public void chiFina() {
         String unicode = "‍ᡂ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4462,7 +4463,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiIsolFvs1() throws Exception {
+    public void chiIsolFvs1() {
         String unicode = "ᡂ";
         String result = convert(unicode);
         String expected = "";
@@ -4470,7 +4471,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiInitFvs1() throws Exception {
+    public void chiInitFvs1() {
         String unicode = "ᡂ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4478,7 +4479,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiMediFvs1() throws Exception {
+    public void chiMediFvs1() {
         String unicode = "‍ᡂ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4486,7 +4487,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiFinaFvs1() throws Exception {
+    public void chiFinaFvs1() {
         String unicode = "‍ᡂ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4494,7 +4495,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiIsolFvs2() throws Exception {
+    public void chiIsolFvs2() {
         String unicode = "ᡂ";
         String result = convert(unicode);
         String expected = "";
@@ -4502,7 +4503,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiInitFvs2() throws Exception {
+    public void chiInitFvs2() {
         String unicode = "ᡂ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4510,7 +4511,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiMediFvs2() throws Exception {
+    public void chiMediFvs2() {
         String unicode = "‍ᡂ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4518,7 +4519,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiFinaFvs2() throws Exception {
+    public void chiFinaFvs2() {
         String unicode = "‍ᡂ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4526,7 +4527,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiIsolFvs3() throws Exception {
+    public void chiIsolFvs3() {
         String unicode = "ᡂ";
         String result = convert(unicode);
         String expected = "";
@@ -4534,7 +4535,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiInitFvs3() throws Exception {
+    public void chiInitFvs3() {
         String unicode = "ᡂ‍";
         String result = convert(unicode);
         String expected = "" + "\u200D"; 
@@ -4542,7 +4543,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiMediFvs3() throws Exception {
+    public void chiMediFvs3() {
         String unicode = "‍ᡂ‍";
         String result = convert(unicode);
         String expected = "\u200D" + "" + "\u200D";
@@ -4550,7 +4551,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chiFinaFvs3() throws Exception {
+    public void chiFinaFvs3() {
         String unicode = "‍ᡂ";
         String result = convert(unicode);
         String expected = "\u200D" + "";
@@ -4570,7 +4571,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
 
     @Test
-    public void bichigWord() throws Exception {
+    public void bichigWord() {
         String unicode = "ᠪᠢᠴᠢᠭ"; // bichig
         String result = convert(unicode);
         String expected = "\uE2C1\uE27F\uE317\uE27E\uE2E8";
@@ -4578,7 +4579,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void egeshigWord() throws Exception {
+    public void egeshigWord() {
         String unicode = "ᠡᠭᠡᠰᠢᠭ ᠢᠨᠦ"; // EGESIG (NNBSP) INU
         String result = convert(unicode);
         String expected = "\uE271\uE2EB\uE277\uE301\uE27E\uE2E8 \uE27A\uE2B9\uE2A3";
@@ -4586,7 +4587,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bujigWord() throws Exception {
+    public void bujigWord() {
         String unicode = "ᠪᠦᠵᠢᠭ ᠢ ᠪᠡᠨ ᠶᠦᠭᠡᠨ"; // BUJIG (NNBSP) I (NNBSP) BEN (NNBSP) YUGEN
         String result = convert(unicode);
         String expected = "\uE2C2\uE2AA\uE31D\uE27E\uE2E8 \uE282 \uE2C1\uE277\uE2B5 \uE31E\uE2AB\uE2EB\uE277\uE2B5";
@@ -4594,7 +4595,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chirigWord() throws Exception {
+    public void chirigWord() {
         String unicode = "ᠴᠢᠷᠢᠭ ᠮᠠᠨᠢ"; // CHIRIG (NNBSP) MANI
         String result = convert(unicode);
         String expected = "\uE315\uE27E\uE327\uE27E\uE2E8 \uE2F1\uE26C\uE2B7\uE27B";
@@ -4602,7 +4603,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void egchiWord() throws Exception {
+    public void egchiWord() {
         String unicode = "ᠡᠭᠴᠡ"; // EGCHI
         String result = convert(unicode);
         String expected = "\uE271\uE2F0\uE317\uE273";
@@ -4610,7 +4611,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qugjimWord() throws Exception {
+    public void qugjimWord() {
         String unicode = "ᠬᠦᠭᠵᠢᠮ ᠳᠦᠷ ᠢᠶᠡᠨ ᠳᠡᠭᠡᠨ"; // QUGJIM (NNBSP) DUR (NNBSP) IYEN (NNBSP) DEGEN
         String result = convert(unicode);
         String expected = "\uE2D4\uE2AA\uE2F0\uE31D\uE27E\uE2F3 \uE310\uE2AB\uE325 \uE280\uE321\uE276\uE2B5 \uE310\uE276\uE2EB\uE277\uE2B5";
@@ -4618,7 +4619,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void buridgelWord() throws Exception {
+    public void buridgelWord() {
         String unicode = "ᠪᠦᠷᠢᠳᠭᠡᠯ ᠢᠶᠡᠨ"; // BURIDGEL (NNBSP) IYEN
         String result = convert(unicode);
         String expected = "\uE2C2\uE2AA\uE327\uE27E\uE314\uE2EB\uE277\uE2F9 \uE280\uE321\uE276\uE2B5";
@@ -4626,7 +4627,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sedqilWord() throws Exception {
+    public void sedqilWord() {
         String unicode = "ᠰᠡᠳᠬᠢᠯ ᠮᠢᠨᠢ"; // SEDQIL (NNBSP) MINI
         String result = convert(unicode);
         String expected = "\uE2FD\uE276\uE314\uE2DA\uE27F\uE2F9 \uE2F1\uE27E\uE2B7\uE27B";
@@ -4634,7 +4635,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uiledburiWord() throws Exception {
+    public void uiledburiWord() {
         String unicode = "ᠦᠢᠯᠡᠳᠪᠦᠷᠢ ᠳᠦ"; // UILEDBURI (NNBSP) DU
         String result = convert(unicode);
         String expected = "\uE2A2\uE27E\uE2FA\uE276\uE314\uE2C6\uE2AC\uE327\uE27B \uE310\uE2A3";
@@ -4642,7 +4643,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void jeligudqenWord() throws Exception {
+    public void jeligudqenWord() {
         String unicode = "ᠵᠡᠯᠢᠭᠦᠳᠬᠡᠨ ᠦ"; // JELIGUDQEN (NNBSP) U
         String result = convert(unicode);
         String expected = "\uE31A\uE276\uE2FA\uE27E\uE2ED\uE2AC\uE314\uE2DA\uE277\uE2B5 \uE2A3";
@@ -4650,7 +4651,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void manggalWord() throws Exception {
+    public void manggalWord() {
         String unicode = "ᠮᠠᠩᠭᠠᠯ ᠳᠤᠷ ᠢᠶᠠᠨ ᠳᠠᠭᠠᠨ"; // MANGGAL (NNBSP) DUR (NNBSP) IYAN (NNBSP) DAGAN
         String result = convert(unicode);
         String expected = "\uE2F1\uE26C\uE2BC\uE2EA\uE26C\uE2F9 \uE310\uE291\uE325 \uE280\uE321\uE26C\uE2B5 \uE310\uE26C\uE2EA\uE26C\uE2B5";
@@ -4658,7 +4659,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dengWord() throws Exception {
+    public void dengWord() {
         String unicode = "ᠳ᠋ᠦᠩ ᠢ"; // D(FVS1)UNG (NNBSP) I
         String result = convert(unicode);
         String expected = "\uE310\uE2A9\uE2BB \uE282";
@@ -4666,7 +4667,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sodnamWord() throws Exception {
+    public void sodnamWord() {
         String unicode = "ᠰᠣᠳᠨᠠᠮ ᠠᠴᠠ ᠪᠠᠨ ᠠᠴᠠᠭᠠᠨ"; // SODNAM (NNBSP) ACHA (NNBSP) BAN (NNBSP) ACHAGAN
         String result = convert(unicode);
         String expected = "\uE2FE\uE289\uE314\uE2B7\uE26C\uE2F3 \uE267\uE317\uE268 \uE2C1\uE26D\uE2B5 \uE267\uE317\uE26C\uE2EA\uE26C\uE2B5";
@@ -4674,7 +4675,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void lhagbaWord() throws Exception {
+    public void lhagbaWord() {
         String unicode = "ᡀᠠᠭᠪᠠ ᠯᠤᠭ᠎ᠠ"; // LHAGBA (NNBSP) LUG(MVS)A
         String result = convert(unicode);
         String expected = "\uE34B\uE26C\uE2EE\uE2C5\uE26B \uE2F8\uE291\uE2E9\uE26A";
@@ -4682,7 +4683,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chebegmedWord() throws Exception {
+    public void chebegmedWord() {
         String unicode = "ᠴᠡᠪᠡᠭᠮᠡᠳ ᠯᠦᠭᠡ"; // CHEBEGMED (NNBSP) LUGE
         String result = convert(unicode);
         String expected = "\uE315\uE276\uE2C5\uE277\uE2EB\uE2F6\uE276\uE311 \uE2F8\uE2AB\uE2EB\uE275";
@@ -4690,7 +4691,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tsementWord() throws Exception {
+    public void tsementWord() {
         String unicode = "ᠼᠧᠮᠧᠨᠲ ᠲᠠᠶᠢᠭᠠᠨ"; // TSEMENT (NNBSP) TAYIGAN
         String result = convert(unicode);
         String expected = "\uE33F\uE2B0\uE2F4\uE2B0\uE2BA\uE30A \uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
@@ -4698,7 +4699,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uniyeWord() throws Exception {
+    public void uniyeWord() {
         String unicode = "ᠦᠨᠢᠶ᠎ᠡ ᠲᠡᠶᠢᠭᠡᠨ"; // UNIY(MVS)E (NNBSP) TEYIGEN
         String result = convert(unicode);
         String expected = "\uE2A2\uE2B7\uE27E\uE31F\uE274 \uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
@@ -4706,7 +4707,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qoyinaWord() throws Exception {
+    public void qoyinaWord() {
         String unicode = "ᠬᠣᠶᠢᠨ᠎ᠠ"; // QOYIN(MVS)A
         String result = convert(unicode);
         String expected = "\uE2D2\uE289\uE321\uE27E\uE2B6\uE26A";
@@ -4714,7 +4715,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void angnaWord() throws Exception {
+    public void angnaWord() {
         String unicode = "ᠠᠩᠨ᠎ᠠ"; // ANGN(MVS)A
         String result = convert(unicode);
         String expected = "\uE266\uE2BE\uE2B6\uE26A";
@@ -4722,7 +4723,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chinggaWord() throws Exception {
+    public void chinggaWord() {
         String unicode = "ᠴᠢᠩᠭ᠎ᠠ"; // CHINGG(MVS)A
         String result = convert(unicode);
         String expected = "\uE315\uE27E\uE2BC\uE2E9\uE26A";
@@ -4730,7 +4731,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chingalaquWord() throws Exception {
+    public void chingalaquWord() {
         String unicode = "ᠴᠢᠩᠭᠠᠯᠠᠬᠤ"; // CHINGGALAQU
         String result = convert(unicode);
         String expected = "\uE315\uE27E\uE2BC\uE2EA\uE26C\uE2FA\uE26C\uE2DC\uE28D";
@@ -4738,7 +4739,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void daljiygsanWord() throws Exception {
+    public void daljiygsanWord() {
         String unicode = "ᠳᠠᠯᠵᠢᠶᠭᠰᠠᠨ"; // DALJIYGSAN
         String result = convert(unicode);
         String expected = "\uE30E\uE26C\uE2FB\uE31D\uE27E\uE321\uE2EE\uE301\uE26C\uE2B5";
@@ -4746,7 +4747,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ilbigchiWord() throws Exception {
+    public void ilbigchiWord() {
         String unicode = "ᠢᠯᠪᠢᠭᠴᠢ"; // ILBIGCHI
         String result = convert(unicode);
         String expected = "\uE27A\uE2FB\uE2C5\uE27F\uE2F0\uE317\uE27B";
@@ -4754,7 +4755,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bichigchiWord() throws Exception {
+    public void bichigchiWord() {
         String unicode = "ᠪᠢᠴᠢᠭᠴᠢ"; // BICHIGCHI
         String result = convert(unicode);
         String expected = "\uE2C1\uE27F\uE317\uE27E\uE2F0\uE317\uE27B";
@@ -4762,7 +4763,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sigsiglequWord() throws Exception {
+    public void sigsiglequWord() {
         String unicode = "ᠰᠢᠭᠰᠢᠭᠯᠡᠬᠦ"; // SIGSIGLEQU
         String result = convert(unicode);
         String expected = "\uE2FD\uE27E\uE2EB\uE301\uE27E\uE2EB\uE2FC\uE276\uE2DD\uE2A7";
@@ -4770,7 +4771,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void diglimsigsenWord() throws Exception {
+    public void diglimsigsenWord() {
         String unicode = "ᠳᠢᠭᠯᠢᠮᠰᠢᠭᠰᠡᠨ"; // DIGLIMSIGSEN
         String result = convert(unicode);
         String expected = "\uE30E\uE27E\uE2EB\uE2FC\uE27E\uE2F4\uE301\uE27E\uE2EB\uE301\uE276\uE2B5";
@@ -4778,7 +4779,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chigigligWord() throws Exception {
+    public void chigigligWord() {
         String unicode = "ᠴᠢᠭᠢᠭᠯᠢᠭ"; // CHIGIGLIG
         String result = convert(unicode);
         String expected = "\uE315\uE27E\uE2EB\uE27F\uE2EB\uE2FC\uE27E\uE2E8";
@@ -4786,7 +4787,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void monggeWord() throws Exception {
+    public void monggeWord() {
         String unicode = "ᠮᠥᠩᠭᠡ"; // MONGGE
         String result = convert(unicode);
         String expected = "\uE2F2\uE29C\uE2BD\uE2EB\uE275";
@@ -4794,7 +4795,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kinoWord() throws Exception {
+    public void kinoWord() {
         String unicode = "ᠺᠢᠨᠣ᠋"; // KINO(FVS1)
         String result = convert(unicode);
         String expected = "\uE333\uE27F\uE2B9\uE286";
@@ -4802,7 +4803,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bayigulquWord() throws Exception {
+    public void bayigulquWord() {
         String unicode = "ᠪᠠᠶᠢᠭᠤᠯᠬᠤ"; // BAYIGULQU
         String result = convert(unicode);
         String expected = "\uE2C1\uE26D\uE321\uE27E\uE2EC\uE291\uE2FA\uE2DC\uE28D";
@@ -4810,7 +4811,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gregWord() throws Exception {
+    public void gregWord() {
         String unicode = "ᠭᠷᠧᠭ"; // GREG
         String result = convert(unicode);
         String expected = "\uE2E3\uE327\uE2B0\uE2E8";
@@ -4818,7 +4819,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void motorWord() throws Exception {
+    public void motorWord() {
         String unicode = "ᠮᠣᠲ᠋ᠣᠷ"; // MOT(FVS1)OR
         String result = convert(unicode);
         String expected = "\uE2F2\uE289\uE30D\uE289\uE325";
@@ -4826,7 +4827,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void neigemligWord() throws Exception {
+    public void neigemligWord() {
         String unicode = "ᠨᠡᠶᠢᠭᠡᠮᠯᠢᠭ"; // NEYIGEMLIG
         String result = convert(unicode);
         String expected = "\uE2B1\uE276\uE321\uE27E\uE2EB\uE277\uE2F5\uE2FA\uE27E\uE2E8";
@@ -4834,7 +4835,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void mongolWord() throws Exception {
+    public void mongolWord() {
         String unicode = "ᠮᠣᠩᠭᠣᠯ"; // MONGGOL
         String result = convert(unicode);
         String expected = "\uE2F2\uE289\uE2BC\uE2EC\uE289\uE2F9";
@@ -4842,7 +4843,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yatugaWord() throws Exception {
+    public void yatugaWord() {
         String unicode = "ᠶᠠᠲᠤᠭ᠎ᠠ"; // YATUG(MVS)A
         String result = convert(unicode);
         String expected = "\uE31E\uE26C\uE30B\uE291\uE2E9\uE26A";
@@ -4850,7 +4851,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void olaganaWord() throws Exception {
+    public void olaganaWord() {
         String unicode = "ᠤᠯᠠᠭᠠᠨ᠎ᠠ"; // OLAGAN(MVS)A
         String result = convert(unicode);
         String expected = "\uE28C\uE2FA\uE26C\uE2EA\uE26C\uE2B6\uE26A";
@@ -4858,7 +4859,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bichiglequWord() throws Exception {
+    public void bichiglequWord() {
         String unicode = "ᠪᠢᠴᠢᠭᠯᠡᠬᠦ"; // BICHIGLEQU
         String result = convert(unicode);
         String expected = "\uE2C1\uE27F\uE317\uE27E\uE2EB\uE2FC\uE276\uE2DD\uE2A7";
@@ -4866,7 +4867,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void programWord() throws Exception {
+    public void programWord() {
         String unicode = "ᠫᠷᠣᠭ᠍ᠷᠠᠮ"; // PROG(FVS3)RAM
         String result = convert(unicode);
         String expected = "\uE2C8\uE326\uE289\uE2EF\uE327\uE26C\uE2F3";
@@ -4874,7 +4875,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void kartWord() throws Exception {
+    public void kartWord() {
         String unicode = "ᠺᠠᠷᠲ"; // KART
         String result = convert(unicode);
         String expected = "\uE333\uE26D\uE326\uE30A";
@@ -4882,7 +4883,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dungnelteWord() throws Exception {
+    public void dungnelteWord() {
         String unicode = "ᠳ᠋ᠦᠩᠨᠡᠯᠲᠡ"; // D(FVS1)UNGNELTE
         String result = convert(unicode);
         String expected = "\uE310\uE2A9\uE2BC\uE2B7\uE276\uE2FA\uE30B\uE273";
@@ -4890,7 +4891,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void gramWord() throws Exception {
+    public void gramWord() {
         String unicode = "ᠭᠷᠠᠮ"; // GRAM
         String result = convert(unicode);
         String expected = "\uE2E3\uE327\uE26C\uE2F3";
@@ -4898,23 +4899,23 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void minggaWord() throws Exception {
+    public void minggaWord() {
         String unicode = "ᠮᠢᠩᠭ᠎ᠠ"; // MINGG(MVS)A
         String result = convert(unicode);
         String expected = "\uE2F1\uE27E\uE2BC\uE2E9\uE26A";
         assertEquals(expected, result);
     }
 
-    @Test
-    public void mingganWord() throws Exception {
-        String unicode = "ᠮᠢᠩᠭ᠎ᠠᠨ"; // MINGG(MVS)AN
-        String result = convert(unicode);
-        String expected = "\uE2F1\uE27E\uE2BC\uE2EA\uE26C\uE2B5";
-        assertEquals(expected, result);
-    }
+//    @Test
+//    public void mingganWord() {
+//        String unicode = "ᠮᠢᠩᠭ᠎ᠠᠨ"; // MINGG(MVS)AN
+//        String result = convert(unicode);
+//        String expected = "\uE2F1\uE27E\uE2BC\uE2EA\uE26C\uE2B5";
+//        assertEquals(expected, result);
+//    }
 
     @Test
-    public void naimaWord() throws Exception {
+    public void naimaWord() {
         String unicode = "ᠨᠠ\u200Dᠢᠮᠠ"; // NA(ZWJ)IMA
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\u200D\uE27E\uE2F5\uE268";
@@ -4922,7 +4923,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void naimaWordMenksoftVersion() throws Exception {
+    public void naimaWordMenksoftVersion() {
         String unicode = "ᠨᠠᠢ\u180Cᠮᠠ"; // NAI(FVS2)MA (not defined in Unicode 10.0)
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\uE27E\uE2F5\uE268";
@@ -4930,7 +4931,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void naijaWord() throws Exception {
+    public void naijaWord() {
         String unicode = "ᠨᠠᠢᠵᠠ"; // NAIJA
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\uE281\uE31D\uE268";
@@ -4938,7 +4939,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nayijaWord() throws Exception {
+    public void nayijaWord() {
         String unicode = "ᠨᠠᠶᠢᠵᠠ"; // NAYIJA
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\uE321\uE27E\uE31D\uE268";
@@ -4946,7 +4947,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bainaWord() throws Exception {
+    public void bainaWord() {
         String unicode = "ᠪᠠᠢᠨ᠎ᠠ"; // BAIN(MVS)A
         String result = convert(unicode);
         String expected = "\uE2C1\uE26D\uE281\uE2B6\uE26A";
@@ -4954,7 +4955,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bayinaWord() throws Exception {
+    public void bayinaWord() {
         String unicode = "ᠪᠠᠶᠢᠨ᠎ᠠ"; // BAYIN(MVS)A
         String result = convert(unicode);
         String expected = "\uE2C1\uE26D\uE321\uE27E\uE2B6\uE26A";
@@ -4962,7 +4963,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void baiinaWord() throws Exception {
+    public void baiinaWord() {
         String unicode = "ᠪᠠᠢᠢᠨ᠎ᠠ"; // BAIIN(MVS)A
         String result = convert(unicode);
         String expected = "\uE2C1\uE26D\uE27E\uE27E\uE2B6\uE26A";
@@ -4970,7 +4971,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void saihanWord() throws Exception {
+    public void saihanWord() {
         String unicode = "ᠰᠠᠶᠢᠬᠠᠨ"; // SAYIHAN
         String result = convert(unicode);
         String expected = "\uE2FD\uE26C\uE321\uE27E\uE2D8\uE26C\uE2B5";
@@ -4978,7 +4979,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sayihanWord() throws Exception {
+    public void sayihanWord() {
         String unicode = "ᠰᠠᠶ\u180Bᠢᠬᠠᠨ"; // SAY(FVS1)IHAN
         String result = convert(unicode);
         String expected = "\uE2FD\uE26C\uE320\uE27E\uE2D8\uE26C\uE2B5";
@@ -4986,7 +4987,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sayiWord() throws Exception {
+    public void sayiWord() {
         String unicode = "ᠰᠠᠶ\u180Bᠢ"; // SAY(FVS1)I
         String result = convert(unicode);
         String expected = "\uE2FD\uE26C\uE320\uE27B";
@@ -4994,7 +4995,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void taiWord() throws Exception {
+    public void taiWord() {
         String unicode = "ᠲᠠᠢ"; // TAI
         String result = convert(unicode);
         String expected = "\uE308\uE26C\uE27B";
@@ -5003,7 +5004,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
     // no longer supporting
     //@Test
-    //public void tayiWord() throws Exception {
+    //public void tayiWord() {
     //    String unicode = "ᠲᠠᠶᠢ"; // TAYI
     //    String result = convert(unicode);
     //    String expected = "\uE308\uE26C\uE27B";
@@ -5011,7 +5012,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     //}
 
     @Test
-    public void namayiWord() throws Exception {
+    public void namayiWord() {
         String unicode = "ᠨᠠᠮᠠᠶᠢ"; // NAMAYI
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\uE2F4\uE26C\uE321\uE27B";
@@ -5019,7 +5020,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void eyimuWord() throws Exception {
+    public void eyimuWord() {
         String unicode = "ᠡᠶᠢᠮᠦ"; // EYIMU
         String result = convert(unicode);
         String expected = "\uE271\uE321\uE27E\uE2F5\uE2A3";
@@ -5027,7 +5028,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void soyolWord() throws Exception {
+    public void soyolWord() {
         String unicode = "ᠰᠣᠶᠣᠯ"; // SOYOL
         String result = convert(unicode);
         String expected = "\uE2FE\uE289\uE320\uE289\uE2F9";
@@ -5035,7 +5036,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void buuWord() throws Exception {
+    public void buuWord() {
         String unicode = "ᠪᠦᠦ"; // BUU
         String result = convert(unicode);
         String expected = "\uE2C2\uE2AC\uE2A3";
@@ -5043,7 +5044,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void quuWord() throws Exception {
+    public void quuWord() {
         String unicode = "ᠬᠦᠦ"; // QUU
         String result = convert(unicode);
         String expected = "\uE2D4\uE2AA\uE2A3";
@@ -5051,7 +5052,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qeuqenWord() throws Exception {
+    public void qeuqenWord() {
         String unicode = "ᠬᠡᠦᠬᠡᠳ"; // QEUQEN
         String result = convert(unicode);
         String expected = "\uE2D0\uE277\uE2AB\uE2DA\uE277\uE311";
@@ -5059,7 +5060,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qeduyinWord() throws Exception {
+    public void qeduyinWord() {
         String unicode = "ᠬᠡᠳᠦᠶᠢᠨ"; // QEDUYIN
         String result = convert(unicode);
         String expected = "\uE2D0\uE277\uE313\uE2AB\uE321\uE27E\uE2B5";
@@ -5067,7 +5068,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void qeduinWord() throws Exception {
+    public void qeduinWord() {
         String unicode = "ᠬᠡᠳᠦᠢᠨ"; // QEDUIN
         String result = convert(unicode);
         String expected = "\uE2D0\uE277\uE313\uE2AB\uE281\uE2B5";
@@ -5075,7 +5076,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void anggliWord() throws Exception {
+    public void anggliWord() {
         String unicode = "ᠠᠩᠭᠯᠢ"; // ANGGLI
         String result = convert(unicode);
         String expected = "\uE266\uE2BD\uE2EB\uE2FC\uE27B";
@@ -5083,7 +5084,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void asiglajuWord() throws Exception {
+    public void asiglajuWord() {
         String unicode = "ᠠᠰᠢᠭᠯᠠᠵᠤ"; // ASIGLAJU
         String result = convert(unicode);
         String expected = "\uE266\uE301\uE27E\uE2EE\uE2FA\uE26C\uE31D\uE28D";
@@ -5091,7 +5092,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void narangerelWord() throws Exception {
+    public void narangerelWord() {
         String unicode = "ᠨᠠᠷᠠᠨᠭᠡᠷᠡᠯ"; // NARANGEREL
         String result = convert(unicode);
         String expected = "\uE2B1\uE26C\uE327\uE26C\uE2B8\uE2EB\uE277\uE327\uE276\uE2F9";
@@ -5099,7 +5100,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void cholmonodoWord() throws Exception {
+    public void cholmonodoWord() {
         String unicode = "ᠴᠣᠯᠮᠣᠨ\u200Dᠣ᠋ᠳᠣ"; // CHOLMON(ZWJ)O(FVS1)DO
         String result = convert(unicode);
         String expected = "\uE315\uE289\uE2FB\uE2F5\uE289\uE2BA\u200D\uE288\uE313\uE285";
@@ -5107,7 +5108,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void cholmonodo2Word() throws Exception {
+    public void cholmonodo2Word() {
         String unicode = "ᠴᠣᠯᠮᠣᠨᠣ᠋ᠳᠣ"; // CHOLMONO(FVS1)DO
         String result = convert(unicode);
         String expected = "\uE315\uE289\uE2FB\uE2F5\uE289\uE2BA\uE288\uE313\uE285";
@@ -5115,7 +5116,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void bayanunderWord() throws Exception {
+    public void bayanunderWord() {
         String unicode = "ᠪᠠᠶᠠᠨ\u200Dᠦ᠌ᠨᠳᠦᠷ"; // BAYAN(ZWJ)U(FVS1)NDUR
         String result = convert(unicode);
         String expected = "\uE2C1\uE26D\uE320\uE26C\uE2BA\u200D\uE2A8\uE2B8\uE313\uE2AB\uE325";
@@ -5123,7 +5124,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
 //    @Test
-//    public void bayanunder2Word() throws Exception {
+//    public void bayanunder2Word() {
 //        String unicode = "ᠪᠠᠶᠠᠨᠦ᠌ᠨᠳᠦᠷ"; // BAYANU(FVS1)NDUR
 //        String result = convert(unicode);
 //        String expected = "\uE2C1\uE26D\uE320\uE26C\uE2BA\uE2A8\uE2B8\uE313\uE2AB\uE325";
@@ -5131,7 +5132,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 //    }
 
     @Test
-    public void sodobiligWord() throws Exception {
+    public void sodobiligWord() {
         String unicode = "ᠰᠣᠳᠣᠪᠢᠯᠢᠭ᠌"; // SODOBILIG(FVS2)
         String result = convert(unicode);
         String expected = "\uE2FE\uE289\uE313\uE289\uE2C5\uE27F\uE2FA\uE27E\uE2E8";
@@ -5139,7 +5140,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void anggilumchechegWord() throws Exception {
+    public void anggilumchechegWord() {
         String unicode = "ᠠᠩᠭᠢᠯᠤᠮᠴᠡᠴᠡᠭ"; // ANGGILUMCHECHEG
         String result = convert(unicode);
         String expected = "\uE266\uE2BD\uE2EB\uE27F\uE2FB\uE291\uE2F5\uE317\uE276\uE317\uE276\uE2E8";
@@ -5147,7 +5148,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void chechegmaWord() throws Exception {
+    public void chechegmaWord() {
         String unicode = "ᠴᠡᠴᠡᠭᠮ᠎ᠡ"; // CHECHEGM(MVS)A
         String result = convert(unicode);
         String expected = "\uE315\uE276\uE317\uE276\uE2F0\uE2F3\uE274";
@@ -5156,7 +5157,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
 
     @Test
-    public void sigDefaultWord() throws Exception {
+    public void sigDefaultWord() {
         String unicode = "ᠰᠢᠭ"; // SIG
         String result = convert(unicode);
         String expected = "\uE2FD\uE27E\uE2E8";
@@ -5164,7 +5165,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void sigSpecifiedWord() throws Exception {
+    public void sigSpecifiedWord() {
         String unicode = "ᠰᠢᠭ᠋"; // SIG(FVS1)
         String result = convert(unicode);
         String expected = "\uE2FD\uE27E\uE2E7";
@@ -5176,7 +5177,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
 
     @Test
-    public void yinSuffix() throws Exception {
+    public void yinSuffix() {
         String unicode = " ᠶᠢᠨ"; //
         String result = convert(unicode);
         String expected = " \uE321\uE27E\uE2B5";
@@ -5184,7 +5185,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void unSuffix() throws Exception {
+    public void unSuffix() {
         String unicode = " ᠤᠨ"; //
         String result = convert(unicode);
         String expected = " \uE292\uE2B5";
@@ -5192,7 +5193,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uenSuffix() throws Exception {
+    public void uenSuffix() {
         String unicode = " ᠦᠨ"; //
         String result = convert(unicode);
         String expected = " \uE2AC\uE2B5";
@@ -5200,7 +5201,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uSuffix() throws Exception {
+    public void uSuffix() {
         String unicode = " ᠤ"; //
         String result = convert(unicode);
         String expected = " \uE28D";
@@ -5208,7 +5209,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueSuffix() throws Exception {
+    public void ueSuffix() {
         String unicode = " ᠦ"; //
         String result = convert(unicode);
         String expected = " \uE2A3";
@@ -5216,7 +5217,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iSuffix() throws Exception {
+    public void iSuffix() {
         String unicode = " ᠢ"; //
         String result = convert(unicode);
         String expected = " \uE282";
@@ -5224,7 +5225,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yiSuffix() throws Exception {
+    public void yiSuffix() {
         String unicode = " ᠶᠢ"; //
         String result = convert(unicode);
         String expected = " \uE321\uE27B";
@@ -5232,7 +5233,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void duSuffix() throws Exception {
+    public void duSuffix() {
         String unicode = " ᠳᠤ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE28D";
@@ -5240,7 +5241,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void dueSuffix() throws Exception {
+    public void dueSuffix() {
         String unicode = " ᠳᠦ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE2A3";
@@ -5248,7 +5249,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tuSuffix() throws Exception {
+    public void tuSuffix() {
         String unicode = " ᠲᠤ"; //
         String result = convert(unicode);
         String expected = " \uE309\uE28D";
@@ -5256,7 +5257,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tueSuffix() throws Exception {
+    public void tueSuffix() {
         String unicode = " ᠲᠦ"; //
         String result = convert(unicode);
         String expected = " \uE309\uE2A3";
@@ -5264,7 +5265,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void durSuffix() throws Exception {
+    public void durSuffix() {
         String unicode = " ᠳᠤᠷ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE291\uE325";
@@ -5272,7 +5273,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void duerSuffix() throws Exception {
+    public void duerSuffix() {
         String unicode = " ᠳᠦᠷ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE2AB\uE325";
@@ -5280,7 +5281,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void turSuffix() throws Exception {
+    public void turSuffix() {
         String unicode = " ᠲᠤᠷ"; //
         String result = convert(unicode);
         String expected = " \uE309\uE291\uE325";
@@ -5288,7 +5289,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tuerSuffix() throws Exception {
+    public void tuerSuffix() {
         String unicode = " ᠲᠦᠷ"; //
         String result = convert(unicode);
         String expected = " \uE309\uE2AB\uE325";
@@ -5296,7 +5297,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void daqiSuffix() throws Exception {
+    public void daqiSuffix() {
         String unicode = " ᠳᠠᠬᠢ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE26C\uE2DA\uE27C";
@@ -5304,7 +5305,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void deqiSuffix() throws Exception {
+    public void deqiSuffix() {
         String unicode = " ᠳᠡᠬᠢ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE276\uE2DA\uE27C";
@@ -5312,7 +5313,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void achaSuffix() throws Exception {
+    public void achaSuffix() {
         String unicode = " ᠠᠴᠠ"; //
         String result = convert(unicode);
         String expected = " \uE267\uE317\uE268";
@@ -5320,7 +5321,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void echeSuffix() throws Exception {
+    public void echeSuffix() {
         String unicode = " ᠡᠴᠡ"; //
         String result = convert(unicode);
         String expected = " \uE271\uE317\uE273";
@@ -5328,7 +5329,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void barSuffix() throws Exception {
+    public void barSuffix() {
         String unicode = " ᠪᠠᠷ"; //
         String result = convert(unicode);
         String expected = " \uE2C1\uE26D\uE325";
@@ -5336,7 +5337,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void berSuffix() throws Exception {
+    public void berSuffix() {
         String unicode = " ᠪᠡᠷ"; //
         String result = convert(unicode);
         String expected = " \uE2C1\uE277\uE325";
@@ -5344,7 +5345,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iyarSuffix() throws Exception {
+    public void iyarSuffix() {
         String unicode = " ᠢᠶᠠᠷ"; //
         String result = convert(unicode);
         String expected = " \uE280\uE321\uE26C\uE325";
@@ -5352,7 +5353,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iyerSuffix() throws Exception {
+    public void iyerSuffix() {
         String unicode = " ᠢᠶᠡᠷ"; //
         String result = convert(unicode);
         String expected = " \uE280\uE321\uE276\uE325";
@@ -5360,7 +5361,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void taiSuffix() throws Exception {
+    public void taiSuffix() {
         String unicode = " ᠲᠠᠢ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE26C\uE27B";
@@ -5369,7 +5370,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
     // no longer supporting this
     //@Test
-    //public void tayiSuffix() throws Exception {
+    //public void tayiSuffix() {
     //    String unicode = " ᠲᠠᠶᠢ"; //
     //    String result = convert(unicode);
     //    String expected = " \uE308\uE26C\uE27B";
@@ -5377,7 +5378,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     //}
 
     @Test
-    public void teiSuffix() throws Exception {
+    public void teiSuffix() {
         String unicode = " ᠲᠡᠢ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE276\uE27B";
@@ -5386,7 +5387,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
 
     // no longer supporting this
     //@Test
-    //public void teyiSuffix() throws Exception {
+    //public void teyiSuffix() {
     //    String unicode = " ᠲᠡᠶᠢ"; //
     //    String result = convert(unicode);
     //    String expected = " \uE308\uE276\uE27B";
@@ -5394,7 +5395,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     //}
 
     @Test
-    public void lugaSuffix() throws Exception {
+    public void lugaSuffix() {
         String unicode = " ᠯᠤᠭ᠎ᠠ"; //
         String result = convert(unicode);
         String expected = " \uE2F8\uE291\uE2E9\uE26A";
@@ -5402,7 +5403,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void luegeSuffix() throws Exception {
+    public void luegeSuffix() {
         String unicode = " ᠯᠦᠭᠡ"; //
         String result = convert(unicode);
         String expected = " \uE2F8\uE2AB\uE2EB\uE275";
@@ -5410,7 +5411,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void banSuffix() throws Exception {
+    public void banSuffix() {
         String unicode = " ᠪᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE2C1\uE26D\uE2B5";
@@ -5418,7 +5419,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void benSuffix() throws Exception {
+    public void benSuffix() {
         String unicode = " ᠪᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE2C1\uE277\uE2B5";
@@ -5426,7 +5427,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iyanSuffix() throws Exception {
+    public void iyanSuffix() {
         String unicode = " ᠢᠶᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE280\uE321\uE26C\uE2B5";
@@ -5434,7 +5435,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void iyenSuffix() throws Exception {
+    public void iyenSuffix() {
         String unicode = " ᠢᠶᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE280\uE321\uE276\uE2B5";
@@ -5442,7 +5443,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yuganSuffix() throws Exception {
+    public void yuganSuffix() {
         String unicode = " ᠶᠤᠭᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE31E\uE291\uE2EA\uE26C\uE2B5";
@@ -5450,7 +5451,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void yuegenSuffix() throws Exception {
+    public void yuegenSuffix() {
         String unicode = " ᠶᠦᠭᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE31E\uE2AB\uE2EB\uE277\uE2B5";
@@ -5458,7 +5459,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void daganSuffix() throws Exception {
+    public void daganSuffix() {
         String unicode = " ᠳᠠᠭᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE26C\uE2EA\uE26C\uE2B5";
@@ -5466,7 +5467,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void degenSuffix() throws Exception {
+    public void degenSuffix() {
         String unicode = " ᠳᠡᠭᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE276\uE2EB\uE277\uE2B5";
@@ -5474,7 +5475,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void taganSuffix() throws Exception {
+    public void taganSuffix() {
         String unicode = " ᠲᠠᠭᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE26C\uE2EA\uE26C\uE2B5";
@@ -5482,7 +5483,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tegenSuffix() throws Exception {
+    public void tegenSuffix() {
         String unicode = " ᠲᠡᠭᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE276\uE2EB\uE277\uE2B5";
@@ -5490,7 +5491,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void achaganSuffix() throws Exception {
+    public void achaganSuffix() {
         String unicode = " ᠠᠴᠠᠭᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE267\uE317\uE26C\uE2EA\uE26C\uE2B5";
@@ -5498,7 +5499,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void echegenSuffix() throws Exception {
+    public void echegenSuffix() {
         String unicode = " ᠡᠴᠡᠭᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE271\uE317\uE276\uE2EB\uE277\uE2B5";
@@ -5506,7 +5507,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void taiganSuffix() throws Exception {
+    public void taiganSuffix() {
         String unicode = " ᠲᠠᠢᠭᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE26C\uE281\uE2EA\uE26C\uE2B5";
@@ -5514,7 +5515,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void tayiganSuffix() throws Exception {
+    public void tayiganSuffix() {
         String unicode = " ᠲᠠᠶᠢᠭᠠᠨ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
@@ -5522,7 +5523,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void teigenSuffix() throws Exception {
+    public void teigenSuffix() {
         String unicode = " ᠲᠡᠢᠭᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE276\uE281\uE2EB\uE277\uE2B5";
@@ -5530,7 +5531,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void teyigenSuffix() throws Exception {
+    public void teyigenSuffix() {
         String unicode = " ᠲᠡᠶᠢᠭᠡᠨ"; //
         String result = convert(unicode);
         String expected = " \uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
@@ -5538,7 +5539,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void udSuffix() throws Exception {
+    public void udSuffix() {
         String unicode = " ᠤᠳ"; //
         String result = convert(unicode);
         String expected = " \uE292\uE311";
@@ -5546,7 +5547,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uedSuffix() throws Exception {
+    public void uedSuffix() {
         String unicode = " ᠦᠳ"; //
         String result = convert(unicode);
         String expected = " \uE2AC\uE311";
@@ -5554,7 +5555,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nugudSuffix() throws Exception {
+    public void nugudSuffix() {
         String unicode = " ᠨᠤᠭᠤᠳ"; //
         String result = convert(unicode);
         String expected = " \uE2B3\uE291\uE2EC\uE291\uE311";
@@ -5562,7 +5563,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nueguedSuffix() throws Exception {
+    public void nueguedSuffix() {
         String unicode = " ᠨᠦᠭᠦᠳ"; //
         String result = convert(unicode);
         String expected = " \uE2B3\uE2AB\uE2ED\uE2AC\uE311";
@@ -5570,7 +5571,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void narSuffix() throws Exception {
+    public void narSuffix() {
         String unicode = " ᠨᠠᠷ"; //
         String result = convert(unicode);
         String expected = " \uE2B1\uE26C\uE325";
@@ -5578,7 +5579,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void nerSuffix() throws Exception {
+    public void nerSuffix() {
         String unicode = " ᠨᠡᠷ"; //
         String result = convert(unicode);
         String expected = " \uE2B1\uE276\uE325";
@@ -5586,7 +5587,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void uuSuffix() throws Exception {
+    public void uuSuffix() {
         String unicode = " ᠤᠤ"; //
         String result = convert(unicode);
         String expected = " \uE292\uE28D";
@@ -5594,7 +5595,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void ueueSuffix() throws Exception {
+    public void ueueSuffix() {
         String unicode = " ᠦᠦ"; //
         String result = convert(unicode);
         String expected = " \uE2AC\uE2A3";
@@ -5602,7 +5603,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void daSuffix() throws Exception {
+    public void daSuffix() {
         String unicode = " ᠳᠠ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE268";
@@ -5610,7 +5611,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void deSuffix() throws Exception {
+    public void deSuffix() {
         String unicode = " ᠳᠡ"; //
         String result = convert(unicode);
         String expected = " \uE310\uE273";
@@ -5620,7 +5621,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     // TodoScript tests
 
     @Test
-    public void todoAllTodoCode() throws Exception {
+    public void todoAllTodoCode() {
         String unicode = "ᡐᡆᡑᡆ"; //
         String result = convert(unicode);
         String expected = "ᡐᡆᡑᡆ";
@@ -5628,7 +5629,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void todoMixedTodoMongolCode() throws Exception {
+    public void todoMixedTodoMongolCode() {
         String unicode = "ᠰᡇᠷᡋᡇᠯᡓᡅᠯᠠᡋᠠ"; //
         String result = convert(unicode);
         String expected = "ᠰᡇᠷᡋᡇᠯᡓᡅᠯᠠᡋᠠ";
@@ -5636,7 +5637,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void todoZWJ() throws Exception {
+    public void todoZWJ() {
         String unicode = "\u200Dᡐ\u200D"; //
         String result = convert(unicode);
         String expected = "\u200Dᡐ\u200D";
@@ -5644,7 +5645,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void todoFVS() throws Exception {
+    public void todoFVS() {
         String unicode = "\u1847\u180B";
         String result = convert(unicode);
         String expected = "\u1847\u180B";
@@ -5652,7 +5653,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
     @Test
-    public void todoZwjFvsMix() throws Exception {
+    public void todoZwjFvsMix() {
         String unicode = "\u200D\u1847\u180B\u200D";
         String result = convert(unicode);
         String expected = "\u200D\u1847\u180B\u200D";

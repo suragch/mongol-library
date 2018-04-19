@@ -458,7 +458,8 @@ public class MongolEditText extends MongolTextView {
 
     private Rect getCursorPath(int cursorLocation) {
 
-        int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(cursorLocation);
+        //int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(cursorLocation);
+        int glyphStart = cursorLocation;
         int line = super.mLayout.getLineForOffset(glyphStart);
         int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
         int x = super.mLayout.getLineBottom(line) + getPaddingLeft();
@@ -482,18 +483,18 @@ public class MongolEditText extends MongolTextView {
         }
 
         // start cursor (could use the getCursorRect() function below)
-        int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(start);
-        int lineStart = super.mLayout.getLineForOffset(glyphStart);
+        //int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(start);
+        int lineStart = super.mLayout.getLineForOffset(start);
         int widthStart = super.mLayout.getLineDescent(lineStart) - super.mLayout.getLineAscent(lineStart);
         int xStart = super.mLayout.getLineBottom(lineStart) + getPaddingLeft();
-        int yStart = (int) super.mLayout.getVertical(glyphStart) + getPaddingTop();
+        int yStart = (int) super.mLayout.getVertical(start) + getPaddingTop();
 
         // end cursor
-        int glyphEnd = mTextStorage.getGlyphIndexForUnicodeIndex(end);
-        int lineEnd = super.mLayout.getLineForOffset(glyphEnd);
+        //int glyphEnd = mTextStorage.getGlyphIndexForUnicodeIndex(end);
+        int lineEnd = super.mLayout.getLineForOffset(end);
         int widthEnd = super.mLayout.getLineDescent(lineEnd) - super.mLayout.getLineAscent(lineEnd);
         int xEnd = super.mLayout.getLineBottom(lineEnd) + getPaddingLeft();
-        int yEnd = (int) super.mLayout.getVertical(glyphEnd) + getPaddingTop();
+        int yEnd = (int) super.mLayout.getVertical(end) + getPaddingTop();
 
         // create the selection path
         mCursorPath.reset();
@@ -519,11 +520,11 @@ public class MongolEditText extends MongolTextView {
     }
 
     private Rect getCursorRect(int unicodeIndex) {
-        int glyphIndex = mTextStorage.getGlyphIndexForUnicodeIndex(unicodeIndex);
-        int line = super.mLayout.getLineForOffset(glyphIndex);
+        //int glyphIndex = mTextStorage.getGlyphIndexForUnicodeIndex(unicodeIndex);
+        int line = super.mLayout.getLineForOffset(unicodeIndex);
         int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
         int x = super.mLayout.getLineBottom(line) + getPaddingLeft();
-        int y = (int) super.mLayout.getVertical(glyphIndex) + getPaddingTop();
+        int y = (int) super.mLayout.getVertical(unicodeIndex) + getPaddingTop();
 
         return new Rect(x, y, x + width, y + CURSOR_WIDTH);
     }

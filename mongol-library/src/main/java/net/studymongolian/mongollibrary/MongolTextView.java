@@ -340,7 +340,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         // so the index conversion happens here
         y = convertToLocalVerticalCoordinate(y);
         int glyphOffset = getLayout().getOffsetForVertical(line, y);
-        return mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
+        return glyphOffset;
+        //return mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
     }
 
     float convertToLocalVerticalCoordinate(float y) {

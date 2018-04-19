@@ -42,6 +42,34 @@ public final class MongolCode {
     }
 
     public String unicodeToMenksoft(CharSequence inputString) {
+        String menksoftWithUnicodeControlChars = unicodeToMenksoftSameIndex(inputString);
+        if (menksoftWithUnicodeControlChars == null) return null;
+        return stripControlChars(menksoftWithUnicodeControlChars);
+    }
+
+    private String stripControlChars(String stringWithControlChars) {
+        int length = stringWithControlChars.length();
+        StringBuilder strippedString = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            if (!shouldBeStripped(stringWithControlChars, i)) {
+                strippedString.append(stringWithControlChars.charAt(i));
+            }
+        }
+        return strippedString.toString();
+    }
+
+    private boolean shouldBeStripped(String text, int index) {
+        char thisChar = text.charAt(index);
+        // not a control character
+        if (thisChar != Uni.MVS && !isFVS(thisChar)) return false;
+        // is a control character
+        if (index == 0) return true;
+        // old Menksoft code context doesn't need Unicode control characters
+        // But keep control characters in the context of Unicode text
+        return (isMenksoft(text.charAt(index - 1)));
+    }
+
+    String unicodeToMenksoftSameIndex(CharSequence inputString) {
 
         if (inputString == null) return null;
         if (inputString.length() == 0) return "";
@@ -583,12 +611,12 @@ public final class MongolCode {
         return character >= Uni.TODO_LONG_VOWEL_SIGN && character <= Uni.TODO_DZA;
     }
 
-    // not MVS, FVS
-    static boolean isRenderedGlyph(char character) {
-        //return !(character == Uni.MVS || isFVS(character)
-        //        || character == Uni.ZWJ || character == Uni.ZWNJ);
-        return !(character == Uni.MVS || isFVS(character));
-    }
+//    // not MVS, FVS
+//    static boolean isRenderedGlyph(char character) {
+//        //return !(character == Uni.MVS || isFVS(character)
+//        //        || character == Uni.ZWJ || character == Uni.ZWNJ);
+//        return !(character == Uni.MVS || isFVS(character));
+//    }
 
     private static boolean isBGDRS(char character) {
         // This method is not used internally, only for external use.
@@ -1443,13 +1471,14 @@ public final class MongolCode {
                 char charAbove;
                 char currentChar = inputWord.charAt(i);
 
-                if (isFVS(currentChar)) {
-                    fvs = currentChar;
-                    continue;
-                } else if (currentChar == Uni.MVS && i != length - 2) {
-                    // ignore MVS in all but second to last position
-                    continue;
-                }
+//                if (isFVS(currentChar)) {
+//                    fvs = currentChar;
+//                    renderedWord.insert(0, )
+//                    continue;
+//                } else if (currentChar == Uni.MVS && i != length - 2) {
+//                    // ignore MVS in all but second to last position
+//                    continue;
+//                }
 
                 // get the location
                 updateLocation(i, charBelow);
@@ -1577,11 +1606,19 @@ public final class MongolCode {
                         handleZWNJ(renderedWord);
                         break;
                     default:
-                        // any extra MVS characters are ignored
 
                         // don't render TodoScript words, the font can do that
                         if (isTodoAlphabet(currentChar))
                             return this.inputWord.toString();
+
+                        // keep MVS or any other control characters in order to keep
+                        // a one-to-one glyph to unicode index
+                        renderedWord.insert(0, currentChar);
+
+                        if (isFVS(currentChar)) {
+                            fvs = currentChar;
+                            continue;
+                        }
                 }
 
                 charBelow = currentChar;
