@@ -563,16 +563,25 @@ public final class MongolCode {
         return (character >= Uni.FVS1 && character <= Uni.FVS3);
     }
 
+    /**
+     * Test if character is Mongolian
+     * Sibe/Manchu/Aligali are currently undefined (may or may not be handled in the future)
+     * @param character
+     * @return true if Mongolian/TodoScript letters, MVS, FVS1-3, NIRUGU, ZWJ, ZWNJ, (but not NNBS)
+     */
     public static boolean isMongolian(char character) {
-        // Mongolian letters, MVS, FVS1-3, NIRUGU, ZWJ, ZWNJ, (but not NNBS)
-        return ((character >= Uni.A && character <= Uni.CHI)
+        return (isBasicMongolianAlphabet(character) || isTodoAlphabet(character)
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS)
                 || character == Uni.ZWJ|| character == Uni.ZWNJ);
     }
 
-//    public static boolean isMongolianOrNNBS(char character) {
-//        return isMongolian(character) || character == Uni.NNBS;
-//    }
+    private static boolean isBasicMongolianAlphabet(char character) {
+        return character >= Uni.A && character <= Uni.CHI;
+    }
+
+    private static boolean isTodoAlphabet(char character) {
+        return character >= Uni.TODO_LONG_VOWEL_SIGN && character <= Uni.TODO_DZA;
+    }
 
     // not MVS, FVS
     static boolean isRenderedGlyph(char character) {
@@ -866,6 +875,34 @@ public final class MongolCode {
         public static final char LHA = '\u1840';
         public static final char ZHI = '\u1841';
         public static final char CHI = '\u1842';
+
+        // Unicode TodoScript Mongolian Values
+        public static final char TODO_LONG_VOWEL_SIGN = '\u1843';
+        public static final char TODO_E = '\u1844';
+        public static final char TODO_I = '\u1845';
+        public static final char TODO_O = '\u1846';
+        public static final char TODO_U = '\u1847';
+        public static final char TODO_OE = '\u1848';
+        public static final char TODO_UE = '\u1849';
+        public static final char TODO_ANG = '\u184A';
+        public static final char TODO_BA = '\u184B';
+        public static final char TODO_PA = '\u184C';
+        public static final char TODO_QA = '\u184D';
+        public static final char TODO_GA = '\u184E';
+        public static final char TODO_MA = '\u184F';
+        public static final char TODO_TA = '\u1850';
+        public static final char TODO_DA = '\u1851';
+        public static final char TODO_CHA = '\u1852';
+        public static final char TODO_JA = '\u1853';
+        public static final char TODO_TSA = '\u1854';
+        public static final char TODO_YA = '\u1855';
+        public static final char TODO_WA = '\u1856';
+        public static final char TODO_KA = '\u1857';
+        public static final char TODO_GAA = '\u1858';
+        public static final char TODO_HAA = '\u1859';
+        public static final char TODO_JIA = '\u185A';
+        public static final char TODO_NIA = '\u185B';
+        public static final char TODO_DZA = '\u185C';
     }
 
     public class Suffix {
@@ -1541,6 +1578,10 @@ public final class MongolCode {
                         break;
                     default:
                         // any extra MVS characters are ignored
+
+                        // don't render TodoScript words, the font can do that
+                        if (isTodoAlphabet(currentChar))
+                            return this.inputWord.toString();
                 }
 
                 charBelow = currentChar;

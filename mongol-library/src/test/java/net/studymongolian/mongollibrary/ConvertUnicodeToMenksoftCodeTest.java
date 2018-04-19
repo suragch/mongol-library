@@ -5617,5 +5617,46 @@ public class ConvertUnicodeToMenksoftCodeTest {
         assertEquals(expected, result);
     }
 
+    // TodoScript tests
+
+    @Test
+    public void todoAllTodoCode() throws Exception {
+        String unicode = "ᡐᡆᡑᡆ"; //
+        String result = convert(unicode);
+        String expected = "ᡐᡆᡑᡆ";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void todoMixedTodoMongolCode() throws Exception {
+        String unicode = "ᠰᡇᠷᡋᡇᠯᡓᡅᠯᠠᡋᠠ"; //
+        String result = convert(unicode);
+        String expected = "ᠰᡇᠷᡋᡇᠯᡓᡅᠯᠠᡋᠠ";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void todoZWJ() throws Exception {
+        String unicode = "\u200Dᡐ\u200D"; //
+        String result = convert(unicode);
+        String expected = "\u200Dᡐ\u200D";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void todoFVS() throws Exception {
+        String unicode = "\u1847\u180B";
+        String result = convert(unicode);
+        String expected = "\u1847\u180B";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void todoZwjFvsMix() throws Exception {
+        String unicode = "\u200D\u1847\u180B\u200D";
+        String result = convert(unicode);
+        String expected = "\u200D\u1847\u180B\u200D";
+        assertEquals(expected, result);
+    }
 
 }

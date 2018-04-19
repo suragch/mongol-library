@@ -4,18 +4,33 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical">
 
+
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <net.studymongolian.mongollibrary.MongolEditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:background="@android:color/white"
+            />
+
+    </HorizontalScrollView>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Test"
         android:onClick="onButtonClick"/>
 
-    <net.studymongolian.mongollibrary.MongolEditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:padding="10dp"
-        android:background="@android:color/white"
-        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Copy"
+        android:onClick="onCopyButtonClick"/>
+
 
 </LinearLayout>

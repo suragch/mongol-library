@@ -34,8 +34,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolAlertDialog");
         apiDemos.add("Horizontal RecyclerView");
         apiDemos.add("Custom System Keyboard");
-        //apiDemos.add("Testing");
-
+        apiDemos.add("Testing");
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvApiDemoList);
@@ -108,10 +107,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 intent = new Intent(this, CustomSystemKeyboardActivity.class);
                 startActivity(intent);
                 break;
-//            case 13: // Testing
-//                intent = new Intent(this, TestingActivity.class);
-//                startActivity(intent);
-//                break;
+            case 13: // Testing
+                intent = new Intent(this, TestingActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }
