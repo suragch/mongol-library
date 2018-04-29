@@ -27,14 +27,12 @@ public class TestingActivity extends AppCompatActivity {
 
 
     public void onButtonClick(View view) {
-        String unicode = "ᡐᡆᡑᡆ ᡋᡅᡔᡅᡎ";
-        String unicode2 = "ᡆᠷᡆᠨᡅ ᠨᠠᡏᡅᡅ᠋ᠠ ᡍᡆᠷᡆᡃᠠ";
-        String unicode3 = "\uE2C1\uE26D\uE281\uE2B6᠎\uE26A \uE2C1\uE26D\uE321\uE27E\uE2B6᠎\uE26A \uE2B1\uE26C\uE27E\u180C\uE2F5\uE268";
-        String unicode4 = "\uE2B1\uE26C\uE27E\u180C\uE2F5\uE268";
 
-        String text = MongolCode.INSTANCE.unicodeToMenksoft(unicode);
-
-        editText.setText(unicode);
+        if (editText.isCursorVisible()) {
+            editText.setCursorVisible(false);
+        } else {
+            editText.setCursorVisible(true);
+        }
     }
 
     public void onCopyButtonClick(View view) {

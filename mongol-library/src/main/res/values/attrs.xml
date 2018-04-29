@@ -13,6 +13,10 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="MongolEditText">
+        <attr name="cursorVisible" format="boolean"/>
+    </declare-styleable>
+
     <declare-styleable name="MongolLabel">
         <attr name="text"/>
         <attr name="textSize"/>

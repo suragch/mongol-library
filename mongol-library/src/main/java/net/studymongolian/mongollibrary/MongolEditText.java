@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,6 +10,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
@@ -27,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
+import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 
@@ -36,10 +39,9 @@ import java.util.ArrayList;
 public class MongolEditText extends MongolTextView {
 
     private Paint mCursorPaint;
-    // TODO either make this a local variable or allow users to change it
     private boolean mCursorVisible = true;
-    private boolean mIsBlinkOn = true;
-    private Handler mBlinkHandler;
+    private Blink mBlink;
+    private long mShowCursor;
     static final int BLINK = 500;
     static final int CURSOR_WIDTH = 2; // dp
     private static final int CURSOR_DEFAULT_COLOR = Color.parseColor("#4ac3ff"); // blue
@@ -57,19 +59,25 @@ public class MongolEditText extends MongolTextView {
 
 
     public MongolEditText(Context context) {
-        this(context, null);
+        super(context);
+        init(context, null, 0);
     }
 
     public MongolEditText(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context, attrs, 0);
     }
 
     public MongolEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context, attrs, defStyleAttr);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MongolEditText, defStyleAttr, 0);
+        mCursorVisible = a.getBoolean(R.styleable.MongolEditText_cursorVisible, true);
+        a.recycle();
 
         int textLength = super.getText().length();
         setSelection(textLength); // TODO why did I do this?
@@ -104,8 +112,6 @@ public class MongolEditText extends MongolTextView {
                 MongolEditText.super.mLayout.setText(mTextStorage.getGlyphText());
                 invalidate();
                 requestLayout();
-
-                startBlinking();
 
                 // notify any listeners the user may have added
                 if (mListeners != null && mListeners.size() > 0) {
@@ -179,9 +185,6 @@ public class MongolEditText extends MongolTextView {
         // for communication to the MongolInputMethodManager
         this.mMongolImeManager = null;
 
-        // init the handler for the blinking cursor
-        mBlinkHandler = new Handler();
-
         // gestures
         mDetector = new GestureDetector(getContext(), new MyListener());
     }
@@ -205,11 +208,18 @@ public class MongolEditText extends MongolTextView {
         imm.showSoftInput(this, InputMethodManager.SHOW_FORCED);
     }
 
+    private void hideSystemKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm == null) return;
+        imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
+    }
+
     //////////// custom listener to send events to the MongolInputMethodManager //////////////////
 
     public interface OnMongolEditTextInputEventListener {
         void updateSelection(View view, int selStart, int selEnd,
-                                    int candidatesStart, int candidatesEnd);
+                             int candidatesStart, int candidatesEnd);
     }
 
     private OnMongolEditTextInputEventListener mMongolImeManager;
@@ -227,10 +237,9 @@ public class MongolEditText extends MongolTextView {
 
     @Override
     protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        mShowCursor = SystemClock.uptimeMillis();
         if (focused) {
-            startBlinking();
-        } else {
-            stopBlinking();
+            makeBlink();
         }
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
     }
@@ -317,7 +326,7 @@ public class MongolEditText extends MongolTextView {
             if (mAllowSystemKeyboard) {
                 showSystemKeyboard();
             }
-            startBlinking();
+            makeBlink();
 
             return super.onSingleTapConfirmed(e);
         }
@@ -362,9 +371,6 @@ public class MongolEditText extends MongolTextView {
             // if there is no selection then return
             int start = getSelectionStart();
             int end = getSelectionEnd();
-
-            //int xDown = (int) e1.getX();
-            //int yDown = (int) e1.getY();
 
             int xMove = (int) e2.getX();
             int yMove = (int) e2.getY();
@@ -451,19 +457,21 @@ public class MongolEditText extends MongolTextView {
         super.onDraw(canvas);
 
         // draw the blinking cursor on top
-        if (!mIsBlinkOn && start == end) {
+        if (start == end && blinkShouldBeOn()) {
             canvas.drawRect(getCursorPath(start), mCursorPaint);
         }
     }
 
-    private Rect getCursorPath(int cursorLocation) {
+    private boolean blinkShouldBeOn() {
+        if (!mCursorVisible || !isFocused()) return false;
+        return (SystemClock.uptimeMillis() - mShowCursor) % (2 * BLINK) < BLINK;
+    }
 
-        //int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(cursorLocation);
-        int glyphStart = cursorLocation;
-        int line = super.mLayout.getLineForOffset(glyphStart);
+    private Rect getCursorPath(int cursorLocation) {
+        int line = super.mLayout.getLineForOffset(cursorLocation);
         int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
         int x = super.mLayout.getLineBottom(line) + getPaddingLeft();
-        int y = (int) super.mLayout.getVertical(glyphStart) + getPaddingTop();
+        int y = (int) super.mLayout.getVertical(cursorLocation) + getPaddingTop();
 
         int cursorWidthPX = (int) (CURSOR_WIDTH * getResources().getDisplayMetrics().density);
         return new Rect(x, y, x + width, y + cursorWidthPX);
@@ -482,15 +490,13 @@ public class MongolEditText extends MongolTextView {
             end = unicodeStart;
         }
 
-        // start cursor (could use the getCursorRect() function below)
-        //int glyphStart = mTextStorage.getGlyphIndexForUnicodeIndex(start);
+        // start cursor
         int lineStart = super.mLayout.getLineForOffset(start);
         int widthStart = super.mLayout.getLineDescent(lineStart) - super.mLayout.getLineAscent(lineStart);
         int xStart = super.mLayout.getLineBottom(lineStart) + getPaddingLeft();
         int yStart = (int) super.mLayout.getVertical(start) + getPaddingTop();
 
         // end cursor
-        //int glyphEnd = mTextStorage.getGlyphIndexForUnicodeIndex(end);
         int lineEnd = super.mLayout.getLineForOffset(end);
         int widthEnd = super.mLayout.getLineDescent(lineEnd) - super.mLayout.getLineAscent(lineEnd);
         int xEnd = super.mLayout.getLineBottom(lineEnd) + getPaddingLeft();
@@ -520,7 +526,6 @@ public class MongolEditText extends MongolTextView {
     }
 
     private Rect getCursorRect(int unicodeIndex) {
-        //int glyphIndex = mTextStorage.getGlyphIndexForUnicodeIndex(unicodeIndex);
         int line = super.mLayout.getLineForOffset(unicodeIndex);
         int width = super.mLayout.getLineDescent(line) - super.mLayout.getLineAscent(line);
         int x = super.mLayout.getLineBottom(line) + getPaddingLeft();
@@ -529,44 +534,21 @@ public class MongolEditText extends MongolTextView {
         return new Rect(x, y, x + width, y + CURSOR_WIDTH);
     }
 
-    private boolean shouldBlink() {
-        if (!mCursorVisible || !isFocused()) return false;
-        final int start = getSelectionStart();
-        if (start < 0) return false;
-        final int end = getSelectionEnd();
-        return end >= 0 && start == end;
-    }
-
-    // FIXME How do I cancel this when user leaves app? Check logging
-    // alternate the view's background color
-    Runnable mBlink = new Runnable() {
-        @Override
-        public void run() {
-
-            mBlinkHandler.removeCallbacks(mBlink);
-
-            if (shouldBlink()) {
-                if (mLayout != null && !mLayout.getNeedsLineUpdate()) {
-                    //Log.i("TAG", "mBlink: ");
-                    MongolEditText.this.invalidateCursorPath();
-                    mIsBlinkOn = !mIsBlinkOn;
-                }
-
-                mBlinkHandler.postDelayed(mBlink, BLINK);
+    private void makeBlink() {
+        if (!mCursorVisible) {
+            if (mBlink != null) {
+                mBlink.removeCallbacks(mBlink);
             }
+
+            return;
         }
-    };
 
-    // start the task
-    void startBlinking() {
-        mBlink.run();
+        if (mBlink == null)
+            mBlink = new Blink(this);
+
+        mBlink.removeCallbacks(mBlink);
+        mBlink.postAtTime(mBlink, mShowCursor + BLINK);
     }
-
-    // stop running the task, cancel any current code that is waiting to run
-    void stopBlinking() {
-        mBlinkHandler.removeCallbacks(mBlink);
-    }
-
 
     private void invalidateCursorPath() {
         int start = getSelectionStart();
@@ -575,32 +557,21 @@ public class MongolEditText extends MongolTextView {
         invalidate(cursorPath.left, cursorPath.top, cursorPath.right, cursorPath.bottom);
     }
 
+    public void setCursorVisible(boolean visible) {
+        mCursorVisible = visible;
+        invalidateCursorPath();
 
-    @Override
-    public void onScreenStateChanged(int screenState) {
-        switch (screenState) {
-            case View.SCREEN_STATE_ON:
-                startBlinking();
-                break;
-            case View.SCREEN_STATE_OFF:
-                stopBlinking();
-                break;
+        if (visible) {
+            makeBlink();
+        } else if (mBlink != null) {
+            mBlink.removeCallbacks(mBlink);
         }
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        startBlinking();
+    public boolean isCursorVisible() {
+        return mCursorVisible;
     }
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        stopBlinking();
-    }
-
-    // FIXME a crash is happening here for NPE getting length
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -677,6 +648,27 @@ public class MongolEditText extends MongolTextView {
                     Selection.setSelection(mTextStorage, ss.selStart, ss.selEnd);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+
+        if (hasWindowFocus) {
+            if (mBlink != null) {
+                mBlink.uncancel();
+
+                if (isFocused()) {
+                    mShowCursor = SystemClock.uptimeMillis();
+                    makeBlink();
+                }
+            }
+        } else {
+            if (mBlink != null) {
+                mBlink.cancel();
+            }
+            hideSystemKeyboard();
         }
     }
 
@@ -797,5 +789,48 @@ public class MongolEditText extends MongolTextView {
     private boolean isNonIntermediateSelectionSpan(final Spanned text, final Object span) {
         return (Selection.SELECTION_START == span || Selection.SELECTION_END == span)
                 && (text.getSpanFlags(span) & Spanned.SPAN_INTERMEDIATE) == 0;
+    }
+
+    private static class Blink extends Handler implements Runnable {
+        private WeakReference<MongolEditText> mView;
+        private boolean mCancelled;
+
+        Blink(MongolEditText v) {
+            mView = new WeakReference<>(v);
+        }
+
+        public void run() {
+            if (mCancelled) {
+                return;
+            }
+
+            removeCallbacks(Blink.this);
+
+            MongolEditText met = mView.get();
+
+            if (met != null && met.isFocused()) {
+                int st = met.getSelectionStart();
+                int en = met.getSelectionEnd();
+
+                if (st == en && st >= 0 && en >= 0) {
+                    if (met.mLayout != null) {
+                        met.invalidateCursorPath();
+                    }
+
+                    postAtTime(this, SystemClock.uptimeMillis() + BLINK);
+                }
+            }
+        }
+
+        void cancel() {
+            if (!mCancelled) {
+                removeCallbacks(Blink.this);
+                mCancelled = true;
+            }
+        }
+
+        void uncancel() {
+            mCancelled = false;
+        }
     }
 }

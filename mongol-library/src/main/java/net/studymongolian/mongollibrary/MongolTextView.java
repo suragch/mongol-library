@@ -50,16 +50,21 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
 
     public MongolTextView(Context context) {
-        this(context, null);
+        super(context);
+        init(context, null, 0);
     }
 
     public MongolTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context, attrs, 0);
     }
 
     public MongolTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr);
+    }
 
+    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MongolTextView, defStyleAttr, 0);
 
         boolean isEditText = getDefaultEditable();
@@ -77,10 +82,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         a.recycle();
 
         mContext = context;
-        init();
-    }
 
-    private void init() {
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(mTextColor);
@@ -94,8 +96,18 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTextPaint.linkColor = Color.BLUE;
 
         // initialize the layout, but the height still needs to be set
-        final CharSequence text = mTextStorage.getGlyphText();
-        mLayout = new MongolLayout(text, 0, text.length(), mTextPaint, 0, Gravity.TOP, 1, 0, false, Integer.MAX_VALUE);
+        final CharSequence glyphText = mTextStorage.getGlyphText();
+        mLayout = new MongolLayout(
+                glyphText,
+                0,
+                glyphText.length(),
+                mTextPaint,
+                0,
+                Gravity.TOP,
+                1,
+                0,
+                false,
+                Integer.MAX_VALUE);
 
     }
 
