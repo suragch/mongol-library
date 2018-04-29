@@ -11,7 +11,7 @@
 在build.gradle(Module: app)文件里的dependencies中加蒙文控件库
 
 ```java
-implementation 'net.studymongolian:mongol-library:1.1.0'
+implementation 'net.studymongolian:mongol-library:1.3.0'
 ```
 
 ## 3、 自定义键盘布局
