@@ -41,7 +41,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.3.0'
+    implementation 'net.studymongolian:mongol-library:1.3.1'
 }
 ```
 
@@ -615,11 +615,11 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 * [ ] add `MongolToolbar` with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
-* [ ] The vertical punctuation characters shouldn't be rotated.
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 
 #### Version changes 
 
+* `1.3.1`: Fixed `MongolEditText` cursor blinking bug and keyboard keeps showing on exit bug; added CHU suffix to Qwerty keyboard.
 * `1.3.0`: Added support for Todo Script; removed internal glyph index mapping (glyph and unicode text is one-to-one now)
 * `1.2.0`: Fixed system keyboard popup clipping, support for naming keyboards and setting fonts in xml, ability to change keyboard based on editor's `InputType`.
 * `1.1.0`: Added support for making custom system keyboards
@@ -645,12 +645,12 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 ## External links 
 
 * Groups
-    * [Orhon open source community](http://www.openmgl.org/)
     * [Menksoft](http://www.menksoft.com/)
         * [fonts](http://www.menksoft.com/site/alias__menkcms/2805/Default.aspx)
-    * [Inner Mongolia University](http://mglip.com/)
     * [Delehi](http://www.delehi.com)
     * [Almas](http://www.mongolfont.com/en/android/index.html)
+    * [Inner Mongolia University](http://mglip.com/)
+    * [Orhon open source community](http://www.openmgl.org/)
 * Unicode
     * [Unicode: Mongolian block](http://unicode.org/charts/PDF/U1800.pdf)
     * [Mongolian variant forms ](https://r12a.github.io/mongolian-variants/)
@@ -666,5 +666,6 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 * [Demo app](https://github.com/suragch/mongol-library/tree/master/demo-app)
 * [Suryaa](https://github.com/suragch/Suryaa) 
+* [Todo Keyboard](https://github.com/suragch/TodoKeyboard)
 
 If your app uses this library, you can notify me or add it here, especially if it is open source.
