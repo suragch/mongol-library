@@ -21,7 +21,7 @@ public class MongolTextStorageInstrumentedTest {
     // setText
 
     @Test
-    public void setText_nullString() throws Exception {
+    public void setText_nullString() {
         CharSequence unicode = null;
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.getUnicodeText();
@@ -30,7 +30,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void setText_emptyString() throws Exception {
+    public void setText_emptyString() {
         CharSequence unicode = "";
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.getUnicodeText();
@@ -39,7 +39,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void setText_mongolString() throws Exception {
+    public void setText_mongolString() {
         CharSequence unicode = "ᠪᠢᠴᠢᠭ"; // bichig
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.getUnicodeText();
@@ -48,7 +48,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void setText_string() throws Exception {
+    public void setText_string() {
         String unicode = "abc";
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.getUnicodeText();
@@ -59,7 +59,7 @@ public class MongolTextStorageInstrumentedTest {
     // delete
 
     @Test
-    public void delete_everything() throws Exception {
+    public void delete_everything() {
         String unicode = "abc";
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.delete(0, unicode.length());
@@ -68,7 +68,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void delete_lastChar() throws Exception {
+    public void delete_lastChar() {
         String unicode = "abc";
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.delete(unicode.length() - 1, unicode.length());
@@ -77,7 +77,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void delete_firstChar() throws Exception {
+    public void delete_firstChar() {
         String unicode = "abc";
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.delete(0, 1);
@@ -86,7 +86,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void delete_middleChar() throws Exception {
+    public void delete_middleChar() {
         String unicode = "abc";
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.delete(1, 2);
@@ -97,7 +97,7 @@ public class MongolTextStorageInstrumentedTest {
     // insert
 
     @Test
-    public void insert_nothing() throws Exception {
+    public void insert_nothing() {
         String unicode = "abc";
         String insertionString = "";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -107,7 +107,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void insert_atBeginning() throws Exception {
+    public void insert_atBeginning() {
         String unicode = "abc";
         String insertionString = "1";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -117,7 +117,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void insert_atEnd() throws Exception {
+    public void insert_atEnd() {
         String unicode = "abc";
         String insertionString = "1";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -127,7 +127,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void insert_inMiddle() throws Exception {
+    public void insert_inMiddle() {
         String unicode = "abc";
         String insertionString = "1";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -139,7 +139,7 @@ public class MongolTextStorageInstrumentedTest {
     // append
 
     @Test
-    public void append_toEmptyString() throws Exception {
+    public void append_toEmptyString() {
         String unicode = "";
         String appendString = "1";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -149,7 +149,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void append_toNormalString() throws Exception {
+    public void append_toNormalString() {
         String unicode = "abc";
         String appendString = "1";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -161,7 +161,7 @@ public class MongolTextStorageInstrumentedTest {
     // replace
 
     @Test
-    public void replace_partialString() throws Exception {
+    public void replace_partialString() {
         String unicode = "abc";
         String replacementString = "_";
         MongolTextStorage storage = new MongolTextStorage(unicode);
@@ -171,7 +171,7 @@ public class MongolTextStorageInstrumentedTest {
     }
 
     @Test
-    public void replace_partialStringFromPartialString() throws Exception {
+    public void replace_partialStringFromPartialString() {
         String unicode = "abc";
         String replacementString = "123";
         MongolTextStorage storage = new MongolTextStorage(unicode);
