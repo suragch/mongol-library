@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -583,7 +584,22 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.CHI));
+
+        if (!hasCandidatesView()) {
+            candidates.addAll(getSuffixForKeyQ());
+        }
+
         return candidates;
+    }
+
+    private List<PopupKeyCandidate> getSuffixForKeyQ() {
+        List<PopupKeyCandidate> suffixes = new ArrayList<>();
+        if (mKeyboardListener == null) return suffixes;
+        String previousWord = mKeyboardListener.getPreviousMongolWord(true);
+        MongolCode.Gender gender = MongolCode.getWordGender(previousWord);
+        String chu = MongolCode.getSuffixChu(gender);
+        suffixes.add(new PopupKeyCandidate(chu));
+        return suffixes;
     }
 
     private List<PopupKeyCandidate> getCandidatesForW() {

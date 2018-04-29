@@ -785,6 +785,14 @@ public final class MongolCode {
         }
     }
 
+    public static String getSuffixChu(Gender previousWordGender) {
+        if (previousWordGender == Gender.MASCULINE) {
+            return Suffix.CHU;
+        } else {
+            return Suffix.CHUE;
+        }
+    }
+
     // Starts at the end of the word and works up
     // if mixed genders only reports the first one from the bottom
     // returns null if word does not end in a valid Mongolian character
@@ -987,6 +995,8 @@ public final class MongolCode {
         public static final String UEUE = "\u202F\u1826\u1826";
         public static final String DA = "\u202F\u1833\u1820";
         public static final String DE = "\u202F\u1833\u1821";
+        public static final String CHU = "\u202F\u1834\u1824";
+        public static final String CHUE = "\u202F\u1834\u1826";
 
         // TODO should we add others?
         // urugu?
