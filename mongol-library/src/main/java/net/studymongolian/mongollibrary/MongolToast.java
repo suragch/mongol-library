@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrary;
 
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
@@ -38,6 +39,11 @@ public class MongolToast {
 
     public static MongolToast makeText(Context context, CharSequence text, int duration) {
         return new MongolToast(context, text, duration);
+    }
+
+    public static MongolToast makeText(Context context, int resId, int duration)
+            throws Resources.NotFoundException {
+        return makeText(context, context.getResources().getText(resId), duration);
     }
 
     public void show() {

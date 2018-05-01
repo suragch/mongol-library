@@ -31,4 +31,8 @@ public class MongolToastActivity extends AppCompatActivity {
         // or
         // MongolToast.makeText(getApplicationContext(), text, MongolToast.LENGTH_LONG).show();
     }
+
+    public void mongolToastFromXmlClick(View view) {
+        MongolToast.makeText(getApplicationContext(), R.string.xml_string, MongolToast.LENGTH_LONG).show();
+    }
 }
