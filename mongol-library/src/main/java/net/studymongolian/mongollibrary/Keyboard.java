@@ -456,6 +456,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         key.post(new Runnable() {
             @Override
             public void run() {
+                if (popupView == null) return;
                 popupView.updateTouchPosition(xPosition);
             }
         });
