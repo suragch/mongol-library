@@ -128,6 +128,9 @@ public class MongolEditText extends MongolTextView {
                         watcher.afterTextChanged(editable);
                     }
                 }
+                if (isFocused()) {
+                    makeBlink();
+                }
             }
 
 
