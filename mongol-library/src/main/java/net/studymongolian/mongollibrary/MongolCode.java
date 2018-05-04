@@ -8,11 +8,11 @@ package net.studymongolian.mongollibrary;
  * http://unicode.org/charts/PDF/U1800.pdf
  * Deviating from Unicode 10.0 for
  *    - MONGOLIAN LETTER GA first and second form final (matching DS01, needed to
-  *     break context) (So words with only I default to feminine. Menksoft also
-  *     does this.)
+ *     break context) (So words with only I default to feminine. Menksoft also
+ *     does this.)
  *    - MONGOLIAN LETTER I, third medial form. Undefined in Unicode 10. This is a
-  *     single tooth I after a vowel. Needed to break context. Menksoft also
-  *     does this.
+ *     single tooth I after a vowel. Needed to break context. Menksoft also
+ *     does this.
  *
  * The purpose of this class is to render Unicode text into glyphs
  * that can be displayed on all versions of Android. It solves the
@@ -60,13 +60,29 @@ public final class MongolCode {
 
     private boolean shouldBeStripped(String text, int index) {
         char thisChar = text.charAt(index);
-        // not a control character
-        if (thisChar != Uni.MVS && !isFVS(thisChar)) return false;
-        // is a control character
-        if (index == 0) return true;
-        // old Menksoft code context doesn't need Unicode control characters
-        // But keep control characters in the context of Unicode text
-        return (isMenksoft(text.charAt(index - 1)));
+        if (isNonPrintingChar(thisChar)) {
+            // old Menksoft code (in PUA region) context doesn't need
+            // Unicode control characters. But keep control characters
+            // in the context of Unicode text. (This allows font to render
+            // TodoScript text.)
+            return (index != 0 && isPuaChar(text.charAt(index - 1)) ||
+                    index != text.length() - 1 && isPuaChar(text.charAt(index + 1)));
+        }
+        return false;
+    }
+
+    private boolean isPuaChar(char character) {
+        return character >= '\uE000' && character <= '\uF8FF';
+    }
+
+    private boolean isNonPrintingChar(char character) {
+        return character == Uni.MVS ||
+                character == Uni.ZWJ ||
+                character == Uni.ZWNJ ||
+                character == Uni.ZWS ||
+                character == Uni.FVS1 ||
+                character == Uni.FVS2 ||
+                character == Uni.FVS3;
     }
 
     String unicodeToMenksoftSameIndex(CharSequence inputString) {
@@ -594,13 +610,14 @@ public final class MongolCode {
     /**
      * Test if character is Mongolian
      * Sibe/Manchu/Aligali are currently undefined (may or may not be handled in the future)
+     *
      * @param character
      * @return true if Mongolian/TodoScript letters, MVS, FVS1-3, NIRUGU, ZWJ, ZWNJ, (but not NNBS)
      */
     public static boolean isMongolian(char character) {
         return (isBasicMongolianAlphabet(character) || isTodoAlphabet(character)
                 || (character >= Uni.MONGOLIAN_NIRUGU && character <= Uni.MVS)
-                || character == Uni.ZWJ|| character == Uni.ZWNJ);
+                || character == Uni.ZWJ || character == Uni.ZWNJ);
     }
 
     private static boolean isBasicMongolianAlphabet(char character) {
@@ -610,13 +627,6 @@ public final class MongolCode {
     private static boolean isTodoAlphabet(char character) {
         return character >= Uni.TODO_LONG_VOWEL_SIGN && character <= Uni.TODO_DZA;
     }
-
-//    // not MVS, FVS
-//    static boolean isRenderedGlyph(char character) {
-//        //return !(character == Uni.MVS || isFVS(character)
-//        //        || character == Uni.ZWJ || character == Uni.ZWNJ);
-//        return !(character == Uni.MVS || isFVS(character));
-//    }
 
     private static boolean isBGDRS(char character) {
         // This method is not used internally, only for external use.
@@ -802,6 +812,7 @@ public final class MongolCode {
 
     public class Uni {
 
+        public static final char ZWS = '\u200B'; // Zero-width space
         public static final char ZWNJ = '\u200C'; // Zero-width non joiner
         public static final char ZWJ = '\u200D'; // Zero-width joiner
         public static final char NNBS = '\u202F'; // Narrow No-Break Space
@@ -1427,7 +1438,8 @@ public final class MongolCode {
         private char fvs;
         private Shape glyphShapeBelow;
 
-        private MongolWord() {}
+        private MongolWord() {
+        }
 
         MongolWord(CharSequence mongolWord) {
             this.inputWord = mongolWord;
@@ -1610,25 +1622,24 @@ public final class MongolCode {
                         handleNirugu(renderedWord);
                         break;
                     case Uni.ZWJ:
-                        handleZWJ(renderedWord);
-                        break;
                     case Uni.ZWNJ:
-                        handleZWNJ(renderedWord);
+                    case Uni.MVS:
+                        handleNonPrintingChar(renderedWord);
                         break;
+                    case Uni.FVS1:
+                    case Uni.FVS2:
+                    case Uni.FVS3:
+                        handleNonPrintingChar(renderedWord);
+                        fvs = currentChar;
+                        continue;
                     default:
 
                         // don't render TodoScript words, the font can do that
                         if (isTodoAlphabet(currentChar))
                             return this.inputWord.toString();
 
-                        // keep MVS or any other control characters in order to keep
-                        // a one-to-one glyph to unicode index
+                        // catch any other characters and just insert them directly
                         renderedWord.insert(0, currentChar);
-
-                        if (isFVS(currentChar)) {
-                            fvs = currentChar;
-                            continue;
-                        }
                 }
 
                 charBelow = currentChar;
@@ -3072,14 +3083,8 @@ public final class MongolCode {
             glyphShapeBelow = Shape.STEM;
         }
 
-        // Even though ZWJ and ZWNJ are invisible, inserting them into the rendered text in order to
-        // simplify glyph-unicode indexing
-        private void handleZWJ(StringBuilder renderedWord) {
-            renderedWord.insert(0, Uni.ZWJ);
-        }
-
-        private void handleZWNJ(StringBuilder renderedWord) {
-            renderedWord.insert(0, Uni.ZWNJ);
+        private void handleNonPrintingChar(StringBuilder renderedWord) {
+            renderedWord.insert(0, Uni.ZWS);
         }
 
         private boolean needsLongToothU(CharSequence word, int uIndex) {
