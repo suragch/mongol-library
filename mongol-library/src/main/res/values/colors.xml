@@ -3,4 +3,5 @@
     <color name="background_dark">#ff000000</color>
     <color name="bright_foreground_light_disabled">#80000000</color>
     <color name="bright_foreground_light">@color/background_dark</color>
+    <color name="default_ripple_pressed">#80232323</color>
 </resources>

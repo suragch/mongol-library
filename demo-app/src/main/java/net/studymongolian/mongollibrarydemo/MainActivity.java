@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("MongolAlertDialog");
         apiDemos.add("Horizontal RecyclerView");
         apiDemos.add("Custom System Keyboard");
+        apiDemos.add("MongolMenu");
         apiDemos.add("Testing");
 
         // set up the RecyclerView
@@ -107,7 +108,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 intent = new Intent(this, CustomSystemKeyboardActivity.class);
                 startActivity(intent);
                 break;
-            case 13: // Testing
+            case 13: // MongolMenu
+                intent = new Intent(this, MongolMenuActivity.class);
+                startActivity(intent);
+                break;
+            case 14: // Testing
                 intent = new Intent(this, TestingActivity.class);
                 startActivity(intent);
                 break;

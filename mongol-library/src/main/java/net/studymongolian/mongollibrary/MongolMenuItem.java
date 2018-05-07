@@ -1,0 +1,31 @@
+package net.studymongolian.mongollibrary;
+
+
+public class MongolMenuItem {
+
+    private CharSequence title;
+    private int iconResId;
+
+    public MongolMenuItem(CharSequence title, int iconResId) {
+        this.title = title;
+        this.iconResId = iconResId;
+    }
+
+    public MongolMenuItem setTitle(CharSequence title) {
+        this.title = title;
+        return this;
+    }
+
+    public CharSequence getTitle() {
+        return title;
+    }
+
+    public MongolMenuItem setIcon(int iconResId) {
+        this.iconResId = iconResId;
+        return this;
+    }
+
+    public int getIconResId() {
+        return iconResId;
+    }
+}
