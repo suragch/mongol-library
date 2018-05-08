@@ -18,6 +18,8 @@ import net.studymongolian.mongollibrary.MongolToast;
 
 public class MongolMenuActivity extends AppCompatActivity {
 
+    private static final int MARGIN_DP = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +45,18 @@ public class MongolMenuActivity extends AppCompatActivity {
                 int[] location = new int[2];
                 menuButton.getLocationInWindow(location);
                 int gravity = Gravity.TOP | Gravity.RIGHT;
-                int margin = 8;
-                int xOffset = margin;
-                int yOffset = location[1] + margin;
+                int marginPx = convertDpToPx(MARGIN_DP);
+                int yOffset = location[1] + marginPx;
                 MongolMenu menu = getMenu();
-                menu.showAtLocation(menuButton, gravity, xOffset, yOffset);
+                menu.showAtLocation(menuButton, gravity, marginPx, yOffset);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private int convertDpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
     public void onStandardMenuButtonClick(View view) {

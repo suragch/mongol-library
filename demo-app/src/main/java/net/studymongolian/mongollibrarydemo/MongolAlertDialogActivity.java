@@ -48,39 +48,6 @@ public class MongolAlertDialogActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void showMongolAlertClick(View view) {
-        // setup the alert builder
-        MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);
-        builder.setTitle("Title");
-        builder.setMessage("This is a message");
-
-        // add the buttons
-        builder.setPositiveButton("Positive", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MongolAlertDialogActivity.this, "Positive button", Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNeutralButton("Neutral", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MongolAlertDialogActivity.this, "Neutral button", Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton("Negative", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MongolAlertDialogActivity.this, "Negative button", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // create and show the alert dialog
-        MongolAlertDialog dialog = builder.create();
-        dialog.show();
-
-    }
-
-
     public void showMongolAlertZeroButtonClick(View view) {
         // setup the alert builder
         MongolAlertDialog.Builder builder = new MongolAlertDialog.Builder(this);

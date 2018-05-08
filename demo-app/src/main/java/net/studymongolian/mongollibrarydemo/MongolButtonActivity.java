@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.MongolButton;
-import net.studymongolian.mongollibrary.MongolToast;
 
 
 public class MongolButtonActivity extends AppCompatActivity {
@@ -18,7 +17,7 @@ public class MongolButtonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mongol_button);
 
-        mMongolButton = (MongolButton) findViewById(R.id.mongol_button);
+        mMongolButton = findViewById(R.id.mongol_button);
     }
 
     public void normalButtonClick(View view) {

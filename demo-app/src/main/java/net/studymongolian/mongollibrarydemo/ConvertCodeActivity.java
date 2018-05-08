@@ -18,21 +18,17 @@ public class ConvertCodeActivity extends AppCompatActivity {
 
     EditText etCodeWindow;
     MongolCode converter;
-    //Typeface tfMongolFont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_convert_code);
 
-        // initialize renderer
         converter = MongolCode.INSTANCE;
 
-        etCodeWindow = (EditText) findViewById(R.id.etCodeWindow);
-        etCodeWindow.setText("ᠮᠤᠩᠭᠤᠯ"); // Mongol
+        etCodeWindow = findViewById(R.id.etCodeWindow);
+        etCodeWindow.setText("ᠮᠤᠩᠭᠤᠯ");
     }
-
-    // Button click methods
 
     public void unicodeToMenksoftClick(View view) {
         hideKeyboard();
@@ -52,42 +48,22 @@ public class ConvertCodeActivity extends AppCompatActivity {
         etCodeWindow.setTypeface(null, Typeface.NORMAL);
     }
 
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
     public void copyClick(View view) {
-
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if(sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboard.setText(etCodeWindow.getText());
-        } else {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            android.content.ClipData clip = android.content.ClipData.newPlainText("Mongol", etCodeWindow.getText());
-            clipboard.setPrimaryClip(clip);
-        }
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText("Mongol", etCodeWindow.getText());
+        if (clipboard == null) return;
+        clipboard.setPrimaryClip(clip);
     }
 
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
     public void pasteClick(View view) {
 
         CharSequence textToPaste = null;
 
         // get the text from the clipboard manager
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            try {
-                textToPaste = clipboard.getText();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            if (clipboard.getPrimaryClip() != null) {
-                android.content.ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
-                textToPaste = item.getText();
-            }
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            android.content.ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+            textToPaste = item.getText();
         }
 
         // insert the text at the cursor position, or if there is a selection it
@@ -106,6 +82,8 @@ public class ConvertCodeActivity extends AppCompatActivity {
 
     private void hideKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (inputMethodManager == null) return;
+        if (getCurrentFocus() == null) return;
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 

@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_qagan"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -25,7 +24,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_garqag"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -33,7 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_hara"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -41,7 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_scnin"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -49,7 +45,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_hawang"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -57,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_qimed"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -65,7 +59,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_narin"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -73,7 +66,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_mcdcnbar"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -81,7 +73,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_amglang"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -89,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_sidam"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -97,7 +87,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_qingming"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -105,7 +94,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_onqa_hara"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -113,7 +101,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_svgvnag"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -121,7 +108,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_svlbiya"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
         <net.studymongolian.mongollibrary.MongolLabel
@@ -129,7 +115,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="@string/font_name_jclgq"
-            app:textColor="@android:color/white"
             app:textSize="50sp"/>
 
 

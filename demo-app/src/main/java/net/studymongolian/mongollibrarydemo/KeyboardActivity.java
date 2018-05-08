@@ -62,7 +62,6 @@ public class KeyboardActivity extends AppCompatActivity {
         mimm.addEditor(editText);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
-        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
     }
 
     // programmatically loaded keyboards will have the default style

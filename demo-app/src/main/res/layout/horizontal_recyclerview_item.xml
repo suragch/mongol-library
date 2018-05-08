@@ -10,7 +10,6 @@
     <net.studymongolian.mongollibrary.MongolTextView
         android:id="@+id/mongol_textview"
         app:textSize="30sp"
-        app:textColor="@android:color/primary_text_dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

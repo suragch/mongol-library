@@ -57,7 +57,8 @@
             android:label="@string/horizontal_recyclerview_activity_title" />
         <activity
             android:name=".CustomSystemKeyboardActivity"
-            android:label="@string/keyboard_custom_system_activity_title" />
+            android:label="@string/keyboard_custom_system_activity_title"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MongolMenuActivity"
             android:theme="@style/CustomTheme"

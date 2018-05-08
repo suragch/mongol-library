@@ -35,9 +35,9 @@ public class HorizontalRecyclerViewActivity extends AppCompatActivity
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvNumbers);
-        LinearLayoutManager horizontalLayoutManagaer
+        LinearLayoutManager horizontalLayoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(horizontalLayoutManagaer);
+        recyclerView.setLayoutManager(horizontalLayoutManager);
         adapter = new HorizontalRecyclerViewAdapter(this, numbers);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);

@@ -89,13 +89,11 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         renderer = MongolCode.INSTANCE;
 
         // text views
-        tvLabel = (TextView) findViewById(R.id.tvTitle);
-        tvResults = (TextView) findViewById(R.id.tvUnicodeResults);
+        tvLabel = findViewById(R.id.tvTitle);
+        tvResults = findViewById(R.id.tvUnicodeResults);
 
         // set Mongol font
         Typeface tf = MongolFont.get(MongolFont.QAGAN, this);
-        //Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/MQG8F02.ttf");
-        //Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/MenksoftHawang.ttf");
         tvResults.setTypeface(tf);
 
         // Chagaan tologai spinner
@@ -103,7 +101,7 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         viewChoices.add("MVS");
         viewChoices.add("NNBS");
         viewChoices.add("Other");
-        Spinner chagaanTologaiSpinner = (Spinner) findViewById(R.id.spinnerChagaanTolgai);
+        Spinner chagaanTologaiSpinner = findViewById(R.id.spinnerChagaanTolgai);
         ArrayAdapter<String> adapterChagaanTologai = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, viewChoices);
         adapterChagaanTologai.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -112,7 +110,7 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
 
         // Font spinner
         List<String> fontChoices = new ArrayList<>(Arrays.asList(fonts));
-        Spinner fontSpinner = (Spinner) findViewById(R.id.spinnerFont);
+        Spinner fontSpinner = findViewById(R.id.spinnerFont);
         ArrayAdapter<String> adapterFont = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, fontChoices);
         adapterFont.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -124,10 +122,10 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
     // just some extra code to write tests
     private String generateAll() {
         char[] letters = {'\u1820', '\u1821', '\u1822', '\u1823', '\u1824', '\u1825', '\u1826', '\u1827', '\u1828', '\u1829',
-                          '\u182a', '\u182b', '\u182c', '\u182d', '\u182e', '\u182f',
-                          '\u1830', '\u1831', '\u1832', '\u1833', '\u1834', '\u1835', '\u1836', '\u1837', '\u1838', '\u1839',
-                          '\u183a', '\u183b', '\u183c', '\u183d', '\u183e', '\u183f',
-                          '\u1840', '\u1841', '\u1842'};
+                '\u182a', '\u182b', '\u182c', '\u182d', '\u182e', '\u182f',
+                '\u1830', '\u1831', '\u1832', '\u1833', '\u1834', '\u1835', '\u1836', '\u1837', '\u1838', '\u1839',
+                '\u183a', '\u183b', '\u183c', '\u183d', '\u183e', '\u183f',
+                '\u1840', '\u1841', '\u1842'};
         String[] names = {"a", "e", "i", "o", "u", "oe", "ue", "ee", "n", "ng",
                 "b", "p", "q", "g", "m", "l", "s", "sh", "t", "d",
                 "ch", "j", "y", "r", "w", "f", "k", "kh", "ts", "z", "haa", "zr", "lh", "zhi", "chi"};
@@ -208,7 +206,6 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
         String renderedResults = renderer.unicodeToMenksoft(results);
         tvLabel.setText(label);
         tvResults.setText(renderedResults);
-        //tvResults.setText(results);
         //tvResults.setText("IJ");  // FIXME why does this give a Mongolian B with the HAWANG font?
     }
 
@@ -216,8 +213,8 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
 
         String item = String.valueOf(parent.getItemAtPosition(pos));
 
-        int viewid = parent.getId();
-        if (viewid == R.id.spinnerChagaanTolgai) {
+        int viewId = parent.getId();
+        if (viewId == R.id.spinnerChagaanTolgai) {
             int index = Arrays.asList(names).indexOf(item);
             if (index >= 0) {
                 //unicode = characters[index];
@@ -232,7 +229,7 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
             } else if (item.equals("Other")) {
                 updateForOther();
             }
-        } else if (viewid == R.id.spinnerFont) {
+        } else if (viewId == R.id.spinnerFont) {
             String fontChoice;
             switch (item) {
                 case "QAGAN":
@@ -383,25 +380,10 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
 
         // set strings
         setStrings("NNBS", displayString.toString());
-        //tvResults.setText(displayString);
-
-//        String[]lines = displayString.toString().split(System.getProperty("line.separator"));
-//        StringBuilder builder = new StringBuilder();
-//        for(String tmpLine : lines){
-//            if (tmpLine.length() > 0) {
-//                builder.append(tmpLine).append("\n");
-//                builder.append(renderer.unicodeToMenksoft(tmpLine)).append("\n");
-//            }
-//        }
-//
-//        builder.append("end");
     }
 
 
     private void updateForMvs() {
-        // update label
-        //tvLabel.setText("MVS");
-
         // build string
         String space = "  ";
         StringBuilder displayString = new StringBuilder();
@@ -441,7 +423,6 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
 
         // set strings
         setStrings("MVS", displayString.toString());
-        //tvResults.setText(displayString);
     }
 
     private void updateForOther() {
@@ -713,7 +694,6 @@ public class UnicodeActivity extends AppCompatActivity implements AdapterView.On
 
         // set strings
         setStrings("Other", displayString.toString());
-
 
 
         // A file could be specified as an alternate source of test words

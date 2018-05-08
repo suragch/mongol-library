@@ -35,7 +35,6 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
-        mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
 
         // FIXME is this a bug to need to explicitly request focus?
         mongolEditText.requestFocus();

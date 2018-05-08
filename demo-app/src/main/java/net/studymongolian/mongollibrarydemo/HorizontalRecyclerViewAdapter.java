@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrarydemo;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,33 +10,32 @@ import android.view.ViewGroup;
 
 import net.studymongolian.mongollibrary.MongolTextView;
 
-import java.util.Collections;
 import java.util.List;
 
 public class HorizontalRecyclerViewAdapter
         extends RecyclerView.Adapter<HorizontalRecyclerViewAdapter.ViewHolder> {
 
-    private List<String> mNumbers = Collections.emptyList();
+    private List<String> mNumbers;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    public HorizontalRecyclerViewAdapter(Context context, List<String> numbers) {
+    HorizontalRecyclerViewAdapter(Context context, List<String> numbers) {
         this.mInflater = LayoutInflater.from(context);
         this.mNumbers = numbers;
     }
 
     // inflates the row layout from xml when needed
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.horizontal_recyclerview_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     // binds the data to the view and textview in each row
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String number = mNumbers.get(position);
         holder.mongolTextView.setText(number);
     }

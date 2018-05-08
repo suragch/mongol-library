@@ -42,9 +42,9 @@ public final class MongolCode {
     }
 
     public String unicodeToMenksoft(CharSequence inputString) {
-        String menksoftWithUnicodeControlChars = unicodeToMenksoftSameIndex(inputString);
-        if (menksoftWithUnicodeControlChars == null) return null;
-        return stripControlChars(menksoftWithUnicodeControlChars);
+        String menksoftWithSpacingChars = unicodeToMenksoftSameIndex(inputString);
+        if (menksoftWithSpacingChars == null) return null;
+        return stripControlChars(menksoftWithSpacingChars);
     }
 
     private String stripControlChars(String stringWithControlChars) {

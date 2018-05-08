@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 
-import net.studymongolian.mongollibrary.MongolCode;
 import net.studymongolian.mongollibrary.MongolEditText;
 
 
@@ -46,6 +45,7 @@ public class TestingActivity extends AppCompatActivity {
         }
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("label", text);
+        if (clipboard == null) return;
         clipboard.setPrimaryClip(clip);
     }
 }

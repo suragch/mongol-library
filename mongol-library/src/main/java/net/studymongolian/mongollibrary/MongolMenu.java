@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class MongolMenu extends PopupWindow {
 
-    private static final int DEFAULT_ELEVATION = 24;
+    private static final int DEFAULT_ELEVATION_DP = 16;
 
     private List<MongolMenuItem> menuItems;
     private OnMenuItemClickListener mMenuItemClickListener;
@@ -36,36 +37,29 @@ public class MongolMenu extends PopupWindow {
     private MongolMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu() {
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(View contentView) {
         super(contentView);
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(int width, int height) {
         super(width, height);
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(View contentView, int width, int height) {
         super(contentView, width, height);
     }
-
     @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(View contentView, int width, int height, boolean focusable) {
         super(contentView, width, height, focusable);
@@ -74,11 +68,15 @@ public class MongolMenu extends PopupWindow {
     private void init(Context context) {
         mContext = context;
         menuItems = new ArrayList<>();
-        setBackgroundDrawable(null);
+        setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(DEFAULT_ELEVATION);
+            setElevation(convertDpToPx(DEFAULT_ELEVATION_DP));
         }
+    }
+
+    private int convertDpToPx(int dp) {
+        return (int) (dp * mContext.getResources().getDisplayMetrics().density);
     }
 
     public interface OnMenuItemClickListener {
@@ -123,6 +121,7 @@ public class MongolMenu extends PopupWindow {
         setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
+        setOutsideTouchable(true);
     }
 
     private View createContentView() {
