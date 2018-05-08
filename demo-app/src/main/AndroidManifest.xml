@@ -42,7 +42,8 @@
             android:label="@string/keyboard_activity_title" />
         <activity
             android:name=".KeyboardCandidateActivity"
-            android:label="@string/keyboard_candidate_activity_title" />
+            android:label="@string/keyboard_candidate_activity_title"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MongolToastActivity"
             android:label="@string/mongol_toast_activity_title" />

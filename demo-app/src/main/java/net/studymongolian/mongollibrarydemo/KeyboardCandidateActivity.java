@@ -36,8 +36,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
 
-        // FIXME is this a bug to need to explicitly request focus?
-        mongolEditText.requestFocus();
+        // need to also disallow system keyboard in Manifest.xml
+        // android:windowSoftInputMode="stateHidden" // todo make this unnecessary
     }
 
     private void loadKeyboardsFromXml() {

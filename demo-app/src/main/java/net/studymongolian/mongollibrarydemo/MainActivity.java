@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("Horizontal RecyclerView");
         apiDemos.add("Custom System Keyboard");
         apiDemos.add("MongolMenu");
-        apiDemos.add("Testing");
+        //apiDemos.add("Testing");
 
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvApiDemoList);
