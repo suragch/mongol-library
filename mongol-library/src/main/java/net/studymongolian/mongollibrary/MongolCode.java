@@ -79,7 +79,7 @@ public final class MongolCode {
         return character == Uni.MVS ||
                 character == Uni.ZWJ ||
                 character == Uni.ZWNJ ||
-                character == Uni.ZWS ||
+                character == Uni.WJ ||
                 character == Uni.FVS1 ||
                 character == Uni.FVS2 ||
                 character == Uni.FVS3;
@@ -812,7 +812,9 @@ public final class MongolCode {
 
     public class Uni {
 
-        public static final char ZWS = '\u200B'; // Zero-width space
+
+        public static final char WJ = '\u2060'; // Word joiner (replaces deprecated Zero-width no-break space)
+        //public static final char ZWS = '\u200B'; // Zero-width space
         public static final char ZWNJ = '\u200C'; // Zero-width non joiner
         public static final char ZWJ = '\u200D'; // Zero-width joiner
         public static final char NNBS = '\u202F'; // Narrow No-Break Space
@@ -1068,8 +1070,8 @@ public final class MongolCode {
 
         // These are in the order of the Unicode 9 specs sheet
         // BP = looks better after B, P (and other rounded like Q, G, F, K, KH)
-        // MVS = final glyph varient for MVS
-        // gv = glyph varient, same basic glyph form as the one it follows.
+        // MVS = final glyph variant for MVS
+        // gv = glyph variant, same basic glyph form as the one it follows.
         // TOOTH = the ending of this character matches a following character that slants left (for example, a tooth)
         // STEM = the ending of this character matches a following character that starts with a vertical stem
         // ROUND = the ending of this character matches a round following character (feminine QG)
@@ -3084,7 +3086,7 @@ public final class MongolCode {
         }
 
         private void handleNonPrintingChar(StringBuilder renderedWord) {
-            renderedWord.insert(0, Uni.ZWS);
+            renderedWord.insert(0, Uni.WJ);
         }
 
         private boolean needsLongToothU(CharSequence word, int uIndex) {
