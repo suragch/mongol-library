@@ -27,10 +27,7 @@ public class MongolMenuActivity extends AppCompatActivity {
         popup.getMenuInflater().inflate(R.menu.mongol_menu_activity, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(
-                        MongolMenuActivity.this,"You Clicked : " + item.getTitle(),
-                        Toast.LENGTH_SHORT
-                ).show();
+                Toast.makeText(MongolMenuActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -59,5 +56,19 @@ public class MongolMenuActivity extends AppCompatActivity {
     public void onShowAtLocationClick(View view) {
         MongolMenu menu = getMenu();
         menu.showAtLocation(view, Gravity.CENTER, 0, 0);
+    }
+
+    public void onNoIconsClick(View view) {
+        MongolMenu menu = new MongolMenu(this);
+        menu.add(new MongolMenuItem("ᠨᠢᠭᠡ", MongolMenuItem.NO_ICON));
+        menu.add(new MongolMenuItem("ᠬᠤᠶᠠᠷ", MongolMenuItem.NO_ICON));
+        menu.add(new MongolMenuItem("ᠭᠤᠷᠪᠠ", MongolMenuItem.NO_ICON));
+        menu.setOnMenuItemClickListener(new MongolMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MongolMenuItem item) {
+                MongolToast.makeText(MongolMenuActivity.this, item.getTitle(), MongolToast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+        menu.showAsDropDown(view,0,0);
     }
 }

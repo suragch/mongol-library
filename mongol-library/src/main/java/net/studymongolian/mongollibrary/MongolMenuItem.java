@@ -3,6 +3,7 @@ package net.studymongolian.mongollibrary;
 
 public class MongolMenuItem {
 
+    public static final int NO_ICON = 0;
     private CharSequence title;
     private int iconResId;
 

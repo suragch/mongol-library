@@ -2,8 +2,8 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -19,47 +19,54 @@ import java.util.List;
 
 public class MongolMenu extends PopupWindow {
 
-    private static int DEFAULT_DIVIDER_COLOR = Color.GRAY;
-
+    private static final int DEFAULT_ELEVATION = 24;
 
     private List<MongolMenuItem> menuItems;
     private OnMenuItemClickListener mMenuItemClickListener;
     private Context mContext;
-
-    private int mDividerColor;
 
     public MongolMenu(Context context) {
         super(context);
         init(context);
     }
 
+    // other constructors are hidden from users
+
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu() {
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(View contentView) {
         super(contentView);
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(int width, int height) {
         super(width, height);
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(View contentView, int width, int height) {
         super(contentView, width, height);
     }
 
+    @SuppressWarnings("unused") // private to prevent instantiation
     private MongolMenu(View contentView, int width, int height, boolean focusable) {
         super(contentView, width, height, focusable);
     }
@@ -67,11 +74,10 @@ public class MongolMenu extends PopupWindow {
     private void init(Context context) {
         mContext = context;
         menuItems = new ArrayList<>();
-        mDividerColor = DEFAULT_DIVIDER_COLOR;
         setBackgroundDrawable(null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(20);
+            setElevation(DEFAULT_ELEVATION);
         }
     }
 
@@ -139,20 +145,21 @@ public class MongolMenu extends PopupWindow {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = getInflatedView(parent);
+        @NonNull
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.mongol_menu_item_layout,
+                    parent, false);
             return new ViewHolder(view);
         }
 
-        private View getInflatedView(ViewGroup parent) {
-                return inflater.inflate(R.layout.mongol_menu_item_layout,
-                        parent, false);
-        }
-
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             MongolMenuItem menuItem = menuItems.get(position);
-            holder.icon.setImageResource(menuItem.getIconResId());
+            if (menuItem.getIconResId() == MongolMenuItem.NO_ICON) {
+                holder.icon.setVisibility(View.GONE);
+            } else {
+                holder.icon.setImageResource(menuItem.getIconResId());
+            }
             holder.titleLabel.setText(menuItem.getTitle().toString());
         }
 
