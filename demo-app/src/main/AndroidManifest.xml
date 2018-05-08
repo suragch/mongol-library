@@ -60,6 +60,7 @@
             android:label="@string/keyboard_custom_system_activity_title" />
         <activity
             android:name=".MongolMenuActivity"
+            android:theme="@style/CustomTheme"
             android:label="@string/mongol_menu_activity_title" />
 
         <!-- System keyboard example one (single keyboard using Keyboard) -->

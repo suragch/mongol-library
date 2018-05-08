@@ -3,7 +3,10 @@ package net.studymongolian.mongollibrarydemo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +22,36 @@ public class MongolMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mongol_menu);
+
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mongol_menu_activity_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_menu:
+                View menuButton = findViewById(R.id.action_menu); // any view is ok
+                int[] location = new int[2];
+                menuButton.getLocationInWindow(location);
+                int gravity = Gravity.TOP | Gravity.RIGHT;
+                int margin = 8;
+                int xOffset = margin;
+                int yOffset = location[1] + margin;
+                MongolMenu menu = getMenu();
+                menu.showAtLocation(menuButton, gravity, xOffset, yOffset);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onStandardMenuButtonClick(View view) {
