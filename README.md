@@ -13,6 +13,7 @@ Android UI components for vertical Mongolian text
     * [MongolLabel](https://github.com/suragch/mongol-library#mongollabel)
     * [MongolEditText](https://github.com/suragch/mongol-library#mongoledittext)
     * [Keyboards](https://github.com/suragch/mongol-library#keyboards)
+    * [MongolMenu](https://github.com/suragch/mongol-library#mongolmenu)
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
     * [Horizontal RecyclerView](https://github.com/suragch/mongol-library#horizontal-recyclerview)
@@ -41,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.3.1'
+    implementation 'net.studymongolian:mongol-library:1.4.0'
 }
 ```
 
@@ -420,6 +421,31 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
 }
 ```
 
+
+### MongolMenu
+
+`MongolMenu` is a replacement for context menus and toolbar menus.
+
+#### Basic usage
+
+```java
+MongolMenu menu = new MongolMenu(this);
+menu.add(new MongolMenuItem("ᠨᠢᠭᠡ", R.drawable.ic_sun));
+menu.add(new MongolMenuItem("ᠬᠤᠶᠠᠷ", R.drawable.ic_moon));
+menu.add(new MongolMenuItem("ᠭᠤᠷᠪᠠ", R.drawable.ic_star));
+menu.setOnMenuItemClickListener(new MongolMenu.OnMenuItemClickListener() {
+    public boolean onMenuItemClick(MongolMenuItem item) {
+        MongolToast.makeText(MongolMenuActivity.this, item.getTitle(), MongolToast.LENGTH_SHORT).show();
+        return true;
+    }
+});
+menu.showAsDropDown(view, 0, 0);
+```
+
+Instead of `showAsDropDown` (which anchors it to the view), you can also use `showAtLocation` to place it anywhere on the screen. Here is an example that places it on the toolbar.
+
+![MongolMenu example](docs/images/mm-example.png)
+
 ### MongolToast 
 
 `MongolToast` is a vertical version of Android `Toast`.
@@ -613,12 +639,12 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
 * [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
-* [ ] add `MongolToolbar` with vertical menu. (Toolbar can be vertical or horizontal orientation.)
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 
 #### Version changes 
 
+* `1.4.0`: Added `MongolMenu`. Bug fixes.
 * `1.3.1`: Fixed `MongolEditText` cursor blinking bug and keyboard keeps showing on exit bug; added CHU suffix to Qwerty keyboard.
 * `1.3.0`: Added support for Todo Script; removed internal glyph index mapping (glyph and unicode text is one-to-one now)
 * `1.2.0`: Fixed system keyboard popup clipping, support for naming keyboards and setting fonts in xml, ability to change keyboard based on editor's `InputType`.
