@@ -14,6 +14,7 @@
     - [`MongolTextView` 蒙文文本框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoltextview)
     - [`MongolEditText` 蒙文编辑文本框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoledittext)
     - [`ImeContainer` 键盘包，输入法](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#imecontainer)
+    - [`MongolMenu` 蒙文菜单](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongolmenu)
     - [`MongolAlertDialog` 蒙文对话框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongolalertdialog)
     - [`MongolToast` 蒙文Toast提示框](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongoltoast)
 - [`MongolCode` 蒙文国际编码处理器](https://github.com/suragch/mongol-library/blob/master/README.zh-Hans.md#mongolcode)
@@ -40,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.3.1'
+    implementation 'net.studymongolian:mongol-library:1.4.0'
 }
 ```
 
@@ -309,6 +310,30 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
 }
 ```
 
+## `MongolMenu` 
+
+蒙文菜单
+
+![MongolToast example](docs/images/mm-example.png)
+
+Java
+
+```java
+MongolMenu menu = new MongolMenu(this);
+menu.add(new MongolMenuItem("ᠨᠢᠭᠡ", R.drawable.ic_sun));
+menu.add(new MongolMenuItem("ᠬᠤᠶᠠᠷ", R.drawable.ic_moon));
+menu.add(new MongolMenuItem("ᠭᠤᠷᠪᠠ", R.drawable.ic_star));
+menu.setOnMenuItemClickListener(new MongolMenu.OnMenuItemClickListener() {
+    public boolean onMenuItemClick(MongolMenuItem item) {
+        MongolToast.makeText(MongolMenuActivity.this, item.getTitle(), MongolToast.LENGTH_SHORT).show();
+        return true;
+    }
+});
+menu.showAsDropDown(view, 0, 0);
+```
+
+也可以用`showAtLocation`来代替`showAsDropDown`。
+
 ## `MongolAlertDialog` 
 
 蒙文对话框
@@ -404,12 +429,11 @@ String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822
 
 - 拼写正确的单词库
 - `CheckBox`, `RadioButton`
-- `ToolBar`, `Menu`
 - Android和junit自动化测试
 
 ## 使用此库的应用
 
 - [Demo app 演示应用](https://github.com/suragch/mongol-library/tree/master/demo-app)
 - [Suryaa 外语记忆卡篇](https://github.com/suragch/Suryaa) 
-* [Todo 托忒输入法](https://github.com/suragch/TodoKeyboard)
+- [Todo 托忒输入法](https://github.com/suragch/TodoKeyboard)
 - *加你的应用。。。*
