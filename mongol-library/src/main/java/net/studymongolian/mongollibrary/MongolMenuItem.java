@@ -7,6 +7,10 @@ public class MongolMenuItem {
     private CharSequence title;
     private int iconResId;
 
+    public MongolMenuItem(CharSequence title) {
+        this(title, NO_ICON);
+    }
+
     public MongolMenuItem(CharSequence title, int iconResId) {
         this.title = title;
         this.iconResId = iconResId;

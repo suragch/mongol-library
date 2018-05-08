@@ -60,9 +60,9 @@ public class MongolMenuActivity extends AppCompatActivity {
 
     public void onNoIconsClick(View view) {
         MongolMenu menu = new MongolMenu(this);
-        menu.add(new MongolMenuItem("ᠨᠢᠭᠡ", MongolMenuItem.NO_ICON));
-        menu.add(new MongolMenuItem("ᠬᠤᠶᠠᠷ", MongolMenuItem.NO_ICON));
-        menu.add(new MongolMenuItem("ᠭᠤᠷᠪᠠ", MongolMenuItem.NO_ICON));
+        menu.add(new MongolMenuItem("ᠨᠢᠭᠡ"));
+        menu.add(new MongolMenuItem("ᠬᠤᠶᠠᠷ"));
+        menu.add(new MongolMenuItem("ᠭᠤᠷᠪᠠ"));
         menu.setOnMenuItemClickListener(new MongolMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MongolMenuItem item) {
                 MongolToast.makeText(MongolMenuActivity.this, item.getTitle(), MongolToast.LENGTH_SHORT).show();
