@@ -387,6 +387,7 @@ To do this you need to set `KeyboardCandidateView` location in XML for each keyb
     />
 ```
 
+
 Then implement `ImeContainer.DataSource` in your activity to provide the requested word suggestion list.
 
 ```java
