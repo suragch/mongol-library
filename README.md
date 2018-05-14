@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.4.0'
+    implementation 'net.studymongolian:mongol-library:1.4.1'
 }
 ```
 
@@ -645,6 +645,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.4.1`: Very minor bug fixes for Keyboard candidate view
 * `1.4.0`: Added `MongolMenu`. Bug fixes.
 * `1.3.1`: Fixed `MongolEditText` cursor blinking bug and keyboard keeps showing on exit bug; added CHU suffix to Qwerty keyboard.
 * `1.3.0`: Added support for Todo Script; removed internal glyph index mapping (glyph and unicode text is one-to-one now)
