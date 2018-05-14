@@ -254,9 +254,9 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-#### 候选试图
+#### 候选视图
 
-`ImeContainer`也有候选试图，如果你有单词库的话，用户在输入的时候你可以提供候选词。
+`ImeContainer`也有候选视图，如果你有单词库的话，用户在输入的时候你可以提供候选词。
 
 ![keyboard candidates](docs/images/keyboard-candidates.png)
 
@@ -274,6 +274,14 @@ XML
     app:candidatesLocation="vertical_left"
     ...
     />
+```
+
+因为候选视图使用`RecyclerView`类，应用模块的build.gradle文件需要加`recyclerview`。
+
+``` java
+dependencies {
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+}
 ```
 
 Java
