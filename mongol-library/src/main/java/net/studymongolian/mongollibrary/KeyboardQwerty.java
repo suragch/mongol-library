@@ -618,8 +618,6 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
-
         if (!isIsolateOrInitial()) {
             // MVS
             char previousChar = getPreviousChar();
@@ -631,6 +629,8 @@ public class KeyboardQwerty extends Keyboard {
                 candidates.add(mvs_E);
             }
         }
+
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
         if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyE());

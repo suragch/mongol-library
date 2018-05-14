@@ -467,7 +467,6 @@ public class KeyboardAeiou extends Keyboard {
             return candidates;
         }
 
-        candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
         if (!isIsolateOrInitial()) {
             // MVS
@@ -480,6 +479,8 @@ public class KeyboardAeiou extends Keyboard {
                 candidates.add(mvs_E);
             }
         }
+
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
         if (!hasCandidatesView()) {
             candidates.addAll(getSuffixForKeyE());
