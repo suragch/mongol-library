@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -60,7 +61,8 @@ public class ImeCandidatesView extends ViewGroup {
 
     public void setCandidates(List<String> candidates) {
         mCandidates.clear();
-        mCandidates.addAll(candidates);
+        if (candidates != null)
+            mCandidates.addAll(candidates);
         if (adapter != null)
             adapter.notifyDataSetChanged();
     }
@@ -220,7 +222,8 @@ public class ImeCandidatesView extends ViewGroup {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        @NonNull
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = getInflatedView(parent);
             return new ViewHolder(view);
         }
@@ -235,7 +238,7 @@ public class ImeCandidatesView extends ViewGroup {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             String word = mCandidates.get(position);
             holder.setText(word);
             holder.divider.setBackgroundColor(mDividerColor);
@@ -262,7 +265,7 @@ public class ImeCandidatesView extends ViewGroup {
             }
 
             private View getTextView(View itemView) {
-                if (mOrientation == ImeCandidatesView.Orientation.VERTICAL){
+                if (mOrientation == ImeCandidatesView.Orientation.VERTICAL) {
                     MongolLabel label = itemView.findViewById(R.id.mongolLabel);
                     label.setTextColor(mTextColor);
                     label.setTextSize(mTextSize);
@@ -313,6 +316,10 @@ public class ImeCandidatesView extends ViewGroup {
                         view.setBackgroundColor(mPressedBackgroundColor);
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        view.performClick();
+                        view.setBackgroundColor(Color.TRANSPARENT);
                         break;
                     default:
                         view.setBackgroundColor(Color.TRANSPARENT);
