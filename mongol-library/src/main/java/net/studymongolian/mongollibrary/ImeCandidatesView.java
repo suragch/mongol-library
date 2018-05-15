@@ -305,6 +305,9 @@ public class ImeCandidatesView extends ViewGroup {
                 } else {
                     String renderedText = MongolCode.INSTANCE.unicodeToMenksoft(text);
                     ((TextView) textView).setText(renderedText);
+                    // On Android 5.0 the TextView is not changing width for new text
+                    // so we are manually calling a relayout here.
+                    textView.requestLayout();
                 }
             }
 

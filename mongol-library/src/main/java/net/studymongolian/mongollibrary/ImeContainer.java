@@ -2,7 +2,6 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.support.v4.graphics.ColorUtils;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -65,9 +64,9 @@ public class ImeContainer extends ViewGroup
 
     public interface DataSource {
 
-        List<String> onRequestWordsStartingWith(String text);
+        void onRequestWordsStartingWith(String text);
 
-        List<String> onRequestWordsFollowing(String word);
+        void onRequestWordsFollowing(String word);
 
         void onCandidateLongClick(int position, String text);
     }
@@ -167,6 +166,12 @@ public class ImeContainer extends ViewGroup
     }
 
     private void layoutWithNoCandidateView() {
+        // candidate view
+        if (mCandidatesView != null) {
+            layoutCandidateView(0, 0, 0, 0);
+        }
+
+        // keyboard
         final int keyboardLeft = getPaddingLeft();
         final int keyboardTop = getPaddingTop();
         final int keyboardRight = getMeasuredWidth() - getPaddingRight();
@@ -276,6 +281,7 @@ public class ImeContainer extends ViewGroup
      * @param attribute information passed in by the current EditText or MongolEditText
      * @param restarting this parameter is currently not implemented
      */
+    @SuppressWarnings("unused")
     public void onStartInput(EditorInfo attribute, boolean restarting) {
         // subclasses can override this method to choose a specific keyboard
         // based on the InputType of the current editor
@@ -344,10 +350,12 @@ public class ImeContainer extends ViewGroup
         this.addView(keyboard);
     }
 
+    @SuppressWarnings("unused")
     public int getKeyboardCount() {
         return mKeyboards.size();
     }
 
+    @SuppressWarnings("unused")
     public Keyboard getKeyboardAt(int index) {
         return mKeyboards.get(index);
     }
@@ -493,8 +501,7 @@ public class ImeContainer extends ViewGroup
             mCandidatesView.clearCandidates();
             return;
         }
-        List<String> candidates = mDataSource.onRequestWordsStartingWith(mongolWord);
-        mCandidatesView.setCandidates(candidates);
+        mDataSource.onRequestWordsStartingWith(mongolWord);
     }
 
     @Override
@@ -693,8 +700,7 @@ public class ImeContainer extends ViewGroup
     private void suggestFollowingWords(String text) {
         if (mCandidatesView == null) return;
         if (mDataSource != null) {
-            List<String> followingWords = mDataSource.onRequestWordsFollowing(text);
-            mCandidatesView.setCandidates(followingWords);
+            mDataSource.onRequestWordsFollowing(text);
         } else {
             mCandidatesView.clearCandidates();
         }
@@ -704,6 +710,11 @@ public class ImeContainer extends ViewGroup
     public void onCandidateLongClick(int position, String text) {
         if (mDataSource == null) return;
         mDataSource.onCandidateLongClick(position, text);
+    }
+
+    public void setCandidates(List<String> candidateWords) {
+        if (mCandidatesView == null) return;
+        mCandidatesView.setCandidates(candidateWords);
     }
 
 }

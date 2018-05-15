@@ -1,5 +1,6 @@
 package net.studymongolian.mongollibrarydemo;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
 import net.studymongolian.mongollibrary.MongolToast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,31 +71,108 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     // ImeContainer.DataSource methods
 
     @Override
-    public List<String> onRequestWordsStartingWith(String text) {
-        // This is a dummy list.
-        // In a production app you would use `text` to look up words
-        // from a database.
-        List<String> animalNames = new ArrayList<>();
-        animalNames.add(text);
-        animalNames.add("ᠮᠣᠷᠢ");
-        animalNames.add("ᠦᠬᠡᠷ");
-        animalNames.add("ᠲᠡᠮᠡᠭᠡ");
-        return animalNames;
+    public void onRequestWordsStartingWith(String text) {
+        new GetWordsStartingWith(this).execute(text);
     }
 
     @Override
-    public List<String> onRequestWordsFollowing(String word) {
-        // This is a dummy list.
-        // In a production app you would use `word` to look up in a database other words
-        // that could follow `word`.
-        List<String> animalNames = new ArrayList<>();
-        animalNames.add("ᠬᠣᠨᠢ");
-        animalNames.add("ᠢᠮᠠᠭ᠎ᠠ");
-        return animalNames;
+    public void onRequestWordsFollowing(String word) {
+        new GetWordsFollowing(this).execute(word);
     }
 
     @Override
     public void onCandidateLongClick(int position, String text) {
         MongolToast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    private static class GetWordsStartingWith extends AsyncTask<String, Integer, List<String>> {
+
+        private WeakReference<KeyboardCandidateActivity> activityReference;
+
+        // only retain a weak reference to the activity
+        GetWordsStartingWith(KeyboardCandidateActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected List<String> doInBackground(String... params) {
+            String prefix = params[0];
+            DummyDatabase db = new DummyDatabase();
+            return db.queryWordsStartingWith(prefix);
+        }
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            KeyboardCandidateActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            activity.imeContainer.setCandidates(result);
+        }
+    }
+
+    private static class GetWordsFollowing extends AsyncTask<String, Integer, List<String>> {
+
+        private WeakReference<KeyboardCandidateActivity> activityReference;
+
+        // only retain a weak reference to the activity
+        GetWordsFollowing(KeyboardCandidateActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected List<String> doInBackground(String... params) {
+            String word = params[0];
+            DummyDatabase db = new DummyDatabase();
+            return db.queryWordsFollowing(word);
+        }
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            KeyboardCandidateActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            activity.imeContainer.setCandidates(result);
+        }
+    }
+
+    private static class DummyDatabase {
+
+        private void simulateLongDatabaseOperation() {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        List<String> queryWordsStartingWith(String prefix) {
+
+            // This is a dummy list.
+            // In a production app you would use `word` to look up words
+            // from a real database.
+            List<String> list = new ArrayList<>();
+            list.add(prefix);
+            list.add("ᠮᠣᠷᠢ");
+            list.add("ᠦᠬᠡᠷ");
+            list.add("ᠲᠡᠮᠡᠭᠡ");
+
+            simulateLongDatabaseOperation();
+
+            return list;
+        }
+
+        List<String> queryWordsFollowing(String word) {
+
+            // This is a dummy list.
+            // In a production app you would use `word` to look up words
+            // from a real database.
+            List<String> list = new ArrayList<>();
+            list.add("ᠬᠣᠨᠢ");
+            list.add("ᠢᠮᠠᠭ᠎ᠠ");
+
+            simulateLongDatabaseOperation();
+
+            return list;
+        }
     }
 }
