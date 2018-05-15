@@ -35,7 +35,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private static final int NEW_CHOSEN_HEIGHT_INDEX = 4;
     private static final int NEW_DESIRED_WIDTH_INDEX = 5;
 
-    private Context mContext;
     private int mTextColor;
     private float mTextSizePx;
     private Typeface mTypeface;
@@ -81,8 +80,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mGravity = a.getInteger(R.styleable.MongolTextView_gravity, Gravity.TOP);
         a.recycle();
 
-        mContext = context;
-
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(mTextColor);
@@ -91,7 +88,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                     DEFAULT_FONT_SIZE_SP, getResources().getDisplayMetrics());
         }
         mTextPaint.setTextSize(mTextSizePx);
-        mTypeface = MongolFont.get(MongolFont.QAGAN, mContext);
+        mTypeface = MongolFont.get(MongolFont.QAGAN, context);
         mTextPaint.setTypeface(mTypeface);
         mTextPaint.linkColor = Color.BLUE;
 
@@ -351,9 +348,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         // the layout uses glyphs while the TextView uses Unicode
         // so the index conversion happens here
         y = convertToLocalVerticalCoordinate(y);
-        int glyphOffset = getLayout().getOffsetForVertical(line, y);
-        return glyphOffset;
-        //return mTextStorage.getUnicodeIndexForGlyphIndex(glyphOffset);
+        return getLayout().getOffsetForVertical(line, y);
     }
 
     float convertToLocalVerticalCoordinate(float y) {
@@ -436,12 +431,13 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         return selectionStart >= 0 && selectionStart != selectionEnd;
     }
 
-    String getSelectedText() {
-        if (!hasSelection()) return null;
+    public CharSequence getSelectedText() {
+        if (!hasSelection()) return "";
 
         final int start = getSelectionStart();
         final int end = getSelectionEnd();
-        return String.valueOf(
-                start > end ? mTextStorage.subSequence(end, start) : mTextStorage.subSequence(start, end));
+        return start > end
+                ? mTextStorage.subSequence(end, start)
+                : mTextStorage.subSequence(start, end);
     }
 }

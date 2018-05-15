@@ -27,14 +27,12 @@ class MetInputConnection extends BaseInputConnection {
 
     @Override
     public boolean beginBatchEdit() {
-        if (mMongolEditText == null) return false;
-        return mMongolEditText.beginBatchEdit();
+        return mMongolEditText != null && mMongolEditText.beginBatchEdit();
     }
 
     @Override
     public boolean endBatchEdit() {
-        if (mMongolEditText == null) return false;
-        return mMongolEditText.endBatchEdit();
+        return mMongolEditText != null && mMongolEditText.endBatchEdit();
     }
 
     @Override

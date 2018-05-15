@@ -8,14 +8,12 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.MetricAffectingSpan;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class MongolTextLine {
 
-    private static final String TAG = "MongolTextLine";
     private static final float UNDERLINE_THICKNESS_PROPORTION = 1 / 16f;
 
     private final static int MONGOL_QUICKCHECK_START = 0x1800;

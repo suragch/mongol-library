@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -120,7 +119,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         mPopupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
         mPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
         mCandidatesLocation = DEFAULT_CANDIDATES_LOCATION;
-        setCommonDefaults(context);
+        setCommonDefaults();
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -159,10 +158,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         mCandidatesLocation = CandidatesLocation.fromId(a.getInt(R.styleable.Keyboard_candidatesLocation,
                 DEFAULT_CANDIDATES_LOCATION.id));
         a.recycle();
-        setCommonDefaults(context);
+        setCommonDefaults();
     }
 
-    private void setCommonDefaults(Context context) {
+    private void setCommonDefaults() {
         mSecondaryTextSizePx = mPrimaryTextSizePx / 2;
     }
 

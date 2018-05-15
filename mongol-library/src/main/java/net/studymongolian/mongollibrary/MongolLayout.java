@@ -333,6 +333,7 @@ public class MongolLayout {
         if (needsLineUpdate) updateLines();
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         int lastLine = mLinesInfo.size() - 1;
+        //noinspection SuspiciousNameCombination
         return mLinesInfo.get(lastLine).top;
     }
 

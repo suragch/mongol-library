@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
