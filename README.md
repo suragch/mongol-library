@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.4.1'
+    implementation 'net.studymongolian:mongol-library:1.5.0'
 }
 ```
 
@@ -406,13 +406,15 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     // ImeContainer.DataSource methods
 
     @Override
-    public List<String> onRequestWordsStartingWith(String text) {
-        // return word list
+    public void onRequestWordsStartingWith(String text) {
+        // query database for words starting with `text`
+        // call `imeContainer.setCandidates(wordList)` after the results come back
     }
 
     @Override
-    public List<String> onRequestWordsFollowing(String word) {
-        // return words that could follow the last chosen word
+    public void onRequestWordsFollowing(String word) {
+        // query database for words that can follow `word`
+        // call `imeContainer.setCandidates(wordList)` after the results come back
     }
 
     @Override
@@ -645,6 +647,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.5.0`: Allow ImeContainer to request keyboard candidate word updates asynchronously 
 * `1.4.1`: Very minor bug fixes for Keyboard candidate view
 * `1.4.0`: Added `MongolMenu`. Bug fixes.
 * `1.3.1`: Fixed `MongolEditText` cursor blinking bug and keyboard keeps showing on exit bug; added CHU suffix to Qwerty keyboard.
