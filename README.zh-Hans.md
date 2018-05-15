@@ -41,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.4.1'
+    implementation 'net.studymongolian:mongol-library:1.5.0'
 }
 ```
 
@@ -302,13 +302,15 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     // 实现ImeContainer.DataSource接口的方法
 
     @Override
-    public List<String> onRequestWordsStartingWith(String text) {
+    public void onRequestWordsStartingWith(String text) {
         // 候选试图要求以text开头的词
+        // 然后更新imeContainer.setCandidates(wordList)
     }
 
     @Override
-    public List<String> onRequestWordsFollowing(String word) {
+    public void onRequestWordsFollowing(String word) {
         // 候选词被选上后候选试图要求接下来的词
+        // 然后更新imeContainer.setCandidates(wordList)
     }
 
     @Override
