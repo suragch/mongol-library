@@ -3,14 +3,13 @@ package net.studymongolian.mongollibrarydemo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.ImeContainer;
-import net.studymongolian.mongollibrary.Keyboard;
-import net.studymongolian.mongollibrary.KeyboardAeiou;
-import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
+import net.studymongolian.mongollibrary.MongolTextView;
 import net.studymongolian.mongollibrary.MongolToast;
 
 import java.lang.ref.WeakReference;
@@ -20,14 +19,15 @@ import java.util.List;
 public class KeyboardCandidateActivity extends AppCompatActivity implements ImeContainer.DataSource {
 
     ImeContainer imeContainer;
+    MongolTextView mongolTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_keyboard_candidate);
 
-        // select one of the two following methods to load the Keyboards
-        //loadKeyboardsProgrammatically();
-        loadKeyboardsFromXml();
+        imeContainer = findViewById(R.id.ime_container);
+        mongolTextView = findViewById(R.id.mtv_database);
 
         // provide words for candidate selection
         imeContainer.setDataSource(this);
@@ -38,35 +38,11 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
 
+        mongolEditText.requestFocus();
+
         // need to also disallow system keyboard in Manifest.xml
         // android:windowSoftInputMode="stateHidden" // todo make this unnecessary
     }
-
-    private void loadKeyboardsFromXml() {
-        setContentView(R.layout.activity_keyboard_candidate_customized);
-        imeContainer = findViewById(R.id.ime_container);
-    }
-
-    // programmatically loaded keyboards will have the default style
-    private void loadKeyboardsProgrammatically() {
-
-        // set a content view without preloaded keyboards
-        setContentView(R.layout.activity_keyboard_candidate);
-
-        // keyboards to include (default style)
-        Keyboard aeiou = new KeyboardAeiou(this);
-        Keyboard qwerty = new KeyboardQwerty(this);
-
-        // request a candidates view for each keyboard (default is NONE)
-        aeiou.setCandidatesLocation(Keyboard.CandidatesLocation.VERTICAL_LEFT);
-        qwerty.setCandidatesLocation(Keyboard.CandidatesLocation.HORIZONTAL_TOP);
-
-        // add keyboards to the IME container
-        imeContainer = findViewById(R.id.ime_container);
-        imeContainer.addKeyboard(aeiou);
-        imeContainer.addKeyboard(qwerty);
-    }
-
 
     // ImeContainer.DataSource methods
 
@@ -76,7 +52,13 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     }
 
     @Override
-    public void onRequestWordsFollowing(String word) {
+    public void onWordFinished(String word, String previousWord) {
+        MongolToast.makeText(this, "saving " + word, Toast.LENGTH_SHORT).show();
+        new SaveWord(this).execute(word, previousWord);
+    }
+
+    @Override
+    public void onCandidateClick(int position, String word) {
         new GetWordsFollowing(this).execute(word);
     }
 
@@ -84,6 +66,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     public void onCandidateLongClick(int position, String text) {
         MongolToast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
+
+
 
     private static class GetWordsStartingWith extends AsyncTask<String, Integer, List<String>> {
 
@@ -97,7 +81,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         @Override
         protected List<String> doInBackground(String... params) {
             String prefix = params[0];
-            DummyDatabase db = new DummyDatabase();
+            DummyDatabase db = DummyDatabase.getInstance();
             return db.queryWordsStartingWith(prefix);
         }
 
@@ -107,7 +91,43 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
             if (activity == null || activity.isFinishing()) return;
 
             activity.imeContainer.setCandidates(result);
+
+            DummyDatabase db = DummyDatabase.getInstance();
+            String dbText = db.toString();
+            activity.mongolTextView.setText(dbText);
         }
+    }
+
+    private static class SaveWord extends AsyncTask<String, Integer, Void> {
+
+        private WeakReference<KeyboardCandidateActivity> activityReference;
+
+        // only retain a weak reference to the activity
+        SaveWord(KeyboardCandidateActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String word = params[0];
+            String previousWord = params[1];
+            DummyDatabase db = DummyDatabase.getInstance();
+            db.insertOrUpdateWord(word);
+            if (!TextUtils.isEmpty(previousWord)) {
+                db.updateFollowingWords(previousWord, word);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            KeyboardCandidateActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+            DummyDatabase db = DummyDatabase.getInstance();
+            String dbText = db.toString();
+            activity.mongolTextView.setText(dbText);
+        }
+
     }
 
     private static class GetWordsFollowing extends AsyncTask<String, Integer, List<String>> {
@@ -122,7 +142,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         @Override
         protected List<String> doInBackground(String... params) {
             String word = params[0];
-            DummyDatabase db = new DummyDatabase();
+            DummyDatabase db = DummyDatabase.getInstance();
+            db.insertOrUpdateWord(word);
             return db.queryWordsFollowing(word);
         }
 
@@ -132,10 +153,27 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
             if (activity == null || activity.isFinishing()) return;
 
             activity.imeContainer.setCandidates(result);
+
+            DummyDatabase db = DummyDatabase.getInstance();
+            String dbText = db.toString();
+            activity.mongolTextView.setText(dbText);
         }
     }
 
     private static class DummyDatabase {
+
+        List<Word> words = new ArrayList<>();
+
+        private static final DummyDatabase INSTANCE = new DummyDatabase();
+
+        private DummyDatabase() {
+            if (INSTANCE != null)
+                throw new IllegalStateException("Already instantiated");
+        }
+
+        public static DummyDatabase getInstance() {
+            return INSTANCE;
+        }
 
         private void simulateLongDatabaseOperation() {
             try {
@@ -147,14 +185,19 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
         List<String> queryWordsStartingWith(String prefix) {
 
-            // This is a dummy list.
-            // In a production app you would use `word` to look up words
-            // from a real database.
             List<String> list = new ArrayList<>();
-            list.add(prefix);
-            list.add("ᠮᠣᠷᠢ");
-            list.add("ᠦᠬᠡᠷ");
-            list.add("ᠲᠡᠮᠡᠭᠡ");
+            for (Word word : words) {
+                if (word.word.startsWith(prefix)) {
+                    list.add(word.word);
+                }
+            }
+
+            // default examples
+            if (words.size() == 0) {
+                list.add("ᠮᠣᠷᠢ");
+                list.add("ᠦᠬᠡᠷ");
+                list.add("ᠲᠡᠮᠡᠭᠡ");
+            }
 
             simulateLongDatabaseOperation();
 
@@ -163,16 +206,87 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
         List<String> queryWordsFollowing(String word) {
 
-            // This is a dummy list.
-            // In a production app you would use `word` to look up words
-            // from a real database.
             List<String> list = new ArrayList<>();
-            list.add("ᠬᠣᠨᠢ");
-            list.add("ᠢᠮᠠᠭ᠎ᠠ");
+            int index = indexOf(word);
+            if (index >= 0) {
+                String following = words.get(index).following;
+                if (!TextUtils.isEmpty(following))
+                    list.add(following);
+            }
+
+            // default examples
+            if (words.size() < 2) {
+                list.add("ᠬᠣᠨᠢ");
+                list.add("ᠢᠮᠠᠭ᠎ᠠ");
+            }
 
             simulateLongDatabaseOperation();
 
             return list;
+        }
+
+        public void insertOrUpdateWord(String word) {
+            int index = indexOf(word);
+            if (index >= 0) {
+                words.get(index).incrementFrequency();
+            } else {
+                words.add(new Word(word));
+            }
+        }
+
+        private int indexOf(String text) {
+            int index = -1;
+            for (Word word : words) {
+                index++;
+                if (word.word.equals(text))
+                    return index;
+            }
+            return -1;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (Word word : words) {
+                builder.append(word.word);
+                builder.append(" ");
+                builder.append(word.frequency);
+                builder.append(" ");
+                builder.append(word.following);
+                builder.append("\n");
+            }
+            return builder.toString();
+        }
+
+        public void updateFollowingWords(String word, String followingWord) {
+            int index = indexOf(word);
+            if (index >= 0) {
+                words.get(index).setFollowing(followingWord);
+            } else {
+                Word newWord = new Word(word);
+                newWord.setFollowing(followingWord);
+                words.add(newWord);
+            }
+        }
+    }
+
+    private static class Word {
+        String word;
+        int frequency;
+        String following;
+
+        Word(String word) {
+            this.word = word;
+            frequency = 1;
+            following = "";
+        }
+
+        public void incrementFrequency() {
+            frequency++;
+        }
+
+        public void setFollowing(String following) {
+            this.following = following;
         }
     }
 }

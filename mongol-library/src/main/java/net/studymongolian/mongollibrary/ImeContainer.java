@@ -66,7 +66,9 @@ public class ImeContainer extends ViewGroup
 
         void onRequestWordsStartingWith(String text);
 
-        void onRequestWordsFollowing(String word);
+        void onWordFinished(String word, String previousWord);
+
+        void onCandidateClick(int position, String word);
 
         void onCandidateLongClick(int position, String text);
     }
@@ -435,23 +437,42 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public String getPreviousMongolWord(boolean allowSingleSpaceBeforeCursor) {
-        InputConnection ic = getInputConnection();
-        if (ic == null) return "";
-        CharSequence previous = ic.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
-        if (TextUtils.isEmpty(previous)) return "";
-        int endIndex = previous.length();
-        if (allowSingleSpaceBeforeCursor && endsWithSpace(previous)) {
-            endIndex--;
-        }
-        int startIndex = getStartIndex(endIndex, previous);
-        return previous.subSequence(startIndex, endIndex).toString();
+        List<String> words = getPreviousMongolWords(1, allowSingleSpaceBeforeCursor);
+        if (words.size() == 0) return "";
+        return words.get(0);
     }
 
-    private boolean endsWithSpace(CharSequence text) {
+    private List<String> getPreviousMongolWords(int numberOfWords, boolean allowSingleSpaceBeforeCursor) {
+        InputConnection ic = getInputConnection();
+        List<String> words = new ArrayList<>();
+        if (ic == null) return words;
+        CharSequence previous = ic.getTextBeforeCursor(MAX_CHARS_BEFORE_CURSOR, 0);
+        if (TextUtils.isEmpty(previous)) return words;
+
+        int endIndex = previous.length();
+        if (allowSingleSpaceBeforeCursor && isQualifiedSpaceAt(previous, endIndex - 1)) {
+            endIndex--;
+        }
+
+        for (int i = 0; i < numberOfWords; i++) {
+            int startIndex = getStartIndex(endIndex, previous);
+            String word = previous.subSequence(startIndex, endIndex).toString();
+            words.add(word);
+            endIndex = startIndex;
+            if (isQualifiedSpaceAt(previous, endIndex - 1)) {
+                endIndex--;
+            }
+        }
+        return words;
+    }
+
+    private boolean isQualifiedSpaceAt(CharSequence text, int index) {
         int length = text.length();
-        if (length < 1) return false;
-        char lastChar = text.charAt(length - 1);
-        return (lastChar == ' ' || lastChar == MongolCode.Uni.NNBS);
+        if (index < 0 || index >= length) return false;
+        char character = text.charAt(index);
+        return (character == ' ' || character == MongolCode.Uni.NNBS)
+                && index != 0
+                && MongolCode.isMongolian(text.charAt(index - 1));
     }
 
     private int getStartIndex(int endIndex, CharSequence previous) {
@@ -473,11 +494,26 @@ public class ImeContainer extends ViewGroup
     @Override
     public void onKeyboardInput(String text) {
         if (TextUtils.isEmpty(text)) return;
+        checkForFinishedWord(text);
         boolean isMongol = MongolCode.isMongolian(text.charAt(0));
         handleOldComposingText(isMongol);
         commitText(text);
         updateCandidatesView();
     }
+
+    private void checkForFinishedWord(String textToBeAdded) {
+        if (mCandidatesView == null || mDataSource == null) return;
+        boolean isThisCharMongol = MongolCode.isMongolian(textToBeAdded.charAt(0));
+        boolean isPrevCharMongol = MongolCode.isMongolian(getPreviousChar());
+        if (!isThisCharMongol && isPrevCharMongol) {
+            List<String> previousWords = getPreviousMongolWords(2, false);
+            String previousWord = previousWords.get(0);
+            String wordBeforeThat = previousWords.get(1);
+            mDataSource.onWordFinished(previousWord, wordBeforeThat);
+        }
+    }
+
+
 
     private void commitText(String text) {
         InputConnection ic = getInputConnection();
@@ -514,6 +550,7 @@ public class ImeContainer extends ViewGroup
         if (TextUtils.isEmpty(composingText)) {
             onKeyboardInput(unicode);
         } else {
+            checkForFinishedWord(unicode);
             boolean isMongol = MongolCode.isMongolian(unicode.charAt(0));
             handleOldComposingText(isMongol);
             ic.setComposingText(composingText, 1);
@@ -663,7 +700,8 @@ public class ImeContainer extends ViewGroup
         } else {
             insertFollowingWord(text);
         }
-        suggestFollowingWords(text);
+        if (mCandidatesView == null || mDataSource == null) return;
+        mDataSource.onCandidateClick(position, text);
     }
 
     private boolean currentWordIsPrefixedWith(String text) {
@@ -672,16 +710,26 @@ public class ImeContainer extends ViewGroup
     }
 
     private void insertFollowingWord(String text) {
+        if (TextUtils.isEmpty(text)) return;
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         char previousChar = getPreviousChar();
         String insertWord = text;
-        if (previousChar != ' ') {
+        ic.beginBatchEdit();
+        if (text.charAt(0) == MongolCode.Uni.NNBS) {
+            if (isSpace(previousChar)) {
+                ic.deleteSurroundingText(1, 0);
+            }
+        } else if (!isSpace(previousChar)) {
             insertWord = " " + insertWord;
         }
         ic.commitText(insertWord, 1);
+        ic.endBatchEdit();
     }
 
+    private boolean isSpace(char character) {
+        return character == ' ' || character == MongolCode.Uni.NNBS;
+    }
 
     private void replaceMongolWordBeforeCursor(String text) {
         InputConnection ic = getInputConnection();
@@ -697,14 +745,14 @@ public class ImeContainer extends ViewGroup
         ic.endBatchEdit();
     }
 
-    private void suggestFollowingWords(String text) {
-        if (mCandidatesView == null) return;
-        if (mDataSource != null) {
-            mDataSource.onRequestWordsFollowing(text);
-        } else {
-            mCandidatesView.clearCandidates();
-        }
-    }
+//    private void suggestFollowingWords(String text) {
+//        if (mCandidatesView == null) return;
+//        if (mDataSource != null) {
+//            mDataSource.onRequestWordsFollowing(text);
+//        } else {
+//            mCandidatesView.clearCandidates();
+//        }
+//    }
 
     @Override
     public void onCandidateLongClick(int position, String text) {
