@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.5.0'
+    implementation 'net.studymongolian:mongol-library:1.6.0'
 }
 ```
 
@@ -412,9 +412,16 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     }
 
     @Override
-    public void onRequestWordsFollowing(String word) {
+    public void onWordFinished(String word, String previousWord) {
+        // save/update `word` 
+        // optionally update `previousWord`'s following 
+    }
+
+    @Override
+    public void onCandidateClick(int position, String word) {
         // query database for words that can follow `word`
         // call `imeContainer.setCandidates(wordList)` after the results come back
+        // optionally update database word frequency
     }
 
     @Override
@@ -641,12 +648,13 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] `MongolTextView` or its helper classes need optimization. Slow rendering time for long text strings.
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
-* [ ] apply styly/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
+* [ ] apply style/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 
 #### Version changes 
 
+* `1.6.0`: Updated `ImeContainer.DataSource` methods to better support database updates, added Espresso tests to demo app
 * `1.5.0`: Allow ImeContainer to request keyboard candidate word updates asynchronously 
 * `1.4.1`: Very minor bug fixes for Keyboard candidate view
 * `1.4.0`: Added `MongolMenu`. Bug fixes.
