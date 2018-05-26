@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.7.0'
+    implementation 'net.studymongolian:mongol-library:1.7.2'
 }
 ```
 
@@ -655,6 +655,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.7.2`: Spacing and popup improvements for IME
 * `1.7.0`: Further updates to `ImeContainer.DataSource` API
 * `1.6.0`: Updated `ImeContainer.DataSource` methods to better support database updates, added Espresso tests to demo app
 * `1.5.0`: Allow ImeContainer to request keyboard candidate word updates asynchronously 
