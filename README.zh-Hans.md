@@ -41,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.6.0'
+    implementation 'net.studymongolian:mongol-library:1.7.0'
 }
 ```
 
@@ -313,7 +313,7 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     }
     
     @Override
-    public void onCandidateClick(int position, String word) {
+    public void onCandidateClick(int position, String word, String previousWordInEditor) {
         // 候选词被选上后候选试图要求接下来的词
         // 然后更新imeContainer.setCandidates(wordList)
     }

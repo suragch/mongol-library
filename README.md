@@ -42,15 +42,16 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.6.0'
+    implementation 'net.studymongolian:mongol-library:1.7.0'
 }
 ```
 
 If you are still using Android Studio 2.x, you should use `compile` rather than `implementation`.
 
-#### Note
+#### Notes
 
-**The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library.
+- **The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library.
+- Upgrades in the form of `1.x` likely introduce breaking changes, so don't use `1.x+` notation.
 
 ## UI Componants
 
@@ -418,10 +419,10 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     }
 
     @Override
-    public void onCandidateClick(int position, String word) {
+    public void onCandidateClick(int position, String word, String previousWordInEditor) {
         // query database for words that can follow `word`
         // call `imeContainer.setCandidates(wordList)` after the results come back
-        // optionally update database word frequency
+        // optionally update database word frequency and following
     }
 
     @Override
@@ -654,6 +655,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.7.0`: Further updates to `ImeContainer.DataSource` API
 * `1.6.0`: Updated `ImeContainer.DataSource` methods to better support database updates, added Espresso tests to demo app
 * `1.5.0`: Allow ImeContainer to request keyboard candidate word updates asynchronously 
 * `1.4.1`: Very minor bug fixes for Keyboard candidate view
