@@ -42,6 +42,7 @@ public class ImeContainer extends ViewGroup
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
     private PopupKeyCandidate mShowSystemKeyboardsOption;
+    private CharSequence mCharactersThatDontFollowSpace = String.valueOf(MongolCode.Uni.NNBS);
 
     public ImeContainer(Context context) {
         super(context, null, 0);
@@ -513,8 +514,6 @@ public class ImeContainer extends ViewGroup
         }
     }
 
-
-
     private void commitText(String text) {
         InputConnection ic = getInputConnection();
         if (ic == null) return;
@@ -522,12 +521,25 @@ public class ImeContainer extends ViewGroup
         char previousChar = getPreviousChar();
         if (previousChar == ' ' || previousChar == MongolCode.Uni.NNBS) {
             char initialChar = text.charAt(0);
-            if (initialChar == MongolCode.Uni.NNBS) {
+            if (characterDoesntFollowSpace(initialChar)) {
                 ic.deleteSurroundingText(1, 0);
             }
         }
         ic.commitText(text, 1);
         ic.endBatchEdit();
+    }
+
+    private boolean characterDoesntFollowSpace(char character) {
+        int length = mCharactersThatDontFollowSpace.length();
+        for (int i = 0; i < length; i++) {
+            if (mCharactersThatDontFollowSpace.charAt(i) == character)
+                return true;
+        }
+        return false;
+    }
+
+    public void setCharactersThatDontFollowSpace(CharSequence characters) {
+        mCharactersThatDontFollowSpace = characters;
     }
 
     private void updateCandidatesView() {
@@ -713,25 +725,16 @@ public class ImeContainer extends ViewGroup
 
     private boolean currentWordIsPrefixedWith(String text) {
         String currentWord = getPreviousMongolWord(false);
-        return text.startsWith(currentWord);
+        return !TextUtils.isEmpty(currentWord) && text.startsWith(currentWord);
     }
 
     private void insertFollowingWord(String text) {
-        if (TextUtils.isEmpty(text)) return;
-        InputConnection ic = getInputConnection();
-        if (ic == null) return;
         char previousChar = getPreviousChar();
-        String insertWord = text;
-        ic.beginBatchEdit();
-        if (text.charAt(0) == MongolCode.Uni.NNBS) {
-            if (isSpace(previousChar)) {
-                ic.deleteSurroundingText(1, 0);
-            }
-        } else if (!isSpace(previousChar)) {
-            insertWord = " " + insertWord;
+        if (isSpace(previousChar)) {
+            commitText(text);
+        } else {
+            commitText(" " + text);
         }
-        ic.commitText(insertWord, 1);
-        ic.endBatchEdit();
     }
 
     private boolean isSpace(char character) {

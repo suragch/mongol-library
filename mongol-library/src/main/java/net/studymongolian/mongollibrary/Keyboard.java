@@ -54,6 +54,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     private int mKeyBorderRadius;
     private int mKeySpacing;
     private CandidatesLocation mCandidatesLocation;
+    private boolean mShouldShouldSuffixesInPopup;
 
     private PopupKeyCandidatesView popupView;
     private PopupWindow popupWindow;
@@ -163,6 +164,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     private void setCommonDefaults() {
         mSecondaryTextSizePx = mPrimaryTextSizePx / 2;
+        mShouldShouldSuffixesInPopup = true;
     }
 
     private int getDefaultPrimaryTextSizeInPixels() {
@@ -350,6 +352,14 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     public boolean hasCandidatesView() {
         return mCandidatesLocation != CandidatesLocation.NONE;
+    }
+
+    protected void setShouldShowSuffixesInPopup(boolean whether) {
+        mShouldShouldSuffixesInPopup = whether;
+    }
+
+    protected boolean shouldShouldSuffixesInPopup() {
+        return mShouldShouldSuffixesInPopup;
     }
 
     public CandidatesLocation getCandidatesLocation() {

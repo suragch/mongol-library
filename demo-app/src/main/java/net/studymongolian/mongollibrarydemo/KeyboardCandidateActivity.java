@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.ImeContainer;
+import net.studymongolian.mongollibrary.MongolCode;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
 import net.studymongolian.mongollibrary.MongolTextView;
@@ -32,6 +34,14 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
         // provide words for candidate selection
         imeContainer.setDataSource(this);
+
+        // these will characters will cause the cursor to back up
+        // if they come after a space.
+        imeContainer.setCharactersThatDontFollowSpace("" +
+                MongolCode.Uni.NNBS +
+                MongolCode.Uni.VERTICAL_QUESTION_MARK +
+                MongolCode.Uni.MONGOLIAN_FULL_STOP +
+                MongolCode.Uni.MONGOLIAN_COMMA);
 
         // set up input method manager
         MongolInputMethodManager mimm = new MongolInputMethodManager();
@@ -61,7 +71,14 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     @Override
     public void onCandidateClick(int position, String word, String previousWordInEditor) {
         Log.i("TAG", "onCandidateClick: ");
+        addSpace();
         new GetWordsFollowing(this).execute(word);
+    }
+
+    private void addSpace() {
+        InputConnection ic = imeContainer.getInputConnection();
+        if (ic == null) return;
+        ic.commitText(" ", 1);
     }
 
     @Override

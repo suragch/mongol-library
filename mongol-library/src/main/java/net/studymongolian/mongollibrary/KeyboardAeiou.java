@@ -482,7 +482,7 @@ public class KeyboardAeiou extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyE());
         }
 
@@ -528,7 +528,7 @@ public class KeyboardAeiou extends Keyboard {
 
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyI());
         }
 
@@ -596,7 +596,7 @@ public class KeyboardAeiou extends Keyboard {
 
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyO());
         }
 
@@ -674,7 +674,7 @@ public class KeyboardAeiou extends Keyboard {
             candidates.add(na_fvs1);
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyNA());
         }
 
@@ -713,7 +713,7 @@ public class KeyboardAeiou extends Keyboard {
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.PA));
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.FA));
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyBA());
         }
 
@@ -844,7 +844,7 @@ public class KeyboardAeiou extends Keyboard {
             candidates.add(final_da_fvs1);
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyTADA());
         }
 

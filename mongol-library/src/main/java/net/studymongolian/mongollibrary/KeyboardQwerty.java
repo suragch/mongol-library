@@ -584,7 +584,7 @@ public class KeyboardQwerty extends Keyboard {
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.CHI));
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyQ());
         }
 
@@ -631,7 +631,7 @@ public class KeyboardQwerty extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyE());
         }
 
@@ -674,7 +674,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(medial_ta_fvs1);
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyT());
         }
 
@@ -784,7 +784,7 @@ public class KeyboardQwerty extends Keyboard {
             }
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyI());
         }
 
@@ -932,7 +932,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(final_da_fvs1);
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyD());
         }
 
@@ -1126,7 +1126,7 @@ public class KeyboardQwerty extends Keyboard {
 
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyV());
         }
 
@@ -1159,7 +1159,7 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyB());
         }
 
@@ -1206,7 +1206,7 @@ public class KeyboardQwerty extends Keyboard {
 
         }
 
-        if (!hasCandidatesView()) {
+        if (shouldShouldSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyN());
         }
 
