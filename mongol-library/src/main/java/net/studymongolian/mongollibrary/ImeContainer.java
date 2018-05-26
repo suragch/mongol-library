@@ -763,5 +763,10 @@ public class ImeContainer extends ViewGroup
         mCandidatesView.setCandidates(candidateWords);
     }
 
+    public List<String> getCandidates() {
+        if (mCandidatesView == null) return new ArrayList<>();
+        return mCandidatesView.getCandidates();
+    }
+
 }
 

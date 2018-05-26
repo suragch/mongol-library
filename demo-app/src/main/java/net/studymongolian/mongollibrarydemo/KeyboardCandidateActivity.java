@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.ImeContainer;
@@ -59,6 +60,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
     @Override
     public void onCandidateClick(int position, String word, String previousWordInEditor) {
+        Log.i("TAG", "onCandidateClick: ");
         new GetWordsFollowing(this).execute(word);
     }
 

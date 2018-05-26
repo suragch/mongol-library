@@ -1,5 +1,6 @@
 package net.studymongolian.mongollibrary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -320,6 +321,9 @@ public class ImeCandidatesView extends ViewGroup {
                 }
             }
 
+            // if implementing performClick() make sure that onClick doesn't get called twice
+            // perhaps by returning true
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 int action = event.getAction();
@@ -330,7 +334,7 @@ public class ImeCandidatesView extends ViewGroup {
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP:
-                        view.performClick();
+                        //view.performClick();
                         view.setBackgroundColor(Color.TRANSPARENT);
                         break;
                     default:
