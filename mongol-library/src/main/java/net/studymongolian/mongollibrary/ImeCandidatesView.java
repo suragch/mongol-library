@@ -59,12 +59,21 @@ public class ImeCandidatesView extends ViewGroup {
         adapter.notifyDataSetChanged();
     }
 
+    public void removeCandidate(int index) {
+        mCandidates.remove(index);
+        adapter.notifyItemRemoved(index);
+    }
+
     public void setCandidates(List<String> candidates) {
         mCandidates.clear();
         if (candidates != null)
             mCandidates.addAll(candidates);
         if (adapter != null)
             adapter.notifyDataSetChanged();
+    }
+
+    public List<String> getCandidates() {
+        return mCandidates;
     }
 
     public enum Orientation {

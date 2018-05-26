@@ -7,8 +7,8 @@ android {
         applicationId "net.studymongolian.mongollibrarydemo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.6.0"
+        versionCode 11
+        versionName "1.7.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -32,7 +32,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 
     implementation project(":mongol-library")
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'

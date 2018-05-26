@@ -58,7 +58,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     }
 
     @Override
-    public void onCandidateClick(int position, String word) {
+    public void onCandidateClick(int position, String word, String previousWordInEditor) {
         new GetWordsFollowing(this).execute(word);
     }
 
@@ -66,8 +66,6 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     public void onCandidateLongClick(int position, String text) {
         MongolToast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
-
-
 
     private static class GetWordsStartingWith extends AsyncTask<String, Integer, List<String>> {
 

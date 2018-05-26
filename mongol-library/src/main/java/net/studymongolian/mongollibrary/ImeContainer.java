@@ -68,7 +68,7 @@ public class ImeContainer extends ViewGroup
 
         void onWordFinished(String word, String previousWord);
 
-        void onCandidateClick(int position, String word);
+        void onCandidateClick(int position, String word, String previousWordInEditor);
 
         void onCandidateLongClick(int position, String text);
     }
@@ -662,9 +662,14 @@ public class ImeContainer extends ViewGroup
         // see also https://stackoverflow.com/a/45182401
     }
 
-    private void clearCandidates() {
+    public void clearCandidates() {
         if (mCandidatesView == null) return;
         mCandidatesView.clearCandidates();
+    }
+
+    public void removeCandidate(int index) {
+        if (mCandidatesView == null) return;
+        mCandidatesView.removeCandidate(index);
     }
 
     public void addKeyboard(Keyboard keyboard) {
@@ -701,7 +706,9 @@ public class ImeContainer extends ViewGroup
             insertFollowingWord(text);
         }
         if (mCandidatesView == null || mDataSource == null) return;
-        mDataSource.onCandidateClick(position, text);
+        List<String> words = getPreviousMongolWords(2, true);
+        String previousWord = words.get(1);
+        mDataSource.onCandidateClick(position, text, previousWord);
     }
 
     private boolean currentWordIsPrefixedWith(String text) {
@@ -744,15 +751,6 @@ public class ImeContainer extends ViewGroup
         ic.commitText(text, 1);
         ic.endBatchEdit();
     }
-
-//    private void suggestFollowingWords(String text) {
-//        if (mCandidatesView == null) return;
-//        if (mDataSource != null) {
-//            mDataSource.onRequestWordsFollowing(text);
-//        } else {
-//            mCandidatesView.clearCandidates();
-//        }
-//    }
 
     @Override
     public void onCandidateLongClick(int position, String text) {
