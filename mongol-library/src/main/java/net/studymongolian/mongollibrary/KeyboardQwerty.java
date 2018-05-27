@@ -1247,10 +1247,17 @@ public class KeyboardQwerty extends Keyboard {
 
     private List<PopupKeyCandidate> getCandidatesForSpace() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
-        PopupKeyCandidate nnbs = new PopupKeyCandidate(
-                "" + MongolCode.Uni.NNBS,
-                KEY_SPACE_SUB_DISPLAY,
-                " ");
+        PopupKeyCandidate nnbs;
+        if (hasCandidatesView()) {
+            nnbs = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.NNBS,
+                    KEY_SPACE_SUB_DISPLAY);
+        } else {
+            nnbs = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.NNBS,
+                    KEY_SPACE_SUB_DISPLAY,
+                    " ");
+        }
         candidates.add(nnbs);
         return candidates;
     }

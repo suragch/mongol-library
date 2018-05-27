@@ -59,7 +59,11 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
     @Override
     public void onRequestWordsStartingWith(String text) {
-        new GetWordsStartingWith(this).execute(text);
+        if (text.equals(String.valueOf(MongolCode.Uni.NNBS))) {
+            getSuffixes();
+        } else {
+            new GetWordsStartingWith(this).execute(text);
+        }
     }
 
     @Override
@@ -84,6 +88,23 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     @Override
     public void onCandidateLongClick(int position, String text) {
         MongolToast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    private void getSuffixes() {
+        // for demo only (not a full list)
+        // real keyboard should do smart prediction depending on previous word
+        // String previousWord = imeContainer.getPreviousMongolWord(true);
+        List<String> suffixes = new ArrayList<>();
+        suffixes.add("" + MongolCode.Suffix.UU);
+        suffixes.add("" + MongolCode.Suffix.YI);
+        suffixes.add("" + MongolCode.Suffix.YIN);
+        suffixes.add("" + MongolCode.Suffix.IYAN);
+        suffixes.add("" + MongolCode.Suffix.IYAR);
+        suffixes.add("" + MongolCode.Suffix.ACHA);
+        suffixes.add("" + MongolCode.Suffix.DU);
+        suffixes.add("" + MongolCode.Suffix.TAI);
+
+        imeContainer.setCandidates(suffixes);
     }
 
     private static class GetWordsStartingWith extends AsyncTask<String, Integer, List<String>> {
