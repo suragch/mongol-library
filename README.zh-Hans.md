@@ -41,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.7.2'
+    implementation 'net.studymongolian:mongol-library:1.8.0'
 }
 ```
 
@@ -319,7 +319,7 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     }
 
     @Override
-    public void onCandidateLongClick(int position, String text) {
+    public void onCandidateLongClick(int position, String word, String previousWordInEditor) {
         // 候选词被长按
     }
 }

@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.7.2'
+    implementation 'net.studymongolian:mongol-library:1.8.0'
 }
 ```
 
@@ -325,7 +325,7 @@ XML layout
 
 </RelativeLayout>
 ```
-You could style each keyboard seperately, but in the above example a single style is used.
+You could style each keyboard separately, but in the above example a single style is used.
 
 ```xml
 <style name="KeyboardTheme" parent="AppTheme">
@@ -426,7 +426,7 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     }
 
     @Override
-    public void onCandidateLongClick(int position, String text) {
+    public void onCandidateLongClick(int position, String word, String previousWordInEditor) {
         // user long clicked a candidate item
     }
 }
@@ -655,6 +655,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.8.0`: Updates to `ImeContainer.DataSource` API, allow suffix candidates, added more javadocs
 * `1.7.2`: Spacing and popup improvements for IME
 * `1.7.0`: Further updates to `ImeContainer.DataSource` API
 * `1.6.0`: Updated `ImeContainer.DataSource` methods to better support database updates, added Espresso tests to demo app
