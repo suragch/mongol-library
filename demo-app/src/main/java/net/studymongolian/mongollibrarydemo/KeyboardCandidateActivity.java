@@ -86,8 +86,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
     }
 
     @Override
-    public void onCandidateLongClick(int position, String text) {
-        MongolToast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    public void onCandidateLongClick(int position, String word, String previousWordInEditor) {
+        MongolToast.makeText(this, word, Toast.LENGTH_SHORT).show();
     }
 
     private void getSuffixes() {

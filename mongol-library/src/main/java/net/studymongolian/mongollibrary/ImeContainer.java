@@ -71,7 +71,7 @@ public class ImeContainer extends ViewGroup
 
         void onCandidateClick(int position, String word, String previousWordInEditor);
 
-        void onCandidateLongClick(int position, String text);
+        void onCandidateLongClick(int position, String word, String previousWordInEditor);
     }
 
     // provide a way for another class to set the listener
@@ -674,16 +674,6 @@ public class ImeContainer extends ViewGroup
         // see also https://stackoverflow.com/a/45182401
     }
 
-    public void clearCandidates() {
-        if (mCandidatesView == null) return;
-        mCandidatesView.clearCandidates();
-    }
-
-    public void removeCandidate(int index) {
-        if (mCandidatesView == null) return;
-        mCandidatesView.removeCandidate(index);
-    }
-
     public void addKeyboard(Keyboard keyboard) {
         if (mKeyboards == null)
             mKeyboards = new ArrayList<>();
@@ -717,7 +707,7 @@ public class ImeContainer extends ViewGroup
         } else {
             insertFollowingWord(text);
         }
-        if (mCandidatesView == null || mDataSource == null) return;
+        if (mDataSource == null) return;
         List<String> words = getPreviousMongolWords(2, true);
         String previousWord = words.get(1);
         mDataSource.onCandidateClick(position, text, previousWord);
@@ -756,9 +746,11 @@ public class ImeContainer extends ViewGroup
     }
 
     @Override
-    public void onCandidateLongClick(int position, String text) {
+    public void onCandidateLongClick(int position, String word) {
         if (mDataSource == null) return;
-        mDataSource.onCandidateLongClick(position, text);
+        List<String> words = getPreviousMongolWords(2, true);
+        String previousWord = words.get(1);
+        mDataSource.onCandidateLongClick(position, word, previousWord);
     }
 
     public void setCandidates(List<String> candidateWords) {
@@ -769,6 +761,16 @@ public class ImeContainer extends ViewGroup
     public List<String> getCandidates() {
         if (mCandidatesView == null) return new ArrayList<>();
         return mCandidatesView.getCandidates();
+    }
+
+    public void clearCandidates() {
+        if (mCandidatesView == null) return;
+        mCandidatesView.clearCandidates();
+    }
+
+    public void removeCandidate(int index) {
+        if (mCandidatesView == null) return;
+        mCandidatesView.removeCandidate(index);
     }
 
 }
