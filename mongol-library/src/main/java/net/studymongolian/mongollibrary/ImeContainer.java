@@ -63,6 +63,11 @@ public class ImeContainer extends ViewGroup
         this.mContext = context;
     }
 
+    /**
+     * Listeners will be notified of keyboard and candidate view events
+     * so that they can update the candidate view word list with
+     * appropriate suggestions.
+     */
     public interface DataSource {
 
         void onRequestWordsStartingWith(String text);
@@ -74,16 +79,27 @@ public class ImeContainer extends ViewGroup
         void onCandidateLongClick(int position, String word, String previousWordInEditor);
     }
 
-    // provide a way for another class to set the listener
+    /**
+     * provide a way for another class to set the listener
+     * @param dataSource the class that will be providing candidate view updates
+     */
     public void setDataSource(DataSource dataSource) {
         this.mDataSource = dataSource;
     }
 
+    /**
+     * A custom InputMethodService should implement this listener when
+     * creating a system keyboard.
+     */
     public interface OnSystemImeListener {
         InputConnection getInputConnection();
         void onChooseNewSystemKeyboard();
     }
 
+    /**
+     *
+     * @param listener the custom InputMethodService class
+     */
     public void setOnSystemImeListener(OnSystemImeListener listener) {
         this.mSystemImeListener = listener;
     }
@@ -238,17 +254,34 @@ public class ImeContainer extends ViewGroup
         mCurrentKeyboard.layout(left, top, right, bottom);
     }
 
+    /**
+     *
+     * @return the current input connection
+     */
     public InputConnection getInputConnection() {
         if (mSystemImeListener != null)
             return mSystemImeListener.getInputConnection();
         return mInputConnection;
     }
 
+    /**
+     *
+     * @param inputConnection for the current editor
+     */
     public void setInputConnection(InputConnection inputConnection) {
         this.mInputConnection = inputConnection;
         mComposing = "";
     }
 
+    /**
+     *
+     * @param oldSelStart the selection start before the update
+     * @param oldSelEnd the selection end before the update
+     * @param newSelStart the selection start after the update
+     * @param newSelEnd the selection end after the update
+     * @param candidatesStart (todo what is this for?)
+     * @param candidatesEnd (todo what is this for?)
+     */
     @SuppressWarnings("unused")
     public void onUpdateSelection(int oldSelStart,
                                   int oldSelEnd,
@@ -299,6 +332,10 @@ public class ImeContainer extends ViewGroup
         //}
     }
 
+    /**
+     *
+     * @param keyboardDisplayName the name of the new keyboard to switch to
+     */
     @Override
     public void onRequestNewKeyboard(String keyboardDisplayName) {
         if (isSystemKeyboardRequest(keyboardDisplayName)) {
@@ -308,6 +345,10 @@ public class ImeContainer extends ViewGroup
         requestNewKeyboard(newKeyboardIndex);
     }
 
+    /**
+     *
+     * @param index of the keyboard to switch to
+     */
     public void requestNewKeyboard(int index) {
         if (index < 0 || index >= mKeyboards.size())
             return;
@@ -353,16 +394,31 @@ public class ImeContainer extends ViewGroup
         this.addView(keyboard);
     }
 
+    /**
+     *
+     * @return the number of keyboards in the IME container
+     */
     @SuppressWarnings("unused")
     public int getKeyboardCount() {
         return mKeyboards.size();
     }
 
+    /**
+     *
+     * @param index of the keyboard to return
+     * @return the keyboard at the requested index
+     */
     @SuppressWarnings("unused")
     public Keyboard getKeyboardAt(int index) {
         return mKeyboards.get(index);
     }
 
+    /**
+     * An additional popup item can be added to the keyboard chooser key.
+     * When this item is selected users will be given the choose to choose
+     * one of the other system keyboards.
+     * @param title of the popup item. For example, "Other System Keyboards".
+     */
     public void showSystemKeyboardsOption(String title) {
         mShowSystemKeyboardsOption = new PopupKeyCandidate(title);
     }
@@ -409,6 +465,10 @@ public class ImeContainer extends ViewGroup
         mCandidatesView.setDividerColor(dividerColor);
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     * @return a list of the other available keyboards that can be switched to
+     */
     @Override
     public List<PopupKeyCandidate> getAllKeyboardNames() {
         int numberOfOtherKeyboards = mKeyboards.size() - 1;
@@ -436,6 +496,12 @@ public class ImeContainer extends ViewGroup
         return previous.charAt(0);
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     * @param allowSingleSpaceBeforeCursor whether a space is allowed between the cursor
+     *                                     and the end of the previous word
+     * @return the previous Mongolian word before the cursor
+     */
     @Override
     public String getPreviousMongolWord(boolean allowSingleSpaceBeforeCursor) {
         List<String> words = getPreviousMongolWords(1, allowSingleSpaceBeforeCursor);
@@ -492,6 +558,10 @@ public class ImeContainer extends ViewGroup
         return startIndex;
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     * @param text that was input by a keyboard
+     */
     @Override
     public void onKeyboardInput(String text) {
         if (TextUtils.isEmpty(text)) return;
@@ -538,6 +608,16 @@ public class ImeContainer extends ViewGroup
         return false;
     }
 
+    /**
+     * This allows keyboard input to automatically backspace before inserting text
+     * if the previous character is a space. This is convenient for certain characters
+     * that do not normally follow a space.
+     *
+     * If not set the default value is NNBS for suffixes.
+     *
+     * @param characters a string of characters. For example, "?.,". You should also
+     *                   include MongolCode.Uni.NNBS.
+     */
     public void setCharactersThatDontFollowSpace(CharSequence characters) {
         mCharactersThatDontFollowSpace = characters;
     }
@@ -552,6 +632,11 @@ public class ImeContainer extends ViewGroup
         mDataSource.onRequestWordsStartingWith(mongolWord);
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     * @param choice of the item that was chosen from the candidate list
+     *               when the keyboard key was long pressed.
+     */
     @Override
     public void onKeyPopupChosen(PopupKeyCandidate choice) {
         InputConnection ic = getInputConnection();
@@ -581,6 +666,12 @@ public class ImeContainer extends ViewGroup
         mComposing = "";
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     *
+     * Delete back one visible character before cursor. Extra control
+     * characters like FVS, MVS, ZWJ, etc. may also be deleted.
+     */
     @Override
     public void onBackspace() {
         InputConnection ic = getInputConnection();
@@ -602,6 +693,13 @@ public class ImeContainer extends ViewGroup
         clearCandidates();
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     *
+     * @param numberOfChars the number of characters located before the cursor
+     *                      to request from the editor
+     * @return the text before the cursor. The length may be shorter than requested.
+     */
     @Override
     public CharSequence getTextBeforeCursor(int numberOfChars) {
         InputConnection ic = getInputConnection();
@@ -609,6 +707,13 @@ public class ImeContainer extends ViewGroup
         return ic.getTextBeforeCursor(numberOfChars, 0);
     }
 
+    /**
+     * Keyboard.OnKeyboardListener method
+     *
+     * @param numberOfChars the number of characters located after the cursor
+     *                      to request from the editor
+     * @return the text after the cursor. The length may be shorter than requested.
+     */
     @Override
     public CharSequence getTextAfterCursor(int numberOfChars) {
         InputConnection ic = getInputConnection();
@@ -674,6 +779,10 @@ public class ImeContainer extends ViewGroup
         // see also https://stackoverflow.com/a/45182401
     }
 
+    /**
+     *
+     * @param keyboard to make available to this IME container
+     */
     public void addKeyboard(Keyboard keyboard) {
         if (mKeyboards == null)
             mKeyboards = new ArrayList<>();
@@ -687,8 +796,11 @@ public class ImeContainer extends ViewGroup
         }
     }
 
-    // This method is called when subviews are added from XML
-    // XXX currently ignoring LayoutParams. Should we use them?
+    /**
+     * This method is called when subviews are added from XML
+     * @param child Keyboard is the only supported type
+     * @param params currently ignoring LayoutParams. Should we use them?
+     */
     @Override
     public void addView(View child, LayoutParams params) {
         if (child instanceof Keyboard) {
@@ -696,21 +808,33 @@ public class ImeContainer extends ViewGroup
         }
     }
 
+    /**
+     *
+     * @return the currently visible keyboard
+     */
     public Keyboard getCurrentKeyboard() {
         return mCurrentKeyboard;
     }
 
+    /**
+     * ImeCandidatesView.CandidateClickListener method
+     *
+     * Called when a candidate item in the ImeCandidateView is clicked
+     *
+     * @param position the RecyclerView position of the clicked item
+     * @param word text of the clicked item
+     */
     @Override
-    public void onCandidateClick(int position, String text) {
-        if (currentWordIsPrefixedWith(text)) {
-            replaceMongolWordBeforeCursor(text);
+    public void onCandidateClick(int position, String word) {
+        if (currentWordIsPrefixedWith(word)) {
+            replaceMongolWordBeforeCursor(word);
         } else {
-            insertFollowingWord(text);
+            insertFollowingWord(word);
         }
         if (mDataSource == null) return;
         List<String> words = getPreviousMongolWords(2, true);
         String previousWord = words.get(1);
-        mDataSource.onCandidateClick(position, text, previousWord);
+        mDataSource.onCandidateClick(position, word, previousWord);
     }
 
     private boolean currentWordIsPrefixedWith(String text) {
@@ -745,6 +869,14 @@ public class ImeContainer extends ViewGroup
         ic.endBatchEdit();
     }
 
+    /**
+     * ImeCandidatesView.CandidateClickListener method
+     *
+     * Called when a candidate item in the ImeCandidateView is long clicked
+     *
+     * @param position the RecyclerView position of the long clicked item
+     * @param word text of the long clicked item
+     */
     @Override
     public void onCandidateLongClick(int position, String word) {
         if (mDataSource == null) return;
@@ -753,21 +885,38 @@ public class ImeContainer extends ViewGroup
         mDataSource.onCandidateLongClick(position, word, previousWord);
     }
 
+    /**
+     *
+     * @param candidateWords new list of words to display in the candidates view
+     */
     public void setCandidates(List<String> candidateWords) {
         if (mCandidatesView == null) return;
         mCandidatesView.setCandidates(candidateWords);
     }
 
+    /**
+     *
+     * @return current list of words in the candidates view
+     */
+    @SuppressWarnings("unused")
     public List<String> getCandidates() {
         if (mCandidatesView == null) return new ArrayList<>();
         return mCandidatesView.getCandidates();
     }
 
+    /**
+     * remove all candidates from the candidate view
+     */
     public void clearCandidates() {
         if (mCandidatesView == null) return;
         mCandidatesView.clearCandidates();
     }
 
+    /**
+     * remove a single candidate from the candidate view
+     * @param index of the RecyclerView item to remove
+     */
+    @SuppressWarnings("unused")
     public void removeCandidate(int index) {
         if (mCandidatesView == null) return;
         mCandidatesView.removeCandidate(index);

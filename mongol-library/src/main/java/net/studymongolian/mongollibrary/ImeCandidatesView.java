@@ -49,10 +49,17 @@ public class ImeCandidatesView extends ViewGroup {
     private Orientation mOrientation;
     private CandidateClickListener mCandidateClickListener;
 
+    /**
+     *
+     * @return whether there are currently any candidate suggestions
+     */
     public boolean hasCandidates() {
         return mCandidates != null && mCandidates.size() > 0;
     }
 
+    /**
+     * remove all candidates from the list
+     */
     public void clearCandidates() {
         if (adapter == null)
             return;
@@ -60,11 +67,19 @@ public class ImeCandidatesView extends ViewGroup {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Remove a single candidate from the list
+     * @param index of candidate to remove
+     */
     public void removeCandidate(int index) {
         mCandidates.remove(index);
         adapter.notifyItemRemoved(index);
     }
 
+    /**
+     * Set a new list of candidates to display
+     * @param candidates new list to display
+     */
     public void setCandidates(List<String> candidates) {
         mCandidates.clear();
         if (candidates != null)
@@ -73,10 +88,17 @@ public class ImeCandidatesView extends ViewGroup {
             adapter.notifyDataSetChanged();
     }
 
+    /**
+     *
+     * @return the current list of word candidate suggestions
+     */
     public List<String> getCandidates() {
         return mCandidates;
     }
 
+    /**
+     * The orientation of the Candidates View
+     */
     public enum Orientation {
         VERTICAL,
         HORIZONTAL
@@ -162,6 +184,10 @@ public class ImeCandidatesView extends ViewGroup {
         }
     }
 
+    /**
+     * Affects the orientation of the RecyclerView's Layout Manager
+     * @param orientation vertical or horizontal
+     */
     public void setOrientation(Orientation orientation) {
         this.mOrientation = orientation;
         LinearLayoutManager layoutManager;
@@ -177,41 +203,71 @@ public class ImeCandidatesView extends ViewGroup {
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     *
+     * @param color of the background of the candidate item
+     */
     public void setCandidateBackgroundColor(int color) {
         mPaint.setColor(color);
         invalidate();
     }
 
+    /**
+     *
+     * @param color of the background of the candidate item when pressed
+     */
     public void setBackgroundPressedColor(int color) {
         this.mPressedBackgroundColor = color;
     }
 
+    /**
+     *
+     * @param color of the candidate text
+     */
     public void setTextColor(int color) {
         this.mTextColor = color;
         invalidate();
     }
 
+    /**
+     *
+     * @param color of the divider between candidate items
+     */
     public void setDividerColor(int color) {
         this.mDividerColor = color;
         invalidate();
     }
 
-    public void setBorderColor(int borderColor) {
-        mKeyBorderPaint.setColor(borderColor);
+    /**
+     *
+     * @param color of the border around the candidate view
+     */
+    public void setBorderColor(int color) {
+        mKeyBorderPaint.setColor(color);
         invalidate();
     }
 
-    public void setBorderWidth(int borderWidth) {
-        mKeyBorderPaint.setStrokeWidth(borderWidth);
+    /**
+     *
+     * @param width of the border around the candidate view
+     */
+    public void setBorderWidth(int width) {
+        mKeyBorderPaint.setStrokeWidth(width);
         invalidate();
     }
 
-    public void setBorderRadius(int borderRadius) {
-        this.mBorderRadius = borderRadius;
+    /**
+     *
+     * @param radius of the corners of the border around the candidate view
+     */
+    public void setBorderRadius(int radius) {
+        this.mBorderRadius = radius;
         invalidate();
     }
 
-
+    /**
+     * Listeners will be notified on candidate click events
+     */
     interface CandidateClickListener {
 
         void onCandidateClick(int position, String text);

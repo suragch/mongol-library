@@ -257,70 +257,126 @@ public abstract class Key extends View {
         }
     }
 
-    public void setKeyColor(int keyColor) {
-        mKeyPaint.setColor(keyColor);
-        this.mKeyColor = keyColor;
+    /**
+     *
+     * @param color of the background for the key
+     */
+    public void setKeyColor(int color) {
+        mKeyPaint.setColor(color);
+        this.mKeyColor = color;
         invalidate();
     }
 
-    public void setPressedColor(int pressedColor) {
-        this.mPressedColor = pressedColor;
+    /**
+     *
+     * @param color of the background for the key when pressed
+     */
+    public void setPressedColor(int color) {
+        this.mPressedColor = color;
         invalidate();
     }
 
-    public void setBorderColor(int borderColor) {
-        mKeyBorderPaint.setColor(borderColor);
+    /**
+     *
+     * @param color of the border around the key
+     */
+    public void setBorderColor(int color) {
+        mKeyBorderPaint.setColor(color);
         invalidate();
     }
 
-    public void setBorderWidth(int borderWidth) {
-        mKeyBorderPaint.setStrokeWidth(borderWidth);
+    /**
+     *
+     * @param width of the border around the key
+     */
+    public void setBorderWidth(int width) {
+        mKeyBorderPaint.setStrokeWidth(width);
         invalidate();
     }
 
-    public void setBorderRadius(int borderRadius) {
-        this.mBorderRadius = borderRadius;
+    /**
+     *
+     * @param radius of the corners of the border around the key
+     */
+    public void setBorderRadius(int radius) {
+        this.mBorderRadius = radius;
         invalidate();
     }
 
+    /**
+     *
+     * @param text primary centered text in the key
+     */
     public void setText(char text) {
         setText(String.valueOf(text));
     }
 
+    /**
+     *
+     * @param text primary centered text in the key
+     */
     public void setText(String text) {
         this.mKeyInputText = text;
     }
 
+    /**
+     *
+     * @param isRotated whether the subtext should be rotated 90 degrees
+     */
     public void setIsRotatedSubText(boolean isRotated) {
         this.mIsRotatedSubText = isRotated;
         invalidate();
     }
 
+    /**
+     * This text is the secondary text in the key. It is used for display purposes.
+     * The actual input values must be set by adding popup candidates.
+     * @param text secondary display text
+     */
     public void setSubText(String text) {
         this.mSubTextDisplay = renderer.unicodeToMenksoft(text);
         invalidate();
     }
 
+    /**
+     * This text is the secondary text in the key. It is used for display purposes.
+     * The actual input values must be set by adding popup candidates.
+     * @param text secondary display text
+     */
     public void setSubText(char text) {
         setSubText(String.valueOf(text));
     }
 
+    /**
+     * Keys can override this method to allow their own text to be updated.
+     * @param typeface of the font to display the key text
+     */
     public void setTypeFace(Typeface typeface) {
         mSubTextPaint.setTypeface(typeface);
         invalidate();
     }
 
-    public void setSubTextSize(float subTextSize) {
-        mSubTextPaint.setTextSize(subTextSize);
+    /**
+     *
+     * @param size of the subtext
+     */
+    public void setSubTextSize(float size) {
+        mSubTextPaint.setTextSize(size);
         invalidate();
     }
 
-    public void setSubTextColor(int subTextColor) {
-        mSubTextPaint.setColor(subTextColor);
+    /**
+     *
+     * @param color of the subtext
+     */
+    public void setSubTextColor(int color) {
+        mSubTextPaint.setColor(color);
         invalidate();
     }
 
-    // Keyboards should implement this interface to receive input from keys
+    /**
+     * Keyboards should implement this interface to receive input from keys
+     */
     public interface KeyListener {
         void onKeyInput(String text);
         void onBackspace();
@@ -334,9 +390,17 @@ public abstract class Key extends View {
         void onNewKeyboardChosen(int xPositionOnPopup);
         void onShiftChanged(boolean isShiftOn);
     }
+
+    /**
+     *
+     * @param listener the keyboard class that will listen for key events
+     */
     public void setKeyListener(KeyListener listener) {
         this.mKeyListener = listener;
     }
+
+    // Convenience methods for key subclasses to communicate with keyboard
+
     protected void sendTextToKeyboard(String text) {
         if (mKeyListener == null) return;
         mKeyListener.onKeyInput(text);
