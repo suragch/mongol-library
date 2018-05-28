@@ -66,6 +66,8 @@ public class MongolInputMethodManager {
     /**
      * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
      * This method will be removed in the future.
+     *
+     * @param allowSystemKeyboard, when the system keyboard is allowed to popup
      */
     @Deprecated
     public void setAllowSystemSoftInput(int allowSystemKeyboard) {

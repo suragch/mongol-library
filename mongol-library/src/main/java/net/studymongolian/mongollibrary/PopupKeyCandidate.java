@@ -23,6 +23,7 @@ public class PopupKeyCandidate {
 
     /**
      * Convenience constructor for PopupCandidates(String unicode, String display, String composing)
+     * @param unicode the unicode value for a popup item
      */
     public PopupKeyCandidate(String unicode) {
         this(unicode, null, null);
@@ -30,6 +31,8 @@ public class PopupKeyCandidate {
 
     /**
      * Convenience constructor for PopupCandidates(String unicode, String display, String composing)
+     * @param unicode the unicode value for a popup item
+     * @param display the value to display if different than the unicode value
      */
     public PopupKeyCandidate(String unicode, String display) {
         this(unicode, display, null);

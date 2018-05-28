@@ -611,7 +611,7 @@ public final class MongolCode {
      * Test if character is Mongolian
      * Sibe/Manchu/Aligali are currently undefined (may or may not be handled in the future)
      *
-     * @param character
+     * @param character the character to test
      * @return true if Mongolian/TodoScript letters, MVS, FVS1-3, NIRUGU, ZWJ, ZWNJ, (but not NNBS)
      */
     public static boolean isMongolian(char character) {

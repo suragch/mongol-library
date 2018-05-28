@@ -414,6 +414,8 @@ public class MongolEditText extends MongolTextView {
     /**
      * Adds a TextWatcher to the list of those whose methods are called
      * whenever this MongolEditText's text changes.
+     *
+     * @param watcher: the TextWatcher object to add
      */
     public void addTextChangedListener(TextWatcher watcher) {
         if (mListeners == null) {
@@ -425,8 +427,9 @@ public class MongolEditText extends MongolTextView {
 
     /**
      * Removes the specified TextWatcher from the list of those whose
-     * methods are called
-     * whenever this TextView's text changes.
+     * methods are called whenever this TextView's text changes.
+     *
+     * @param watcher: the TextWatcher object to remove
      */
     public void removeTextChangedListener(TextWatcher watcher) {
         if (mListeners != null) {

@@ -50,7 +50,11 @@ public class MongolLayout {
 
 
     /**
-     * Return how wide a layout must be in order to display the
+     * @param source the text to measure
+     * @param start index in source to start measuring from
+     * @param end index in source to stop measuring
+     * @param paint the paint object used to know the text size
+     * @return how wide a layout must be in order to display the
      * specified text slice with one line per paragraph.
      */
     public static Rect getDesiredSize(CharSequence source,
@@ -91,10 +95,10 @@ public class MongolLayout {
     }
 
     /**
-     * Draw this Layout on the specified Canvas.
+     * @param canvas the canvas to draw the layout on
      */
-    public void draw(Canvas c) {
-        draw(c, null, null, 0);
+    public void draw(Canvas canvas) {
+        draw(canvas, null, null, 0);
     }
 
     /**
