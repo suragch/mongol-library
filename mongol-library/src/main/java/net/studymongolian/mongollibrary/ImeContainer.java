@@ -70,12 +70,33 @@ public class ImeContainer extends ViewGroup
      */
     public interface DataSource {
 
+        /**
+        * @param text, prefix string to search for matching words
+        */
         void onRequestWordsStartingWith(String text);
 
+        /**
+        * @param word that was just confirmed completed
+        * @param previousWord, the word before the completed word
+        */
         void onWordFinished(String word, String previousWord);
 
+        /**
+        * @param position the position of the candidate view item that was clicked
+        * @param word the text in the candidates view item that was clicked
+        * @param previousWordInEditor not the word currently touching the cursor, the word
+        *                             before that. If there is a space before the cursor,
+        *                             then the word before the space.
+        */
         void onCandidateClick(int position, String word, String previousWordInEditor);
 
+        /**
+        * @param position the position of the candidate view item that was long clicked
+        * @param word the text in the candidates view item that was long clicked
+        * @param previousWordInEditor not the word currently touching the cursor, the word
+        *                             before that. If there is a space before the cursor,
+        *                             then the word before the space.
+        */
         void onCandidateLongClick(int position, String word, String previousWordInEditor);
     }
 
@@ -832,7 +853,7 @@ public class ImeContainer extends ViewGroup
             insertFollowingWord(word);
         }
         if (mDataSource == null) return;
-        List<String> words = getPreviousMongolWords(2, true);
+        List<String> words = getPreviousMongolWords(2, false);
         String previousWord = words.get(1);
         mDataSource.onCandidateClick(position, word, previousWord);
     }
@@ -880,7 +901,7 @@ public class ImeContainer extends ViewGroup
     @Override
     public void onCandidateLongClick(int position, String word) {
         if (mDataSource == null) return;
-        List<String> words = getPreviousMongolWords(2, true);
+        List<String> words = getPreviousMongolWords(2, false);
         String previousWord = words.get(1);
         mDataSource.onCandidateLongClick(position, word, previousWord);
     }
