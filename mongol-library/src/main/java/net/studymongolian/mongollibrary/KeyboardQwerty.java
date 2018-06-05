@@ -743,6 +743,12 @@ public class KeyboardQwerty extends Keyboard {
         if (isIsolateOrInitial())
             return candidates;
 
+        PopupKeyCandidate medial_UE_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
+        candidates.add(medial_UE_FVS1);
+
         PopupKeyCandidate medial_UE_FVS2 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS2,
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.UE + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
