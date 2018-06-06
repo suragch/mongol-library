@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
@@ -19,7 +20,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyboardCandidateActivity extends AppCompatActivity implements ImeContainer.DataSource {
+public class KeyboardCandidateActivity extends AppCompatActivity
+        implements ImeContainer.DataSource, ImeContainer.OnNonSystemImeListener {
 
     ImeContainer imeContainer;
     MongolTextView mongolTextView;
@@ -34,6 +36,8 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
 
         // provide words for candidate selection
         imeContainer.setDataSource(this);
+        // this activity will handle hide requests from the keyboard
+        imeContainer.setOnNonSystemImeListener(this);
 
         // these will characters will cause the cursor to back up
         // if they come after a space.
@@ -105,6 +109,18 @@ public class KeyboardCandidateActivity extends AppCompatActivity implements ImeC
         suffixes.add("" + MongolCode.Suffix.TAI);
 
         imeContainer.setCandidates(suffixes);
+    }
+
+    // ImeContainer.OnNonSystemImeListener method
+
+    @Override
+    public void onHideKeyboardRequest() {
+        // the activity should hide the keyboard here
+        imeContainer.setVisibility(View.GONE);
+    }
+
+    public void onShowKeyboardButtonClick(View view) {
+        imeContainer.setVisibility(View.VISIBLE);
     }
 
     private static class GetWordsStartingWith extends AsyncTask<String, Integer, List<String>> {

@@ -2,11 +2,14 @@ package net.studymongolian.mongollibrary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -14,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,8 +48,10 @@ public class ImeCandidatesView extends ViewGroup {
 
     private Context mContext;
     private RecyclerView recyclerView;
-    private CandidatesAdapter adapter;
+    private CandidatesAdapter candidatesAdapter;
+    private ToolButtonAdapter toolAdapter;
     private List<String> mCandidates;
+    private List<Drawable> mToolImages;
     private Orientation mOrientation;
     private CandidateClickListener mCandidateClickListener;
 
@@ -61,10 +67,16 @@ public class ImeCandidatesView extends ViewGroup {
      * remove all candidates from the list
      */
     public void clearCandidates() {
-        if (adapter == null)
+        if (candidatesAdapter == null)
             return;
         mCandidates.clear();
-        adapter.notifyDataSetChanged();
+        candidatesAdapter.notifyDataSetChanged();
+        showToolButtons();
+    }
+
+    private void showToolButtons() {
+        if (toolAdapter == null || mToolImages.size() == 0) return;
+        recyclerView.setAdapter(toolAdapter);
     }
 
     /**
@@ -73,7 +85,9 @@ public class ImeCandidatesView extends ViewGroup {
      */
     public void removeCandidate(int index) {
         mCandidates.remove(index);
-        adapter.notifyItemRemoved(index);
+        candidatesAdapter.notifyItemRemoved(index);
+        if (mCandidates.size() == 0)
+            showToolButtons();
     }
 
     /**
@@ -84,8 +98,10 @@ public class ImeCandidatesView extends ViewGroup {
         mCandidates.clear();
         if (candidates != null)
             mCandidates.addAll(candidates);
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
+        if (candidatesAdapter != null) {
+            candidatesAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(candidatesAdapter);
+        }
     }
 
     /**
@@ -94,6 +110,20 @@ public class ImeCandidatesView extends ViewGroup {
      */
     public List<String> getCandidates() {
         return mCandidates;
+    }
+
+    /**
+     * This provides a way to add toolbar buttons to the candidates view for things
+     * like hiding the keyboard, navigation, settings, and so on.
+     *
+     * @param images the drawables to use as tool buttons when there are no candidates
+     */
+    public void setToolImages(List<Drawable> images) {
+        mToolImages.clear();
+        if (images != null)
+            mToolImages.addAll(images);
+        if (toolAdapter != null)
+            toolAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -124,6 +154,7 @@ public class ImeCandidatesView extends ViewGroup {
         mOrientation = DEFAULT_ORIENTATION;
         mContext = context;
         mCandidates = new ArrayList<>();
+        mToolImages = new ArrayList<>();
         mTextColor = DEFAULT_CANDIDATE_ITEM_TEXT_COLOR;
         mTextSize = DEFAULT_CANDIDATE_ITEM_TEXT_SIZE;
         mPressedBackgroundColor = DEFAULT_CANDIDATE_ITEM_BACKGROUND_PRESSED_COLOR;
@@ -199,8 +230,9 @@ public class ImeCandidatesView extends ViewGroup {
                     LinearLayoutManager.VERTICAL, false);
         }
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new CandidatesAdapter(mContext);
-        recyclerView.setAdapter(adapter);
+        candidatesAdapter = new CandidatesAdapter(mContext);
+        toolAdapter = new ToolButtonAdapter(mContext);
+        recyclerView.setAdapter(toolAdapter);
     }
 
     /**
@@ -273,6 +305,8 @@ public class ImeCandidatesView extends ViewGroup {
         void onCandidateClick(int position, String text);
 
         void onCandidateLongClick(int position, String text);
+
+        void onToolItemClick(int position);
     }
 
     void setCandidateClickListener(CandidateClickListener listener) {
@@ -403,6 +437,97 @@ public class ImeCandidatesView extends ViewGroup {
 
         String getItem(int id) {
             return mCandidates.get(id);
+        }
+    }
+
+    class ToolButtonAdapter extends RecyclerView.Adapter<ToolButtonAdapter.ViewHolder> {
+
+        private LayoutInflater inflater;
+
+        ToolButtonAdapter(Context context) {
+            this.inflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        @NonNull
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = getInflatedView(parent);
+            return new ViewHolder(view);
+        }
+
+        private View getInflatedView(ViewGroup parent) {
+            if (mOrientation == ImeCandidatesView.Orientation.VERTICAL)
+                return inflater.inflate(R.layout.vertical_keyboard_tool_button_item,
+                        parent, false);
+            else
+                return inflater.inflate(R.layout.horizontal_keyboard_tool_button_item,
+                        parent, false);
+        }
+
+
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            Drawable drawable = mToolImages.get(position);
+            holder.setImageDrawable(drawable);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mToolImages.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder
+                implements View.OnClickListener, View.OnTouchListener {
+
+            ImageView imageView;
+
+            ViewHolder(View itemView) {
+                super(itemView);
+                imageView = itemView.findViewById(R.id.keyboard_tool_button_image);
+                ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(mTextColor));
+                itemView.setOnClickListener(this);
+                itemView.setOnTouchListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                if (mCandidateClickListener != null) {
+                    int position = getAdapterPosition();
+                    mCandidateClickListener.onToolItemClick(position);
+                }
+            }
+
+            void setImageDrawable(Drawable drawable) {
+                imageView.setImageDrawable(drawable);
+            }
+
+            // if implementing performClick() make sure that onClick doesn't get called twice
+            // perhaps by returning true
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        view.setBackgroundColor(mPressedBackgroundColor);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        //view.performClick();
+                        view.setBackgroundColor(Color.TRANSPARENT);
+                        break;
+                    default:
+                        view.setBackgroundColor(Color.TRANSPARENT);
+                }
+                return false;
+            }
+
+        }
+
+        Drawable getItem(int id) {
+            return mToolImages.get(id);
         }
     }
 }

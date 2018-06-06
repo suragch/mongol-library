@@ -13,13 +13,15 @@ import net.studymongolian.mongollibrary.KeyboardCyrillic;
 import net.studymongolian.mongollibrary.KeyboardEnglish;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
 
-public class ImeContainerInputMethodService extends InputMethodService implements ImeContainer.OnSystemImeListener {
+public class ImeContainerInputMethodService extends InputMethodService
+        implements ImeContainer.OnSystemImeListener {
 
     @Override
     public View onCreateInputView() {
         ImeContainer ime = new ImeContainer(this);
         ime.setBackgroundColor(Color.BLACK);
         Keyboard aeiou = new KeyboardAeiou(this);
+        aeiou.setCandidatesLocation(Keyboard.CandidatesLocation.VERTICAL_LEFT);
         Keyboard qwerty = new KeyboardQwerty(this);
         Keyboard english = new KeyboardEnglish(this);
         Keyboard cyrillic = new KeyboardCyrillic(this);
@@ -44,5 +46,10 @@ public class ImeContainerInputMethodService extends InputMethodService implement
         InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (im == null) return;
         im.showInputMethodPicker();
+    }
+
+    @Override
+    public void onHideKeyboardRequest() {
+        requestHideSelf(0);
     }
 }

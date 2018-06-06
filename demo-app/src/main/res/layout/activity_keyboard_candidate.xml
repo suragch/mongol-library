@@ -48,6 +48,17 @@
 
     </HorizontalScrollView>
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:src="@drawable/ic_keyboard_black_48dp"
+        android:onClick="onShowKeyboardButtonClick"
+        />
+
     <net.studymongolian.mongollibrary.ImeContainer
         android:id="@+id/ime_container"
         android:layout_width="match_parent"
@@ -75,6 +86,8 @@
             />
 
     </net.studymongolian.mongollibrary.ImeContainer>
+
+
 
 
 </RelativeLayout>
