@@ -4,7 +4,10 @@ package net.studymongolian.mongollibrary;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 
@@ -14,25 +17,6 @@ public class KeyImage extends Key {
     private Bitmap mImage;
     private Bitmap mImageScaled;
     private boolean mNeedToScaleImage = false;
-
-    // use a light image for a DARK theme and vice-versa
-    public enum Theme {
-        DARK(0),
-        LIGHT(1);
-
-        int id;
-
-        Theme(int id) {
-            this.id = id;
-        }
-
-        static Theme fromId(int id) {
-            for (Theme theme : values()) {
-                if (theme.id == id) return theme;
-            }
-            throw new IllegalArgumentException(String.valueOf(id));
-        }
-    }
 
     public KeyImage(Context context) {
         super(context);
@@ -106,7 +90,9 @@ public class KeyImage extends Key {
         }
     }
 
-    public void setImage (Bitmap bitmap) {
+    public void setImage (Bitmap bitmap, int color) {
         mImage = bitmap;
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+        mImagePaint.setColorFilter(filter);
     }
 }

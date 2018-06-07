@@ -26,7 +26,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     static final int DEFAULT_SECONDARY_TEXT_COLOR = Color.parseColor("#61000000"); // alpha black
     static final int DEFAULT_KEY_COLOR = Color.LTGRAY;
     static final int DEFAULT_KEY_PRESSED_COLOR = Color.GRAY;
-    static final KeyImage.Theme DEFAULT_KEY_IMAGE_THEME = KeyImage.Theme.LIGHT;
     static final int DEFAULT_KEY_BORDER_COLOR = Color.BLACK;
     static final int DEFAULT_KEY_BORDER_WIDTH = 0;
     static final int DEFAULT_KEY_BORDER_RADIUS = 5;
@@ -38,7 +37,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     private static final int DEFAULT_HEIGHT_DP = 240;
 
     protected String mDisplayName;
-    private KeyImage.Theme mKeyImageTheme;
     private int mPopupBackgroundColor;
     private int mPopupHighlightColor;
     private int mPopupTextColor;
@@ -54,7 +52,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     private int mKeyBorderRadius;
     private int mKeySpacing;
     private CandidatesLocation mCandidatesLocation;
-    private boolean mShouldShouldSuffixesInPopup;
+    private boolean mShouldShowSuffixesInPopup;
 
     private PopupKeyCandidatesView popupView;
     private PopupWindow popupWindow;
@@ -90,7 +88,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     public Keyboard(Context context) {
         super(context);
-        init(context);
+        init(context, null);
     }
 
     public Keyboard(Context context, AttributeSet attrs) {
@@ -103,23 +101,34 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         init(context, attrs, defStyle);
     }
 
-    private void init(Context context) {
+    public Keyboard(Context context, StyleBuilder builder) {
+        super(context);
+        init(context, builder);
+    }
+
+
+    private void init(Context context, StyleBuilder builder) {
+        if (builder == null)
+            builder = new StyleBuilder();
         mDisplayName = getDisplayName();
-        mTypeface = MongolFont.get(MongolFont.QAGAN, context);
-        mPrimaryTextSizePx = getDefaultPrimaryTextSizeInPixels();
-        mPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
-        mSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
-        mKeyImageTheme = DEFAULT_KEY_IMAGE_THEME;
-        mKeyColor = DEFAULT_KEY_COLOR;
-        mKeyPressedColor = DEFAULT_KEY_PRESSED_COLOR;
-        mKeyBorderColor = DEFAULT_KEY_BORDER_COLOR;
-        mKeyBorderWidth = DEFAULT_KEY_BORDER_WIDTH;
-        mKeyBorderRadius = DEFAULT_KEY_BORDER_RADIUS;
-        mKeySpacing = DEFAULT_KEY_SPACING;
-        mPopupBackgroundColor = DEFAULT_POPUP_COLOR;
-        mPopupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
-        mPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
-        mCandidatesLocation = DEFAULT_CANDIDATES_LOCATION;
+        mTypeface = builder.nestedTypeface;
+        if (mTypeface == null)
+            mTypeface = MongolFont.get(MongolFont.QAGAN, context);
+        mPrimaryTextSizePx = builder.nestedPrimaryTextSizePx;
+        if (mPrimaryTextSizePx <= 0)
+            mPrimaryTextSizePx = getDefaultPrimaryTextSizeInPixels();
+        mPrimaryTextColor = builder.nestedPrimaryTextColor;
+        mSecondaryTextColor = builder.nestedSecondaryTextColor;
+        mKeyColor = builder.nestedKeyColor;
+        mKeyPressedColor = builder.nestedKeyPressedColor;
+        mKeyBorderColor = builder.nestedKeyBorderColor;
+        mKeyBorderWidth = builder.nestedKeyBorderWidth;
+        mKeyBorderRadius = builder.nestedKeyBorderRadius;
+        mKeySpacing = builder.nestedKeySpacing;
+        mPopupBackgroundColor = builder.nestedPopupBackgroundColor;
+        mPopupHighlightColor = builder.nestedPopupHighlightColor;
+        mPopupTextColor = builder.nestedPopupTextColor;
+        mCandidatesLocation = builder.nestedCandidatesLocation;
         setCommonDefaults();
     }
 
@@ -136,8 +145,6 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 DEFAULT_PRIMARY_TEXT_COLOR);
         mSecondaryTextColor = a.getColor(R.styleable.Keyboard_secondaryTextColor,
                 DEFAULT_SECONDARY_TEXT_COLOR);
-        mKeyImageTheme = KeyImage.Theme.fromId(a.getInt(R.styleable.Keyboard_keyImageTheme,
-                DEFAULT_KEY_IMAGE_THEME.id));
         mKeyColor = a.getColor(R.styleable.Keyboard_keyColor,
                 DEFAULT_KEY_COLOR);
         mKeyPressedColor = a.getColor(R.styleable.Keyboard_keyPressedColor,
@@ -164,7 +171,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     private void setCommonDefaults() {
         mSecondaryTextSizePx = mPrimaryTextSizePx / 2;
-        mShouldShouldSuffixesInPopup = true;
+        mShouldShowSuffixesInPopup = true;
     }
 
     private int getDefaultPrimaryTextSizeInPixels() {
@@ -288,34 +295,19 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     // TODO change to 32dp
     protected Bitmap getReturnImage() {
-        int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
-            imageResourceId = R.drawable.ic_keyboard_return_black_48dp;
-        } else {
-            imageResourceId = R.drawable.ic_keyboard_return_white_48dp;
-        }
+        int imageResourceId = R.drawable.ic_keyboard_return_48dp;
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
 
     // TODO change to 32dp
     protected Bitmap getBackspaceImage() {
-        int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
-            imageResourceId = R.drawable.ic_keyboard_backspace_black_48dp;
-        } else {
-            imageResourceId = R.drawable.ic_keyboard_backspace_white_48dp;
-        }
+        int imageResourceId = R.drawable.ic_keyboard_backspace_48dp;
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
 
     // TODO change to 32dp
     protected Bitmap getKeyboardImage() {
-        int imageResourceId;
-        if (mKeyImageTheme == KeyImage.Theme.LIGHT) {
-            imageResourceId = R.drawable.ic_keyboard_black_48dp;
-        } else {
-            imageResourceId = R.drawable.ic_keyboard_white_48dp;
-        }
+        int imageResourceId = R.drawable.ic_keyboard_48dp;
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
 
@@ -355,19 +347,19 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     protected void setShouldShowSuffixesInPopup(boolean whether) {
-        mShouldShouldSuffixesInPopup = whether;
+        mShouldShowSuffixesInPopup = whether;
     }
 
-    protected boolean shouldShouldSuffixesInPopup() {
-        return mShouldShouldSuffixesInPopup;
+    protected boolean shouldShowSuffixesInPopup() {
+        return mShouldShowSuffixesInPopup;
     }
 
     public CandidatesLocation getCandidatesLocation() {
         return mCandidatesLocation;
     }
 
-    public int getKeyPadding() {
-        return mKeySpacing;
+    public Typeface getTypeface() {
+        return mTypeface;
     }
 
     public int getKeyColor() {
@@ -376,6 +368,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
 
     public int getKeyPressedColor() {
         return mKeyPressedColor;
+    }
+
+    public float getPrimaryTextSize() {
+        return mPrimaryTextSizePx;
     }
 
     public int getPrimaryTextColor() {
@@ -398,8 +394,16 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mKeySpacing;
     }
 
-    public KeyImage.Theme getKeyboardTheme() {
-        return mKeyImageTheme;
+    public int getPopupBackgroundColor() {
+        return mPopupBackgroundColor;
+    }
+
+    public int getPopupHighlightColor() {
+        return mPopupHighlightColor;
+    }
+
+    public int getPopupTextColor() {
+        return mPopupTextColor;
     }
 
     // KeyListener methods
@@ -522,4 +526,94 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     public void onShiftChanged(boolean isShiftOn) {
         // Keyboard subclasses can override this if they have a shift key
     }
+
+    public static class StyleBuilder {
+
+        private Typeface nestedTypeface;
+        private int nestedPopupBackgroundColor = DEFAULT_POPUP_COLOR;
+        private int nestedPopupHighlightColor = DEFAULT_POPUP_HIGHLIGHT_COLOR;
+        private int nestedPopupTextColor = DEFAULT_POPUP_TEXT_COLOR;
+        private float nestedPrimaryTextSizePx = 0;
+        private int nestedPrimaryTextColor = DEFAULT_PRIMARY_TEXT_COLOR;
+        private int nestedSecondaryTextColor = DEFAULT_SECONDARY_TEXT_COLOR;
+        private int nestedKeyColor = DEFAULT_KEY_COLOR;
+        private int nestedKeyPressedColor = DEFAULT_KEY_PRESSED_COLOR;
+        private int nestedKeyBorderColor = DEFAULT_KEY_BORDER_COLOR;
+        private int nestedKeyBorderWidth = DEFAULT_KEY_BORDER_WIDTH;
+        private int nestedKeyBorderRadius = DEFAULT_KEY_BORDER_RADIUS;
+        private int nestedKeySpacing = DEFAULT_KEY_SPACING;
+        private CandidatesLocation nestedCandidatesLocation = DEFAULT_CANDIDATES_LOCATION;
+
+        public StyleBuilder popupBackgroundColor(int color) {
+            this.nestedPopupBackgroundColor = color;
+            return this;
+        }
+
+        public StyleBuilder popupHighlightColor(int color) {
+            this.nestedPopupHighlightColor = color;
+            return this;
+        }
+
+        public StyleBuilder popupTextColor(int color) {
+            this.nestedPopupTextColor = color;
+            return this;
+        }
+
+        public StyleBuilder typeface(Typeface typeface) {
+            this.nestedTypeface = typeface;
+            return this;
+        }
+
+        public StyleBuilder primaryTextSizePx(float sizePx) {
+            this.nestedPrimaryTextSizePx = sizePx;
+            return this;
+        }
+
+        public StyleBuilder primaryTextColor(int color) {
+            this.nestedPrimaryTextColor = color;
+            return this;
+        }
+
+        public StyleBuilder secondaryTextColor(int color) {
+            this.nestedSecondaryTextColor = color;
+            return this;
+        }
+
+        public StyleBuilder keyColor(int color) {
+            this.nestedKeyColor = color;
+            return this;
+        }
+
+        public StyleBuilder keyPressedColor(int color) {
+            this.nestedKeyPressedColor = color;
+            return this;
+        }
+
+        public StyleBuilder keyBorderColor(int color) {
+            this.nestedKeyBorderColor = color;
+            return this;
+        }
+
+        public StyleBuilder keyBorderWidth(int width) {
+            this.nestedKeyBorderWidth = width;
+            return this;
+        }
+
+        public StyleBuilder keyBorderRadius(int radius) {
+            this.nestedKeyBorderRadius = radius;
+            return this;
+        }
+
+        public StyleBuilder keySpacing(int spacing) {
+            this.nestedKeySpacing = spacing;
+            return this;
+        }
+
+        public StyleBuilder candidatesLocation(CandidatesLocation location) {
+            this.nestedCandidatesLocation = location;
+            return this;
+        }
+
+    }
+
 }

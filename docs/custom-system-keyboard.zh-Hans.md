@@ -46,7 +46,6 @@ implementation 'net.studymongolian:mongol-library:1.3.1'
         app:keyBorderRadius="3dp"
         app:keyBorderWidth="1px"
         app:keyColor="#ffffff"
-        app:keyImageTheme="light"
         app:keyPressedColor="#b3b3b3"
         app:keySpacing="3dp"
         app:popupHighlightColor="#dbdbdb"

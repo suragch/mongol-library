@@ -55,7 +55,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:padding="8dp"
-        android:src="@drawable/ic_keyboard_black_48dp"
+        android:src="@drawable/ic_keyboard_48dp"
         android:onClick="onShowKeyboardButtonClick"
         />
 

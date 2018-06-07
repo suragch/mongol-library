@@ -274,9 +274,9 @@ public class CustomKeyboardTwo extends Keyboard {
     }
 
     private void setKeyImages() {
-        mKeyBackspace.setImage(getBackspaceImage());
-        mKeyKeyboard.setImage(getKeyboardImage());
-        mKeyReturn.setImage(getReturnImage());
+        mKeyBackspace.setImage(getBackspaceImage(), getPrimaryTextColor());
+        mKeyKeyboard.setImage(getKeyboardImage(), getPrimaryTextColor());
+        mKeyReturn.setImage(getReturnImage(), getPrimaryTextColor());
     }
 
     private void setListeners() {

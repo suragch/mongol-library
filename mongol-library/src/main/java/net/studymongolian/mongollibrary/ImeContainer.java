@@ -43,6 +43,7 @@ public class ImeContainer extends ViewGroup
     private Context mContext;
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
+    private Keyboard mTempView;
     private ImeCandidatesView mCandidatesView;
     private DataSource mDataSource = null;
     private OnSystemImeListener mSystemImeListener = null;
@@ -262,7 +263,7 @@ public class ImeContainer extends ViewGroup
         layoutCandidateView(candidateLeft, candidateTop, candidateRight, candidateBottom);
 
         // keyboard
-        final int keyboardLeft = candidateRight + mCurrentKeyboard.getKeyPadding();
+        final int keyboardLeft = candidateRight + mCurrentKeyboard.getKeySpacing();
         final int keyboardTop = getPaddingTop();
         final int keyboardRight = getMeasuredWidth() - getPaddingRight();
         final int keyboardBottom = getMeasuredHeight() - getPaddingBottom();
@@ -283,7 +284,7 @@ public class ImeContainer extends ViewGroup
 
         // keyboard
         final int keyboardLeft = getPaddingLeft();
-        final int keyboardTop = candidateBottom + mCurrentKeyboard.getKeyPadding();
+        final int keyboardTop = candidateBottom + mCurrentKeyboard.getKeySpacing();
         final int keyboardRight = getMeasuredWidth() - getPaddingRight();
         final int keyboardBottom = getMeasuredHeight() - getPaddingBottom();
         layoutKeyboard(keyboardLeft, keyboardTop, keyboardRight, keyboardBottom);
@@ -303,6 +304,18 @@ public class ImeContainer extends ViewGroup
         mCurrentKeyboard.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         mCurrentKeyboard.layout(left, top, right, bottom);
+    }
+
+    private void layoutTempView() {
+        int left = mCurrentKeyboard.getLeft();
+        int top = mCurrentKeyboard.getTop();
+        int right = mCurrentKeyboard.getRight();
+        int bottom = mCurrentKeyboard.getBottom();
+        int width = right - left;
+        int height = bottom - top;
+        mTempView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        mTempView.layout(left, top, right, bottom);
     }
 
     /**
@@ -532,11 +545,11 @@ public class ImeContainer extends ViewGroup
 
 
     private Drawable getKeyboardDownDefaultImage() {
-        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_keyboard_down);
+        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_keyboard_down_24dp);
     }
 
     private Drawable getKeyboardNavigationDefaultImage() {
-        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_navigation_black_24dp);
+        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_navigation_24dp);
     }
 
     /**
@@ -993,7 +1006,62 @@ public class ImeContainer extends ViewGroup
     }
 
     private void toggleNavigationView() {
+        // if view null then initialize it
+        if (mTempView == null) {
+            initTempView();
+        }
+        // if view not added then add it
+        if (!tempViewIsAdded()) {
+            addView(mTempView);
+        }
+        // if not laid out then lay out
+        if (!mTempViewPositionIsCorrect()) {
+            layoutTempView();
+            mTempView.setVisibility(View.INVISIBLE);
+        }
+        // switch view visibility
+        if (mTempView.getVisibility() == View.VISIBLE) {
+            mTempView.setVisibility(View.INVISIBLE);
+            mCurrentKeyboard.setVisibility(View.VISIBLE);
+        } else {
+            mTempView.setVisibility(View.VISIBLE);
+            mCurrentKeyboard.setVisibility(View.INVISIBLE);
+        }
+        // may need to call bringToFront() and invalidate() ?
+    }
 
+    private void initTempView() {
+        Keyboard.StyleBuilder builder = new Keyboard.StyleBuilder();
+        builder.typeface(mCurrentKeyboard.getTypeface());
+        builder.primaryTextSizePx(mCurrentKeyboard.getPrimaryTextSize());
+        builder.primaryTextColor(mCurrentKeyboard.getPrimaryTextColor());
+        builder.keyColor(mCurrentKeyboard.getKeyColor());
+        builder.keyPressedColor(mCurrentKeyboard.getKeyPressedColor());
+        builder.keyBorderColor(mCurrentKeyboard.getBorderColor());
+        builder.keyBorderRadius(mCurrentKeyboard.getBorderRadius());
+        builder.keyBorderWidth(mCurrentKeyboard.getBorderWidth());
+        builder.keySpacing(mCurrentKeyboard.getKeySpacing());
+        builder.popupBackgroundColor(mCurrentKeyboard.getPopupBackgroundColor());
+        builder.popupHighlightColor(mCurrentKeyboard.getPopupHighlightColor());
+        builder.popupTextColor(mCurrentKeyboard.getPopupTextColor());
+        builder.candidatesLocation(mCurrentKeyboard.getCandidatesLocation());
+        mTempView = new KeyboardNavigation(mContext, builder);
+    }
+
+    private boolean tempViewIsAdded() {
+        int count = getChildCount();
+        for (int i=0; i < count; i++) {
+            if (getChildAt(i) == mTempView)
+                return true;
+        }
+        return false;
+    }
+
+    private boolean mTempViewPositionIsCorrect() {
+        return mTempView.getLeft() == mCurrentKeyboard.getLeft() &&
+                mTempView.getTop() == mCurrentKeyboard.getTop() &&
+                mTempView.getRight() == mCurrentKeyboard.getRight() &&
+                mTempView.getBottom() == mCurrentKeyboard.getBottom();
     }
 
     /**

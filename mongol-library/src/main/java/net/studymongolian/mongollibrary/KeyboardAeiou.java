@@ -304,9 +304,9 @@ public class KeyboardAeiou extends Keyboard {
 
 
     private void setKeyImages() {
-        mKeyBackspace.setImage(getBackspaceImage());
-        mKeyKeyboard.setImage(getKeyboardImage());
-        mKeyReturn.setImage(getReturnImage());
+        mKeyBackspace.setImage(getBackspaceImage(), getPrimaryTextColor());
+        mKeyKeyboard.setImage(getKeyboardImage(), getPrimaryTextColor());
+        mKeyReturn.setImage(getReturnImage(), getPrimaryTextColor());
     }
 
     private void setListeners() {
@@ -482,7 +482,7 @@ public class KeyboardAeiou extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyE());
         }
 
@@ -528,7 +528,7 @@ public class KeyboardAeiou extends Keyboard {
 
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyI());
         }
 
@@ -596,7 +596,7 @@ public class KeyboardAeiou extends Keyboard {
 
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyO());
         }
 
@@ -680,7 +680,7 @@ public class KeyboardAeiou extends Keyboard {
             candidates.add(na_fvs1);
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyNA());
         }
 
@@ -719,7 +719,7 @@ public class KeyboardAeiou extends Keyboard {
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.PA));
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.FA));
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyBA());
         }
 
@@ -850,7 +850,7 @@ public class KeyboardAeiou extends Keyboard {
             candidates.add(final_da_fvs1);
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyTADA());
         }
 

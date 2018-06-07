@@ -120,14 +120,9 @@ public class KeyShift extends KeyImage {
         invalidate();
     }
 
-    public void setShiftImage(KeyImage.Theme theme) {
-        int imageResourceId;
-        if (theme == KeyImage.Theme.LIGHT) {
-            imageResourceId = R.drawable.ic_keyboard_shift_black_32dp;
-        } else {
-            imageResourceId = R.drawable.ic_keyboard_shift_white_32dp;
-        }
-        setImage(BitmapFactory.decodeResource(getResources(), imageResourceId));
+    public void setShiftImage(int color) {
+        int imageResourceId = R.drawable.ic_keyboard_shift_32dp;
+        setImage(BitmapFactory.decodeResource(getResources(), imageResourceId), color);
     }
 
     public void setCapsStateIndicatorColor(int color) {

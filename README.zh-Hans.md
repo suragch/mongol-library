@@ -222,7 +222,6 @@ XML
     <item name="keyPressedColor">#b3b3b3</item>
     <item name="primaryTextColor">#000000</item>
     <item name="secondaryTextColor">#b3b3b3</item>
-    <item name="keyImageTheme">light</item>
     <item name="keySpacing">3dp</item>
     <item name="keyBorderWidth">1px</item>
     <item name="keyBorderColor">#000000</item>

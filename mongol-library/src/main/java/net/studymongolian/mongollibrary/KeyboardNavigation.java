@@ -1,20 +1,12 @@
-package net.studymongolian.mongollibrarydemo;
+package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
-import net.studymongolian.mongollibrary.Key;
-import net.studymongolian.mongollibrary.KeyBackspace;
-import net.studymongolian.mongollibrary.KeyKeyboardChooser;
-import net.studymongolian.mongollibrary.KeyText;
-import net.studymongolian.mongollibrary.Keyboard;
-import net.studymongolian.mongollibrary.MongolCode;
-import net.studymongolian.mongollibrary.PopupKeyCandidate;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomKeyboard extends Keyboard {
+public class KeyboardNavigation extends Keyboard {
 
     // name to use in the keyboard popup chooser
     private static final String DEFAULT_DISPLAY_NAME = "ᠮᠢᠨᠤ ᠳᠠᠷᠤᠭᠤᠯ";
@@ -33,18 +25,23 @@ public class CustomKeyboard extends Keyboard {
     protected KeyText mKeySpace;
     protected KeyBackspace mKeyBackspace;
 
-    public CustomKeyboard(Context context) {
+    public KeyboardNavigation(Context context) {
         super(context);
         init(context);
     }
 
-    public CustomKeyboard(Context context, AttributeSet attrs) {
+    public KeyboardNavigation(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public CustomKeyboard(Context context, AttributeSet attrs, int defStyle) {
+    public KeyboardNavigation(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(context);
+    }
+
+    public KeyboardNavigation(Context context, StyleBuilder style) {
+        super(context, style);
         init(context);
     }
 

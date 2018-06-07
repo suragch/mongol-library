@@ -410,9 +410,9 @@ public class KeyboardQwerty extends Keyboard {
     }
 
     private void setKeyImages() {
-        mKeyBackspace.setImage(getBackspaceImage());
-        mKeyKeyboard.setImage(getKeyboardImage());
-        mKeyReturn.setImage(getReturnImage());
+        mKeyBackspace.setImage(getBackspaceImage(), getPrimaryTextColor());
+        mKeyKeyboard.setImage(getKeyboardImage(), getPrimaryTextColor());
+        mKeyReturn.setImage(getReturnImage(), getPrimaryTextColor());
     }
 
     private void setListeners() {
@@ -584,7 +584,7 @@ public class KeyboardQwerty extends Keyboard {
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.CHI));
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyQ());
         }
 
@@ -631,7 +631,7 @@ public class KeyboardQwerty extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyE());
         }
 
@@ -674,7 +674,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(medial_ta_fvs1);
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyT());
         }
 
@@ -790,7 +790,7 @@ public class KeyboardQwerty extends Keyboard {
             }
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyI());
         }
 
@@ -938,7 +938,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(final_da_fvs1);
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyD());
         }
 
@@ -1132,7 +1132,7 @@ public class KeyboardQwerty extends Keyboard {
 
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyV());
         }
 
@@ -1165,7 +1165,7 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyB());
         }
 
@@ -1212,7 +1212,7 @@ public class KeyboardQwerty extends Keyboard {
 
         }
 
-        if (shouldShouldSuffixesInPopup()) {
+        if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyN());
         }
 

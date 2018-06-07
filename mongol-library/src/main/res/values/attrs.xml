@@ -29,10 +29,6 @@
         <attr name="primaryTextSize" format="dimension"/>
         <attr name="primaryTextColor" format="color"/>
         <attr name="secondaryTextColor" format="color"/>
-        <attr name="keyImageTheme">
-            <enum name="dark" value="0" />
-            <enum name="light" value="1" />
-        </attr>
         <attr name="keyColor" format="color"/>
         <attr name="keyPressedColor" format="color"/>
         <attr name="keyBorderColor" format="color"/>
@@ -49,13 +45,5 @@
             <flag name="horizontal_top" value="0x31" />
         </attr>
     </declare-styleable>
-
-    <!--<declare-styleable name="ImeCandidatesView">-->
-        <!--<attr name="textSize"/>-->
-        <!--<attr name="textColor"/>-->
-        <!--<attr name="backgroundColor" format="color"/>-->
-        <!--<attr name="backgroundPressedColor" format="color"/>-->
-        <!--<attr name="dividerColor" format="color"/>-->
-    <!--</declare-styleable>-->
 
 </resources>

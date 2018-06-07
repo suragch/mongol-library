@@ -569,10 +569,10 @@ public class KeyboardCyrillic extends Keyboard {
     }
 
     private void setKeyImages() {
-        mKeyShift.setShiftImage(getKeyboardTheme());
-        mKeyBackspace.setImage(getBackspaceImage());
-        mKeyKeyboard.setImage(getKeyboardImage());
-        mKeyReturn.setImage(getReturnImage());
+        mKeyShift.setShiftImage(getPrimaryTextColor());
+        mKeyBackspace.setImage(getBackspaceImage(), getPrimaryTextColor());
+        mKeyKeyboard.setImage(getKeyboardImage(), getPrimaryTextColor());
+        mKeyReturn.setImage(getReturnImage(), getPrimaryTextColor());
     }
 
     private void setListeners() {
