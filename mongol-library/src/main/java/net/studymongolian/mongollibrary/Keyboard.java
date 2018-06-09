@@ -293,23 +293,86 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         }
     }
 
-    // TODO change to 32dp
     protected Bitmap getReturnImage() {
-        int imageResourceId = R.drawable.ic_keyboard_return_48dp;
+        int imageResourceId = R.drawable.ic_keyboard_return_32dp;
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
 
-    // TODO change to 32dp
     protected Bitmap getBackspaceImage() {
-        int imageResourceId = R.drawable.ic_keyboard_backspace_48dp;
+        int imageResourceId = R.drawable.ic_keyboard_backspace_32dp;
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
 
-    // TODO change to 32dp
     protected Bitmap getKeyboardImage() {
-        int imageResourceId = R.drawable.ic_keyboard_48dp;
+        int imageResourceId = R.drawable.ic_keyboard_32dp;
         return BitmapFactory.decodeResource(getResources(), imageResourceId);
     }
+
+    protected Bitmap getUpImage() {
+        int imageResourceId = R.drawable.ic_keyboard_up_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getCopyImage() {
+        int imageResourceId = R.drawable.ic_keyboard_copy_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getLeftImage() {
+        int imageResourceId = R.drawable.ic_keyboard_left_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getSelectAllImage() {
+        int imageResourceId = R.drawable.ic_keyboard_select_all_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getRightImage() {
+        int imageResourceId = R.drawable.ic_keyboard_right_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getCutImage() {
+        int imageResourceId = R.drawable.ic_keyboard_cut_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getDownImage() {
+        int imageResourceId = R.drawable.ic_keyboard_down_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getEndImage() {
+        int imageResourceId = R.drawable.ic_keyboard_end_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getPasteImage() {
+        int imageResourceId = R.drawable.ic_keyboard_paste_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getBackImage() {
+        int imageResourceId = R.drawable.ic_keyboard_back_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getStartImage() {
+        int imageResourceId = R.drawable.ic_keyboard_start_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getSelectBackImage() {
+        int imageResourceId = R.drawable.ic_keyboard_select_back_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
+    protected Bitmap getSelectForwardImage() {
+        int imageResourceId = R.drawable.ic_keyboard_select_forward_32dp;
+        return BitmapFactory.decodeResource(getResources(), imageResourceId);
+    }
+
 
     protected char getPreviousChar() {
         if (mKeyboardListener == null) return 0;

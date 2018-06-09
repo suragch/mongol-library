@@ -8,7 +8,7 @@
 
     <HorizontalScrollView
         android:id="@+id/hsvEditTextContainer"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -29,7 +29,8 @@
 
     </HorizontalScrollView>
 
-    <HorizontalScrollView
+    <EditText
+        android:id="@+id/edittext"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toRightOf="@id/hsvEditTextContainer"
@@ -37,16 +38,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_above="@id/ime_container"
-        android:layout_margin="16dp"
-        android:fillViewport="true">
-
-        <net.studymongolian.mongollibrary.MongolTextView
-            android:id="@+id/mtv_database"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="10dp" />
-
-    </HorizontalScrollView>
+        android:layout_margin="16dp"/>
 
     <ImageButton
         android:layout_width="wrap_content"

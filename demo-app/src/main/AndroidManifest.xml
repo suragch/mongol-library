@@ -38,11 +38,18 @@
             android:name=".MongolFontActivity"
             android:label="@string/mongol_font_activity_title" />
         <activity
+            android:name=".MainKeyboardActivity"
+            android:label="@string/main_keyboard_activity_title" />
+        <activity
             android:name=".KeyboardActivity"
             android:label="@string/keyboard_activity_title" />
         <activity
             android:name=".KeyboardCandidateActivity"
             android:label="@string/keyboard_candidate_activity_title"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".KeyboardNavigationActivity"
+            android:label="@string/keyboard_navigation_activity_title"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MongolToastActivity"

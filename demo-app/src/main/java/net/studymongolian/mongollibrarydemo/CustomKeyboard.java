@@ -143,7 +143,7 @@ public class CustomKeyboard extends Keyboard {
     }
 
     public List<PopupKeyCandidate> getPopupCandidates(Key key) {
-        // this keyboard has no popups except for the keyboard key
+
         if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();
         } else if (key == mKeyA) {

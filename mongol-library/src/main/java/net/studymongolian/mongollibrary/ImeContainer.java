@@ -27,7 +27,9 @@ import java.util.List;
  * word suggestion candidates list.
  */
 public class ImeContainer extends ViewGroup
-        implements Keyboard.OnKeyboardListener, ImeCandidatesView.CandidateClickListener {
+        implements Keyboard.OnKeyboardListener,
+        ImeCandidatesView.CandidateClickListener,
+        KeyboardNavigation.OnNavigationListener {
 
     private static final float DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION = 1 / 8f;
     private static final float DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION = 1 / 5f;
@@ -43,7 +45,7 @@ public class ImeContainer extends ViewGroup
     private Context mContext;
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
-    private Keyboard mTempView;
+    private KeyboardNavigation mNavigationView;
     private ImeCandidatesView mCandidatesView;
     private DataSource mDataSource = null;
     private OnSystemImeListener mSystemImeListener = null;
@@ -140,7 +142,7 @@ public class ImeContainer extends ViewGroup
 
     /**
      * Listener to handle hiding the ImeContainer view if visible.
-     *
+     * <p>
      * This is for a custom in app keyboard. If making a system then
      * use OnSystemImeListener. Normally the containing activity would
      * be the one to implement this interface.
@@ -306,16 +308,16 @@ public class ImeContainer extends ViewGroup
         mCurrentKeyboard.layout(left, top, right, bottom);
     }
 
-    private void layoutTempView() {
+    private void layoutNavigationView() {
         int left = mCurrentKeyboard.getLeft();
         int top = mCurrentKeyboard.getTop();
         int right = mCurrentKeyboard.getRight();
         int bottom = mCurrentKeyboard.getBottom();
         int width = right - left;
         int height = bottom - top;
-        mTempView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        mNavigationView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-        mTempView.layout(left, top, right, bottom);
+        mNavigationView.layout(left, top, right, bottom);
     }
 
     /**
@@ -545,7 +547,7 @@ public class ImeContainer extends ViewGroup
 
 
     private Drawable getKeyboardDownDefaultImage() {
-        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_keyboard_down_24dp);
+        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_keyboard_down_32dp);
     }
 
     private Drawable getKeyboardNavigationDefaultImage() {
@@ -860,6 +862,7 @@ public class ImeContainer extends ViewGroup
 
     private void doBackspace() {
         InputConnection ic = getInputConnection();
+        if (ic == null) return;
         ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
         ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
 
@@ -1005,29 +1008,134 @@ public class ImeContainer extends ViewGroup
         }
     }
 
-    private void toggleNavigationView() {
+    // KeyboardNavigation.OnNavigationListener methods
+
+    @Override
+    public void moveCursorLeft() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_LEFT));
+    }
+
+    @Override
+    public void moveCursorRight() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_RIGHT));
+    }
+
+    @Override
+    public void moveCursorUp() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_UP));
+    }
+
+    @Override
+    public void moveCursorDown() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_DOWN));
+    }
+
+    @Override
+    public void moveCursorStart() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.setSelection(0, 0);
+    }
+
+    @Override
+    public void moveCursorEnd() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_END));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_END));
+//        InputConnection ic = getInputConnection();
+//        if (ic == null) return;
+//        int max = 100;
+//        ic.setSelection(max, max);
+    }
+
+    @Override
+    public void selectAll() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.performContextMenuAction(android.R.id.selectAll);
+    }
+
+    @Override
+    public void selectWordBack() {
+
+    }
+
+    @Override
+    public void selectWordForward() {
+
+    }
+
+    @Override
+    public void copyText() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.performContextMenuAction(android.R.id.copy);
+
+//        InputConnection ic = getInputConnection();
+//        if (ic == null) return;
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_COPY));
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_COPY));
+    }
+
+    @Override
+    public void cutText() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.performContextMenuAction(android.R.id.cut);
+//        InputConnection ic = getInputConnection();
+//        if (ic == null) return;
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_CUT));
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_CUT));
+
+    }
+
+    @Override
+    public void pasteText() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ic.performContextMenuAction(android.R.id.paste);
+//        InputConnection ic = getInputConnection();
+//        if (ic == null) return;
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_PASTE));
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_PASTE));
+
+    }
+
+    public void toggleNavigationView() {
         // if view null then initialize it
-        if (mTempView == null) {
+        if (mNavigationView == null) {
             initTempView();
         }
         // if view not added then add it
         if (!tempViewIsAdded()) {
-            addView(mTempView);
+            addView(mNavigationView);
         }
         // if not laid out then lay out
         if (!mTempViewPositionIsCorrect()) {
-            layoutTempView();
-            mTempView.setVisibility(View.INVISIBLE);
+            layoutNavigationView();
+            mNavigationView.setVisibility(View.INVISIBLE);
         }
         // switch view visibility
-        if (mTempView.getVisibility() == View.VISIBLE) {
-            mTempView.setVisibility(View.INVISIBLE);
+        if (mNavigationView.getVisibility() == View.VISIBLE) {
+            mNavigationView.setVisibility(View.INVISIBLE);
             mCurrentKeyboard.setVisibility(View.VISIBLE);
         } else {
-            mTempView.setVisibility(View.VISIBLE);
+            mNavigationView.setVisibility(View.VISIBLE);
             mCurrentKeyboard.setVisibility(View.INVISIBLE);
         }
-        // may need to call bringToFront() and invalidate() ?
     }
 
     private void initTempView() {
@@ -1045,23 +1153,25 @@ public class ImeContainer extends ViewGroup
         builder.popupHighlightColor(mCurrentKeyboard.getPopupHighlightColor());
         builder.popupTextColor(mCurrentKeyboard.getPopupTextColor());
         builder.candidatesLocation(mCurrentKeyboard.getCandidatesLocation());
-        mTempView = new KeyboardNavigation(mContext, builder);
+        mNavigationView = new KeyboardNavigation(mContext, builder);
+        mNavigationView.setOnKeyboardListener(this);
+        mNavigationView.setOnNavigationListener(this);
     }
 
     private boolean tempViewIsAdded() {
         int count = getChildCount();
-        for (int i=0; i < count; i++) {
-            if (getChildAt(i) == mTempView)
+        for (int i = 0; i < count; i++) {
+            if (getChildAt(i) == mNavigationView)
                 return true;
         }
         return false;
     }
 
     private boolean mTempViewPositionIsCorrect() {
-        return mTempView.getLeft() == mCurrentKeyboard.getLeft() &&
-                mTempView.getTop() == mCurrentKeyboard.getTop() &&
-                mTempView.getRight() == mCurrentKeyboard.getRight() &&
-                mTempView.getBottom() == mCurrentKeyboard.getBottom();
+        return mNavigationView.getLeft() == mCurrentKeyboard.getLeft() &&
+                mNavigationView.getTop() == mCurrentKeyboard.getTop() &&
+                mNavigationView.getRight() == mCurrentKeyboard.getRight() &&
+                mNavigationView.getBottom() == mCurrentKeyboard.getBottom();
     }
 
     /**

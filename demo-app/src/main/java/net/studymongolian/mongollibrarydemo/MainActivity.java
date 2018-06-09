@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MainActivityRecyclerViewAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity
+        implements MainActivityRecyclerViewAdapter.ItemClickListener {
 
     MainActivityRecyclerViewAdapter adapter;
 
@@ -27,13 +28,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         apiDemos.add("Unicode <--> Menksoft");
         apiDemos.add("MongolFont");
         apiDemos.add("MongolEditText");
-        apiDemos.add("Keyboard");
-        apiDemos.add("Keyboard Candidate View");
+        apiDemos.add("Keyboards");
         apiDemos.add("MongolToast");
         apiDemos.add("MongolButton");
         apiDemos.add("MongolAlertDialog");
         apiDemos.add("Horizontal RecyclerView");
-        apiDemos.add("Custom System Keyboard");
         apiDemos.add("MongolMenu");
         //apiDemos.add("Testing");
 
@@ -81,38 +80,30 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 startActivity(intent);
                 break;
             case 6: // Keyboard
-                intent = new Intent(this, KeyboardActivity.class);
+                intent = new Intent(this, MainKeyboardActivity.class);
                 startActivity(intent);
                 break;
-            case 7: // Keyboard Candidate View
-                intent = new Intent(this, KeyboardCandidateActivity.class);
-                startActivity(intent);
-                break;
-            case 8: // MongolToast
+            case 7: // MongolToast
                 intent = new Intent(this, MongolToastActivity.class);
                 startActivity(intent);
                 break;
-            case 9: // MongolButton
+            case 8: // MongolButton
                 intent = new Intent(this, MongolButtonActivity.class);
                 startActivity(intent);
                 break;
-            case 10: // MongolAlertDialog
+            case 9: // MongolAlertDialog
                 intent = new Intent(this, MongolAlertDialogActivity.class);
                 startActivity(intent);
                 break;
-            case 11: // Horizontal RecyclerView
+            case 10: // Horizontal RecyclerView
                 intent = new Intent(this, HorizontalRecyclerViewActivity.class);
                 startActivity(intent);
                 break;
-            case 12: // Custom System Keyboard
-                intent = new Intent(this, CustomSystemKeyboardActivity.class);
-                startActivity(intent);
-                break;
-            case 13: // MongolMenu
+            case 11: // MongolMenu
                 intent = new Intent(this, MongolMenuActivity.class);
                 startActivity(intent);
                 break;
-            case 14: // Testing
+            case 12: // Testing
                 intent = new Intent(this, TestingActivity.class);
                 startActivity(intent);
                 break;
