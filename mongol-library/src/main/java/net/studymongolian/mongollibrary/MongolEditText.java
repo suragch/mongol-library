@@ -161,14 +161,20 @@ public class MongolEditText extends MongolTextView {
                     if (start < 0 || end < 0) return false;
 
                     if (keyCode == KeyEvent.KEYCODE_DEL) {              // key backspace
-                        if (start == end) {
-                            if (start <= 0) return false;
-                            mTextStorage.delete(start - 1, start);
-                        } else {
-                            // delete highlighted text
-                            mTextStorage.delete(start, end);
-                        }
+                        return onDeleteText(start, end);
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                        onMoveCursorUp(start, end);
                         return true;
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        onMoveCursorDown(start, end);
+                        return true;
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                        onMoveCursorLeft(start, end);
+                        return true;
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        onMoveCursorRight(start, end);
+                        return true;
+
                         // TODO are there any other control keys that we should handle?
                     } else if (event.getUnicodeChar() != 0) {          // key enter, numbers, etc
 
@@ -190,6 +196,48 @@ public class MongolEditText extends MongolTextView {
 
         // gestures
         mDetector = new GestureDetector(getContext(), new MyListener());
+    }
+
+    private boolean onDeleteText(int selectionStart, int selectionEnd) {
+        if (selectionStart == selectionEnd) {
+            if (selectionStart <= 0) return false;
+            mTextStorage.delete(selectionStart - 1, selectionStart);
+        } else {
+            // delete highlighted text
+            mTextStorage.delete(selectionStart, selectionEnd);
+        }
+        return true;
+    }
+
+    private void onMoveCursorUp(int selectionStart, int selectionEnd) {
+        // FIXME can't just add one because of surrogate pairs
+        if (selectionStart == selectionEnd) {
+            if (selectionStart <= 0) return;
+            setSelection(selectionStart - 1);
+        } else {
+            int start = Math.min(selectionStart, selectionEnd);
+            setSelection(start);
+        }
+    }
+
+    private void onMoveCursorDown(int selectionStart, int selectionEnd) {
+        // FIXME can't just add one because of surrogate pairs
+        int length = mTextStorage.length();
+        if (selectionStart == selectionEnd) {
+            if (selectionEnd >= length) return;
+            setSelection(selectionEnd + 1);
+        } else {
+            int end = Math.max(selectionStart, selectionEnd);
+            setSelection(end);
+        }
+    }
+
+    private void onMoveCursorLeft(int selectionStart, int selectionEnd) {
+
+    }
+
+    private void onMoveCursorRight(int selectionStart, int selectionEnd) {
+
     }
 
     @Override
@@ -787,6 +835,9 @@ public class MongolEditText extends MongolTextView {
                 // InputMethodManager#updateSelection skips sending the message if
                 // none of the parameters have changed since the last time we called it.
                 mMongolImeManager.updateSelection(this, selectionStart, selectionEnd, candStart, candEnd);
+                Log.i("TAG", "sendUpdateSelection: ");
+                if (selectionStart == selectionEnd)
+                    makeBlink();
             }
         }
     }
