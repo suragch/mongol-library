@@ -1,5 +1,6 @@
 package net.studymongolian.mongollibrary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -49,13 +50,15 @@ public class MongolEditText extends MongolTextView {
     private GestureDetector mDetector;
     int mBatchEditNesting = 0;
     private ArrayList<TextWatcher> mListeners;
-
     private boolean mAllowSystemKeyboard = true;
+
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
     private static final int SCROLLING_START = 1;
-
     private static final int SCROLLING_END = 2;
+
+    private static final int DIRECTION_LEFT = -1;
+    private static final int DIRECTION_RIGHT = 1;
 
 
     public MongolEditText(Context context) {
@@ -210,34 +213,86 @@ public class MongolEditText extends MongolTextView {
     }
 
     private void onMoveCursorUp(int selectionStart, int selectionEnd) {
-        // FIXME can't just add one because of surrogate pairs
         if (selectionStart == selectionEnd) {
-            if (selectionStart <= 0) return;
-            setSelection(selectionStart - 1);
+            int previous = getPrecedingCharIndex(selectionStart);
+            if (previous == selectionStart) return;
+            setSelection(previous);
         } else {
             int start = Math.min(selectionStart, selectionEnd);
             setSelection(start);
         }
     }
 
+    private int getPrecedingCharIndex(int currentOffset) {
+        BreakIterator boundary = BreakIterator.getCharacterInstance();
+        boundary.setText(mTextStorage.toString());
+        int preceding = boundary.preceding(currentOffset);
+        return (preceding == BreakIterator.DONE) ? currentOffset : preceding;
+    }
+
     private void onMoveCursorDown(int selectionStart, int selectionEnd) {
-        // FIXME can't just add one because of surrogate pairs
-        int length = mTextStorage.length();
         if (selectionStart == selectionEnd) {
-            if (selectionEnd >= length) return;
-            setSelection(selectionEnd + 1);
+            int next = getFollowingCharIndex(selectionStart);
+            if (next == selectionStart) return;
+            setSelection(next);
         } else {
             int end = Math.max(selectionStart, selectionEnd);
             setSelection(end);
         }
     }
 
-    private void onMoveCursorLeft(int selectionStart, int selectionEnd) {
+    private int getFollowingCharIndex(int currentOffset) {
+        BreakIterator boundary = BreakIterator.getCharacterInstance();
+        boundary.setText(mTextStorage.toString());
+        int following = boundary.following(currentOffset);
+        return (following == BreakIterator.DONE) ? currentOffset : following;
+    }
 
+    private void onMoveCursorLeft(int selectionStart, int selectionEnd) {
+        if (selectionStart == selectionEnd) {
+            moveCursorHorizontally(selectionStart, DIRECTION_LEFT);
+        } else {
+            int start = Math.min(selectionStart, selectionEnd);
+            setSelection(start);
+        }
+    }
+
+    private void moveCursorHorizontally(int startOffset, int lineDirection) {
+        // get current line
+        MongolLayout layout = getLayout();
+        int currentLine = layout.getLineForOffset(startOffset);
+
+        // go to start if trying to go left on first line
+        if (lineDirection == DIRECTION_LEFT && currentLine <= 0) {
+            setSelection(0);
+            return;
+        }
+
+        // go to end if trying to go right on last line
+        int indexOfLastLine = layout.getLineCount() - 1;
+        if (lineDirection == DIRECTION_RIGHT && currentLine >= indexOfLastLine) {
+            setSelection(mTextStorage.length());
+            return;
+        }
+
+        // get vertical y position of cursor
+        float y = layout.getVertical(startOffset);
+
+        // get closest offset for same position on adjacent line
+        int newOffset = layout.getOffsetForVertical(currentLine + lineDirection, y);
+        setSelection(newOffset);
+
+        // FIXME when moving at bottom of line the cursor will be set at the top
+        // This bug also happens when tapping below the last character on a line
     }
 
     private void onMoveCursorRight(int selectionStart, int selectionEnd) {
-
+        if (selectionStart == selectionEnd) {
+            moveCursorHorizontally(selectionStart, DIRECTION_RIGHT);
+        } else {
+            int end = Math.max(selectionStart, selectionEnd);
+            setSelection(end);
+        }
     }
 
     @Override
@@ -440,6 +495,7 @@ public class MongolEditText extends MongolTextView {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility") // TODO make this view accessible
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -465,6 +521,7 @@ public class MongolEditText extends MongolTextView {
      *
      * @param watcher: the TextWatcher object to add
      */
+    @SuppressWarnings("unused")
     public void addTextChangedListener(TextWatcher watcher) {
         if (mListeners == null) {
             mListeners = new ArrayList<>();
@@ -479,6 +536,7 @@ public class MongolEditText extends MongolTextView {
      *
      * @param watcher: the TextWatcher object to remove
      */
+    @SuppressWarnings("unused")
     public void removeTextChangedListener(TextWatcher watcher) {
         if (mListeners != null) {
             int i = mListeners.indexOf(watcher);
@@ -517,6 +575,7 @@ public class MongolEditText extends MongolTextView {
     }
 
     private boolean blinkShouldBeOn() {
+        //noinspection SimplifiableIfStatement
         if (!mCursorVisible || !isFocused()) return false;
         return (SystemClock.uptimeMillis() - mShowCursor) % (2 * BLINK) < BLINK;
     }
@@ -835,7 +894,6 @@ public class MongolEditText extends MongolTextView {
                 // InputMethodManager#updateSelection skips sending the message if
                 // none of the parameters have changed since the last time we called it.
                 mMongolImeManager.updateSelection(this, selectionStart, selectionEnd, candStart, candEnd);
-                Log.i("TAG", "sendUpdateSelection: ");
                 if (selectionStart == selectionEnd)
                     makeBlink();
             }
