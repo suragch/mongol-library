@@ -4,8 +4,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.SpannableString;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
+import android.widget.TextView;
 
 // MongolEditText Input Connection
 // Allows the MongolEditText to receive input from system keyboards
@@ -86,6 +91,35 @@ class MetInputConnection extends BaseInputConnection {
         return true;
     }
 
+    @Override
+    public ExtractedText getExtractedText(ExtractedTextRequest request, int flags) {
+        if (request == null)
+            return null;
+
+//        if ((flags & GET_EXTRACTED_TEXT_MONITOR) != 0)
+//            mUpdateRequest = request;
+
+        Editable editable = getEditable();
+        if (editable == null) {
+            return null;
+        }
+        int selStart = Selection.getSelectionStart(editable);
+        int selEnd = Selection.getSelectionEnd(editable);
+
+        ExtractedText extract = new ExtractedText();
+        extract.flags = 0;
+        extract.partialStartOffset = -1;
+        extract.partialEndOffset = -1;
+        extract.selectionStart = selStart;
+        extract.selectionEnd = selEnd;
+        extract.startOffset = 0;
+        if ((request.flags & GET_TEXT_WITH_STYLES) != 0) {
+            extract.text = new SpannableString(editable);
+        } else {
+            extract.text = editable.toString();
+        }
+        return extract;
+    }
 
     // TODO commitCompletion: after adding completion choices
     // https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#commitCompletion(android.view.inputmethod.CompletionInfo)

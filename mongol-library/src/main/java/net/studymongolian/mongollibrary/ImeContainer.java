@@ -10,6 +10,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
 import java.util.ArrayList;
@@ -1053,8 +1055,13 @@ public class ImeContainer extends ViewGroup
     public void moveCursorEnd() {
         InputConnection ic = getInputConnection();
         if (ic == null) return;
-        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_END));
-        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_END));
+        ExtractedText extractedTextText = ic.getExtractedText(new ExtractedTextRequest(), 0);
+        if (extractedTextText == null || extractedTextText.text == null) return;
+        int length = extractedTextText.text.length();
+        ic.setSelection(length, length);
+
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_END));
+//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_END));
 //        InputConnection ic = getInputConnection();
 //        if (ic == null) return;
 //        int max = 100;

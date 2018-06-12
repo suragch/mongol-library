@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -18,7 +19,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MongolInputMethodManager {
+public class MongolInputMethodManager implements MongolEditText.OnMongolEditTextInputEventListener {
 
     /**
      * @deprecated Use addEditor(View editor, boolean allowSystemKeyboard) instead.
@@ -166,7 +167,7 @@ public class MongolInputMethodManager {
         // get extra updates from MongolEditText
         // TODO is there any way for us to get these updates from EditText?
         if (editor instanceof MongolEditText) {
-            ((MongolEditText) editor).setOnMongolEditTextUpdateListener(mongolEditTextListener);
+            ((MongolEditText) editor).setOnMongolEditTextUpdateListener(this);
         }
 
         // TODO set allow system keyboard to show if hasn't been set
@@ -254,40 +255,50 @@ public class MongolInputMethodManager {
         return editorInfo;
     }
 
-    private MongolEditText.OnMongolEditTextInputEventListener mongolEditTextListener =
-            new MongolEditText.OnMongolEditTextInputEventListener() {
-
-                // the editor needs to call this every time the selection changes
-                // this method is an adaptation of Android source InputMethodManager#updateSelection
-                @Override
-                public void updateSelection(View view, int selStart, int selEnd,
-                                            int candidatesStart, int candidatesEnd) {
-
-                    if ((mCurrentEditor != view && mCurrentEditor == null)
-                            || mCurrentEditorInfo == null || mImeContainer == null) {
-                        return;
-                    }
-
-                    if (mCursorSelStart != selStart || mCursorSelEnd != selEnd
-                            || mCursorCandidateStart != candidatesStart
-                            || mCursorCandidateEnd != candidatesEnd) {
-
-                        if (DEBUG) Log.v(TAG, "SELECTION CHANGE: " + mImeContainer);
-                        final int oldSelStart = mCursorSelStart;
-                        final int oldSelEnd = mCursorSelEnd;
-                        mCursorSelStart = selStart;
-                        mCursorSelEnd = selEnd;
-                        mCursorCandidateStart = candidatesStart;
-                        mCursorCandidateEnd = candidatesEnd;
-                        mImeContainer.onUpdateSelection(oldSelStart, oldSelEnd,
-                                selStart, selEnd, candidatesStart, candidatesEnd);
-                    }
-
-                }
-            };
+//    private MongolEditText.OnMongolEditTextInputEventListener mongolEditTextListener =
+//            new MongolEditText.OnMongolEditTextInputEventListener() {
+//
+//                // the editor needs to call this every time the selection changes
+//                // this method is an adaptation of Android source InputMethodManager#updateSelection
+//                @Override
+//                public void updateSelection(View view, int selStart, int selEnd,
+//                                            int candidatesStart, int candidatesEnd) {
+//
+//
+//
+//                }
+//            };
 
     public void setIme(ImeContainer imeContainer) {
         this.mImeContainer = imeContainer;
+    }
+
+    @Override
+    public void updateSelection(View view, int selStart, int selEnd, int candidatesStart, int candidatesEnd) {
+        if ((mCurrentEditor != view && mCurrentEditor == null)
+                || mCurrentEditorInfo == null || mImeContainer == null) {
+            return;
+        }
+
+        if (mCursorSelStart != selStart || mCursorSelEnd != selEnd
+                || mCursorCandidateStart != candidatesStart
+                || mCursorCandidateEnd != candidatesEnd) {
+
+            if (DEBUG) Log.v(TAG, "SELECTION CHANGE: " + mImeContainer);
+            final int oldSelStart = mCursorSelStart;
+            final int oldSelEnd = mCursorSelEnd;
+            mCursorSelStart = selStart;
+            mCursorSelEnd = selEnd;
+            mCursorCandidateStart = candidatesStart;
+            mCursorCandidateEnd = candidatesEnd;
+            mImeContainer.onUpdateSelection(oldSelStart, oldSelEnd,
+                    selStart, selEnd, candidatesStart, candidatesEnd);
+        }
+    }
+
+    @Override
+    public void updateExtractedText(View view, int token, ExtractedText text) {
+
     }
 
     private class RegisteredEditor {
