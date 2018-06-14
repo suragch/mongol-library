@@ -6,11 +6,14 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.widget.TextView;
+
+import static android.content.ContentValues.TAG;
 
 // MongolEditText Input Connection
 // Allows the MongolEditText to receive input from system keyboards
@@ -18,6 +21,7 @@ import android.widget.TextView;
 class MetInputConnection extends BaseInputConnection {
 
     private MongolEditText mMongolEditText;
+    private ExtractedTextRequest mExtractedTextRequest;
 
     MetInputConnection(View targetView, boolean fullEditor) {
         super(targetView, fullEditor);
@@ -60,6 +64,8 @@ class MetInputConnection extends BaseInputConnection {
                 return cutSelectedText();
             case android.R.id.paste:
                 return pasteTextFromClipboard();
+            case android.R.id.selectAll:
+                return selectAll();
         }
         return false;
     }
@@ -91,13 +97,21 @@ class MetInputConnection extends BaseInputConnection {
         return true;
     }
 
+    private boolean selectAll() {
+        int length = mMongolEditText.getText().length();
+        mMongolEditText.setSelection(0, length);
+        return false;
+    }
+
     @Override
     public ExtractedText getExtractedText(ExtractedTextRequest request, int flags) {
         if (request == null)
             return null;
 
-//        if ((flags & GET_EXTRACTED_TEXT_MONITOR) != 0)
-//            mUpdateRequest = request;
+        if ((flags & GET_EXTRACTED_TEXT_MONITOR) != 0)
+            mExtractedTextRequest = request;
+        else
+            Log.i(TAG, "getExtractedText: not monitoring");
 
         Editable editable = getEditable();
         if (editable == null) {
@@ -119,6 +133,15 @@ class MetInputConnection extends BaseInputConnection {
             extract.text = editable.toString();
         }
         return extract;
+    }
+
+    @Override
+    public boolean requestCursorUpdates(int cursorUpdateMode) {
+        return super.requestCursorUpdates(cursorUpdateMode);
+    }
+
+    public ExtractedTextRequest getExtractedTextRequest() {
+        return mExtractedTextRequest;
     }
 
     // TODO commitCompletion: after adding completion choices

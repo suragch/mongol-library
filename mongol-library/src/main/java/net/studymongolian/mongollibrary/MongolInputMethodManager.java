@@ -19,6 +19,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A replacement for InputMethodManager when using a custom in-app keyboard.
+ * This class moves the input connection to the current editor.
+ */
 public class MongolInputMethodManager implements MongolEditText.OnMongolEditTextInputEventListener {
 
     /**
@@ -298,7 +302,7 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
 
     @Override
     public void updateExtractedText(View view, int token, ExtractedText text) {
-
+        // TODO currently unimplemented since ImeContainer doesn't have an extracted text view
     }
 
     private class RegisteredEditor {

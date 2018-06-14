@@ -8,27 +8,23 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.ParcelableSpan;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.MetaKeyKeyListener;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -54,11 +50,9 @@ public class MongolEditText extends MongolTextView {
     private static final int CURSOR_DEFAULT_COLOR = Color.parseColor("#4ac3ff"); // blue
     private Path mCursorPath;
     private GestureDetector mDetector;
-    //int mBatchEditNesting = 0;
+    int mBatchEditNesting = 0;
     private ArrayList<TextWatcher> mListeners;
     private boolean mAllowSystemKeyboard = true;
-    InputMethodState mInputMethodState;
-    boolean mInBatchEditControllers;
 
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
@@ -67,9 +61,6 @@ public class MongolEditText extends MongolTextView {
 
     private static final int DIRECTION_LEFT = -1;
     private static final int DIRECTION_RIGHT = 1;
-
-    static final int EXTRACT_NOTHING = -2;
-    static final int EXTRACT_UNKNOWN = -1;
 
 
     public MongolEditText(Context context) {
@@ -121,8 +112,19 @@ public class MongolEditText extends MongolTextView {
             }
 
             @Override
-            public void onTextChanged(CharSequence text, int start, int before, int after) {
-                MongolEditText.this.handleTextChanged(text, start, before, after);
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+                // TODO just update the layout from the start position rather than everything
+                MongolEditText.super.mLayout.setText(mTextStorage.getGlyphText());
+                reportExtractedText();
+                invalidate();
+                requestLayout();
+
+                // notify any listeners the user may have added
+                if (mListeners != null && mListeners.size() > 0) {
+                    for (TextWatcher watcher : mListeners) {
+                        watcher.onTextChanged(text, start, before, count);
+                    }
+                }
             }
 
             @Override
@@ -132,9 +134,9 @@ public class MongolEditText extends MongolTextView {
                         watcher.afterTextChanged(editable);
                     }
                 }
-//                if (isFocused()) {
-//                    makeBlink();
-//                }
+                if (isFocused()) {
+                    makeBlink();
+                }
             }
 
 
@@ -149,6 +151,7 @@ public class MongolEditText extends MongolTextView {
 
                 if (isNonIntermediateSelectionSpan(buf, what)) {
                     sendUpdateSelection();
+                    reportExtractedText();
                 }
             }
         });
@@ -200,106 +203,6 @@ public class MongolEditText extends MongolTextView {
 
         // gestures
         mDetector = new GestureDetector(getContext(), new MyListener());
-    }
-
-    // mostly copying TextView.handleTextChanged
-    void handleTextChanged(CharSequence text, int start, int before, int after) {
-        // TODO just update the layout from the start position rather than everything
-        MongolEditText.super.mLayout.setText(mTextStorage.getGlyphText());
-
-
-        final MongolEditText.InputMethodState ims = mInputMethodState;
-        if (ims == null || ims.mBatchEditNesting == 0) {
-            updateAfterEdit();
-        }
-        if (ims != null) {
-            ims.mContentChanged = true;
-            if (ims.mChangedStart < 0) {
-                ims.mChangedStart = start;
-                ims.mChangedEnd = start + before;
-            } else {
-                ims.mChangedStart = Math.min(ims.mChangedStart, start);
-                ims.mChangedEnd = Math.max(ims.mChangedEnd, start + before - ims.mChangedDelta);
-            }
-            ims.mChangedDelta += after - before;
-        }
-        sendOnTextChanged(text, start, before, after);
-        onTextChanged(text, start, before, after);
-    }
-
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        // intentionally empty, copying TextView.onTextChanged
-    }
-
-    void updateAfterEdit() {
-
-
-        int curs = getSelectionStart();
-
-        // TODO this probably for a textview that scrolls. Implement this when implementing scrolling.
-        //if (curs >= 0 || (mGravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.BOTTOM) {
-        //    registerForPreDraw();
-        //}
-
-        invalidate();
-        requestLayout();
-        // TODO the TextView has a much smarter algorithm that doesn't always call invalidate and requestLayout
-        //checkForResize();
-
-        if (curs >= 0) {
-            makeBlink();
-            // TODO scroll so that the cursor is visible
-            //bringPointIntoView(curs);
-        }
-    }
-
-//    /**
-//     * Check whether a change to the existing text layout requires a
-//     * new view layout.
-//     */
-//    private void checkForResize() {
-//        boolean sizeChanged = false;
-//
-//        if (mLayout != null) {
-//            // Check if our height changed
-//            LayoutParams layoutParams = getLayoutParams();
-//            if (layoutParams.height == LayoutParams.WRAP_CONTENT) {
-//                sizeChanged = true;
-//                invalidate();
-//            }
-//
-//            // Check if our width changed
-//            if (layoutParams.width == LayoutParams.WRAP_CONTENT) {
-//                int desiredWidth = getDesiredHeight();
-//
-//                if (desiredWidth != this.getWidth()) {
-//                    sizeChanged = true;
-//                }
-//            } else if (mLayoutParams.height == LayoutParams.MATCH_PARENT) {
-//                if (mDesiredHeightAtMeasure >= 0) {
-//                    int desiredHeight = getDesiredHeight();
-//
-//                    if (desiredHeight != mDesiredHeightAtMeasure) {
-//                        sizeChanged = true;
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (sizeChanged) {
-//            requestLayout();
-//            // caller will have already invalidated
-//        }
-//    }
-
-    void sendOnTextChanged(CharSequence text, int start, int before, int after) {
-        if (mListeners != null) {
-            final ArrayList<TextWatcher> list = mListeners;
-            final int count = list.size();
-            for (int i = 0; i < count; i++) {
-                list.get(i).onTextChanged(text, start, before, after);
-            }
-        }
     }
 
     private boolean onDeleteText(int selectionStart, int selectionEnd) {
@@ -402,6 +305,9 @@ public class MongolEditText extends MongolTextView {
         outAttrs.initialSelStart = getSelectionStart();
         outAttrs.initialSelEnd = getSelectionEnd();
 
+        // FIXME temporarily disabling extracted text because I can't figure out how to update it
+        outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+
         // TODO allow user to set type class
         outAttrs.inputType = InputType.TYPE_CLASS_TEXT;
 
@@ -428,6 +334,7 @@ public class MongolEditText extends MongolTextView {
         void updateSelection(View view, int selStart, int selEnd,
                              int candidatesStart, int candidatesEnd);
         void updateExtractedText (View view, int token, ExtractedText text);
+        // TODO everywhere that these are called also update the system InputMethodManager
     }
 
     private OnMongolEditTextInputEventListener mMongolImeManager;
@@ -655,8 +562,6 @@ public class MongolEditText extends MongolTextView {
         int start = getSelectionStart();
         int end = getSelectionEnd();
 
-        //handleInputMethod(start, end);
-
         // no selection
         if (start < 0 || end < 0) {
             // if there is no selection then just draw text
@@ -677,49 +582,6 @@ public class MongolEditText extends MongolTextView {
             canvas.drawRect(getCursorPath(start), mCursorPaint);
         }
     }
-
-//    private void handleInputMethod(int start, int end) {
-//        final InputMethodState ims = mInputMethodState;
-//        if (ims != null && ims.mBatchEditNesting == 0) {
-//            InputMethodManager imm = InputMethodManager.peekInstance();
-//            if (imm != null) {
-//                if (imm.isActive(mTextView)) {
-//                    boolean reported = false;
-//                    if (ims.mContentChanged || ims.mSelectionModeChanged) {
-//                        // We are in extract mode and the content has changed
-//                        // in some way... just report complete new text to the
-//                        // input method.
-//                        reported = reportExtractedText();
-//                    }
-//                    if (!reported && highlight != null) {
-//                        int candStart = -1;
-//                        int candEnd = -1;
-//                        if (mTextView.getText() instanceof Spannable) {
-//                            Spannable sp = (Spannable) mTextView.getText();
-//                            candStart = EditableInputConnection.getComposingSpanStart(sp);
-//                            candEnd = EditableInputConnection.getComposingSpanEnd(sp);
-//                        }
-//                        imm.updateSelection(mTextView,
-//                                selectionStart, selectionEnd, candStart, candEnd);
-//                    }
-//                }
-//                if (imm.isWatchingCursor(mTextView) && highlight != null) {
-//                    highlight.computeBounds(ims.mTmpRectF, true);
-//                    ims.mTmpOffset[0] = ims.mTmpOffset[1] = 0;
-//                    canvas.getMatrix().mapPoints(ims.mTmpOffset);
-//                    ims.mTmpRectF.offset(ims.mTmpOffset[0], ims.mTmpOffset[1]);
-//                    ims.mTmpRectF.offset(0, cursorOffsetVertical);
-//                    ims.mCursorRectInWindow.set((int)(ims.mTmpRectF.left + 0.5),
-//                            (int)(ims.mTmpRectF.top + 0.5),
-//                            (int)(ims.mTmpRectF.right + 0.5),
-//                            (int)(ims.mTmpRectF.bottom + 0.5));
-//                    imm.updateCursor(mTextView,
-//                            ims.mCursorRectInWindow.left, ims.mCursorRectInWindow.top,
-//                            ims.mCursorRectInWindow.right, ims.mCursorRectInWindow.bottom);
-//                }
-//            }
-//        }
-//    }
 
     private boolean blinkShouldBeOn() {
         //noinspection SimplifiableIfStatement
@@ -997,90 +859,36 @@ public class MongolEditText extends MongolTextView {
 
     //////////////////// batch edits from IME ///////////////////////////////
 
-    // copying Editor.beginBatchEdit()
-    public void beginBatchEdit() {
-        //int nesting = ++mBatchEditNesting;
-        //return nesting > 0; // should always be true
+    public boolean beginBatchEdit() {
+        int nesting = ++mBatchEditNesting;
+        return nesting > 0; // should always be true
+    }
 
-
-        mInBatchEditControllers = true;
-        final InputMethodState ims = mInputMethodState;
-        if (ims != null) {
-            int nesting = ++ims.mBatchEditNesting;
-            if (nesting == 1) {
-                ims.mCursorChanged = false;
-                ims.mChangedDelta = 0;
-                if (ims.mContentChanged) {
-                    ims.mChangedStart = 0;
-                    ims.mChangedEnd = getText().length();
-                } else {
-                    ims.mChangedStart = EXTRACT_UNKNOWN;
-                    ims.mChangedEnd = EXTRACT_UNKNOWN;
-                    ims.mContentChanged = false;
-                }
-                onBeginBatchEdit();
-            }
+    public boolean endBatchEdit() {
+        int nesting = --mBatchEditNesting;
+        if (nesting == 0) {
+            finishBatchEdit();
         }
-
-    }
-
-    public void onBeginBatchEdit() {
-        // intentionally empty (copying TextView.onBeginBatchEdit())
-    }
-
-    public void onEndBatchEdit() {
-        // intentionally empty (copying TextView.onBeginBatchEdit())
-    }
-
-    public void endBatchEdit() {
-//        int nesting = --mBatchEditNesting;
-//        if (nesting == 0) {
-//            finishBatchEdit();
-//        }
-//        return nesting > 0;
-
-
-        mInBatchEditControllers = false;
-        final InputMethodState ims = mInputMethodState;
-        if (ims != null) {
-            int nesting = --ims.mBatchEditNesting;
-            if (nesting == 0) {
-                finishBatchEdit(ims);
-            }
-        }
+        return nesting > 0;
     }
 
     void ensureEndedBatchEdit() {
-//        if (mBatchEditNesting != 0) {
-//            mBatchEditNesting = 0;
-//            finishBatchEdit();
-//        }
-
-        final InputMethodState ims = mInputMethodState;
-        if (ims != null && ims.mBatchEditNesting != 0) {
-            ims.mBatchEditNesting = 0;
-            finishBatchEdit(ims);
+        if (mBatchEditNesting != 0) {
+            mBatchEditNesting = 0;
+            finishBatchEdit();
         }
     }
 
-    void finishBatchEdit(final InputMethodState ims) {
-
-        onEndBatchEdit();
-        if (ims.mContentChanged || ims.mSelectionModeChanged) {
-            sendUpdateSelection();
-            updateAfterEdit();
-            reportExtractedText();
-        } else if (ims.mCursorChanged) {
-            // TODO do we need to do this?
-            //invalidateCursor();
-        }
+    void finishBatchEdit() {
+        sendUpdateSelection();
+        reportExtractedText();
     }
 
     //////////////////////////////////////////////////////////////////////////
 
     private void sendUpdateSelection() {
-        final InputMethodState ims = mInputMethodState;
-        if (ims != null && ims.mBatchEditNesting <= 0) {
+        // adapted from Android source Editor#sendUpdateSelection
+        if (mBatchEditNesting <= 0) {
             // TODO final InputMethodManager imm = InputMethodManager.peekInstance(); also support system keyboards
 
             if (null != mMongolImeManager) {
@@ -1089,6 +897,7 @@ public class MongolEditText extends MongolTextView {
                 int candStart = -1;
                 int candEnd = -1;
                 if (mTextStorage != null) {
+                    //final Spannable sp = getText();
                     candStart = MetInputConnection.getComposingSpanStart(mTextStorage);
                     candEnd = MetInputConnection.getComposingSpanEnd(mTextStorage);
                 }
@@ -1100,6 +909,100 @@ public class MongolEditText extends MongolTextView {
             }
         }
     }
+
+    private void reportExtractedText() {
+
+        // TODO we should be modifying this based on an ExtractedTextRequest
+
+
+        ExtractedText et = new ExtractedText();
+        final CharSequence content = getText();
+        final int length = content.length();
+        et.partialStartOffset = 0;
+        et.partialEndOffset = length;
+        et.startOffset = 0;
+        et.selectionStart = getSelectionStart();
+        et.selectionEnd = getSelectionEnd();
+        et.flags = 0;
+        et.text = content.subSequence(0, length);
+
+        // FIXME: should be returning this from the ExtractedTextRequest
+        int requestToken = 0;
+
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm == null) return;
+        imm.updateExtractedText(this, requestToken, et);
+    }
+
+//    private boolean extractTextInternal(ExtractedTextRequest request,
+//                                        int partialStartOffset, int partialEndOffset, int delta,
+//                                        ExtractedText outText) {
+//        final CharSequence content = mTextView.getText();
+//        if (content != null) {
+//            if (partialStartOffset != EXTRACT_NOTHING) {
+//                final int N = content.length();
+//                if (partialStartOffset < 0) {
+//                    outText.partialStartOffset = outText.partialEndOffset = -1;
+//                    partialStartOffset = 0;
+//                    partialEndOffset = N;
+//                } else {
+//                    // Now use the delta to determine the actual amount of text
+//                    // we need.
+//                    partialEndOffset += delta;
+//                    // Adjust offsets to ensure we contain full spans.
+//                    if (content instanceof Spanned) {
+//                        Spanned spanned = (Spanned)content;
+//                        Object[] spans = spanned.getSpans(partialStartOffset,
+//                                partialEndOffset, ParcelableSpan.class);
+//                        int i = spans.length;
+//                        while (i > 0) {
+//                            i--;
+//                            int j = spanned.getSpanStart(spans[i]);
+//                            if (j < partialStartOffset) partialStartOffset = j;
+//                            j = spanned.getSpanEnd(spans[i]);
+//                            if (j > partialEndOffset) partialEndOffset = j;
+//                        }
+//                    }
+//                    outText.partialStartOffset = partialStartOffset;
+//                    outText.partialEndOffset = partialEndOffset - delta;
+//                    if (partialStartOffset > N) {
+//                        partialStartOffset = N;
+//                    } else if (partialStartOffset < 0) {
+//                        partialStartOffset = 0;
+//                    }
+//                    if (partialEndOffset > N) {
+//                        partialEndOffset = N;
+//                    } else if (partialEndOffset < 0) {
+//                        partialEndOffset = 0;
+//                    }
+//                }
+//                if ((request.flags&InputConnection.GET_TEXT_WITH_STYLES) != 0) {
+//                    outText.text = content.subSequence(partialStartOffset,
+//                            partialEndOffset);
+//                } else {
+//                    outText.text = TextUtils.substring(content, partialStartOffset,
+//                            partialEndOffset);
+//                }
+//            } else {
+//                outText.partialStartOffset = 0;
+//                outText.partialEndOffset = 0;
+//                outText.text = "";
+//            }
+//            outText.flags = 0;
+//            if (MetaKeyKeyListener.getMetaState(content, MetaKeyKeyListener.META_SELECTING) != 0) {
+//                outText.flags |= ExtractedText.FLAG_SELECTING;
+//            }
+//            if (mTextView.isSingleLine()) {
+//                outText.flags |= ExtractedText.FLAG_SINGLE_LINE;
+//            }
+//            outText.startOffset = 0;
+//            outText.selectionStart = mTextView.getSelectionStart();
+//            outText.selectionEnd = mTextView.getSelectionEnd();
+//            return true;
+//        }
+//        return false;
+//    }
 
     // from Android source Editor.SpanController#isNonIntermediateSelectionSpan
     private boolean isNonIntermediateSelectionSpan(final Spanned text, final Object span) {
@@ -1148,133 +1051,5 @@ public class MongolEditText extends MongolTextView {
         void uncancel() {
             mCancelled = false;
         }
-    }
-
-    // extracted text
-
-    boolean reportExtractedText() {
-        final MongolEditText.InputMethodState ims = mInputMethodState;
-        if (ims != null) {
-            final boolean contentChanged = ims.mContentChanged;
-            if (contentChanged || ims.mSelectionModeChanged) {
-                ims.mContentChanged = false;
-                ims.mSelectionModeChanged = false;
-                final ExtractedTextRequest req = ims.mExtracting;
-                if (req != null) {
-                    InputMethodManager imm = InputMethodManager.peekInstance();
-                    if (imm != null) {
-
-                        if (ims.mChangedStart < 0 && !contentChanged) {
-                            ims.mChangedStart = EXTRACT_NOTHING;
-                        }
-                        if (extractTextInternal(req, ims.mChangedStart, ims.mChangedEnd,
-                                ims.mChangedDelta, ims.mTmpExtracted)) {
-
-                            imm.updateExtractedText(this, req.token, ims.mTmpExtracted);
-                            ims.mChangedStart = EXTRACT_UNKNOWN;
-                            ims.mChangedEnd = EXTRACT_UNKNOWN;
-                            ims.mChangedDelta = 0;
-                            ims.mContentChanged = false;
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // Mainly copied from Editor
-    private boolean extractTextInternal(ExtractedTextRequest request,
-                                        int partialStartOffset, int partialEndOffset, int delta,
-                                        ExtractedText outText) {
-        final CharSequence content = getText();
-        if (content != null) {
-            if (partialStartOffset != EXTRACT_NOTHING) {
-                final int N = content.length();
-                if (partialStartOffset < 0) {
-                    outText.partialStartOffset = outText.partialEndOffset = -1;
-                    partialStartOffset = 0;
-                    partialEndOffset = N;
-                } else {
-                    // Now use the delta to determine the actual amount of text
-                    // we need.
-                    partialEndOffset += delta;
-                    // Adjust offsets to ensure we contain full spans.
-                    if (content instanceof Spanned) {
-                        Spanned spanned = (Spanned)content;
-                        Object[] spans = spanned.getSpans(partialStartOffset,
-                                partialEndOffset, ParcelableSpan.class);
-                        int i = spans.length;
-                        while (i > 0) {
-                            i--;
-                            int j = spanned.getSpanStart(spans[i]);
-                            if (j < partialStartOffset) partialStartOffset = j;
-                            j = spanned.getSpanEnd(spans[i]);
-                            if (j > partialEndOffset) partialEndOffset = j;
-                        }
-                    }
-                    outText.partialStartOffset = partialStartOffset;
-                    outText.partialEndOffset = partialEndOffset - delta;
-                    if (partialStartOffset > N) {
-                        partialStartOffset = N;
-                    } else if (partialStartOffset < 0) {
-                        partialStartOffset = 0;
-                    }
-                    if (partialEndOffset > N) {
-                        partialEndOffset = N;
-                    } else if (partialEndOffset < 0) {
-                        partialEndOffset = 0;
-                    }
-                }
-                if ((request.flags&InputConnection.GET_TEXT_WITH_STYLES) != 0) {
-                    outText.text = content.subSequence(partialStartOffset,
-                            partialEndOffset);
-                } else {
-                    outText.text = TextUtils.substring(content, partialStartOffset,
-                            partialEndOffset);
-                }
-            } else {
-                outText.partialStartOffset = 0;
-                outText.partialEndOffset = 0;
-                outText.text = "";
-            }
-            outText.flags = 0;
-//            if (MetaKeyKeyListener.getMetaState(content, MetaKeyKeyListener.META_SELECTING) != 0) {
-//                outText.flags |= ExtractedText.FLAG_SELECTING;
-//            }
-            if (isSingleLine()) {
-                outText.flags |= ExtractedText.FLAG_SINGLE_LINE;
-            }
-            outText.startOffset = 0;
-            outText.selectionStart = getSelectionStart();
-            outText.selectionEnd = getSelectionEnd();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isSingleLine() {
-        // TODO make single line possible
-        return false;
-    }
-
-    void createInputMethodStateIfNeeded() {
-        if (mInputMethodState == null) {
-            mInputMethodState = new InputMethodState();
-        }
-    }
-
-    static class InputMethodState {
-        Rect mCursorRectInWindow = new Rect();
-        RectF mTmpRectF = new RectF();
-        float[] mTmpOffset = new float[2];
-        ExtractedTextRequest mExtracting;
-        final ExtractedText mTmpExtracted = new ExtractedText();
-        int mBatchEditNesting;
-        boolean mCursorChanged;
-        boolean mSelectionModeChanged;
-        boolean mContentChanged;
-        int mChangedStart, mChangedEnd, mChangedDelta;
     }
 }

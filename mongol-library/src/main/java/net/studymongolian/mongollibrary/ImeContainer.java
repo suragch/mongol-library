@@ -14,6 +14,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1077,12 +1078,38 @@ public class ImeContainer extends ViewGroup
 
     @Override
     public void selectWordBack() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
+        int previousWordBoundary = getPreviousWordBoundary(extractedText.text, extractedText.selectionStart);
+        int start = extractedText.startOffset + previousWordBoundary;
+        int end = extractedText.startOffset +  extractedText.selectionEnd;
+        ic.setSelection(start, end);
+    }
 
+    private int getPreviousWordBoundary(CharSequence text, int selectionStart) {
+        BreakIterator boundary = BreakIterator.getWordInstance();
+        boundary.setText(text.toString());
+        int preceding = boundary.preceding(selectionStart);
+        return (preceding == BreakIterator.DONE) ? selectionStart : preceding;
     }
 
     @Override
     public void selectWordForward() {
+        InputConnection ic = getInputConnection();
+        if (ic == null) return;
+        ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
+        int nextWordBoundary = getNextWordBoundary(extractedText.text, extractedText.selectionEnd);
+        int start = extractedText.startOffset + extractedText.selectionStart;
+        int end = extractedText.startOffset +  nextWordBoundary;
+        ic.setSelection(start, end);
+    }
 
+    private int getNextWordBoundary(CharSequence text, int selectionEnd) {
+        BreakIterator boundary = BreakIterator.getWordInstance();
+        boundary.setText(text.toString());
+        int next = boundary.following(selectionEnd);
+        return (next == BreakIterator.DONE) ? selectionEnd : next;
     }
 
     @Override
