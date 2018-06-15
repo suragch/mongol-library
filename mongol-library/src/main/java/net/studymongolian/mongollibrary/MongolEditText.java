@@ -208,7 +208,9 @@ public class MongolEditText extends MongolTextView {
     private boolean onDeleteText(int selectionStart, int selectionEnd) {
         if (selectionStart == selectionEnd) {
             if (selectionStart <= 0) return false;
-            mTextStorage.delete(selectionStart - 1, selectionStart);
+            final int codepoint = Character.codePointBefore(mTextStorage, selectionStart);
+            int charCount = Character.charCount(codepoint);
+            mTextStorage.delete(selectionStart - charCount, selectionStart);
         } else {
             // delete highlighted text
             mTextStorage.delete(selectionStart, selectionEnd);
