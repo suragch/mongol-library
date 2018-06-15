@@ -1056,17 +1056,10 @@ public class ImeContainer extends ViewGroup
     public void moveCursorEnd() {
         InputConnection ic = getInputConnection();
         if (ic == null) return;
-        ExtractedText extractedTextText = ic.getExtractedText(new ExtractedTextRequest(), 0);
-        if (extractedTextText == null || extractedTextText.text == null) return;
-        int length = extractedTextText.text.length();
+        ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
+        if (extractedText == null || extractedText.text == null) return;
+        int length = extractedText.text.length();
         ic.setSelection(length, length);
-
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_END));
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MOVE_END));
-//        InputConnection ic = getInputConnection();
-//        if (ic == null) return;
-//        int max = 100;
-//        ic.setSelection(max, max);
     }
 
     @Override
@@ -1117,11 +1110,6 @@ public class ImeContainer extends ViewGroup
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         ic.performContextMenuAction(android.R.id.copy);
-
-//        InputConnection ic = getInputConnection();
-//        if (ic == null) return;
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_COPY));
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_COPY));
     }
 
     @Override
@@ -1129,11 +1117,6 @@ public class ImeContainer extends ViewGroup
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         ic.performContextMenuAction(android.R.id.cut);
-//        InputConnection ic = getInputConnection();
-//        if (ic == null) return;
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_CUT));
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_CUT));
-
     }
 
     @Override
@@ -1141,11 +1124,6 @@ public class ImeContainer extends ViewGroup
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         ic.performContextMenuAction(android.R.id.paste);
-//        InputConnection ic = getInputConnection();
-//        if (ic == null) return;
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_PASTE));
-//        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_PASTE));
-
     }
 
     public void toggleNavigationView() {
