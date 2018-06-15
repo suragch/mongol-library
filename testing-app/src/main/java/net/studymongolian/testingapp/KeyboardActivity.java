@@ -75,6 +75,8 @@ public class KeyboardActivity extends AppCompatActivity {
         backspaceTests.add(backspace_X_ZWJ_X);
         backspaceTests.add(backspace_X_ZWJ_M_FVS1);
         backspaceTests.add(backspace_everything_highlighted);
+        backspaceTests.add(backspace_emoji);
+        backspaceTests.add(backspace_highlighted_emoji);
 
         handler.post(runnableCode);
     }
@@ -106,7 +108,6 @@ public class KeyboardActivity extends AppCompatActivity {
                 }
             }
         }, TEST_DELAY / 4);
-
     }
 
     // Deleting
@@ -351,6 +352,45 @@ public class KeyboardActivity extends AppCompatActivity {
 
             // action
             mongolEditText.selectAll();
+            Keyboard keyboard = imeContainer.getCurrentKeyboard();
+            keyboard.onBackspace();
+
+            // results
+            assertEqualsMetText(message, expected);
+        }
+    };
+
+    Runnable backspace_emoji = new Runnable() {
+        @Override
+        public void run() {
+            final String message = "backspace_emoji";
+
+            // setup
+            final String original = "\uD83D\uDE42";
+            final String expected = "";
+            mongolEditText.setText(original);
+
+            // action
+            Keyboard keyboard = imeContainer.getCurrentKeyboard();
+            keyboard.onBackspace();
+
+            // results
+            assertEqualsMetText(message, expected);
+        }
+    };
+
+    Runnable backspace_highlighted_emoji = new Runnable() {
+        @Override
+        public void run() {
+            final String message = "backspace_highlighted_emoji";
+
+            // setup
+            final String original = "ab\uD83D\uDE42c";
+            final String expected = "ac";
+            mongolEditText.setText(original);
+
+            // action
+            mongolEditText.setSelection(1, 4);
             Keyboard keyboard = imeContainer.getCurrentKeyboard();
             keyboard.onBackspace();
 
