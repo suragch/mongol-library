@@ -259,6 +259,9 @@ public class MainActivity extends AppCompatActivity {
 
 ![keyboard candidates](docs/images/keyboard-candidates.png)
 
+
+![keyboard navigation](docs/images/keyboard-navigation.png)
+
 XML
 
 ```xml
@@ -285,7 +288,7 @@ dependencies {
 
 在AndroidManifest里的activity模块表示要隐藏系统键盘
 
-``xml
+```xml
 android:windowSoftInputMode="stateHidden"
 ```
 
