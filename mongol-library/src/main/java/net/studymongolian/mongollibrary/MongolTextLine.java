@@ -329,7 +329,7 @@ class MongolTextLine {
                 if (run.isRotated) {
                     // choose the closer offset
                     if (advance - oldWidth > newWidth - advance) {
-                        offset++;
+                        offset += length;
                     }
                     break;
                 }
@@ -352,7 +352,7 @@ class MongolTextLine {
                 float widthOfNextChar = wp.measureText(mText, nextCharIndex, nextCharIndex + 1);
                 // choose the closer offset
                 if (advance - newWidth > newWidth + widthOfNextChar - advance) {
-                    offset++;
+                    offset += length;
                 }
                 break;
             }
