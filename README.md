@@ -385,9 +385,17 @@ To do this you need to set `KeyboardCandidateView` location in XML for each keyb
     />
 ```
 
+The candidates view uses a RecyclerView internally, so you should include it in your app's build.gradle dependencies.
+
+```xml
+dependencies {
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+}
+```
+
 The system keyboard will popup natually so you can prevent that by hiding in the Manifest for the activity that is using the keyboard.
 
-``xml
+```xml
 android:windowSoftInputMode="stateHidden"
 ```
 
