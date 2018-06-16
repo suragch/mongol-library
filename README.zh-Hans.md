@@ -41,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.8.1'
+    implementation 'net.studymongolian:mongol-library:1.9.0'
 }
 ```
 
@@ -283,18 +283,24 @@ dependencies {
 }
 ```
 
+在AndroidManifest里的activity模块表示要隐藏系统键盘
+
+``xml
+android:windowSoftInputMode="stateHidden"
+```
+
 Java
 
 ```java
 // 要声明ImeContainer.DataSource接口
-public class MyActivity extends AppCompatActivity implements ImeContainer.DataSource {
+public class MyActivity extends AppCompatActivity implements ImeContainer.DataSource, ImeContainer.OnNonSystemImeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // ...
        
         imeContainer.setDataSource(this);
-
+        imeContainer.setOnNonSystemImeListener(this);
         // ...
     }
 
@@ -320,6 +326,13 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     @Override
     public void onCandidateLongClick(int position, String word, String previousWordInEditor) {
         // 候选词被长按
+    }
+    
+    // 实现ImeContainer.OnNonSystemImeListener接口的方法
+    
+    @Override
+    public void onHideKeyboardRequest() {
+        // imeContainer.setVisibility(View.GONE)
     }
 }
 ```
