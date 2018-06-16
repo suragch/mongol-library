@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.9.1'
+    implementation 'net.studymongolian:mongol-library:1.10.0'
 }
 ```
 
@@ -676,6 +676,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.10.0`: Allow custom keyboard to request a system keyboard
 * `1.9.1`: Bug fix for crash caused by selection index out of bounds (new bug added in 1.9.0)
 * `1.9.0`: Added navigation support to `MongolEditText` and navigation keyboard to `ImeContainer`; bug fixes.
 * `1.8.1`: Bug fix for keyboard candidate view item long click 

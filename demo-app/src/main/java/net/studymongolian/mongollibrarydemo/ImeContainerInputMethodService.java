@@ -42,7 +42,7 @@ public class ImeContainerInputMethodService extends InputMethodService
     }
 
     @Override
-    public void onChooseNewSystemKeyboard() {
+    public void onSystemKeyboardRequest() {
         InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (im == null) return;
         im.showInputMethodPicker();

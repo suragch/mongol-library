@@ -127,13 +127,8 @@ public class ImeContainer extends ViewGroup
      * A custom InputMethodService should implement this listener when
      * creating a system keyboard.
      */
-    public interface OnSystemImeListener {
+    public interface OnSystemImeListener extends OnNonSystemImeListener {
         InputConnection getInputConnection();
-
-        void onChooseNewSystemKeyboard();
-
-        void onHideKeyboardRequest();
-
     }
 
     /**
@@ -151,6 +146,7 @@ public class ImeContainer extends ViewGroup
      * be the one to implement this interface.
      */
     public interface OnNonSystemImeListener {
+        void onSystemKeyboardRequest();
         void onHideKeyboardRequest();
     }
 
@@ -429,9 +425,11 @@ public class ImeContainer extends ViewGroup
 
     private void chooseSystemKeyboard() {
         if (mSystemImeListener != null) {
-            mSystemImeListener.onChooseNewSystemKeyboard();
+            mSystemImeListener.onSystemKeyboardRequest();
         }
-        // TODO else who can we request a system keyboard from? MongolInputMethodManager?
+        if (mNonSystemImeListener != null) {
+            mNonSystemImeListener.onSystemKeyboardRequest();
+        }
     }
 
     private int getKeyboardIndexFromDisplayName(String keyboardDisplayName) {
@@ -477,8 +475,7 @@ public class ImeContainer extends ViewGroup
 
     /**
      * An additional popup item can be added to the keyboard chooser key.
-     * When this item is selected users will be given the choose to choose
-     * one of the other system keyboards.
+     * This will trigger a callback to the On(Non)SystemKeyboardListener.
      *
      * @param title of the popup item. For example, "Other System Keyboards".
      */

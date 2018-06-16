@@ -53,6 +53,12 @@ public class KeyboardNavigationActivity extends AppCompatActivity
 
 
     @Override
+    public void onSystemKeyboardRequest() {
+        // imeContainer.showSystemKeyboardsOption was not set
+        // so there will be no request
+    }
+
+    @Override
     public void onHideKeyboardRequest() {
         imeContainer.setVisibility(View.GONE);
     }

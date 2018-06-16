@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.ImeContainer;
@@ -25,6 +26,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity
 
     ImeContainer imeContainer;
     MongolTextView mongolTextView;
+    MongolEditText mongolEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity
         imeContainer.setDataSource(this);
         // this activity will handle hide requests from the keyboard
         imeContainer.setOnNonSystemImeListener(this);
+        imeContainer.showSystemKeyboardsOption("ᠰᠢᠰᠲ᠋ᠧᠮ");
 
         // these will characters will cause the cursor to back up
         // if they come after a space.
@@ -49,7 +52,7 @@ public class KeyboardCandidateActivity extends AppCompatActivity
 
         // set up input method manager
         MongolInputMethodManager mimm = new MongolInputMethodManager();
-        MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
+        mongolEditText = findViewById(R.id.mongoledittext);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
 
@@ -117,6 +120,14 @@ public class KeyboardCandidateActivity extends AppCompatActivity
     public void onHideKeyboardRequest() {
         // the activity should hide the keyboard here
         imeContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSystemKeyboardRequest() {
+        imeContainer.setVisibility(View.GONE);
+        InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (im == null) return;
+        im.showSoftInput(mongolEditText, 0);
     }
 
     public void onShowKeyboardButtonClick(View view) {
