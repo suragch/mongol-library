@@ -1076,7 +1076,7 @@ public class ImeContainer extends ViewGroup
         ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
         int previousWordBoundary = getPreviousWordBoundary(extractedText.text, extractedText.selectionStart);
         int start = extractedText.startOffset + previousWordBoundary;
-        int end = extractedText.startOffset +  extractedText.selectionEnd;
+        int end = extractedText.startOffset + extractedText.selectionEnd;
         ic.setSelection(start, end);
     }
 
@@ -1094,7 +1094,7 @@ public class ImeContainer extends ViewGroup
         ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
         int nextWordBoundary = getNextWordBoundary(extractedText.text, extractedText.selectionEnd);
         int start = extractedText.startOffset + extractedText.selectionStart;
-        int end = extractedText.startOffset +  nextWordBoundary;
+        int end = extractedText.startOffset + nextWordBoundary;
         ic.setSelection(start, end);
     }
 
@@ -1129,14 +1129,14 @@ public class ImeContainer extends ViewGroup
     public void toggleNavigationView() {
         // if view null then initialize it
         if (mNavigationView == null) {
-            initTempView();
+            initNavigationView();
         }
         // if view not added then add it
-        if (!tempViewIsAdded()) {
+        if (!navigationViewIsAdded()) {
             addView(mNavigationView);
         }
         // if not laid out then lay out
-        if (!mTempViewPositionIsCorrect()) {
+        if (!navigationViewPositionIsCorrect()) {
             layoutNavigationView();
             mNavigationView.setVisibility(View.INVISIBLE);
         }
@@ -1150,27 +1150,27 @@ public class ImeContainer extends ViewGroup
         }
     }
 
-    private void initTempView() {
+    private void initNavigationView() {
         Keyboard.StyleBuilder builder = new Keyboard.StyleBuilder();
-        builder.typeface(mCurrentKeyboard.getTypeface());
-        builder.primaryTextSizePx(mCurrentKeyboard.getPrimaryTextSize());
-        builder.primaryTextColor(mCurrentKeyboard.getPrimaryTextColor());
-        builder.keyColor(mCurrentKeyboard.getKeyColor());
-        builder.keyPressedColor(mCurrentKeyboard.getKeyPressedColor());
-        builder.keyBorderColor(mCurrentKeyboard.getBorderColor());
-        builder.keyBorderRadius(mCurrentKeyboard.getBorderRadius());
-        builder.keyBorderWidth(mCurrentKeyboard.getBorderWidth());
-        builder.keySpacing(mCurrentKeyboard.getKeySpacing());
-        builder.popupBackgroundColor(mCurrentKeyboard.getPopupBackgroundColor());
-        builder.popupHighlightColor(mCurrentKeyboard.getPopupHighlightColor());
-        builder.popupTextColor(mCurrentKeyboard.getPopupTextColor());
-        builder.candidatesLocation(mCurrentKeyboard.getCandidatesLocation());
+        builder.typeface(mCurrentKeyboard.getTypeface())
+                .primaryTextSizePx(mCurrentKeyboard.getPrimaryTextSize())
+                .primaryTextColor(mCurrentKeyboard.getPrimaryTextColor())
+                .keyColor(mCurrentKeyboard.getKeyColor())
+                .keyPressedColor(mCurrentKeyboard.getKeyPressedColor())
+                .keyBorderColor(mCurrentKeyboard.getBorderColor())
+                .keyBorderRadius(mCurrentKeyboard.getBorderRadius())
+                .keyBorderWidth(mCurrentKeyboard.getBorderWidth())
+                .keySpacing(mCurrentKeyboard.getKeySpacing())
+                .popupBackgroundColor(mCurrentKeyboard.getPopupBackgroundColor())
+                .popupHighlightColor(mCurrentKeyboard.getPopupHighlightColor())
+                .popupTextColor(mCurrentKeyboard.getPopupTextColor())
+                .candidatesLocation(mCurrentKeyboard.getCandidatesLocation());
         mNavigationView = new KeyboardNavigation(mContext, builder);
         mNavigationView.setOnKeyboardListener(this);
         mNavigationView.setOnNavigationListener(this);
     }
 
-    private boolean tempViewIsAdded() {
+    private boolean navigationViewIsAdded() {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             if (getChildAt(i) == mNavigationView)
@@ -1179,7 +1179,7 @@ public class ImeContainer extends ViewGroup
         return false;
     }
 
-    private boolean mTempViewPositionIsCorrect() {
+    private boolean navigationViewPositionIsCorrect() {
         return mNavigationView.getLeft() == mCurrentKeyboard.getLeft() &&
                 mNavigationView.getTop() == mCurrentKeyboard.getTop() &&
                 mNavigationView.getRight() == mCurrentKeyboard.getRight() &&

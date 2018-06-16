@@ -27,10 +27,12 @@ public class MongolToast {
     private CharSequence text;
     private int duration;
 
+    @SuppressWarnings("unused")
     public MongolToast(Context context) {
         this.context = context;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public MongolToast(Context context, CharSequence text, int duration) {
         this.context = context;
         this.text = text;

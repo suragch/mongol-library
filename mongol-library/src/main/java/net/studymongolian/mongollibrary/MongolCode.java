@@ -205,7 +205,7 @@ public final class MongolCode {
                     case Glyph.SIBE_SYLLABLE_BOUNDARY_MARKER:
                         outputString.append(Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER);
                         break;
-                    case Glyph.MANCH_COMMA:
+                    case Glyph.MANCHU_COMMA:
                         outputString.append(Uni.MONGOLIAN_MANCHU_COMMA);
                         break;
                     case Glyph.MANCHU_FULL_STOP:
@@ -512,7 +512,7 @@ public final class MongolCode {
                 outputString.append(Uni.JA);
             } else if (currentChar < Glyph.RA_START) {                 // YA
                 outputString.append(Uni.YA);
-                // TODO add FVS1 for dipthongs?
+                // TODO add FVS1 for diphthongs?
                 if (currentChar == Glyph.INIT_YA_FVS1) {
                     outputString.append(Uni.FVS1);
                 }
@@ -810,6 +810,7 @@ public final class MongolCode {
         return MongolWord.getGender(word);
     }
 
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public class Uni {
 
 
@@ -954,6 +955,7 @@ public final class MongolCode {
         public static final char TODO_DZA = '\u185C';
     }
 
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public class Suffix {
         public static final String YIN = "\u202F\u1836\u1822\u1828";
         public static final String UN = "\u202F\u1824\u1828";
@@ -1029,7 +1031,7 @@ public final class MongolCode {
         static final char FOUR_DOTS = '\uE239';
         static final char TODO_SOFT_HYPHEN = '\uE23A';
         static final char SIBE_SYLLABLE_BOUNDARY_MARKER = '\uE23B';
-        static final char MANCH_COMMA = '\uE23C';
+        static final char MANCHU_COMMA = '\uE23C';
         static final char MANCHU_FULL_STOP = '\uE23D';
         static final char NIRUGU = '\uE23E';
         static final char BIRGA_WITH_ORNAMENT = '\uE23F';
@@ -1494,15 +1496,6 @@ public final class MongolCode {
 
                 char charAbove;
                 char currentChar = inputWord.charAt(i);
-
-//                if (isFVS(currentChar)) {
-//                    fvs = currentChar;
-//                    renderedWord.insert(0, )
-//                    continue;
-//                } else if (currentChar == Uni.MVS && i != length - 2) {
-//                    // ignore MVS in all but second to last position
-//                    continue;
-//                }
 
                 // get the location
                 updateLocation(i, charBelow);
@@ -3099,17 +3092,12 @@ public final class MongolCode {
             if (uIndex == 1) {
                 if (isConsonant(word.charAt(0))) {
                     // strange BUU exception
-                    if (BUU_EXCEPTION.contentEquals(word)) {
-                        return false;
-                    }
-                    return true;
+                    return !BUU_EXCEPTION.contentEquals(word);
                 }
             }
 
             if (uIndex == 2) {
-                if (isConsonant(word.charAt(0)) && isFVS(word.charAt(1))) {
-                    return true;
-                }
+                return isConsonant(word.charAt(0)) && isFVS(word.charAt(1));
             }
 
             return false;

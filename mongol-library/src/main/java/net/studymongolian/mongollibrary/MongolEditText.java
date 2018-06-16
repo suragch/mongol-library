@@ -27,14 +27,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.ExtractedText;
-import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+
 
 // TODO handle extracted text
 // FIXME crash if setting on OnFocusChangeListener
@@ -335,7 +334,7 @@ public class MongolEditText extends MongolTextView {
     public interface OnMongolEditTextInputEventListener {
         void updateSelection(View view, int selStart, int selEnd,
                              int candidatesStart, int candidatesEnd);
-        void updateExtractedText (View view, int token, ExtractedText text);
+        //void updateExtractedText (View view, int token, ExtractedText text);
         // TODO everywhere that these are called also update the system InputMethodManager
     }
 
@@ -893,118 +892,55 @@ public class MongolEditText extends MongolTextView {
         if (mBatchEditNesting <= 0) {
             // TODO final InputMethodManager imm = InputMethodManager.peekInstance(); also support system keyboards
 
-            if (null != mMongolImeManager) {
-                final int selectionStart = getSelectionStart();
-                final int selectionEnd = getSelectionEnd();
-                int candStart = -1;
-                int candEnd = -1;
-                if (mTextStorage != null) {
-                    //final Spannable sp = getText();
-                    candStart = MetInputConnection.getComposingSpanStart(mTextStorage);
-                    candEnd = MetInputConnection.getComposingSpanEnd(mTextStorage);
-                }
-                // InputMethodManager#updateSelection skips sending the message if
-                // none of the parameters have changed since the last time we called it.
-                mMongolImeManager.updateSelection(this, selectionStart, selectionEnd, candStart, candEnd);
-                if (selectionStart == selectionEnd)
-                    makeBlink();
+            final int selectionStart = getSelectionStart();
+            final int selectionEnd = getSelectionEnd();
+            int candidateStart = -1;
+            int candidateEnd = -1;
+            if (mTextStorage != null) {
+                candidateStart = MetInputConnection.getComposingSpanStart(mTextStorage);
+                candidateEnd = MetInputConnection.getComposingSpanEnd(mTextStorage);
             }
+
+            if (null != mMongolImeManager) {
+                mMongolImeManager.updateSelection(this,
+                        selectionStart, selectionEnd, candidateStart, candidateEnd);
+            } else {
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.updateSelection(this,
+                            selectionStart, selectionEnd, candidateStart, candidateEnd);
+            }
+
+            if (selectionStart == selectionEnd)
+                makeBlink();
         }
     }
 
+    // TODO
     private void reportExtractedText() {
 
         // TODO we should be modifying this based on an ExtractedTextRequest
 
 
-        ExtractedText et = new ExtractedText();
-        final CharSequence content = getText();
-        final int length = content.length();
-        et.partialStartOffset = 0;
-        et.partialEndOffset = length;
-        et.startOffset = 0;
-        et.selectionStart = getSelectionStart();
-        et.selectionEnd = getSelectionEnd();
-        et.flags = 0;
-        et.text = content.subSequence(0, length);
+        //ExtractedText et = new ExtractedText();
+        //final CharSequence content = getText();
+        //final int length = content.length();
+        //et.partialStartOffset = 0;
+        //et.partialEndOffset = length;
+        //et.startOffset = 0;
+        //et.selectionStart = getSelectionStart();
+        //et.selectionEnd = getSelectionEnd();
+        //et.flags = 0;
+        //et.text = content.subSequence(0, length);
 
         // FIXME: should be returning this from the ExtractedTextRequest
-        int requestToken = 0;
+        //int requestToken = 0;
 
-        InputMethodManager imm = (InputMethodManager) getContext()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm == null) return;
-        imm.updateExtractedText(this, requestToken, et);
+        //InputMethodManager imm = (InputMethodManager) getContext()
+        //        .getSystemService(Context.INPUT_METHOD_SERVICE);
+        //if (imm == null) return;
+        //imm.updateExtractedText(this, requestToken, et);
     }
-
-//    private boolean extractTextInternal(ExtractedTextRequest request,
-//                                        int partialStartOffset, int partialEndOffset, int delta,
-//                                        ExtractedText outText) {
-//        final CharSequence content = mTextView.getText();
-//        if (content != null) {
-//            if (partialStartOffset != EXTRACT_NOTHING) {
-//                final int N = content.length();
-//                if (partialStartOffset < 0) {
-//                    outText.partialStartOffset = outText.partialEndOffset = -1;
-//                    partialStartOffset = 0;
-//                    partialEndOffset = N;
-//                } else {
-//                    // Now use the delta to determine the actual amount of text
-//                    // we need.
-//                    partialEndOffset += delta;
-//                    // Adjust offsets to ensure we contain full spans.
-//                    if (content instanceof Spanned) {
-//                        Spanned spanned = (Spanned)content;
-//                        Object[] spans = spanned.getSpans(partialStartOffset,
-//                                partialEndOffset, ParcelableSpan.class);
-//                        int i = spans.length;
-//                        while (i > 0) {
-//                            i--;
-//                            int j = spanned.getSpanStart(spans[i]);
-//                            if (j < partialStartOffset) partialStartOffset = j;
-//                            j = spanned.getSpanEnd(spans[i]);
-//                            if (j > partialEndOffset) partialEndOffset = j;
-//                        }
-//                    }
-//                    outText.partialStartOffset = partialStartOffset;
-//                    outText.partialEndOffset = partialEndOffset - delta;
-//                    if (partialStartOffset > N) {
-//                        partialStartOffset = N;
-//                    } else if (partialStartOffset < 0) {
-//                        partialStartOffset = 0;
-//                    }
-//                    if (partialEndOffset > N) {
-//                        partialEndOffset = N;
-//                    } else if (partialEndOffset < 0) {
-//                        partialEndOffset = 0;
-//                    }
-//                }
-//                if ((request.flags&InputConnection.GET_TEXT_WITH_STYLES) != 0) {
-//                    outText.text = content.subSequence(partialStartOffset,
-//                            partialEndOffset);
-//                } else {
-//                    outText.text = TextUtils.substring(content, partialStartOffset,
-//                            partialEndOffset);
-//                }
-//            } else {
-//                outText.partialStartOffset = 0;
-//                outText.partialEndOffset = 0;
-//                outText.text = "";
-//            }
-//            outText.flags = 0;
-//            if (MetaKeyKeyListener.getMetaState(content, MetaKeyKeyListener.META_SELECTING) != 0) {
-//                outText.flags |= ExtractedText.FLAG_SELECTING;
-//            }
-//            if (mTextView.isSingleLine()) {
-//                outText.flags |= ExtractedText.FLAG_SINGLE_LINE;
-//            }
-//            outText.startOffset = 0;
-//            outText.selectionStart = mTextView.getSelectionStart();
-//            outText.selectionEnd = mTextView.getSelectionEnd();
-//            return true;
-//        }
-//        return false;
-//    }
 
     // from Android source Editor.SpanController#isNonIntermediateSelectionSpan
     private boolean isNonIntermediateSelectionSpan(final Spanned text, final Object span) {

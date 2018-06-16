@@ -409,6 +409,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mCandidatesLocation != CandidatesLocation.NONE;
     }
 
+    @SuppressWarnings("unused")
     protected void setShouldShowSuffixesInPopup(boolean whether) {
         mShouldShowSuffixesInPopup = whether;
     }

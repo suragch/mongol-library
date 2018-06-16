@@ -1,5 +1,6 @@
 package net.studymongolian.mongollibrary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -228,6 +229,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         canvas.restore();
     }
 
+    @SuppressLint("ClickableViewAccessibility") // todo support accessibility
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -331,8 +333,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public int getOffsetForPosition (float x, float y) {
         if (getLayout() == null) return -1;
         final int line = getLineAtCoordinate(x); // vertical line
-        final int offset = getOffsetAtCoordinate(line, y);
-        return offset;
+        return getOffsetAtCoordinate(line, y);
     }
 
     int getLineAtCoordinate(float x) {
@@ -410,6 +411,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         Selection.selectAll(mTextStorage);
     }
 
+    @SuppressWarnings("unused")
     public void extendSelection(int index) {
         Selection.extendSelection(mTextStorage, index);
     }

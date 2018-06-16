@@ -23,6 +23,7 @@ public class MongolTextStorageInstrumentedTest {
     @Test
     public void setText_nullString() {
         CharSequence unicode = null;
+        //noinspection ConstantConditions
         MongolTextStorage storage = new MongolTextStorage(unicode);
         CharSequence result = storage.getUnicodeText();
         CharSequence expected = new SpannableStringBuilder();

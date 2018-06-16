@@ -525,9 +525,5 @@ public class ImeCandidatesView extends ViewGroup {
             }
 
         }
-
-        //Drawable getItem(int id) {
-        //    return mToolImages.get(id);
-        //}
     }
 }

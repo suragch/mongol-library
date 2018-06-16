@@ -27,10 +27,6 @@ public class MongolTextStorage implements Editable {
     private MongolCode mRenderer;
     private OnChangeListener mChangelistener;
 
-    MongolTextStorage() {
-        this("");
-    }
-
     MongolTextStorage(CharSequence unicodeText) {
         mRenderer = MongolCode.INSTANCE;
         this.mChangelistener = null;

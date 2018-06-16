@@ -1,5 +1,6 @@
 package net.studymongolian.mongollibrary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -73,6 +74,7 @@ public class KeyShift extends KeyImage {
         canvas.restore();
     }
 
+    @SuppressLint("ClickableViewAccessibility") // TODO support Accessibility
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         changeBackgroundColorForClickEvent(event);

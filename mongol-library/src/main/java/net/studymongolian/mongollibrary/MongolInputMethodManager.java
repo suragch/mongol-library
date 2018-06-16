@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -58,7 +57,6 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
 
     private List<RegisteredEditor> mRegisteredEditors;
     private ImeContainer mImeContainer;
-    //private int mAllowSystemKeyboard = NO_EDITORS;
 
     // this is the edit text that is receiving input
     private View mCurrentEditor;
@@ -87,6 +85,7 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
                 // TODO this needs to be tested on lower versions!
                 // https://stackoverflow.com/a/45229457
 
+                //noinspection deprecation // todo refactor so that we don't need it
                 boolean showSystemSoftIme = allowSystemKeyboard == ALL_EDITORS ||
                         allowSystemKeyboard == SYSTEM_EDITOR_ONLY;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // api 21+
@@ -108,6 +107,7 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
                     }
                 }
             } else if (editor.view instanceof MongolEditText) {
+                //noinspection deprecation // todo refactor so that we don't need it
                 boolean showSystemSoftIme =
                         allowSystemKeyboard == ALL_EDITORS ||
                         allowSystemKeyboard == MONGOL_EDITOR_ONLY;
@@ -146,6 +146,7 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
      * @param editor EditText or MongolEditText
      * @param allowSystemKeyboard sets whether the system keyboard will popup when an editor is focused
      */
+    @SuppressWarnings("WeakerAccess")
     public void addEditor(View editor, boolean allowSystemKeyboard) {
 
         // editor must be MongolEditText or EditText
@@ -259,20 +260,6 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
         return editorInfo;
     }
 
-//    private MongolEditText.OnMongolEditTextInputEventListener mongolEditTextListener =
-//            new MongolEditText.OnMongolEditTextInputEventListener() {
-//
-//                // the editor needs to call this every time the selection changes
-//                // this method is an adaptation of Android source InputMethodManager#updateSelection
-//                @Override
-//                public void updateSelection(View view, int selStart, int selEnd,
-//                                            int candidatesStart, int candidatesEnd) {
-//
-//
-//
-//                }
-//            };
-
     public void setIme(ImeContainer imeContainer) {
         this.mImeContainer = imeContainer;
     }
@@ -300,10 +287,10 @@ public class MongolInputMethodManager implements MongolEditText.OnMongolEditText
         }
     }
 
-    @Override
-    public void updateExtractedText(View view, int token, ExtractedText text) {
-        // TODO currently unimplemented since ImeContainer doesn't have an extracted text view
-    }
+    //@Override
+    //public void updateExtractedText(View view, int token, ExtractedText text) {
+    //    // TODO currently unimplemented since ImeContainer doesn't have an extracted text view
+    //}
 
     private class RegisteredEditor {
         View view;

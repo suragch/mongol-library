@@ -48,7 +48,7 @@ public class EspressoTests {
                         childAtPosition(
                                 withId(R.id.activity_main),
                                 0)));
-        recyclerView.perform(actionOnItemAtPosition(13, click()));
+        recyclerView.perform(actionOnItemAtPosition(11, click()));
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.mongol_menu_button), withText("Mongol Menu (show as dropdown)"),
@@ -253,7 +253,7 @@ public class EspressoTests {
                         childAtPosition(
                                 withId(R.id.activity_main),
                                 0)));
-        recyclerView.perform(actionOnItemAtPosition(8, click()));
+        recyclerView.perform(actionOnItemAtPosition(7, click()));
 
         ViewInteraction appCompatButton = onView(
                 allOf(withText("Toast"),
@@ -284,52 +284,6 @@ public class EspressoTests {
                                 2),
                         isDisplayed()));
         appCompatButton3.perform(click());
-
-        pressBack();
-
-    }
-
-    @Test
-    public void keyboardTests() {
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.rvApiDemoList),
-                        childAtPosition(
-                                withId(R.id.activity_main),
-                                0)));
-        recyclerView.perform(actionOnItemAtPosition(6, click()));
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-
-        ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.title), withText("From XML"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.support.v7.view.menu.ListMenuItemView")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatTextView.perform(click());
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-
-        ViewInteraction appCompatTextView2 = onView(
-                allOf(withId(R.id.title), withText("From code"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.support.v7.view.menu.ListMenuItemView")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatTextView2.perform(click());
-
-        pressBack();
-
-        ViewInteraction recyclerView2 = onView(
-                allOf(withId(R.id.rvApiDemoList),
-                        childAtPosition(
-                                withId(R.id.activity_main),
-                                0)));
-        recyclerView2.perform(actionOnItemAtPosition(7, click()));
 
         pressBack();
 
