@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.8.1'
+    implementation 'net.studymongolian:mongol-library:1.9.0'
 }
 ```
 
@@ -214,7 +214,7 @@ Note that since `MongolEditText` does not support scrolling itself yet, it is go
 ###### Code example
 
 ```java
-MongolEditText mongolEditText = (MongolEditText) findViewById(R.id.metExample);
+MongolEditText mongolEditText = findViewById(R.id.metExample);
 String text = mongolEditText.getText().toString();
 ```
 
@@ -353,13 +353,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_keyboard);
 
         ImeContainer imeContainer = findViewById(R.id.ime_container);
-        EditText editText = findViewById(R.id.edittext);
         MongolEditText mongolEditText = findViewById(R.id.mongoledittext);
 
         // The MongolInputMethodManager handles communication between the 
         // ImeContainer (keyboards) and the MongolEditText (or EditText).
         MongolInputMethodManager mimm = new MongolInputMethodManager();
-        mimm.addEditor(editText);
         mimm.addEditor(mongolEditText);
         mimm.setIme(imeContainer);
     }
@@ -387,11 +385,16 @@ To do this you need to set `KeyboardCandidateView` location in XML for each keyb
     />
 ```
 
+The system keyboard will popup natually so you can prevent that by hiding in the Manifest for the activity that is using the keyboard.
 
-Then implement `ImeContainer.DataSource` in your activity to provide the requested word suggestion list.
+``xml
+android:windowSoftInputMode="stateHidden"
+```
+
+Then implement `ImeContainer.DataSource` in your activity to provide the requested word suggestion list. Implement  `ImeContainer.OnNonSystemImeListener` to hide the keyboard when requested from the navigation view.
 
 ```java
-public class MyActivity extends AppCompatActivity implements ImeContainer.DataSource {
+public class MyActivity extends AppCompatActivity implements ImeContainer.DataSource, ImeContainer.OnNonSystemImeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -399,6 +402,8 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
         
         // provide words for candidate selection
         imeContainer.setDataSource(this);
+        // listen for when keyboard requests to be hidden
+        imeContainer.setOnNonSystemImeListener(this);
 
         // ...
     }
@@ -428,9 +433,17 @@ public class MyActivity extends AppCompatActivity implements ImeContainer.DataSo
     public void onCandidateLongClick(int position, String word, String previousWordInEditor) {
         // user long clicked a candidate item
     }
+    
+    @Override
+    public void onHideKeyboardRequest() {
+        // set the ImeContainer visibility to View.GONE 
+    }
 }
 ```
 
+This is what the navigation view looks like:
+
+![keyboard navigation](docs/images/keyboard-navigation.png)
 
 ### MongolMenu
 
@@ -651,9 +664,11 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] apply style/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
 * [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
+* [ ] Convert more puntuation and NNBS in to Menksoft code in MongolCode
 
 #### Version changes 
 
+* `1.9.0`: Added navigation support to `MongolEditText` and navigation keyboard to `ImeContainer`; bug fixes.
 * `1.8.1`: Bug fix for keyboard candidate view item long click 
 * `1.8.0`: Updates to `ImeContainer.DataSource` API, allow suffix candidates, added more javadocs
 * `1.7.2`: Spacing and popup improvements for IME
