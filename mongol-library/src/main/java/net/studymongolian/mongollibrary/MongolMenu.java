@@ -2,6 +2,7 @@ package net.studymongolian.mongollibrary;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ public class MongolMenu extends PopupWindow {
     private List<MongolMenuItem> menuItems;
     private OnMenuItemClickListener mMenuItemClickListener;
     private Context mContext;
+    private View mContentView;
 
     public MongolMenu(Context context) {
         super(context);
@@ -116,15 +118,16 @@ public class MongolMenu extends PopupWindow {
     }
 
     private void setCustomContentView() {
-        View contentView = createContentView();
-        setContentView(contentView);
+        createContentViewIfNeeded();
+        setContentView(mContentView);
         setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);
     }
 
-    private View createContentView() {
+    private void createContentViewIfNeeded() {
+        if (mContentView != null) return;
         RecyclerView recyclerView = new RecyclerView(mContext);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext,
                 LinearLayoutManager.HORIZONTAL, false);
@@ -132,7 +135,16 @@ public class MongolMenu extends PopupWindow {
         MenuItemAdapter adapter = new MenuItemAdapter(mContext);
         recyclerView.setAdapter(adapter);
         recyclerView.setBackgroundColor(Color.WHITE);
-        return recyclerView;
+        mContentView = recyclerView;
+    }
+
+    Rect getDesiredSize() {
+        createContentViewIfNeeded();
+        mContentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        return new Rect(0,
+                0,
+                mContentView.getMeasuredWidth(),
+                mContentView.getMeasuredHeight());
     }
 
     class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHolder> {

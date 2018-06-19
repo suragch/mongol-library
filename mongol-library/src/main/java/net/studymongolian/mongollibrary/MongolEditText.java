@@ -498,9 +498,8 @@ public class MongolEditText extends MongolTextView {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            int x = (int) e.getX();
-            int y = (int) e.getY();
-            Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+            int x = (int) e.getRawX();
+            int y = (int) e.getRawY();
             MongolMenu contextMenu = getContextMenu();
             showMongolContextMenu(contextMenu, x, y);
         }
@@ -530,7 +529,8 @@ public class MongolEditText extends MongolTextView {
 
     private void showMongolContextMenu(MongolMenu menu, int xTouchLocation, int yTouchLocation) {
         float paddingPx = CONTEXT_MENU_TOUCH_PADDING_DP * getResources().getDisplayMetrics().density;
-        int y = yTouchLocation - (int) paddingPx;
+        Rect menuSize = menu.getDesiredSize();
+        int y = yTouchLocation - menuSize.height() - (int) paddingPx;
         menu.showAtLocation(this, Gravity.NO_GRAVITY, xTouchLocation, y);
     }
 
