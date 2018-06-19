@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.10.0'
+    implementation 'net.studymongolian:mongol-library:1.11.0'
 }
 ```
 
@@ -173,6 +173,8 @@ Here is an image of the [Demo App](demo-app):
 ### MongolEditText 
 
 The `MongolEditText` is a vertical text replacement for the standard Android `EditText`. As much as possible the [API](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/MongolEditText.java) seeks to follow the standard `EditText` [API](https://developer.android.com/reference/android/widget/EditText.html). It subclasses `MongolTextView`. In addition to allowing cursor location and text selection, it also adds the API elements needed to communicate with both custom in-app keyboards and system keyboards. 
+
+Long clicking the `MongolEditText` will display a default `MongolMenu` with editing options. This menu can also be replaced with a custom menu if you implement `setContextMenuCallbackListener()`. 
 
 #### Basic usage
 
@@ -676,6 +678,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.11.0`: Added added a default context menu to `MongolEditText`. Can also replace with custom menu.
 * `1.10.0`: Allow custom keyboard to request a system keyboard
 * `1.9.1`: Bug fix for crash caused by selection index out of bounds (new bug added in 1.9.0)
 * `1.9.0`: Added navigation support to `MongolEditText` and navigation keyboard to `ImeContainer`; bug fixes.
