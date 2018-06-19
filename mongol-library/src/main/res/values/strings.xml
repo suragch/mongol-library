@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">MongolLibrary</string>
+    <string name="app_name">mongol-library</string>
+
+    <string name="copy">ᠬᠠᠭᠤᠯᠬᠤ</string>
+    <string name="cut">ᠬᠠᠶᠢᠴᠢᠯᠠᠬᠤ</string>
+    <string name="paste">ᠨᠠᠭᠠᠬᠤ</string>
+    <string name="select_all">ᠪᠦᠭᠦᠳᠡ</string>
 </resources>

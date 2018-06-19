@@ -1,6 +1,8 @@
 package net.studymongolian.mongollibrary;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -22,6 +24,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +32,7 @@ import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
@@ -40,6 +44,7 @@ import java.util.ArrayList;
 
 public class MongolEditText extends MongolTextView {
 
+    private static final int CONTEXT_MENU_TOUCH_PADDING_DP = 50;
     private Paint mCursorPaint;
     private boolean mCursorVisible = true;
     private Blink mBlink;
@@ -52,6 +57,7 @@ public class MongolEditText extends MongolTextView {
     int mBatchEditNesting = 0;
     private ArrayList<TextWatcher> mListeners;
     private boolean mAllowSystemKeyboard = true;
+    private ContextMenuCallback mContextMenuCallbackListener;
 
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
@@ -60,6 +66,14 @@ public class MongolEditText extends MongolTextView {
 
     private static final int DIRECTION_LEFT = -1;
     private static final int DIRECTION_RIGHT = 1;
+
+    public interface ContextMenuCallback {
+        MongolMenu getMongolEditTextContextMenu(MongolEditText met);
+    }
+
+    public void setContextMenuCallbackListener(ContextMenuCallback listener) {
+        mContextMenuCallbackListener = listener;
+    }
 
 
     public MongolEditText(Context context) {
@@ -366,6 +380,7 @@ public class MongolEditText extends MongolTextView {
     }
 
     class MyListener extends GestureDetector.SimpleOnGestureListener {
+
         @Override
         public boolean onDown(MotionEvent e) {
 
@@ -482,6 +497,15 @@ public class MongolEditText extends MongolTextView {
         }
 
         @Override
+        public void onLongPress(MotionEvent e) {
+            int x = (int) e.getX();
+            int y = (int) e.getY();
+            Toast.makeText(getContext(), "hello", Toast.LENGTH_SHORT).show();
+            MongolMenu contextMenu = getContextMenu();
+            showMongolContextMenu(contextMenu, x, y);
+        }
+
+        @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
             // if there is no selection then return
@@ -504,6 +528,104 @@ public class MongolEditText extends MongolTextView {
         }
     }
 
+    private void showMongolContextMenu(MongolMenu menu, int xTouchLocation, int yTouchLocation) {
+        float paddingPx = CONTEXT_MENU_TOUCH_PADDING_DP * getResources().getDisplayMetrics().density;
+        int y = yTouchLocation - (int) paddingPx;
+        menu.showAtLocation(this, Gravity.NO_GRAVITY, xTouchLocation, y);
+    }
+
+    private MongolMenu getContextMenu() {
+        if (mContextMenuCallbackListener != null)
+            return mContextMenuCallbackListener.getMongolEditTextContextMenu(this);
+        return getDefaultContextMenu();
+    }
+
+    private MongolMenu getDefaultContextMenu() {
+        final Context context = getContext();
+        MongolMenu menu = new MongolMenu(context);
+        CharSequence selected = getSelectedText();
+
+        // copy, cut
+        if (selected.length() > 0) {
+            menu.add(new MongolMenuItem(context.getString(R.string.copy), R.drawable.ic_keyboard_copy_32dp));
+            menu.add(new MongolMenuItem(context.getString(R.string.cut), R.drawable.ic_keyboard_cut_32dp));
+        }
+
+        // paste
+        menu.add(new MongolMenuItem(context.getString(R.string.paste), R.drawable.ic_keyboard_paste_32dp));
+
+        // select all
+        if (selected.length() < mTextStorage.length()) {
+            menu.add(new MongolMenuItem(context.getString(R.string.select_all), R.drawable.ic_keyboard_select_all_32dp));
+        }
+
+        menu.setOnMenuItemClickListener(contextMenuItemClickListener);
+        return menu;
+    }
+
+    MongolMenu.OnMenuItemClickListener contextMenuItemClickListener = new MongolMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MongolMenuItem item) {
+            String name = item.getTitle().toString();
+
+            Context context = getContext();
+            String copy = context.getString(R.string.copy);
+            String cut = context.getString(R.string.cut);
+            String paste = context.getString(R.string.paste);
+            String selectAll = context.getString(R.string.select_all);
+
+            if (name.equals(copy)) {
+                copySelectedText();
+            } else if (name.equals(cut)) {
+                cutSelectedText();
+            } else if (name.equals(paste)) {
+                pasteText();
+            } else if (name.equals(selectAll)) {
+                selectAll();
+            } else {
+                return false;
+            }
+            return true;
+        }
+    };
+
+    private boolean copySelectedText() {
+        CharSequence selectedText = getSelectedText();
+        if (TextUtils.isEmpty(selectedText))
+            return false;
+        Context context = getContext();
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(null, selectedText);
+        if (clipboard == null) return false;
+        clipboard.setPrimaryClip(clip);
+        return true;
+    }
+
+    private boolean cutSelectedText() {
+        boolean copiedSuccessfully = copySelectedText();
+        if (copiedSuccessfully) {
+            int start = getSelectionStart();
+            int end = getSelectionEnd();
+            mTextStorage.delete(start, end);
+        }
+        return copiedSuccessfully;
+    }
+
+    private boolean pasteText() {
+        Context context = getContext();
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard == null) return false;
+        ClipData clip = clipboard.getPrimaryClip();
+        if (clip == null) return false;
+        ClipData.Item item = clip.getItemAt(0);
+        if (item == null) return false;
+        CharSequence text = item.getText();
+        if (text == null) return false;
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        mTextStorage.replace(start, end, text);
+        return true;
+    }
 
     @SuppressLint("ClickableViewAccessibility") // TODO make this view accessible
     @Override

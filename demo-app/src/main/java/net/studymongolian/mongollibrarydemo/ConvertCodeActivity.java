@@ -2,6 +2,8 @@ package net.studymongolian.mongollibrarydemo;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -49,8 +51,8 @@ public class ConvertCodeActivity extends AppCompatActivity {
     }
 
     public void copyClick(View view) {
-        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        android.content.ClipData clip = android.content.ClipData.newPlainText("Mongol", etCodeWindow.getText());
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Mongol", etCodeWindow.getText());
         if (clipboard == null) return;
         clipboard.setPrimaryClip(clip);
     }
@@ -60,9 +62,9 @@ public class ConvertCodeActivity extends AppCompatActivity {
         CharSequence textToPaste = null;
 
         // get the text from the clipboard manager
-        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard != null) {
-            android.content.ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+            ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
             textToPaste = item.getText();
         }
 

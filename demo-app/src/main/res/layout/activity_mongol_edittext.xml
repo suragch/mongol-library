@@ -41,6 +41,7 @@
 
 
     <LinearLayout
+        android:id="@+id/first_button_row"
         android:layout_below="@id/hsvEditTextContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -74,6 +75,19 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_below="@id/first_button_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <Button
+            android:id="@+id/custom_menu_button"
+            android:text="use custom context menu"
+            android:onClick="contextMenuClick"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

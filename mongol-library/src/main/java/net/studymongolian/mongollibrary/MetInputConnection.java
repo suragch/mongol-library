@@ -6,6 +6,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
@@ -67,9 +68,11 @@ class MetInputConnection extends BaseInputConnection {
 
     private boolean copySelectedTextToClipboard() {
         CharSequence selectedText = mMongolEditText.getSelectedText();
+        if (TextUtils.isEmpty(selectedText))
+            return false;
         Context context = mMongolEditText.getContext();
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("MongolEditText", selectedText);
+        ClipData clip = ClipData.newPlainText(null, selectedText);
         if (clipboard == null) return false;
         clipboard.setPrimaryClip(clip);
         return true;
@@ -86,7 +89,11 @@ class MetInputConnection extends BaseInputConnection {
         Context context = mMongolEditText.getContext();
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard == null) return false;
-        CharSequence text = clipboard.getPrimaryClip().getItemAt(0).getText();
+        ClipData clip = clipboard.getPrimaryClip();
+        if (clip == null) return false;
+        ClipData.Item item = clip.getItemAt(0);
+        if (item == null) return false;
+        CharSequence text = item.getText();
         if (text == null) return false;
         commitText(text, 1);
         return true;

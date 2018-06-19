@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.MongolEditText;
+import net.studymongolian.mongollibrary.MongolMenu;
+import net.studymongolian.mongollibrary.MongolMenuItem;
+import net.studymongolian.mongollibrary.MongolToast;
 
 
-public class MongolEditTextActivity extends AppCompatActivity {
+public class MongolEditTextActivity extends AppCompatActivity implements MongolEditText.ContextMenuCallback {
 
     MongolEditText metDemoEditText;
+    Button customMenuButton;
+    private boolean isUsingDefaultContextMenu = false;
 
     private static final String[] SAMPLE_TEXT = {"ᠨᠢᠭᠡ", "ᠬᠣᠶᠠᠷ", "ᠭᠣᠷᠪᠠ", "ᠳᠥᠷᠪᠡ", "ᠲᠠᠪᠤ", "ᠵᠢᠷᠭᠤᠭ᠎ᠠ", "ᠳᠣᠯᠣᠭ᠎ᠠ", "ᠨᠠ‍ᠢᠮᠠ", "ᠶᠢᠰᠦ", "ᠠᠷᠪᠠ"};
     private int mSampleTextIndex = 0;
@@ -21,6 +28,7 @@ public class MongolEditTextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mongol_edittext);
 
         metDemoEditText = findViewById(R.id.metExample);
+        customMenuButton = findViewById(R.id.custom_menu_button);
     }
 
     public void inputTextClick(View view) {
@@ -57,8 +65,37 @@ public class MongolEditTextActivity extends AppCompatActivity {
         im.showInputMethodPicker();
     }
 
-
     public void selectTextClick(View view) {
         metDemoEditText.selectAll();
+    }
+
+    public void contextMenuClick(View view) {
+        if (isUsingDefaultContextMenu) {
+            metDemoEditText.setContextMenuCallbackListener(null);
+            customMenuButton.setText("use custom context menu");
+        } else {
+            metDemoEditText.setContextMenuCallbackListener(this);
+            Toast.makeText(this, "Long click the MongolEditText to see the custom menu", Toast.LENGTH_LONG).show();
+            customMenuButton.setText("use default context menu");
+        }
+        isUsingDefaultContextMenu = !isUsingDefaultContextMenu;
+    }
+
+    @Override
+    public MongolMenu getMongolEditTextContextMenu(MongolEditText met) {
+        // This is a demo menu only
+        // You will need to implement your own functionality
+        // See the MongolEditText source code for examples
+        MongolMenu menu = new MongolMenu(this);
+        menu.add(new MongolMenuItem("ᠨᠢᠭᠡ", R.drawable.ic_sun));
+        menu.add(new MongolMenuItem("ᠬᠤᠶᠠᠷ", R.drawable.ic_moon));
+        menu.add(new MongolMenuItem("ᠭᠤᠷᠪᠠ", R.drawable.ic_star));
+        menu.setOnMenuItemClickListener(new MongolMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MongolMenuItem item) {
+                MongolToast.makeText(MongolEditTextActivity.this, item.getTitle(), MongolToast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+        return menu;
     }
 }
