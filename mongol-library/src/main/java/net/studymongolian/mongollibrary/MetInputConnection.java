@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.view.View;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -19,13 +18,9 @@ class MetInputConnection extends BaseInputConnection {
 
     private MongolEditText mMongolEditText;
 
-    MetInputConnection(View targetView, boolean fullEditor) {
+    MetInputConnection(MongolEditText targetView, boolean fullEditor) {
         super(targetView, fullEditor);
-        if (!(targetView instanceof MongolEditText)) {
-            throw new RuntimeException("MetInputConnection is only set up to work with a MongolEditText, " +
-                    "not with " + targetView);
-        }
-        mMongolEditText = (MongolEditText) targetView;
+        mMongolEditText = targetView;
     }
 
     @Override
@@ -49,6 +44,7 @@ class MetInputConnection extends BaseInputConnection {
         // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#closeConnection()
         super.closeConnection();
         mMongolEditText.ensureEndedBatchEdit();
+        //mMongolEditText.clearExtractedText();
     }
 
     @Override
@@ -110,10 +106,6 @@ class MetInputConnection extends BaseInputConnection {
         if (request == null)
             return null;
 
-        // TODO how to monitor extracted text?
-        //if ((flags & GET_EXTRACTED_TEXT_MONITOR) != 0)
-        //    mExtractedTextRequest = request;
-
         Editable editable = getEditable();
         if (editable == null) {
             return null;
@@ -133,11 +125,13 @@ class MetInputConnection extends BaseInputConnection {
         } else {
             extract.text = editable.toString();
         }
+        mMongolEditText.setExtractedTextToken(request.token);
         return extract;
     }
 
     @Override
     public boolean requestCursorUpdates(int cursorUpdateMode) {
+        // TODO what should we be doing here?
         return super.requestCursorUpdates(cursorUpdateMode);
     }
 

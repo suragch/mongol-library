@@ -1,6 +1,7 @@
 package net.studymongolian.mongollibrarydemo;
 
 import android.graphics.Color;
+import android.inputmethodservice.ExtractEditText;
 import android.inputmethodservice.InputMethodService;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
@@ -12,6 +13,7 @@ import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.KeyboardCyrillic;
 import net.studymongolian.mongollibrary.KeyboardEnglish;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
+import net.studymongolian.mongollibrary.MongolFont;
 
 public class ImeContainerInputMethodService extends InputMethodService
         implements ImeContainer.OnSystemImeListener {
@@ -51,5 +53,13 @@ public class ImeContainerInputMethodService extends InputMethodService
     @Override
     public void onHideKeyboardRequest() {
         requestHideSelf(0);
+    }
+
+    @Override
+    public View onCreateExtractTextView() {
+        View extractedView = super.onCreateExtractTextView();
+        ExtractEditText editText = extractedView.findViewById(android.R.id.inputExtractEditText);
+        editText.setTypeface(MongolFont.get(MongolFont.QAGAN, getApplicationContext()));
+        return extractedView;
     }
 }

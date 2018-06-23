@@ -30,16 +30,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 
 
-// TODO handle extracted text
 // FIXME crash if setting on OnFocusChangeListener
 
 public class MongolEditText extends MongolTextView {
@@ -58,6 +57,7 @@ public class MongolEditText extends MongolTextView {
     private ArrayList<TextWatcher> mListeners;
     private boolean mAllowSystemKeyboard = true;
     private ContextMenuCallback mContextMenuCallbackListener;
+    private int mExtractedTextRequestToken = 0;
 
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
@@ -319,9 +319,6 @@ public class MongolEditText extends MongolTextView {
 
         outAttrs.initialSelStart = getSelectionStart();
         outAttrs.initialSelEnd = getSelectionEnd();
-
-        // FIXME temporarily disabling extracted text because I can't figure out how to update it
-        outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI;
 
         // TODO allow user to set type class
         outAttrs.inputType = InputType.TYPE_CLASS_TEXT;
@@ -1023,7 +1020,7 @@ public class MongolEditText extends MongolTextView {
                 candidateEnd = MetInputConnection.getComposingSpanEnd(mTextStorage);
             }
 
-            if (null != mMongolImeManager) {
+            if (mMongolImeManager != null) {
                 mMongolImeManager.updateSelection(this,
                         selectionStart, selectionEnd, candidateStart, candidateEnd);
             } else {
@@ -1038,31 +1035,49 @@ public class MongolEditText extends MongolTextView {
         }
     }
 
-    // TODO
     private void reportExtractedText() {
 
-        // TODO we should be modifying this based on an ExtractedTextRequest
+        // custom keyboards don't have an extracted view.
+        if (mMongolImeManager != null) return;
 
+        // TODO cancel this if not in extracted text mode
 
-        //ExtractedText et = new ExtractedText();
-        //final CharSequence content = getText();
-        //final int length = content.length();
-        //et.partialStartOffset = 0;
-        //et.partialEndOffset = length;
-        //et.startOffset = 0;
-        //et.selectionStart = getSelectionStart();
-        //et.selectionEnd = getSelectionEnd();
-        //et.flags = 0;
-        //et.text = content.subSequence(0, length);
+        ExtractedText et = new ExtractedText();
+        final CharSequence content = getText();
+        final int length = content.length();
+        et.partialStartOffset = -1;
+        et.partialEndOffset = -1;
+        et.startOffset = 0;
+        et.selectionStart = getSelectionStart();
+        et.selectionEnd = getSelectionEnd();
+        et.flags = 0;
+        et.text = content.subSequence(0, length);
 
-        // FIXME: should be returning this from the ExtractedTextRequest
-        //int requestToken = 0;
-
-        //InputMethodManager imm = (InputMethodManager) getContext()
-        //        .getSystemService(Context.INPUT_METHOD_SERVICE);
-        //if (imm == null) return;
-        //imm.updateExtractedText(this, requestToken, et);
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm == null) return;
+        imm.updateExtractedText(this, mExtractedTextRequestToken, et);
     }
+
+    void setExtractedTextToken(int token) {
+        mExtractedTextRequestToken = token;
+    }
+
+    // this doesn't seem to have an effect so I guess it can be removed
+//    void clearExtractedText() {
+//        ExtractedText et = new ExtractedText();
+//        et.partialStartOffset = -1;
+//        et.partialEndOffset = -1;
+//        et.startOffset = 0;
+//        et.selectionStart = 0;
+//        et.selectionEnd = 0;
+//        et.flags = 0;
+//        et.text = "";
+//        InputMethodManager imm = (InputMethodManager) getContext()
+//                .getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (imm == null) return;
+//        imm.updateExtractedText(this, mExtractedTextRequestToken, et);
+//    }
 
     // from Android source Editor.SpanController#isNonIntermediateSelectionSpan
     private boolean isNonIntermediateSelectionSpan(final Spanned text, final Object span) {
