@@ -252,7 +252,8 @@ public abstract class Key extends View {
         int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             this.setPressed(true);
-        } else if (action == MotionEvent.ACTION_UP) {
+        } else if (action == MotionEvent.ACTION_UP
+                || action == MotionEvent.ACTION_CANCEL) {
             this.setPressed(false);
         }
     }
