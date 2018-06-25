@@ -33,10 +33,12 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.HorizontalScrollView;
 
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
 import java.util.ArrayList;
+
 
 
 // FIXME crash if setting on OnFocusChangeListener
@@ -132,6 +134,13 @@ public class MongolEditText extends MongolTextView {
                 invalidate();
                 requestLayout();
 
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollToCursorPositionIfNeeded();
+                    }
+                });
+
                 // notify any listeners the user may have added
                 if (mListeners != null && mListeners.size() > 0) {
                     for (TextWatcher watcher : mListeners) {
@@ -165,6 +174,7 @@ public class MongolEditText extends MongolTextView {
                 if (isNonIntermediateSelectionSpan(buf, what)) {
                     sendUpdateSelection();
                     reportExtractedText();
+                    scrollToCursorPositionIfNeeded();
                 }
             }
         });
@@ -216,6 +226,28 @@ public class MongolEditText extends MongolTextView {
 
         // gestures
         mDetector = new GestureDetector(getContext(), new MyListener());
+    }
+
+    private void scrollToCursorPositionIfNeeded() {
+        ViewParent parent = getParent();
+        if (!(parent instanceof HorizontalScrollView)) return;
+        HorizontalScrollView scrollView = (HorizontalScrollView) parent;
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        if (start != end) return;
+        MongolLayout layout = getLayout();
+        int line = layout.getLineForOffset(start);
+        int lineRight = layout.getLineTop(line);
+        int lineLeft = layout.getLineBottom(line);
+        Rect scrollBounds = new Rect();
+        scrollView.getDrawingRect(scrollBounds);
+        if (lineRight > scrollBounds.right) {
+            int halfLineWidth = (lineRight - lineLeft) / 2;
+            int scrollTo = lineRight - scrollBounds.width() + halfLineWidth;
+            scrollView.smoothScrollTo(scrollTo, 0);
+        } else if (lineLeft < scrollBounds.left) {
+            scrollView.smoothScrollTo(lineLeft, 0);
+        }
     }
 
     private boolean onDeleteText(int selectionStart, int selectionEnd) {
@@ -598,30 +630,28 @@ public class MongolEditText extends MongolTextView {
         return true;
     }
 
-    private boolean cutSelectedText() {
+    private void cutSelectedText() {
         boolean copiedSuccessfully = copySelectedText();
         if (copiedSuccessfully) {
             int start = getSelectionStart();
             int end = getSelectionEnd();
             mTextStorage.delete(start, end);
         }
-        return copiedSuccessfully;
     }
 
-    private boolean pasteText() {
+    private void pasteText() {
         Context context = getContext();
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard == null) return false;
+        if (clipboard == null) return;
         ClipData clip = clipboard.getPrimaryClip();
-        if (clip == null) return false;
+        if (clip == null) return;
         ClipData.Item item = clip.getItemAt(0);
-        if (item == null) return false;
+        if (item == null) return;
         CharSequence text = item.getText();
-        if (text == null) return false;
+        if (text == null) return;
         int start = getSelectionStart();
         int end = getSelectionEnd();
         mTextStorage.replace(start, end, text);
-        return true;
     }
 
     @SuppressLint("ClickableViewAccessibility") // TODO make this view accessible
@@ -977,7 +1007,7 @@ public class MongolEditText extends MongolTextView {
         }
     }
 
-    //////////////////// batch edits from IME ///////////////////////////////
+    // batch edits from IME
 
     public boolean beginBatchEdit() {
         int nesting = ++mBatchEditNesting;
@@ -1004,13 +1034,8 @@ public class MongolEditText extends MongolTextView {
         reportExtractedText();
     }
 
-    //////////////////////////////////////////////////////////////////////////
-
     private void sendUpdateSelection() {
-        // adapted from Android source Editor#sendUpdateSelection
         if (mBatchEditNesting <= 0) {
-            // TODO final InputMethodManager imm = InputMethodManager.peekInstance(); also support system keyboards
-
             final int selectionStart = getSelectionStart();
             final int selectionEnd = getSelectionEnd();
             int candidateStart = -1;
@@ -1062,22 +1087,6 @@ public class MongolEditText extends MongolTextView {
     void setExtractedTextToken(int token) {
         mExtractedTextRequestToken = token;
     }
-
-    // this doesn't seem to have an effect so I guess it can be removed
-//    void clearExtractedText() {
-//        ExtractedText et = new ExtractedText();
-//        et.partialStartOffset = -1;
-//        et.partialEndOffset = -1;
-//        et.startOffset = 0;
-//        et.selectionStart = 0;
-//        et.selectionEnd = 0;
-//        et.flags = 0;
-//        et.text = "";
-//        InputMethodManager imm = (InputMethodManager) getContext()
-//                .getSystemService(Context.INPUT_METHOD_SERVICE);
-//        if (imm == null) return;
-//        imm.updateExtractedText(this, mExtractedTextRequestToken, et);
-//    }
 
     // from Android source Editor.SpanController#isNonIntermediateSelectionSpan
     private boolean isNonIntermediateSelectionSpan(final Spanned text, final Object span) {
