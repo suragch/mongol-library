@@ -1012,6 +1012,7 @@ public class ImeContainer extends ViewGroup
     }
 
     private void hideImeContainer() {
+        hideTempView();
         if (mSystemImeListener != null) {
             mSystemImeListener.onHideKeyboardRequest();
         } else if (mNonSystemImeListener != null) {
@@ -1150,6 +1151,8 @@ public class ImeContainer extends ViewGroup
     }
 
     private void hideTempView() {
+        if (mTempKeyboardView == null || mCurrentKeyboard == null)
+            return;
         mTempKeyboardView.setVisibility(View.INVISIBLE);
         mCurrentKeyboard.setVisibility(View.VISIBLE);
     }
