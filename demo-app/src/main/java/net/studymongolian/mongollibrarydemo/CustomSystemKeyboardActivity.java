@@ -13,7 +13,6 @@ public class CustomSystemKeyboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_system_keyboard);
-
     }
 
     public void onActivateKeyboardsButtonClick(View view) {

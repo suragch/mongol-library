@@ -68,23 +68,15 @@
             android:label="@string/keyboard_custom_system_activity_title"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".KeyboardCustomToolbarActivity"
+            android:label="@string/keyboard_custom_toolbar_activity_title"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".MongolMenuActivity"
             android:theme="@style/CustomTheme"
             android:label="@string/mongol_menu_activity_title" />
 
         <!-- System keyboard example one (single keyboard using Keyboard) -->
-
-        <service
-            android:name=".KeyboardInputMethodService"
-            android:label="Keyboard example"
-            android:permission="android.permission.BIND_INPUT_METHOD">
-            <intent-filter>
-                <action android:name="android.view.InputMethod"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.view.im"
-                android:resource="@xml/method"/>
-        </service>
 
         <!-- System keyboard example one (multiple keyboard using ImeContainer) -->
 

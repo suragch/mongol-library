@@ -182,6 +182,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     public interface OnKeyboardListener {
         List<PopupKeyCandidate> getAllKeyboardNames();
         void onRequestNewKeyboard(String keyboardDisplayName);
+        void onFinished(View caller);
         void onKeyboardInput(String text);
         void onKeyPopupChosen(PopupKeyCandidate popupKeyCandidate);
         void onBackspace();
@@ -584,6 +585,11 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     protected void requestNewKeyboard() {
         if (mKeyboardListener == null) return;
         mKeyboardListener.onRequestNewKeyboard(null);
+    }
+
+    protected void finishKeyboard() {
+        if (mKeyboardListener == null) return;
+        mKeyboardListener.onFinished(this);
     }
 
     @Override

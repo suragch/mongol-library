@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <HorizontalScrollView
+        android:id="@+id/hsvEditTextContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/ime_container"
+        android:layout_margin="16dp"
+        android:fillViewport="true">
+
+        <net.studymongolian.mongollibrary.MongolEditText
+            android:id="@+id/mongoledittext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:padding="10dp"
+            app:textSize="30sp"
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="128dp" />
+
+    </HorizontalScrollView>
+
+    <net.studymongolian.mongollibrarydemo.CustomImeContainer
+        android:id="@+id/ime_container"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="#dbdbdb"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true">
+
+        <net.studymongolian.mongollibrary.KeyboardQwerty
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:candidatesLocation="horizontal_top"
+            style="@style/KeyboardTheme"
+            />
+
+        <net.studymongolian.mongollibrary.KeyboardAeiou
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:candidatesLocation="vertical_left"
+            app:primaryTextSize="30sp"
+            style="@style/KeyboardTheme"
+            />
+
+    </net.studymongolian.mongollibrarydemo.CustomImeContainer>
+
+
+
+
+</RelativeLayout>

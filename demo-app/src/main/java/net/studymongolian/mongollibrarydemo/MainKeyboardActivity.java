@@ -22,7 +22,8 @@ public class MainKeyboardActivity extends AppCompatActivity
         // data to populate the RecyclerView with
         ArrayList<String> apiDemos = new ArrayList<>();
         apiDemos.add("Keyboards");
-        apiDemos.add("Candidate View");
+        apiDemos.add("Default Candidate View");
+        apiDemos.add("Custom Candidate View");
         apiDemos.add("Navigation");
         apiDemos.add("System Keyboard");
 
@@ -43,15 +44,19 @@ public class MainKeyboardActivity extends AppCompatActivity
                 intent = new Intent(this, KeyboardActivity.class);
                 startActivity(intent);
                 break;
-            case 1: // Candidate View
+            case 1: // Default Candidate View
                 intent = new Intent(this, KeyboardCandidateActivity.class);
                 startActivity(intent);
                 break;
-            case 2: // Navigation
+            case 2: // Custom Candidate View
+                intent = new Intent(this, KeyboardCustomToolbarActivity.class);
+                startActivity(intent);
+                break;
+            case 3: // Navigation
                 intent = new Intent(this, KeyboardNavigationActivity.class);
                 startActivity(intent);
                 break;
-            case 3: // System Keyboard
+            case 4: // System Keyboard
                 intent = new Intent(this, CustomSystemKeyboardActivity.class);
                 startActivity(intent);
                 break;

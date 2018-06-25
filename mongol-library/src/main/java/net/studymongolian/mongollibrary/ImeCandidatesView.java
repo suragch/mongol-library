@@ -114,7 +114,7 @@ public class ImeCandidatesView extends ViewGroup {
 
     /**
      * This provides a way to add toolbar buttons to the candidates view for things
-     * like hiding the keyboard, navigation, settings, and so on.
+     * like hiding the keyboard, navigation, emoji, settings, and so on.
      *
      * @param images the drawables to use as tool buttons when there are no candidates
      */
@@ -424,7 +424,6 @@ public class ImeCandidatesView extends ViewGroup {
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP:
-                        //view.performClick();
                         view.setBackgroundColor(Color.TRANSPARENT);
                         break;
                     default:
@@ -515,7 +514,6 @@ public class ImeCandidatesView extends ViewGroup {
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP:
-                        //view.performClick();
                         view.setBackgroundColor(Color.TRANSPARENT);
                         break;
                     default:

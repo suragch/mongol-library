@@ -48,6 +48,7 @@ public class ImeContainer extends ViewGroup
     private Context mContext;
     private List<Keyboard> mKeyboards;
     private Keyboard mCurrentKeyboard;
+    private View mTempKeyboardView;
     private KeyboardNavigation mNavigationView;
     private ImeCandidatesView mCandidatesView;
     private DataSource mDataSource = null;
@@ -307,16 +308,18 @@ public class ImeContainer extends ViewGroup
         mCurrentKeyboard.layout(left, top, right, bottom);
     }
 
-    private void layoutNavigationView() {
+    private void layoutTempKeyboardView() {
+        if (tempKeyboardViewPositionIsCorrect())
+            return;
         int left = mCurrentKeyboard.getLeft();
         int top = mCurrentKeyboard.getTop();
         int right = mCurrentKeyboard.getRight();
         int bottom = mCurrentKeyboard.getBottom();
         int width = right - left;
         int height = bottom - top;
-        mNavigationView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        mTempKeyboardView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-        mNavigationView.layout(left, top, right, bottom);
+        mTempKeyboardView.layout(left, top, right, bottom);
     }
 
     /**
@@ -415,6 +418,14 @@ public class ImeContainer extends ViewGroup
         Keyboard keyboard = mKeyboards.get(index);
         setCurrentKeyboard(keyboard);
         setCandidatesView();
+    }
+
+    @Override
+    public void onFinished(View caller) {
+        if (caller == mCurrentKeyboard)
+            hideImeContainer();
+        else if (caller == mTempKeyboardView)
+            toggleTempKeyboardView(mTempKeyboardView);
     }
 
     private boolean isSystemKeyboardRequest(String requestedName) {
@@ -531,27 +542,13 @@ public class ImeContainer extends ViewGroup
         mCandidatesView.setToolImages(images);
     }
 
-    /**
-     * Subclasses could override this method and onToolItemClick()
-     * to define custom buttons and actions.
-     *
-     * @return list of tool button images
-     */
-    protected List<Drawable> getToolButtonItems() {
-        // default tool button items
-        List<Drawable> images = new ArrayList<>();
-        images.add(getKeyboardDownDefaultImage());
-        images.add(getKeyboardNavigationDefaultImage());
-        return images;
-    }
-
 
     private Drawable getKeyboardDownDefaultImage() {
         return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_keyboard_down_32dp);
     }
 
     private Drawable getKeyboardNavigationDefaultImage() {
-        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_navigation_24dp);
+        return ContextCompat.getDrawable(this.getContext(), R.drawable.ic_navigation_32dp);
     }
 
     /**
@@ -993,11 +990,25 @@ public class ImeContainer extends ViewGroup
                 hideImeContainer();
                 break;
             case TOGGLE_NAVIGATION_VIEW:
-                toggleNavigationView();
+                toggleTempKeyboardView(mNavigationView);
                 break;
             default:
                 throw new IllegalArgumentException("Undefined tool item");
         }
+    }
+
+    /**
+     * Subclasses could override this method and onToolItemClick()
+     * to define custom buttons and actions.
+     *
+     * @return list of tool button images
+     */
+    protected List<Drawable> getToolButtonItems() {
+        // default tool button items
+        List<Drawable> images = new ArrayList<>();
+        images.add(getKeyboardDownDefaultImage());
+        images.add(getKeyboardNavigationDefaultImage());
+        return images;
     }
 
     private void hideImeContainer() {
@@ -1123,31 +1134,61 @@ public class ImeContainer extends ViewGroup
         ic.performContextMenuAction(android.R.id.paste);
     }
 
-    public void toggleNavigationView() {
-        // if view null then initialize it
-        if (mNavigationView == null) {
-            initNavigationView();
+    private void setTempKeyboardView(View view) {
+        if (mTempKeyboardView == view) return;
+        if (viewIsAdded(mTempKeyboardView)) {
+            removeView(mTempKeyboardView);
         }
-        // if view not added then add it
-        if (!navigationViewIsAdded()) {
-            addView(mNavigationView);
-        }
-        // if not laid out then lay out
-        if (!navigationViewPositionIsCorrect()) {
-            layoutNavigationView();
-            mNavigationView.setVisibility(View.INVISIBLE);
-        }
-        // switch view visibility
-        if (mNavigationView.getVisibility() == View.VISIBLE) {
-            mNavigationView.setVisibility(View.INVISIBLE);
-            mCurrentKeyboard.setVisibility(View.VISIBLE);
-        } else {
-            mNavigationView.setVisibility(View.VISIBLE);
-            mCurrentKeyboard.setVisibility(View.INVISIBLE);
-        }
+        mTempKeyboardView = view;
+        addView(mTempKeyboardView);
     }
 
-    private void initNavigationView() {
+    private void showTempView() {
+        layoutTempKeyboardView();
+        mTempKeyboardView.setVisibility(View.VISIBLE);
+        mCurrentKeyboard.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideTempView() {
+        mTempKeyboardView.setVisibility(View.INVISIBLE);
+        mCurrentKeyboard.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * If the view is not showing, then show it. Otherwise hide it.
+     *
+     * @param view the temporary view that should be toggled in the keyboard area.
+     *             A null value will toggle the current temp view or show the
+     *             navigation view is nothing else has been set.
+     */
+    public void toggleTempKeyboardView(View view) {
+        if (view == null && mTempKeyboardView == null) {
+            setTempKeyboardView(getNavigationView());
+            showTempView();
+            return;
+        }
+
+        if (view == null) {
+            toggleTempKeyboardView(mTempKeyboardView);
+            return;
+        }
+
+        if (view != mTempKeyboardView) {
+            setTempKeyboardView(view);
+            showTempView();
+            return;
+        }
+
+        if (mTempKeyboardView.getVisibility() == View.VISIBLE) {
+            hideTempView();
+            return;
+        }
+
+        showTempView();
+    }
+
+    protected KeyboardNavigation getNavigationView() {
+        if (mNavigationView != null) return mNavigationView;
         Keyboard.StyleBuilder builder = new Keyboard.StyleBuilder();
         builder.typeface(mCurrentKeyboard.getTypeface())
                 .primaryTextSizePx(mCurrentKeyboard.getPrimaryTextSize())
@@ -1162,25 +1203,27 @@ public class ImeContainer extends ViewGroup
                 .popupHighlightColor(mCurrentKeyboard.getPopupHighlightColor())
                 .popupTextColor(mCurrentKeyboard.getPopupTextColor())
                 .candidatesLocation(mCurrentKeyboard.getCandidatesLocation());
-        mNavigationView = new KeyboardNavigation(mContext, builder);
-        mNavigationView.setOnKeyboardListener(this);
-        mNavigationView.setOnNavigationListener(this);
+        KeyboardNavigation navigationView = new KeyboardNavigation(mContext, builder);
+        navigationView.setOnKeyboardListener(this);
+        navigationView.setOnNavigationListener(this);
+        mNavigationView = navigationView;
+        return navigationView;
     }
 
-    private boolean navigationViewIsAdded() {
+    private boolean viewIsAdded(View view) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
-            if (getChildAt(i) == mNavigationView)
+            if (getChildAt(i) == view)
                 return true;
         }
         return false;
     }
 
-    private boolean navigationViewPositionIsCorrect() {
-        return mNavigationView.getLeft() == mCurrentKeyboard.getLeft() &&
-                mNavigationView.getTop() == mCurrentKeyboard.getTop() &&
-                mNavigationView.getRight() == mCurrentKeyboard.getRight() &&
-                mNavigationView.getBottom() == mCurrentKeyboard.getBottom();
+    private boolean tempKeyboardViewPositionIsCorrect() {
+        return mTempKeyboardView.getLeft() == mCurrentKeyboard.getLeft() &&
+                mTempKeyboardView.getTop() == mCurrentKeyboard.getTop() &&
+                mTempKeyboardView.getRight() == mCurrentKeyboard.getRight() &&
+                mTempKeyboardView.getBottom() == mCurrentKeyboard.getBottom();
     }
 
     /**

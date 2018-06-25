@@ -64,8 +64,6 @@ public class KeyboardNavigation extends Keyboard {
         void copyText();
         void cutText();
         void pasteText();
-
-        void toggleNavigationView();
     }
 
     public void setOnNavigationListener(OnNavigationListener listener) {
@@ -282,7 +280,7 @@ public class KeyboardNavigation extends Keyboard {
                 mNavigationListener.pasteText();
                 return;
             case FINISHED:
-                mNavigationListener.toggleNavigationView();
+                finishKeyboard();
                 return;
         }
         super.onKeyInput(text);
