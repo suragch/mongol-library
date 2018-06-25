@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.11.1'
+    implementation 'net.studymongolian:mongol-library:1.12.0'
 }
 ```
 
@@ -55,7 +55,7 @@ If you are still using Android Studio 2.x, you should use `compile` rather than 
 
 ## UI Componants
 
-The following are the primary UI componants in the library. See also the [Demo App](https://github.com/suragch/mongol-library/tree/master/demo-app/release) for an example of how they are used. 
+The following are the primary UI components in the library. See also the [Demo App](https://github.com/suragch/mongol-library/tree/master/demo-app/release) for an example of how they are used. 
 
 ### MongolTextView 
 
@@ -678,6 +678,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.12.0`: `MongolEditText` extracted text support, scrolling to cursor position (when in HorizontalTextView), Keyboard toolbar custom icons, bug fixes
 * `1.11.1`: Bug fixes for `MongolEditText` context menu
 * `1.11.0`: Added a default context menu to `MongolEditText`. Can also replace with custom menu.
 * `1.10.0`: Allow custom keyboard to request a system keyboard

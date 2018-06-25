@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/suragch/mongol-library'
     gitUrl = 'https://github.com/suragch/mongol-library.git'
 
-    libraryVersion = '1.11.1'
+    libraryVersion = '1.12.0'
 
     developerId = 'suragch'
     developerName = 'Suragch'
@@ -26,13 +26,11 @@ ext {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 37
-        versionName "1.11.1"
+        versionCode 38
+        versionName "1.12.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
