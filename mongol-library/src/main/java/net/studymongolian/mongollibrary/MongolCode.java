@@ -43,7 +43,6 @@ public final class MongolCode {
 
     public String unicodeToMenksoft(CharSequence inputString) {
         String menksoftWithSpacingChars = unicodeToMenksoftSameIndex(inputString);
-        if (menksoftWithSpacingChars == null) return null;
         return stripControlChars(menksoftWithSpacingChars);
     }
 
@@ -87,8 +86,7 @@ public final class MongolCode {
 
     String unicodeToMenksoftSameIndex(CharSequence inputString) {
 
-        if (inputString == null) return null;
-        if (inputString.length() == 0) return "";
+        if (inputString == null || inputString.length() == 0) return "";
 
         StringBuilder outputString = new StringBuilder();
         StringBuilder mongolWord = new StringBuilder();
@@ -113,6 +111,12 @@ public final class MongolCode {
                 continue;
             }
 
+            if (isConvertiblePunctuation(character)) {
+                char menksoftPunctuation = MongolWord.convertPunctuationToMenksoftCode(character);
+                outputString.append(menksoftPunctuation);
+                continue;
+            }
+
             // non-Mongol character
             outputString.append(character);
         }
@@ -130,420 +134,46 @@ public final class MongolCode {
     }
 
     public String menksoftToUnicode(String inputString) {
-        final char space = ' ';
-        StringBuilder outputString = new StringBuilder();
 
-        if (inputString == null || inputString.length() == 0) {
-            return "";
-        }
+        if (inputString == null || inputString.length() == 0) return "";
+
+        StringBuilder outputString = new StringBuilder();
+        StringBuilder menksoftWord = new StringBuilder();
 
         // Loop through characters in string
         int length = inputString.length();
         for (int i = 0; i < length; i++) {
-
-            char currentChar = inputString.charAt(i);
-
-            if (!isMenksoft(currentChar)) {
-                if (currentChar == space && i < length - 1) {
-                    switch (inputString.charAt(i + 1)) {
-                        case Glyph.MEDI_A_FVS2:
-                        case Glyph.FINA_I:
-                        case Glyph.MEDI_I:
-                        case Glyph.MEDI_I_SUFFIX:
-                        case Glyph.ISOL_I_SUFFIX:
-                        case Glyph.MEDI_O:
-                        case Glyph.MEDI_O_BP:
-                        case Glyph.FINA_O:
-                        case Glyph.MEDI_U:
-                        case Glyph.MEDI_U_BP:
-                        case Glyph.FINA_U:
-                        case Glyph.MEDI_OE:
-                        case Glyph.MEDI_OE_BP:
-                        case Glyph.FINA_OE:
-                        case Glyph.MEDI_UE:
-                        case Glyph.MEDI_UE_BP:
-                        case Glyph.FINA_UE:
-                        case Glyph.FINA_YA:
-                        case Glyph.INIT_YA_FVS1:
-                            outputString.append(Uni.NNBS);
-                            break;
-                        default:
-                            outputString.append(space);
-                    }
-                } else {
-                    outputString.append(currentChar);
-                }
+            final char character = inputString.charAt(i);
+            if (isMenksoft(character)) {
+                menksoftWord.append(character);
                 continue;
             }
 
-            // TODO check if glyph location type with actual location
-            // If there is a mismatch then add ZWJ
-
-            if (currentChar < Glyph.A_START) {                         // punctuation
-                switch (currentChar) {
-                    case Glyph.BIRGA:
-                        outputString.append(Uni.MONGOLIAN_BIRGA);
-                        break;
-                    case Glyph.ELLIPSIS:
-                        outputString.append(Uni.MONGOLIAN_ELLIPSIS);
-                        break;
-                    case Glyph.COMMA:
-                        outputString.append(Uni.MONGOLIAN_COMMA);
-                        break;
-                    case Glyph.FULL_STOP:
-                        outputString.append(Uni.MONGOLIAN_FULL_STOP);
-                        break;
-                    case Glyph.COLON:
-                        outputString.append(Uni.MONGOLIAN_COLON);
-                        break;
-                    case Glyph.FOUR_DOTS:
-                        outputString.append(Uni.MONGOLIAN_FOUR_DOTS);
-                        break;
-                    case Glyph.TODO_SOFT_HYPHEN:
-                        outputString.append(Uni.MONGOLIAN_TODO_SOFT_HYPHEN);
-                        break;
-                    case Glyph.SIBE_SYLLABLE_BOUNDARY_MARKER:
-                        outputString.append(Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER);
-                        break;
-                    case Glyph.MANCHU_COMMA:
-                        outputString.append(Uni.MONGOLIAN_MANCHU_COMMA);
-                        break;
-                    case Glyph.MANCHU_FULL_STOP:
-                        outputString.append(Uni.MONGOLIAN_MANCHU_FULL_STOP);
-                        break;
-                    case Glyph.NIRUGU:
-                        outputString.append(Uni.MONGOLIAN_NIRUGU);
-                        break;
-                    case Glyph.BIRGA_WITH_ORNAMENT:
-                        outputString.append("\uD805\uDE60"); // U+11660
-                        break;
-                    case Glyph.ROTATED_BIRGA:
-                        outputString.append("\uD805\uDE61"); // U+11661
-                        break;
-                    case Glyph.DOUBLE_BIRGA_WITH_ORNAMENT:
-                        outputString.append("\uD805\uDE62"); // U+11662
-                        break;
-                    case Glyph.TRIPLE_BIRGA_WITH_ORNAMENT:
-                        outputString.append("\uD805\uDE63"); // U+11663
-                        break;
-                    case Glyph.MIDDLE_DOT:
-                        outputString.append(Uni.MIDDLE_DOT);
-                        break;
-                    case Glyph.ZERO:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_ZERO);
-                        break;
-                    case Glyph.ONE:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_ONE);
-                        break;
-                    case Glyph.TWO:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_TWO);
-                        break;
-                    case Glyph.THREE:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_THREE);
-                        break;
-                    case Glyph.FOUR:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_FOUR);
-                        break;
-                    case Glyph.FIVE:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_FIVE);
-                        break;
-                    case Glyph.SIX:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_SIX);
-                        break;
-                    case Glyph.SEVEN:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_SEVEN);
-                        break;
-                    case Glyph.EIGHT:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_EIGHT);
-                        break;
-                    case Glyph.NINE:
-                        outputString.append(Uni.MONGOLIAN_DIGIT_NINE);
-                        break;
-                    case Glyph.QUESTION_EXCLAMATION:
-                        outputString.append(Uni.QUESTION_EXCLAMATION_MARK);
-                        break;
-                    case Glyph.EXCLAMATION_QUESTION:
-                        outputString.append(Uni.EXCLAMATION_QUESTION_MARK);
-                        break;
-                    case Glyph.EXCLAMATION:
-                        outputString.append(Uni.VERTICAL_EXCLAMATION_MARK);
-                        break;
-                    case Glyph.QUESTION:
-                        outputString.append(Uni.VERTICAL_QUESTION_MARK);
-                        break;
-                    case Glyph.SEMICOLON:
-                        outputString.append(Uni.VERTICAL_SEMICOLON);
-                        break;
-                    case Glyph.LEFT_PARENTHESIS:
-                        outputString.append(Uni.VERTICAL_LEFT_PARENTHESIS);
-                        break;
-                    case Glyph.RIGHT_PARENTHESIS:
-                        outputString.append(Uni.VERTICAL_RIGHT_PARENTHESIS);
-                        break;
-                    case Glyph.LEFT_ANGLE_BRACKET:
-                        outputString.append(Uni.VERTICAL_LEFT_ANGLE_BRACKET);
-                        break;
-                    case Glyph.RIGHT_ANGLE_BRACKET:
-                        outputString.append(Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
-                        break;
-                    case Glyph.LEFT_BRACKET:
-                        outputString.append(Uni.VERTICAL_LEFT_SQUARE_BRACKET);
-                        break;
-                    case Glyph.RIGHT_BRACKET:
-                        outputString.append(Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
-                        break;
-                    case Glyph.LEFT_DOUBLE_ANGLE_BRACKET:
-                        outputString.append(Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
-                        break;
-                    case Glyph.RIGHT_DOUBLE_ANGLE_BRACKET:
-                        outputString.append(Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
-                        break;
-                    case Glyph.LEFT_WHITE_CORNER_BRACKET:
-                        outputString.append(Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET);
-                        break;
-                    case Glyph.RIGHT_WHITE_CORNER_BRACKET:
-                        outputString.append(Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET);
-                        break;
-                    case Glyph.FULLWIDTH_COMMA:
-                        outputString.append(Uni.VERTICAL_COMMA);
-                        break;
-                    case Glyph.X:
-                        outputString.append('\u00D7'); // FIXME using the multiplication sign?
-                        break;
-                    case Glyph.REFERENCE_MARK:
-                        outputString.append(Uni.REFERENCE_MARK);
-                        break;
-                    case Glyph.EN_DASH:
-                        outputString.append(Uni.VERTICAL_EN_DASH);
-                        break;
-                    case Glyph.EM_DASH:
-                        outputString.append(Uni.VERTICAL_EM_DASH);
-                        break;
-                    default:
-                        outputString.append(currentChar);
-                }
-            } else if (currentChar < Glyph.E_START) {                  // A
-                switch (currentChar) {
-                    case Glyph.ISOL_A_FVS1:
-                    case Glyph.MEDI_A_FVS1:
-                        outputString.append(Uni.A);
-                        outputString.append(Uni.FVS1);
-                        break;
-                    case Glyph.MEDI_A_FVS2:
-                        outputString.append(Uni.A);
-                        outputString.append(Uni.FVS2);
-                        break;
-                    case Glyph.FINA_A_MVS:
-                        if (outputString.length() > 0 &&
-                                outputString.charAt(outputString.length() - 1) != Uni.MVS) {
-                            outputString.append(Uni.MVS);
-                        }
-                        outputString.append(Uni.A);
-                        break;
-                    default:
-                        outputString.append(Uni.A);
-                }
-            } else if (currentChar < Glyph.I_START) {                  // E
-                switch (currentChar) {
-                    case Glyph.INIT_E_FVS1:
-                        outputString.append(Uni.E);
-                        outputString.append(Uni.FVS1);
-                        break;
-                    case Glyph.FINA_E_MVS:
-                        if (outputString.length() > 0 &&
-                                outputString.charAt(outputString.length() - 1) != Uni.MVS) {
-                            outputString.append(Uni.MVS);
-                        }
-                        outputString.append(Uni.E);
-                        break;
-                    default:
-                        outputString.append(Uni.E);
-                }
-            } else if (currentChar < Glyph.O_START) {                  // I
-
-                switch (currentChar) {
-                    case Glyph.MEDI_I_FVS1:
-                        outputString.append(Uni.I);
-                        outputString.append(Uni.FVS1);
-                        break;
-                    case Glyph.MEDI_I_DOUBLE_TOOTH:
-                        outputString.append(Uni.YA);
-                        outputString.append(Uni.I);
-                        break;
-                    default:
-                        outputString.append(Uni.I);
-                }
-            } else if (currentChar < Glyph.U_START) {                  // O
-                outputString.append(Uni.O);
-                switch (currentChar) {
-                    case Glyph.MEDI_O_FVS1:
-                    case Glyph.FINA_O_FVS1:
-                        outputString.append(Uni.FVS1);
-                        break;
-                }
-            } else if (currentChar < Glyph.OE_START) {                 // U
-                outputString.append(Uni.U);
-                if (currentChar == Glyph.MEDI_U_FVS1) {
-                    outputString.append(Uni.FVS1);
-                }
-            } else if (currentChar < Glyph.UE_START) {                 // OE
-                outputString.append(Uni.OE);
-                switch (currentChar) {
-                    case Glyph.FINA_OE_FVS1:
-                        outputString.append(Uni.FVS1);
-                        break;
-                    case Glyph.MEDI_OE_FVS2:
-                        outputString.append(Uni.FVS2);
-                        break;
-                }
-            } else if (currentChar < Glyph.EE_START) {                 // UE
-                outputString.append(Uni.UE);
-                switch (currentChar) {
-                    case Glyph.ISOL_UE_FVS1:
-                    case Glyph.FINA_UE_FVS1:
-                        outputString.append(Uni.FVS1);
-                        break;
-                    case Glyph.MEDI_UE_FVS2:
-                        outputString.append(Uni.FVS2);
-                        break;
-                }
-            } else if (currentChar < Glyph.NA_START) {                 // EE
-                outputString.append(Uni.EE);
-            } else if (currentChar < Glyph.BA_START) {                 // NA and ANG
-                // handling these together because NA glyphs
-                // are split in the Menksoft code.
-                if (currentChar >= Glyph.ANG_START &&
-                        currentChar <= Glyph.ANG_END) {
-                    outputString.append(Uni.ANG);
-                } else {
-                    outputString.append(Uni.NA);
-                    switch (currentChar) {
-                        case Glyph.MEDI_NA_FVS2:
-                            outputString.append(Uni.MVS);
-                            break;
-                        case Glyph.INIT_NA_FVS1_TOOTH:
-                        case Glyph.INIT_NA_FVS1_STEM:
-                            outputString.append(Uni.FVS1);
-                            break;
-                    }
-                }
-            } else if (currentChar < Glyph.PA_START) {                 // BA
-                outputString.append(Uni.BA);
-                if (currentChar == Glyph.FINA_BA_FVS1) {
-                    outputString.append(Uni.FVS1);
-                }
-            } else if (currentChar < Glyph.QA_START) {                 // PA
-                outputString.append(Uni.PA);
-            } else if (currentChar < Glyph.GA_START) {                 // QA
-                switch (currentChar) {
-                    // treat the dotted masculine Q as a G
-                    // ignoring all ancient dotted feminine forms
-                    case Glyph.INIT_QA_FVS1_TOOTH:
-                    case Glyph.INIT_QA_FVS1_STEM:
-                    case Glyph.MEDI_QA_FVS1:
-                    case Glyph.MEDI_QA_FVS2:
-                        outputString.append(Uni.GA);
-                        break;
-                    // If a medial Q is being used like a G before
-                    // a consonant, then interpret it as a G.
-                    case Glyph.MEDI_QA_TOOTH:
-                    case Glyph.MEDI_QA_STEM:
-                    case Glyph.MEDI_QA_FEM_CONSONANT:
-                        if (i < length - 1 && isMenksoftConsonant(inputString.charAt(i + 1))) {
-                            outputString.append(Uni.GA);
-                        } else {
-                            outputString.append(Uni.QA);
-                        }
-                        break;
-                    default:
-                        outputString.append(Uni.QA);
-                        break;
-                }
-            } else if (currentChar < Glyph.MA_START) {                 // GA
-                switch (currentChar) {
-                    // treat the undotted masculine G as a Q
-                    case Glyph.INIT_GA_FVS1_TOOTH:
-                    case Glyph.INIT_GA_FVS1_STEM:
-                        outputString.append(Uni.QA);
-                        break;
-                    case Glyph.MEDI_GA_FVS2:
-                        outputString.append(Uni.GA);
-                        outputString.append(Uni.MVS);
-                        break;
-                    default:
-                        outputString.append(Uni.GA);
-                        break;
-                }
-            } else if (currentChar < Glyph.LA_START) {                 // MA
-                outputString.append(Uni.MA);
-            } else if (currentChar < Glyph.SA_START) {                 // LA
-                outputString.append(Uni.LA);
-            } else if (currentChar < Glyph.SHA_START) {                // SA
-                outputString.append(Uni.SA);
-                switch (currentChar) {
-                    case Glyph.FINA_SA_FVS1:
-                        outputString.append(Uni.FVS1);
-                        break;
-                    case Glyph.FINA_SA_FVS2:
-                        outputString.append(Uni.FVS2);
-                        break;
-                }
-            } else if (currentChar < Glyph.TA_START) {                 // SHA
-                outputString.append(Uni.SHA);
-            } else if (currentChar < Glyph.DA_START) {                 // TA
-                outputString.append(Uni.TA);
-                switch (currentChar) {
-                    case Glyph.MEDI_TA_FVS1_STEM:
-                    case Glyph.MEDI_TA_FVS1_TOOTH:
-                        outputString.append(Uni.FVS1);
-                        break;
-                }
-            } else if (currentChar < Glyph.CHA_START) {                // DA
-                outputString.append(Uni.DA);
-                switch (currentChar) {
-                    case Glyph.INIT_DA_FVS1:
-                    case Glyph.FINA_DA_FVS1:
-                        outputString.append(Uni.FVS1);
-                        break;
-                }
-            } else if (currentChar < Glyph.JA_START) {                 // CHA
-                outputString.append(Uni.CHA);
-            } else if (currentChar < Glyph.YA_START) {                 // JA
-                outputString.append(Uni.JA);
-            } else if (currentChar < Glyph.RA_START) {                 // YA
-                outputString.append(Uni.YA);
-                // TODO add FVS1 for diphthongs?
-                if (currentChar == Glyph.INIT_YA_FVS1) {
-                    outputString.append(Uni.FVS1);
-                }
-            } else if (currentChar < Glyph.WA_START) {                 // RA
-                outputString.append(Uni.RA);
-            } else if (currentChar < Glyph.FA_START) {                 // WA
-                outputString.append(Uni.WA);
-            } else if (currentChar < Glyph.KA_START) {                 // FA
-                outputString.append(Uni.FA);
-            } else if (currentChar < Glyph.KHA_START) {                // KA
-                outputString.append(Uni.KA);
-            } else if (currentChar < Glyph.TSA_START) {                // KHA
-                outputString.append(Uni.KHA);
-            } else if (currentChar < Glyph.ZA_START) {                 // TSA
-                outputString.append(Uni.TSA);
-            } else if (currentChar < Glyph.HAA_START) {                // ZA
-                outputString.append(Uni.ZA);
-            } else if (currentChar < Glyph.ZRA_START) {                // HAA
-                outputString.append(Uni.HAA);
-            } else if (currentChar < Glyph.LHA_START) {                // ZRA
-                outputString.append(Uni.ZRA);
-            } else if (currentChar < Glyph.ZHI_START) {                // LHA
-                outputString.append(Uni.LHA);
-            } else if (currentChar < Glyph.CHI_START) {                // ZHI
-                outputString.append(Uni.ZHI);
-            } else if (currentChar <= Glyph.MENKSOFT_END) {            // CHI
-                outputString.append(Uni.CHI);
+            if (menksoftWord.length() > 0) {
+                appendMenksoftWord(outputString, menksoftWord);
+                menksoftWord.setLength(0);
             }
+
+            // NNBS starts a new Mongol word but is not itself a Mongol char
+            //if (character == Uni.NNBS) {
+            //    menksoftWord.append(Uni.NNBS);
+            //    continue;
+            //}
+
+            // non-Menksoft character
+            outputString.append(character);
         }
 
+        // Add any final substring
+        if (menksoftWord.length() > 0)
+            appendMenksoftWord(outputString, menksoftWord);
+
         return outputString.toString();
+    }
+
+    private void appendMenksoftWord(StringBuilder outputString, StringBuilder menksoftWord) {
+        String unicodeWord = new MenksoftWord(menksoftWord).convertToUnicode();
+        outputString.append(unicodeWord);
     }
 
     public static Location getLocation(CharSequence textBefore, CharSequence textAfter) {
@@ -579,12 +209,34 @@ public final class MongolCode {
         else return Location.ISOLATE;
     }
 
-    private boolean isMenksoftConsonant(char character) {
-        return character >= Glyph.NA_START && character <= Glyph.FINA_CHI;
+    public static boolean isMenksoft(char character) {
+        return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
     }
 
-    public boolean isMenksoft(char character) {
-        return character >= Glyph.MENKSOFT_START && character <= Glyph.MENKSOFT_END;
+    private boolean isConvertiblePunctuation(char character) {
+        return isVerticalPresentationForm(character)
+                || isMongolianPunctuation(character)
+                || isMongolianDigit(character)
+                || character == Uni.MIDDLE_DOT
+                || character == Uni.REFERENCE_MARK
+                || character == Uni.QUESTION_EXCLAMATION_MARK
+                || character == Uni.EXCLAMATION_QUESTION_MARK
+                || character == Uni.PUNCTUATION_X;
+    }
+
+    private boolean isVerticalPresentationForm(char character) {
+        return (character >= Uni.VERTICAL_COMMA
+                && character <= Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
+    }
+
+    private boolean isMongolianPunctuation(char character) {
+        return (character >= Uni.MONGOLIAN_BIRGA
+                && character <= Uni.MONGOLIAN_MANCHU_FULL_STOP);
+    }
+
+    private boolean isMongolianDigit(char character) {
+        return (character >= Uni.MONGOLIAN_DIGIT_ZERO
+                && character <= Uni.MONGOLIAN_DIGIT_NINE);
     }
 
     public static boolean isVowel(char character) {
@@ -862,6 +514,7 @@ public final class MongolCode {
         public static final char DOUBLE_QUESTION_MARK = '\u2047';
         public static final char QUESTION_EXCLAMATION_MARK = '\u2048';
         public static final char EXCLAMATION_QUESTION_MARK = '\u2049';
+        public static final char PUNCTUATION_X = '\u00D7'; // TODO is this right?
 
 
         // Unicode Mongolian Values
@@ -1058,17 +711,19 @@ public final class MongolCode {
         static final char RIGHT_PARENTHESIS = '\uE254';
         static final char LEFT_ANGLE_BRACKET = '\uE255';
         static final char RIGHT_ANGLE_BRACKET = '\uE256';
-        static final char LEFT_BRACKET = '\uE257';
-        static final char RIGHT_BRACKET = '\uE258';
+        static final char LEFT_TORTOISE_SHELL_BRACKET = '\uE257';
+        static final char RIGHT_TORTOISE_SHELL_BRACKET = '\uE258';
         static final char LEFT_DOUBLE_ANGLE_BRACKET = '\uE259';
         static final char RIGHT_DOUBLE_ANGLE_BRACKET = '\uE25A';
         static final char LEFT_WHITE_CORNER_BRACKET = '\uE25B';
         static final char RIGHT_WHITE_CORNER_BRACKET = '\uE25C';
-        static final char FULLWIDTH_COMMA = '\uE25D';
+        static final char FULL_WIDTH_COMMA = '\uE25D';
         static final char X = '\uE25E';
         static final char REFERENCE_MARK = '\uE25F';                   // 0x203b
         static final char EN_DASH = '\uE260'; // TODO is that what this is?
         static final char EM_DASH = '\uE261'; // TODO is that what this is?
+        static final char UNKNOWN_SPACE = '\uE262'; // TODO what is this?
+        static final char SUFFIX_SPACE = '\uE263';
 
         // These are in the order of the Unicode 9 specs sheet
         // BP = looks better after B, P (and other rounded like Q, G, F, K, KH)
@@ -1089,6 +744,7 @@ public final class MongolCode {
         static final char FINA_A_FVS1 = '\uE269';
         static final char FINA_A_MVS = '\uE26A'; // gv for MVS + A
         static final char MEDI_A_FVS2 = '\uE267'; // A of ACHA suffix
+        static final char MEDI_A_UNKNOWN = '\uE26F';
 
         static final char E_START = '\uE270';
         static final char ISOL_E = '\uE270';
@@ -1100,6 +756,7 @@ public final class MongolCode {
         static final char INIT_E_FVS1 = '\uE272';
         static final char FINA_E_FVS1 = '\uE269'; // no E glyph so using A
         static final char FINA_E_MVS = '\uE274'; // gv for MVS + E
+        static final char MEDI_E_UNKNOWN = '\uE278';
 
         static final char I_START = '\uE279';
         static final char ISOL_I = '\uE279';
@@ -1135,6 +792,7 @@ public final class MongolCode {
 
         static final char OE_START = '\uE293';
         static final char ISOL_OE = '\uE293';
+        static final char ISOL_OE_FVS1 = '\uE294'; // not defined in unicode
         static final char INIT_OE = '\uE295';
         static final char MEDI_OE = '\uE29E';
         static final char MEDI_OE_BP = '\uE29F'; // gv
@@ -1144,6 +802,7 @@ public final class MongolCode {
         static final char MEDI_OE_FVS1_BP = '\uE29D';
         static final char FINA_OE_FVS1 = '\uE297';
         static final char FINA_OE_FVS1_BP = '\uE298'; // gv
+        static final char FINA_OE_FVS2 = '\uE299'; // undefined in Unicode
         static final char MEDI_OE_FVS2 = '\uE29B';
 
         static final char UE_START = '\uE2A0';
@@ -1158,6 +817,7 @@ public final class MongolCode {
         static final char MEDI_UE_FVS1_BP = '\uE2AA';
         static final char FINA_UE_FVS1 = '\uE2A4';
         static final char FINA_UE_FVS1_BP = '\uE2A5';
+        static final char FINA_UE_FVS2 = '\uE2A6'; // undefined in unicode
         static final char MEDI_UE_FVS2 = '\uE2A8';
 
         static final char EE_START = '\uE2AD';
@@ -1172,12 +832,13 @@ public final class MongolCode {
         static final char INIT_NA_STEM = '\uE2B3';
         static final char MEDI_NA_TOOTH = '\uE2B8';
         static final char MEDI_NA_STEM = '\uE2BA';
+        static final char MEDI_NA_NG = '\uE2C0';
         static final char FINA_NA = '\uE2B5';
         static final char INIT_NA_FVS1_TOOTH = '\uE2B2';
         static final char INIT_NA_FVS1_STEM = '\uE2B4';
         static final char MEDI_NA_FVS1_TOOTH = '\uE2B7';
         static final char MEDI_NA_FVS1_STEM = '\uE2B9';
-        //static final char MEDI_NA_FVS1_NG = '\uE2BF'; // What is this one for?
+        static final char MEDI_NA_FVS1_NG = '\uE2BF';
         static final char MEDI_NA_FVS2 = '\uE2B6'; // MVS
         static final char MEDI_NA_FVS3 = '\uE2B7'; // Tod Mongol N; FIXME: no glyph, substituting medial dotted n
 
@@ -1442,9 +1103,6 @@ public final class MongolCode {
         private char fvs;
         private Shape glyphShapeBelow;
 
-        private MongolWord() {
-        }
-
         MongolWord(CharSequence mongolWord) {
             this.inputWord = mongolWord;
             this.gender = Gender.NEUTER;
@@ -1483,6 +1141,99 @@ public final class MongolCode {
             TOOTH,     // glyph slants to the left like a tooth (includes medial T/D, R, W, etc)
             STEM,      // glyph starts with a vertical stem (includes B, O/U, CH, etc)
             ROUND      // glyph top is round (includes feminine Q/G)
+        }
+
+        static char convertPunctuationToMenksoftCode(char punctuationChar) {
+            switch (punctuationChar) {
+                case Uni.VERTICAL_COMMA:
+                    return Glyph.FULL_WIDTH_COMMA;
+                case Uni.VERTICAL_COLON:
+                    return Glyph.COLON;
+                case Uni.VERTICAL_SEMICOLON:
+                    return Glyph.SEMICOLON;
+                case Uni.VERTICAL_EXCLAMATION_MARK:
+                    return Glyph.EXCLAMATION;
+                case Uni.VERTICAL_QUESTION_MARK:
+                    return Glyph.QUESTION;
+                case Uni.VERTICAL_HORIZONTAL_ELLIPSIS:
+                    return Glyph.ELLIPSIS;
+                case Uni.VERTICAL_EM_DASH:
+                    return Glyph.EM_DASH;
+                case Uni.VERTICAL_EN_DASH:
+                    return Glyph.EN_DASH;
+                case Uni.VERTICAL_LEFT_PARENTHESIS:
+                    return Glyph.LEFT_PARENTHESIS;
+                case Uni.VERTICAL_RIGHT_PARENTHESIS:
+                    return Glyph.RIGHT_PARENTHESIS;
+                case Uni.VERTICAL_LEFT_TORTOISE_SHELL_BRACKET:
+                    return Glyph.LEFT_TORTOISE_SHELL_BRACKET;
+                case Uni.VERTICAL_RIGHT_TORTOISE_SHELL_BRACKET:
+                    return Glyph.RIGHT_TORTOISE_SHELL_BRACKET;
+                case Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET:
+                    return Glyph.LEFT_DOUBLE_ANGLE_BRACKET;
+                case Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET:
+                    return Glyph.RIGHT_DOUBLE_ANGLE_BRACKET;
+                case Uni.VERTICAL_LEFT_ANGLE_BRACKET:
+                    return Glyph.LEFT_ANGLE_BRACKET;
+                case Uni.VERTICAL_RIGHT_ANGLE_BRACKET:
+                    return Glyph.RIGHT_ANGLE_BRACKET;
+                case Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET:
+                    return Glyph.LEFT_WHITE_CORNER_BRACKET;
+                case Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET:
+                    return Glyph.RIGHT_WHITE_CORNER_BRACKET;
+                case Uni.MIDDLE_DOT:
+                    return Glyph.MIDDLE_DOT;
+                case Uni.REFERENCE_MARK:
+                    return Glyph.REFERENCE_MARK;
+                case Uni.QUESTION_EXCLAMATION_MARK:
+                    return Glyph.QUESTION_EXCLAMATION;
+                case Uni.EXCLAMATION_QUESTION_MARK:
+                    return Glyph.EXCLAMATION_QUESTION;
+                case Uni.MONGOLIAN_BIRGA:
+                    return Glyph.BIRGA;
+                case Uni.MONGOLIAN_ELLIPSIS:
+                    return Glyph.ELLIPSIS;
+                case Uni.MONGOLIAN_COMMA:
+                    return Glyph.COMMA;
+                case Uni.MONGOLIAN_FULL_STOP:
+                    return Glyph.FULL_STOP;
+                case Uni.MONGOLIAN_COLON:
+                    return Glyph.COLON;
+                case Uni.MONGOLIAN_FOUR_DOTS:
+                    return Glyph.FOUR_DOTS;
+                case Uni.MONGOLIAN_TODO_SOFT_HYPHEN:
+                    return Glyph.TODO_SOFT_HYPHEN;
+                case Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER:
+                    return Glyph.SIBE_SYLLABLE_BOUNDARY_MARKER;
+                case Uni.MONGOLIAN_MANCHU_COMMA:
+                    return Glyph.MANCHU_COMMA;
+                case Uni.MONGOLIAN_MANCHU_FULL_STOP:
+                    return Glyph.MANCHU_FULL_STOP;
+                case Uni.MONGOLIAN_DIGIT_ZERO:
+                    return Glyph.ZERO;
+                case Uni.MONGOLIAN_DIGIT_ONE:
+                    return Glyph.ONE;
+                case Uni.MONGOLIAN_DIGIT_TWO:
+                    return Glyph.TWO;
+                case Uni.MONGOLIAN_DIGIT_THREE:
+                    return Glyph.THREE;
+                case Uni.MONGOLIAN_DIGIT_FOUR:
+                    return Glyph.FOUR;
+                case Uni.MONGOLIAN_DIGIT_FIVE:
+                    return Glyph.FIVE;
+                case Uni.MONGOLIAN_DIGIT_SIX:
+                    return Glyph.SIX;
+                case Uni.MONGOLIAN_DIGIT_SEVEN:
+                    return Glyph.SEVEN;
+                case Uni.MONGOLIAN_DIGIT_EIGHT:
+                    return Glyph.EIGHT;
+                case Uni.MONGOLIAN_DIGIT_NINE:
+                    return Glyph.NINE;
+                case Uni.PUNCTUATION_X:
+                    return Glyph.X;
+                default:
+                    return punctuationChar;
+            }
         }
 
         String convertToMenksoftCode() {
@@ -3070,7 +2821,7 @@ public final class MongolCode {
         }
 
         private void handleNNBS(StringBuilder renderedWord) {
-            renderedWord.insert(0, Uni.NNBS);
+            renderedWord.insert(0, Glyph.SUFFIX_SPACE);
         }
 
         private void handleNirugu(StringBuilder renderedWord) {
@@ -3153,6 +2904,2229 @@ public final class MongolCode {
                 }
             }
             return Gender.NEUTER;
+        }
+    }
+
+    private static class MenksoftWord {
+
+        final static char SPACE = ' ';
+
+        private CharSequence inputWord;
+        private Location location;
+
+        MenksoftWord(CharSequence menksoftWord) {
+            this.inputWord = menksoftWord;
+        }
+
+        private void updateLocation(char charAbove, char charBelow) {
+
+            boolean isTop = !isMenksoftLetter(charAbove);
+            boolean isBottom = !isMenksoftLetter(charBelow);
+            if (isTop) {
+                if (isBottom) {
+                    location = Location.ISOLATE;
+                } else {
+                    location = Location.INITIAL;
+                }
+            } else {
+                if (isBottom) {
+                    location = Location.FINAL;
+                } else {
+                    location = Location.MEDIAL;
+                }
+            }
+        }
+
+        private boolean isMenksoftLetter(char character) {
+            return character >= Glyph.A_START && character <= Glyph.MENKSOFT_END;
+        }
+
+        private boolean isMenksoftConsonant(char character) {
+            return character >= Glyph.NA_START && character <= Glyph.FINA_CHI;
+        }
+
+        private boolean isMenksoftVowel(char character) {
+            return isMenksoftLetter(character) && !isMenksoftConsonant(character);
+        }
+
+        String convertToUnicode() {
+            StringBuilder outputString = new StringBuilder();
+
+            if (inputWord == null || inputWord.length() == 0) {
+                return "";
+            }
+
+            char charAbove = 0;
+            char currentChar = inputWord.charAt(0);
+            final int length = inputWord.length();
+            for (int i = 0; i < length; i++) {
+
+                char charBelow = (i < length - 1) ? inputWord.charAt(i + 1) : 0;
+
+                updateLocation(charAbove, charBelow);
+
+                if (isMenksoftSpaceChar(currentChar)) {                    // space
+                    handleSpace(outputString, currentChar, charBelow);
+                } else if (currentChar < Glyph.A_START) {                  // punctuation
+                    handlePunctuation(outputString, currentChar);
+                } else if (currentChar < Glyph.E_START) {                  // A
+                    handleA(outputString, currentChar);
+                } else if (currentChar < Glyph.I_START) {                  // E
+                    handleE(outputString, currentChar);
+                } else if (currentChar < Glyph.O_START) {                  // I
+                    handleI(outputString, currentChar, charAbove, charBelow);
+                } else if (currentChar < Glyph.U_START) {                  // O
+                    handleO(outputString, currentChar);
+                } else if (currentChar < Glyph.OE_START) {                 // U
+                    handleU(outputString, currentChar);
+                } else if (currentChar < Glyph.UE_START) {                 // OE
+                    handleOE(outputString, currentChar);
+                } else if (currentChar < Glyph.EE_START) {                 // UE
+                    handleUE(outputString, currentChar);
+                } else if (currentChar < Glyph.NA_START) {                 // EE
+                    handleEE(outputString, currentChar);
+                } else if (isANG(currentChar)) {                           // ANG
+                    // handling ANG before NA because NA is appears
+                    // before and after ANG
+                    handleAng(outputString, currentChar);
+                } else if (currentChar < Glyph.BA_START) {                 // NA
+                    handleNa(outputString, currentChar);
+                } else if (currentChar < Glyph.PA_START) {                 // BA
+                    handleBa(outputString, currentChar);
+                } else if (currentChar < Glyph.QA_START) {                 // PA
+                    handlePa(outputString, currentChar);
+                } else if (currentChar < Glyph.GA_START) {                 // QA
+                    handleQa(outputString, currentChar, charBelow);
+                } else if (currentChar < Glyph.MA_START) {                 // GA
+                    handleGa(outputString, currentChar);
+                } else if (currentChar < Glyph.LA_START) {                 // MA
+                    handleMa(outputString, currentChar);
+                } else if (currentChar < Glyph.SA_START) {                 // LA
+                    handleLa(outputString, currentChar);
+                } else if (currentChar < Glyph.SHA_START) {                // SA
+                    handleSa(outputString, currentChar);
+                } else if (currentChar < Glyph.TA_START) {                 // SHA
+                    handleSha(outputString, currentChar);
+                } else if (currentChar < Glyph.DA_START) {                 // TA
+                    handleTa(outputString, currentChar);
+                } else if (currentChar < Glyph.CHA_START) {                // DA
+                    handleDa(outputString, currentChar);
+                } else if (currentChar < Glyph.JA_START) {                 // CHA
+                    handleCha(outputString, currentChar);
+                } else if (currentChar < Glyph.YA_START) {                 // JA
+                    handleJa(outputString, currentChar);
+                } else if (currentChar < Glyph.RA_START) {                 // YA
+                    handleYa(outputString, currentChar, charAbove, charBelow);
+                } else if (currentChar < Glyph.WA_START) {                 // RA
+                    handleRa(outputString, currentChar);
+                } else if (currentChar < Glyph.FA_START) {                 // WA
+                    handleWa(outputString, currentChar);
+                } else if (currentChar < Glyph.KA_START) {                 // FA
+                    handleFa(outputString, currentChar);
+                } else if (currentChar < Glyph.KHA_START) {                // KA
+                    handleKa(outputString, currentChar);
+                } else if (currentChar < Glyph.TSA_START) {                // KHA
+                    handleKha(outputString, currentChar);
+                } else if (currentChar < Glyph.ZA_START) {                 // TSA
+                    handleTsa(outputString, currentChar);
+                } else if (currentChar < Glyph.HAA_START) {                // ZA
+                    handleZa(outputString, currentChar);
+                } else if (currentChar < Glyph.ZRA_START) {                // HAA
+                    handleHaa(outputString, currentChar);
+                } else if (currentChar < Glyph.LHA_START) {                // ZRA
+                    handleZra(outputString, currentChar);
+                } else if (currentChar < Glyph.ZHI_START) {                // LHA
+                    handleLha(outputString, currentChar);
+                } else if (currentChar < Glyph.CHI_START) {                // ZHI
+                    handleZhi(outputString);
+                } else if (currentChar <= Glyph.MENKSOFT_END) {            // CHI
+                    handleChi(outputString);
+                }
+
+                charAbove = currentChar;
+                currentChar = charBelow;
+            }
+
+            return outputString.toString();
+        }
+
+        private boolean isANG(char currentChar) {
+            return (currentChar >= Glyph.ANG_START &&
+                    currentChar <= Glyph.ANG_END);
+        }
+
+        private void handleA(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.ISOL_A_FVS1:
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.INIT_A:
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_A_FVS2:
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_A:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.A);
+                            break;
+                        case Glyph.FINA_A_BP:
+                        case Glyph.FINA_A_FVS1:
+                        case Glyph.FINA_A_MVS:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_A:
+                        case Glyph.MEDI_A_BP:
+                        case Glyph.MEDI_A_UNKNOWN:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_A_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.A);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_A:
+                        case Glyph.MEDI_A_BP:
+                        case Glyph.MEDI_A_UNKNOWN:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.A);
+                            break;
+                        case Glyph.MEDI_A_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.A);
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.A);
+                    if (currentChar == Glyph.MEDI_A_FVS1) {
+                        outputString.append(Uni.FVS1);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_A_MVS:
+                            outputString.append(Uni.MVS);
+                            outputString.append(Uni.A);
+                            break;
+                        case Glyph.MEDI_A:
+                        case Glyph.MEDI_A_BP:
+                        case Glyph.MEDI_A_UNKNOWN:
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_A_FVS1:
+                            outputString.append(Uni.A);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.A);
+                    }
+                    break;
+            }
+        }
+
+        private void handleE(StringBuilder outputString, char currentChar) {
+
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_E:
+                            outputString.append(Uni.E);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.INIT_E_FVS1:
+                            outputString.append(Uni.E);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_E:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.E);
+                            break;
+                        case Glyph.FINA_E_BP:
+                        case Glyph.FINA_E_FVS1:
+                        case Glyph.FINA_E_MVS:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.E);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_E:
+                        case Glyph.MEDI_E_BP:
+                        case Glyph.MEDI_E_UNKNOWN:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.E);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.E);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.INIT_E_FVS1:
+                            outputString.append(Uni.E);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_E:
+                        case Glyph.MEDI_E_BP:
+                        case Glyph.MEDI_E_UNKNOWN:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.E);
+                            break;
+                        default:
+                            outputString.append(Uni.E);
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.A);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_E_MVS:
+                            outputString.append(Uni.MVS);
+                            outputString.append(Uni.E);
+                            break;
+                        case Glyph.MEDI_E:
+                        case Glyph.MEDI_E_BP:
+                        case Glyph.MEDI_E_UNKNOWN:
+                            outputString.append(Uni.E);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.E);
+                    }
+                    break;
+            }
+        }
+
+        private void handleI(StringBuilder outputString,
+                             char currentChar, char charAbove, char charBelow) {
+
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_I:
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_I:
+                        case Glyph.FINA_I_BP:
+                        case Glyph.ISOL_I_SUFFIX:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.I);
+                            break;
+                        case Glyph.MEDI_I:
+                        case Glyph.MEDI_I_BP:
+                        case Glyph.MEDI_I_SUFFIX:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_I_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_I_DOUBLE_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.I);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_I:
+                        case Glyph.MEDI_I_BP:
+                        case Glyph.MEDI_I_SUFFIX:
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_I_FVS1:
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_I_DOUBLE_TOOTH:
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.I);
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_I:
+                        case Glyph.MEDI_I_BP:
+                            outputString.append(Uni.I);
+                            if (isMenksoftVowel(charAbove) && isMenksoftConsonant(charBelow)) {
+                                // override double tooth for words like NAIMA
+                                outputString.append(Uni.FVS2);
+                            }
+                            break;
+                        case Glyph.MEDI_I_FVS1:
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.I);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_I:
+                        case Glyph.MEDI_I_BP:
+                        case Glyph.MEDI_I_SUFFIX:
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_I_FVS1:
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_I_DOUBLE_TOOTH:
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.I);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.I);
+                    }
+                    break;
+            }
+        }
+
+        private void handleO(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_O:
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_O:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.O);
+                            break;
+                        case Glyph.FINA_O_FVS1:
+                        case Glyph.FINA_O_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_O_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_O:
+                        case Glyph.MEDI_O_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.O);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_O_FVS1:
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_O:
+                        case Glyph.MEDI_O_BP:
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.O);
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_O_FVS1:
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.O);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_O_FVS1:
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_O:
+                        case Glyph.MEDI_O_BP:
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.O);
+                    }
+                    break;
+            }
+        }
+
+        private void handleU(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_U:
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_U:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.U);
+                            break;
+                        case Glyph.FINA_U_FVS1:
+                        case Glyph.FINA_U_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_U_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_U:
+                        case Glyph.MEDI_U_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.U);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_U_FVS1:
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_U:
+                        case Glyph.MEDI_U_BP:
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.U);
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_U_FVS1:
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.U);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_U_FVS1:
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_U:
+                        case Glyph.MEDI_U_BP:
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.U);
+                    }
+                    break;
+            }
+        }
+
+        private void handleOE(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.ISOL_OE_FVS1:
+                            // substituting UE because it is defined in Unicode
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.INIT_OE:
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_OE:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            break;
+                        case Glyph.FINA_OE_FVS1:
+                        case Glyph.FINA_OE_FVS1_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.FINA_OE_FVS2:
+                        case Glyph.FINA_OE_BP:
+                            outputString.append(Uni.ZWJ);
+                            // substituting because undefined in unicode
+                            outputString.append(Uni.O);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_OE_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_OE:
+                        case Glyph.MEDI_OE_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_OE_FVS1:
+                        case Glyph.MEDI_OE_FVS1_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.OE);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_OE_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS2);
+                            break;
+                        case Glyph.MEDI_OE:
+                        case Glyph.MEDI_OE_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            break;
+                        case Glyph.MEDI_OE_FVS1:
+                        case Glyph.MEDI_OE_FVS1_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.OE);
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_OE_FVS2:
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS2);
+                            break;
+                        default:
+                            outputString.append(Uni.OE);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_OE_FVS2:
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_OE:
+                        case Glyph.MEDI_OE_BP:
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_OE_FVS1:
+                        case Glyph.MEDI_OE_FVS1_BP:
+                            outputString.append(Uni.OE);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.OE);
+                    }
+                    break;
+            }
+        }
+
+        private void handleUE(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.ISOL_UE_FVS1:
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.INIT_UE:
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_UE:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            break;
+                        case Glyph.FINA_UE_FVS1:
+                        case Glyph.FINA_UE_FVS1_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.FINA_UE_FVS2:
+                        case Glyph.FINA_UE_BP:
+                            outputString.append(Uni.ZWJ);
+                            // substituting because undefined in unicode
+                            outputString.append(Uni.U);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_UE_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_UE:
+                        case Glyph.MEDI_UE_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_UE_FVS1:
+                        case Glyph.MEDI_UE_FVS1_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.UE);
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_UE_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS2);
+                            break;
+                        case Glyph.MEDI_UE:
+                        case Glyph.MEDI_UE_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            break;
+                        case Glyph.MEDI_UE_FVS1:
+                        case Glyph.MEDI_UE_FVS1_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.UE);
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_UE_FVS2:
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS2);
+                            break;
+                        default:
+                            outputString.append(Uni.UE);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_UE_FVS2:
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_UE:
+                        case Glyph.MEDI_UE_BP:
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_UE_FVS1:
+                        case Glyph.MEDI_UE_FVS1_BP:
+                            outputString.append(Uni.UE);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.UE);
+                    }
+                    break;
+            }
+        }
+
+        private void handleEE(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_EE:
+                            outputString.append(Uni.EE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_EE:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.EE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_EE:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.EE);
+                            break;
+                        default:
+                            outputString.append(Uni.EE);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_EE:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.EE);
+                            break;
+                        default:
+                            outputString.append(Uni.EE);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.EE);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_EE:
+                            outputString.append(Uni.EE);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.EE);
+                            break;
+                    }
+                    break;
+            }
+
+
+
+        }
+
+        private void handleAng(StringBuilder outputString, char currentChar) {
+            if (location == Location.ISOLATE && currentChar == Glyph.FINA_ANG) {
+                outputString.append(Uni.ZWJ);
+            }
+            outputString.append(Uni.ANG);
+        }
+
+        private void handleNa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_NA_FVS1_STEM:
+                        case Glyph.INIT_NA_FVS1_TOOTH:
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.FINA_NA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.NA);
+                            break;
+                        case Glyph.MEDI_NA_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_NA_STEM:
+                        case Glyph.MEDI_NA_TOOTH:
+                        case Glyph.MEDI_NA_NG:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_NA_FVS1_STEM:
+                        case Glyph.MEDI_NA_FVS1_TOOTH:
+                        case Glyph.MEDI_NA_FVS1_NG:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.NA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.INIT_NA_FVS1_STEM:
+                        case Glyph.INIT_NA_FVS1_TOOTH:
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.NA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_NA_FVS2:
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        default:
+                            outputString.append(Uni.NA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_NA_FVS2:
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_NA_STEM:
+                        case Glyph.MEDI_NA_TOOTH:
+                        case Glyph.MEDI_NA_NG:
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_NA_FVS1_STEM:
+                        case Glyph.MEDI_NA_FVS1_TOOTH:
+                        case Glyph.MEDI_NA_FVS1_NG:
+                            outputString.append(Uni.NA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.NA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleBa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_BA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.BA);
+                            break;
+                        case Glyph.FINA_BA_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.BA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.BA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.BA);
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.BA);
+                    break;
+                case FINAL:
+                    outputString.append(Uni.BA);
+                    break;
+            }
+        }
+
+        private void handlePa(StringBuilder outputString, char currentChar) {
+            if (location == Location.ISOLATE && currentChar == Glyph.FINA_PA) {
+                outputString.append(Uni.ZWJ);
+            }
+            outputString.append(Uni.PA);
+        }
+
+        private void handleQa(StringBuilder outputString, char currentChar, char charBelow) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.ISOL_QA_FVS1:
+                        case Glyph.INIT_QA_FVS1_FEM_OU:
+                        case Glyph.MEDI_QA_FVS1_FEM:
+                        case Glyph.MEDI_QA_FVS1_FEM_OU:
+                        case Glyph.MEDI_QA_FEM_CONSONANT_DOTTED:
+                            outputString.append(Uni.QA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.INIT_QA_FVS1_STEM:
+                        case Glyph.INIT_QA_FVS1_TOOTH:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.GA);
+                            break;
+                        case Glyph.FINA_QA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.QA);
+                            break;
+                        case Glyph.MEDI_QA_FEM_CONSONANT:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS3);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_QA_FVS1:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_QA_FVS2:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_QA_STEM:
+                        case Glyph.MEDI_QA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.QA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.QA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.INIT_QA_FVS1_STEM:
+                        case Glyph.INIT_QA_FVS1_TOOTH:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.GA);
+                            break;
+                        case Glyph.MEDI_QA_STEM:
+                        case Glyph.MEDI_QA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.QA);
+                            break;
+                        default:
+                            outputString.append(Uni.QA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_QA:
+                            outputString.append(Uni.QA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        case Glyph.MEDI_QA_STEM:
+                        case Glyph.MEDI_QA_TOOTH:
+                        case Glyph.MEDI_QA_FEM_CONSONANT:
+                            // If a medial Q is being used like a G before
+                            // a consonant, then interpret it as a G.
+                            if (isMenksoftConsonant(charBelow)) {
+                                outputString.append(Uni.GA);
+                            } else {
+                                outputString.append(Uni.QA);
+                            }
+                            break;
+                        case Glyph.MEDI_QA_FVS1:
+                        case Glyph.MEDI_QA_FVS2:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.GA);
+                            break;
+                        default:
+                            outputString.append(Uni.QA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_QA_FEM_CONSONANT:
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS3);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_QA_FVS1:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_QA_FVS2:
+                            // treat the dotted masculine Q as a G
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_QA_STEM:
+                        case Glyph.MEDI_QA_TOOTH:
+                            outputString.append(Uni.QA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.QA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleGa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_GA_FVS1_STEM:
+                        case Glyph.INIT_GA_FVS1_TOOTH:
+                            // treat the undotted masculine G as a Q
+                            outputString.append(Uni.QA);
+                            break;
+                        case Glyph.FINA_GA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            break;
+                        case Glyph.FINA_GA_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS2);
+                            break;
+                        case Glyph.MEDI_GA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_GA_FVS1_STEM:
+                        case Glyph.MEDI_GA_FVS1_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_GA_FVS2:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_GA_FVS3_STEM:
+                        case Glyph.MEDI_GA_FVS3_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS3);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.GA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.INIT_GA_FVS1_STEM:
+                        case Glyph.INIT_GA_FVS1_TOOTH:
+                            // treat the undotted masculine G as a Q
+                            outputString.append(Uni.QA);
+                            break;
+                        default:
+                            outputString.append(Uni.GA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.GA);
+                    if (currentChar == Glyph.MEDI_GA_FVS2) {
+                        outputString.append(Uni.MVS);
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        // TODO need to check for word gender to see if FVS is required
+                        //case Glyph.FINA_GA_FVS2:
+                        //    outputString.append(Uni.GA);
+                        //    outputString.append(Uni.FVS2);
+                        //    break;
+                        case Glyph.MEDI_GA:
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_GA_FVS1_STEM:
+                        case Glyph.MEDI_GA_FVS1_TOOTH:
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_GA_FVS2:
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS2);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_GA_FVS3_STEM:
+                        case Glyph.MEDI_GA_FVS3_TOOTH:
+                            outputString.append(Uni.GA);
+                            outputString.append(Uni.FVS3);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.GA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleMa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_MA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.MA);
+                            break;
+                        case Glyph.MEDI_MA_BP:
+                        case Glyph.MEDI_MA_STEM_LONG:
+                        case Glyph.MEDI_MA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.MA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.MA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_MA_BP:
+                        case Glyph.MEDI_MA_STEM_LONG:
+                        case Glyph.MEDI_MA_TOOTH:
+                            outputString.append(Uni.MA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.MA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_MA:
+                            outputString.append(Uni.MA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        default:
+                            outputString.append(Uni.MA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_MA_BP:
+                        case Glyph.MEDI_MA_STEM_LONG:
+                        case Glyph.MEDI_MA_TOOTH:
+                            outputString.append(Uni.MA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.MA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleLa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_LA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.LA);
+                            break;
+                        case Glyph.MEDI_LA_BP:
+                        case Glyph.MEDI_LA_STEM_LONG:
+                        case Glyph.MEDI_LA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.LA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.LA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_LA_BP:
+                        case Glyph.MEDI_LA_STEM_LONG:
+                        case Glyph.MEDI_LA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.LA);
+                            break;
+                        default:
+                            outputString.append(Uni.LA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_LA:
+                            outputString.append(Uni.LA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        default:
+                            outputString.append(Uni.LA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_LA_BP:
+                        case Glyph.MEDI_LA_STEM_LONG:
+                        case Glyph.MEDI_LA_TOOTH:
+                            outputString.append(Uni.LA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.LA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleSa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_SA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SA);
+                            break;
+                        case Glyph.FINA_SA_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_SA_STEM:
+                        case Glyph.MEDI_SA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.SA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_SA_STEM:
+                        case Glyph.MEDI_SA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SA);
+                            break;
+                        default:
+                            outputString.append(Uni.SA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.SA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_SA_STEM:
+                        case Glyph.MEDI_SA_TOOTH:
+                            outputString.append(Uni.SA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.SA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleSha(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_SHA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SHA);
+                            break;
+                        case Glyph.MEDI_SHA_STEM:
+                        case Glyph.MEDI_SHA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SHA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.SHA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_SHA_STEM:
+                        case Glyph.MEDI_SHA_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.SHA);
+                            break;
+                        default:
+                            outputString.append(Uni.SHA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.SHA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_SHA_STEM:
+                        case Glyph.MEDI_SHA_TOOTH:
+                            outputString.append(Uni.SHA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.SHA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleTa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_TA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.TA);
+                            break;
+                        case Glyph.MEDI_TA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.TA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_TA_FVS1_STEM:
+                        case Glyph.MEDI_TA_FVS1_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.TA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.TA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                        switch (currentChar) {
+                            case Glyph.MEDI_TA:
+                                outputString.append(Uni.ZWJ);
+                                outputString.append(Uni.TA);
+                                break;
+                            case Glyph.MEDI_TA_FVS1_STEM:
+                            case Glyph.MEDI_TA_FVS1_TOOTH:
+                                outputString.append(Uni.ZWJ);
+                                outputString.append(Uni.TA);
+                                outputString.append(Uni.FVS1);
+                                break;
+                            default:
+                                outputString.append(Uni.TA);
+                                break;
+                        }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_TA_FVS1_STEM:
+                        case Glyph.MEDI_TA_FVS1_TOOTH:
+                            outputString.append(Uni.TA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.TA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_TA:
+                            outputString.append(Uni.TA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_TA_FVS1_STEM:
+                        case Glyph.MEDI_TA_FVS1_TOOTH:
+                            outputString.append(Uni.TA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.TA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleDa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.INIT_DA_STEM:
+                        case Glyph.INIT_DA_TOOTH:
+                            // replace isolated DA that looks like TA with actual TA
+                            outputString.append(Uni.TA);
+                            break;
+                        case Glyph.FINA_DA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.DA);
+                            break;
+                        case Glyph.FINA_DA_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.DA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_DA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.DA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_DA_FVS1:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.DA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.DA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_DA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.DA);
+                            break;
+                        case Glyph.MEDI_DA_FVS1:
+                            outputString.append(Uni.DA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.DA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.DA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_DA:
+                            outputString.append(Uni.DA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_DA_FVS1:
+                            outputString.append(Uni.DA);
+                            outputString.append(Uni.FVS1);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.DA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleCha(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_CHA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.CHA);
+                            break;
+                        default:
+                            outputString.append(Uni.CHA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.CHA);
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.CHA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_CHA:
+                            outputString.append(Uni.CHA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.CHA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleJa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_JA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.JA);
+                            break;
+                        case Glyph.MEDI_JA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.JA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_JA_FVS1:
+                            // ignoring ancient form,
+                            // it looks like a final I so make it one
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.I);
+                            break;
+                        default:
+                            outputString.append(Uni.JA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_JA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.JA);
+                            break;
+                        default:
+                            outputString.append(Uni.JA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_JA_FVS1:
+                            outputString.append(Uni.JA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        default:
+                            outputString.append(Uni.JA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_JA:
+                            outputString.append(Uni.JA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        case Glyph.MEDI_JA_FVS1:
+                            // ignoring ancient form,
+                            // it looks like a final I so make it one
+                            outputString.append(Uni.I);
+                            break;
+                        default:
+                            outputString.append(Uni.JA);
+                            break;
+                    }
+            }
+        }
+
+        private void handleYa(StringBuilder outputString,
+                              char currentChar, char charAbove, char charBelow) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_YA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.YA);
+                            break;
+                        case Glyph.MEDI_YA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.YA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_YA:
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.YA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_YA:
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        case Glyph.MEDI_YA_FVS1:
+                            outputString.append(Uni.YA);
+                            if (isMenksoftVowel(charAbove) && isMenksoftI(charBelow)) {
+                                // override context rule that would make a normal Y straight
+                                outputString.append(Uni.FVS1);
+                            }
+                            break;
+                        default:
+                            outputString.append(Uni.YA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_YA:
+                            outputString.append(Uni.YA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.YA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private boolean isMenksoftI(char character) {
+            return character >= Glyph.ISOL_I && character <= Glyph.ISOL_I_SUFFIX;
+        }
+
+        private void handleRa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_RA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.RA);
+                            break;
+                        default:
+                            outputString.append(Uni.RA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.RA);
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_RA:
+                            outputString.append(Uni.RA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        default:
+                            outputString.append(Uni.RA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_RA_STEM:
+                        case Glyph.MEDI_RA_TOOTH:
+                            outputString.append(Uni.RA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.RA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleWa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_WA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.WA);
+                            break;
+                        case Glyph.FINA_WA_FVS1:
+                            // an isolate final WA looks like a final U so make it one
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.U);
+                            break;
+                        default:
+                            outputString.append(Uni.WA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.WA);
+                    break;
+                case MEDIAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_WA_FVS1:
+                            outputString.append(Uni.WA);
+                            outputString.append(Uni.MVS);
+                            break;
+                        default:
+                            outputString.append(Uni.WA);
+                            break;
+                    }
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.FINA_WA_FVS1:
+                            outputString.append(Uni.WA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.WA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleFa(StringBuilder outputString, char currentChar) {
+            if (location == Location.ISOLATE && currentChar == Glyph.FINA_FA) {
+                outputString.append(Uni.ZWJ);
+            }
+            outputString.append(Uni.FA);
+        }
+
+        private void handleKa(StringBuilder outputString, char currentChar) {
+            if (location == Location.ISOLATE && currentChar == Glyph.FINA_KA) {
+                outputString.append(Uni.ZWJ);
+            }
+            outputString.append(Uni.KA);
+        }
+
+        private void handleKha(StringBuilder outputString, char currentChar) {
+            if (location == Location.ISOLATE && currentChar == Glyph.FINA_KHA) {
+                outputString.append(Uni.ZWJ);
+            }
+            outputString.append(Uni.KHA);
+        }
+
+        private void handleTsa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_TSA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.TSA);
+                            break;
+                        default:
+                            outputString.append(Uni.TSA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.TSA);
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.TSA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_TSA:
+                            outputString.append(Uni.TSA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.TSA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleZa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_ZA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.ZA);
+                            break;
+                        default:
+                            outputString.append(Uni.ZA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.ZA);
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.ZA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_ZA:
+                            outputString.append(Uni.ZA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.ZA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleHaa(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_HAA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.HAA);
+                            break;
+                        case Glyph.MEDI_HAA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.HAA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.HAA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_HAA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.HAA);
+                            break;
+                        default:
+                            outputString.append(Uni.HAA);
+                            break;
+                    }
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.HAA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_HAA:
+                            outputString.append(Uni.HAA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.HAA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleZra(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.FINA_ZRA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.ZRA);
+                            break;
+                        default:
+                            outputString.append(Uni.ZRA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    outputString.append(Uni.ZRA);
+                    break;
+                case MEDIAL:
+                    outputString.append(Uni.ZRA);
+                    break;
+                case FINAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_ZRA:
+                            outputString.append(Uni.ZRA);
+                            outputString.append(Uni.ZWJ);
+                            break;
+                        default:
+                            outputString.append(Uni.ZRA);
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        private void handleLha(StringBuilder outputString, char currentChar) {
+            switch (location) {
+                case ISOLATE:
+                    switch (currentChar) {
+                        case Glyph.MEDI_LHA:
+                        case Glyph.MEDI_LHA_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.LHA);
+                            break;
+                        default:
+                            outputString.append(Uni.LHA);
+                            break;
+                    }
+                    break;
+                case INITIAL:
+                    switch (currentChar) {
+                        case Glyph.MEDI_LHA:
+                        case Glyph.MEDI_LHA_BP:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.LHA);
+                            break;
+                        default:
+                            outputString.append(Uni.LHA);
+                            break;
+                    }
+                    break;
+                default:
+                    outputString.append(Uni.LHA);
+                    break;
+            }
+        }
+
+        private void handleZhi(StringBuilder outputString) {
+            outputString.append(Uni.ZHI);
+        }
+
+        private void handleChi(StringBuilder outputString) {
+            outputString.append(Uni.CHI);
+        }
+
+        private void handleSpace(StringBuilder outputString, char currentChar, char charBelow) {
+
+            if (currentChar == Glyph.SUFFIX_SPACE) {
+                outputString.append(Uni.NNBS);
+                return;
+            }
+
+            switch (charBelow) {
+                case Glyph.MEDI_A_FVS2:
+                case Glyph.FINA_I:
+                case Glyph.MEDI_I:
+                case Glyph.MEDI_I_SUFFIX:
+                case Glyph.ISOL_I_SUFFIX:
+                case Glyph.MEDI_O:
+                case Glyph.MEDI_O_BP:
+                case Glyph.FINA_O:
+                case Glyph.MEDI_U:
+                case Glyph.MEDI_U_BP:
+                case Glyph.FINA_U:
+                case Glyph.MEDI_OE:
+                case Glyph.MEDI_OE_BP:
+                case Glyph.FINA_OE:
+                case Glyph.MEDI_UE:
+                case Glyph.MEDI_UE_BP:
+                case Glyph.FINA_UE:
+                case Glyph.FINA_YA:
+                case Glyph.INIT_YA_FVS1:
+                    outputString.append(Uni.NNBS);
+                    break;
+                default:
+                    outputString.append(SPACE);
+            }
+        }
+
+        private void handlePunctuation(StringBuilder outputString, char currentChar) {
+            switch (currentChar) {
+                case Glyph.BIRGA:
+                    outputString.append(Uni.MONGOLIAN_BIRGA);
+                    break;
+                case Glyph.ELLIPSIS:
+                    outputString.append(Uni.MONGOLIAN_ELLIPSIS);
+                    break;
+                case Glyph.COMMA:
+                    outputString.append(Uni.MONGOLIAN_COMMA);
+                    break;
+                case Glyph.FULL_STOP:
+                    outputString.append(Uni.MONGOLIAN_FULL_STOP);
+                    break;
+                case Glyph.COLON:
+                    outputString.append(Uni.MONGOLIAN_COLON);
+                    break;
+                case Glyph.FOUR_DOTS:
+                    outputString.append(Uni.MONGOLIAN_FOUR_DOTS);
+                    break;
+                case Glyph.TODO_SOFT_HYPHEN:
+                    outputString.append(Uni.MONGOLIAN_TODO_SOFT_HYPHEN);
+                    break;
+                case Glyph.SIBE_SYLLABLE_BOUNDARY_MARKER:
+                    outputString.append(Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER);
+                    break;
+                case Glyph.MANCHU_COMMA:
+                    outputString.append(Uni.MONGOLIAN_MANCHU_COMMA);
+                    break;
+                case Glyph.MANCHU_FULL_STOP:
+                    outputString.append(Uni.MONGOLIAN_MANCHU_FULL_STOP);
+                    break;
+                case Glyph.NIRUGU:
+                    outputString.append(Uni.MONGOLIAN_NIRUGU);
+                    break;
+                case Glyph.BIRGA_WITH_ORNAMENT:
+                    outputString.append("\uD805\uDE60"); // U+11660
+                    break;
+                case Glyph.ROTATED_BIRGA:
+                    outputString.append("\uD805\uDE61"); // U+11661
+                    break;
+                case Glyph.DOUBLE_BIRGA_WITH_ORNAMENT:
+                    outputString.append("\uD805\uDE62"); // U+11662
+                    break;
+                case Glyph.TRIPLE_BIRGA_WITH_ORNAMENT:
+                    outputString.append("\uD805\uDE63"); // U+11663
+                    break;
+                case Glyph.MIDDLE_DOT:
+                    outputString.append(Uni.MIDDLE_DOT);
+                    break;
+                case Glyph.ZERO:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_ZERO);
+                    break;
+                case Glyph.ONE:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_ONE);
+                    break;
+                case Glyph.TWO:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_TWO);
+                    break;
+                case Glyph.THREE:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_THREE);
+                    break;
+                case Glyph.FOUR:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_FOUR);
+                    break;
+                case Glyph.FIVE:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_FIVE);
+                    break;
+                case Glyph.SIX:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_SIX);
+                    break;
+                case Glyph.SEVEN:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_SEVEN);
+                    break;
+                case Glyph.EIGHT:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_EIGHT);
+                    break;
+                case Glyph.NINE:
+                    outputString.append(Uni.MONGOLIAN_DIGIT_NINE);
+                    break;
+                case Glyph.QUESTION_EXCLAMATION:
+                    outputString.append(Uni.QUESTION_EXCLAMATION_MARK);
+                    break;
+                case Glyph.EXCLAMATION_QUESTION:
+                    outputString.append(Uni.EXCLAMATION_QUESTION_MARK);
+                    break;
+                case Glyph.EXCLAMATION:
+                    outputString.append(Uni.VERTICAL_EXCLAMATION_MARK);
+                    break;
+                case Glyph.QUESTION:
+                    outputString.append(Uni.VERTICAL_QUESTION_MARK);
+                    break;
+                case Glyph.SEMICOLON:
+                    outputString.append(Uni.VERTICAL_SEMICOLON);
+                    break;
+                case Glyph.LEFT_PARENTHESIS:
+                    outputString.append(Uni.VERTICAL_LEFT_PARENTHESIS);
+                    break;
+                case Glyph.RIGHT_PARENTHESIS:
+                    outputString.append(Uni.VERTICAL_RIGHT_PARENTHESIS);
+                    break;
+                case Glyph.LEFT_ANGLE_BRACKET:
+                    outputString.append(Uni.VERTICAL_LEFT_ANGLE_BRACKET);
+                    break;
+                case Glyph.RIGHT_ANGLE_BRACKET:
+                    outputString.append(Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
+                    break;
+                case Glyph.LEFT_TORTOISE_SHELL_BRACKET:
+                    outputString.append(Uni.VERTICAL_LEFT_TORTOISE_SHELL_BRACKET);
+                    break;
+                case Glyph.RIGHT_TORTOISE_SHELL_BRACKET:
+                    outputString.append(Uni.VERTICAL_RIGHT_TORTOISE_SHELL_BRACKET);
+                    break;
+                case Glyph.LEFT_DOUBLE_ANGLE_BRACKET:
+                    outputString.append(Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
+                    break;
+                case Glyph.RIGHT_DOUBLE_ANGLE_BRACKET:
+                    outputString.append(Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
+                    break;
+                case Glyph.LEFT_WHITE_CORNER_BRACKET:
+                    outputString.append(Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET);
+                    break;
+                case Glyph.RIGHT_WHITE_CORNER_BRACKET:
+                    outputString.append(Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET);
+                    break;
+                case Glyph.FULL_WIDTH_COMMA:
+                    outputString.append(Uni.VERTICAL_COMMA);
+                    break;
+                case Glyph.X:
+                    outputString.append('\u00D7'); // FIXME using the multiplication sign?
+                    break;
+                case Glyph.REFERENCE_MARK:
+                    outputString.append(Uni.REFERENCE_MARK);
+                    break;
+                case Glyph.EN_DASH:
+                    outputString.append(Uni.VERTICAL_EN_DASH);
+                    break;
+                case Glyph.EM_DASH:
+                    outputString.append(Uni.VERTICAL_EM_DASH);
+                    break;
+                default:
+                    outputString.append(currentChar);
+            }
+        }
+
+        private boolean isMenksoftSpaceChar(char character) {
+            return character == SPACE
+                    || character == Glyph.SUFFIX_SPACE
+                    || character == Glyph.UNKNOWN_SPACE;
         }
     }
 

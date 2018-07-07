@@ -30,7 +30,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void nullString() {
         String unicode = null;
         String result = convert(unicode);
-        String expected = null;
+        String expected = "";
         assertEquals(expected, result);
     }
 
@@ -63,16 +63,6 @@ public class ConvertUnicodeToMenksoftCodeTest {
         String unicode = "\uE2F2\uE291\uE2BC\uE2EC\uE291\uE2F9";
         String result = convert(unicode);
         String expected = "\uE2F2\uE291\uE2BC\uE2EC\uE291\uE2F9";
-        assertEquals(expected, result);
-    }
-
-    // nirugu
-
-    @Test
-    public void niruguChar() {
-        String unicode = "\u180A";
-        String result = convert(unicode);
-        String expected = "\uE23E";
         assertEquals(expected, result);
     }
 
@@ -4559,8 +4549,384 @@ public class ConvertUnicodeToMenksoftCodeTest {
     }
 
 
+    //// Punctuation
 
+    @Test
+    public void punctuationBirga() {
+        char unicode = MongolCode.Uni.MONGOLIAN_BIRGA;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.BIRGA);
+        assertEquals(expected, result);
+    }
 
+    @Test
+    public void punctuationEllipsis() {
+        char unicode = MongolCode.Uni.MONGOLIAN_ELLIPSIS;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.ELLIPSIS);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationComma() {
+        char unicode = MongolCode.Uni.MONGOLIAN_COMMA;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.COMMA);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationFullStop() {
+        char unicode = MongolCode.Uni.MONGOLIAN_FULL_STOP;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.FULL_STOP);
+        assertEquals(expected, result);
+    }
+    @Test
+    public void punctuationColon() {
+        char unicode = MongolCode.Uni.MONGOLIAN_COLON;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.COLON);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationFourDots() {
+        char unicode = MongolCode.Uni.MONGOLIAN_FOUR_DOTS;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.FOUR_DOTS);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationTodoSoftHyphen() {
+        char unicode = MongolCode.Uni.MONGOLIAN_TODO_SOFT_HYPHEN;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.TODO_SOFT_HYPHEN);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationSibeSyllableBoundaryMarker() {
+        char unicode = MongolCode.Uni.MONGOLIAN_SIBE_SYLLABLE_BOUNDARY_MARKER;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.SIBE_SYLLABLE_BOUNDARY_MARKER);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationManchuComma() {
+        char unicode = MongolCode.Uni.MONGOLIAN_MANCHU_COMMA;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.MANCHU_COMMA);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationManchuFullStop() {
+        char unicode = MongolCode.Uni.MONGOLIAN_MANCHU_FULL_STOP;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.MANCHU_FULL_STOP);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationNirugu() {
+        char unicode = MongolCode.Uni.MONGOLIAN_NIRUGU;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.NIRUGU);
+        assertEquals(expected, result);
+    }
+
+    // TODO support extended birgas
+
+//    @Test
+//    public void punctuationBirgaWithOrnament() {
+//        String unicode = "\uD805\uDE60";
+//        String result = convert(unicode);
+//        String expected = String.valueOf(MongolCode.Glyph.BIRGA_WITH_ORNAMENT);
+//        assertEquals(expected, result);
+//    }
+//
+//    @Test
+//    public void punctuationRotatedBirga() {
+//        String unicode = "\uD805\uDE61";
+//        String result = convert(unicode);
+//        String expected = String.valueOf(MongolCode.Glyph.ROTATED_BIRGA);
+//        assertEquals(expected, result);
+//    }
+//
+//    @Test
+//    public void punctuationDoubleBirgaWithOrnament() {
+//        String unicode = "\uD805\uDE62";
+//        String result = convert(unicode);
+//        String expected = String.valueOf(MongolCode.Glyph.DOUBLE_BIRGA_WITH_ORNAMENT);
+//        assertEquals(expected, result);
+//    }
+//
+//    @Test
+//    public void punctuationTripleBirgaWithOrnament() {
+//        String unicode = "\uD805\uDE63";
+//        String result = convert(unicode);
+//        String expected = String.valueOf(MongolCode.Glyph.TRIPLE_BIRGA_WITH_ORNAMENT);
+//        assertEquals(expected, result);
+//    }
+
+    @Test
+    public void punctuationMiddleDot() {
+        char unicode = MongolCode.Uni.MIDDLE_DOT;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.MIDDLE_DOT);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationZero() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_ZERO;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.ZERO);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationOne() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_ONE;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.ONE);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationTwo() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_TWO;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.TWO);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationThree() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_THREE;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.THREE);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationFour() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_FOUR;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.FOUR);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationFive() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_FIVE;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.FIVE);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationSix() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_SIX;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.SIX);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationSeven() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.SEVEN);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationEight() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.EIGHT);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationNine() {
+        char unicode = MongolCode.Uni.MONGOLIAN_DIGIT_NINE;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.NINE);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationQuestionExclamation() {
+        char unicode = MongolCode.Uni.QUESTION_EXCLAMATION_MARK;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.QUESTION_EXCLAMATION);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationExclamationQuestion() {
+        char unicode = MongolCode.Uni.EXCLAMATION_QUESTION_MARK;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.EXCLAMATION_QUESTION);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationExclamation() {
+        char unicode = MongolCode.Uni.VERTICAL_EXCLAMATION_MARK;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.EXCLAMATION);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationQuestion() {
+        char unicode = MongolCode.Uni.VERTICAL_QUESTION_MARK;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.QUESTION);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationSemicolon() {
+        char unicode = MongolCode.Uni.VERTICAL_SEMICOLON;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.SEMICOLON);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationLeftParenthesis() {
+        char unicode = MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.LEFT_PARENTHESIS);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationRightParenthesis() {
+        char unicode = MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.RIGHT_PARENTHESIS);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationLeftAngleBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.LEFT_ANGLE_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationRightAngleBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.RIGHT_ANGLE_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationLeftBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_LEFT_TORTOISE_SHELL_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.LEFT_TORTOISE_SHELL_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationRightBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_RIGHT_TORTOISE_SHELL_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.RIGHT_TORTOISE_SHELL_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationLeftDoubleAngleBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.LEFT_DOUBLE_ANGLE_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationRightDoubleAngleBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.RIGHT_DOUBLE_ANGLE_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationLeftWhiteCornerBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.LEFT_WHITE_CORNER_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationRightWhiteCornerBracket() {
+        char unicode = MongolCode.Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.RIGHT_WHITE_CORNER_BRACKET);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationFullWidthComma() {
+        char unicode = MongolCode.Uni.VERTICAL_COMMA;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.FULL_WIDTH_COMMA);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationX() {
+        char unicode = MongolCode.Uni.PUNCTUATION_X;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.X);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationReferenceMark() {
+        char unicode = MongolCode.Uni.REFERENCE_MARK;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.REFERENCE_MARK);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationEnDash() {
+        char unicode = MongolCode.Uni.VERTICAL_EN_DASH;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.EN_DASH);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationEmDash() {
+        char unicode = MongolCode.Uni.VERTICAL_EM_DASH;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.EM_DASH);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void punctuationSuffixSpace() {
+        char unicode = MongolCode.Uni.NNBS;
+        String result = convert(String.valueOf(unicode));
+        String expected = String.valueOf(MongolCode.Glyph.SUFFIX_SPACE);
+        assertEquals(expected, result);
+    }
 
 
 
@@ -4582,7 +4948,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void egeshigWord() {
         String unicode = "ᠡᠭᠡᠰᠢᠭ ᠢᠨᠦ"; // EGESIG (NNBSP) INU
         String result = convert(unicode);
-        String expected = "\uE271\uE2EB\uE277\uE301\uE27E\uE2E8 \uE27A\uE2B9\uE2A3";
+        String expected = "\uE271\uE2EB\uE277\uE301\uE27E\uE2E8\uE263\uE27A\uE2B9\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -4590,7 +4956,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void bujigWord() {
         String unicode = "ᠪᠦᠵᠢᠭ ᠢ ᠪᠡᠨ ᠶᠦᠭᠡᠨ"; // BUJIG (NNBSP) I (NNBSP) BEN (NNBSP) YUGEN
         String result = convert(unicode);
-        String expected = "\uE2C2\uE2AA\uE31D\uE27E\uE2E8 \uE282 \uE2C1\uE277\uE2B5 \uE31E\uE2AB\uE2EB\uE277\uE2B5";
+        String expected = "\uE2C2\uE2AA\uE31D\uE27E\uE2E8\uE263\uE282\uE263\uE2C1\uE277\uE2B5\uE263\uE31E\uE2AB\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4598,7 +4964,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void chirigWord() {
         String unicode = "ᠴᠢᠷᠢᠭ ᠮᠠᠨᠢ"; // CHIRIG (NNBSP) MANI
         String result = convert(unicode);
-        String expected = "\uE315\uE27E\uE327\uE27E\uE2E8 \uE2F1\uE26C\uE2B7\uE27B";
+        String expected = "\uE315\uE27E\uE327\uE27E\uE2E8\uE263\uE2F1\uE26C\uE2B7\uE27B";
         assertEquals(expected, result);
     }
 
@@ -4614,7 +4980,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void qugjimWord() {
         String unicode = "ᠬᠦᠭᠵᠢᠮ ᠳᠦᠷ ᠢᠶᠡᠨ ᠳᠡᠭᠡᠨ"; // QUGJIM (NNBSP) DUR (NNBSP) IYEN (NNBSP) DEGEN
         String result = convert(unicode);
-        String expected = "\uE2D4\uE2AA\uE2F0\uE31D\uE27E\uE2F3 \uE310\uE2AB\uE325 \uE280\uE321\uE276\uE2B5 \uE310\uE276\uE2EB\uE277\uE2B5";
+        String expected = "\uE2D4\uE2AA\uE2F0\uE31D\uE27E\uE2F3\uE263\uE310\uE2AB\uE325\uE263\uE280\uE321\uE276\uE2B5\uE263\uE310\uE276\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4622,7 +4988,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void buridgelWord() {
         String unicode = "ᠪᠦᠷᠢᠳᠭᠡᠯ ᠢᠶᠡᠨ"; // BURIDGEL (NNBSP) IYEN
         String result = convert(unicode);
-        String expected = "\uE2C2\uE2AA\uE327\uE27E\uE314\uE2EB\uE277\uE2F9 \uE280\uE321\uE276\uE2B5";
+        String expected = "\uE2C2\uE2AA\uE327\uE27E\uE314\uE2EB\uE277\uE2F9\uE263\uE280\uE321\uE276\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4630,7 +4996,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void sedqilWord() {
         String unicode = "ᠰᠡᠳᠬᠢᠯ ᠮᠢᠨᠢ"; // SEDQIL (NNBSP) MINI
         String result = convert(unicode);
-        String expected = "\uE2FD\uE276\uE314\uE2DA\uE27F\uE2F9 \uE2F1\uE27E\uE2B7\uE27B";
+        String expected = "\uE2FD\uE276\uE314\uE2DA\uE27F\uE2F9\uE263\uE2F1\uE27E\uE2B7\uE27B";
         assertEquals(expected, result);
     }
 
@@ -4638,7 +5004,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uiledburiWord() {
         String unicode = "ᠦᠢᠯᠡᠳᠪᠦᠷᠢ ᠳᠦ"; // UILEDBURI (NNBSP) DU
         String result = convert(unicode);
-        String expected = "\uE2A2\uE27E\uE2FA\uE276\uE314\uE2C6\uE2AC\uE327\uE27B \uE310\uE2A3";
+        String expected = "\uE2A2\uE27E\uE2FA\uE276\uE314\uE2C6\uE2AC\uE327\uE27B\uE263\uE310\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -4646,7 +5012,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void jeligudqenWord() {
         String unicode = "ᠵᠡᠯᠢᠭᠦᠳᠬᠡᠨ ᠦ"; // JELIGUDQEN (NNBSP) U
         String result = convert(unicode);
-        String expected = "\uE31A\uE276\uE2FA\uE27E\uE2ED\uE2AC\uE314\uE2DA\uE277\uE2B5 \uE2A3";
+        String expected = "\uE31A\uE276\uE2FA\uE27E\uE2ED\uE2AC\uE314\uE2DA\uE277\uE2B5\uE263\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -4654,7 +5020,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void manggalWord() {
         String unicode = "ᠮᠠᠩᠭᠠᠯ ᠳᠤᠷ ᠢᠶᠠᠨ ᠳᠠᠭᠠᠨ"; // MANGGAL (NNBSP) DUR (NNBSP) IYAN (NNBSP) DAGAN
         String result = convert(unicode);
-        String expected = "\uE2F1\uE26C\uE2BC\uE2EA\uE26C\uE2F9 \uE310\uE291\uE325 \uE280\uE321\uE26C\uE2B5 \uE310\uE26C\uE2EA\uE26C\uE2B5";
+        String expected = "\uE2F1\uE26C\uE2BC\uE2EA\uE26C\uE2F9\uE263\uE310\uE291\uE325\uE263\uE280\uE321\uE26C\uE2B5\uE263\uE310\uE26C\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4662,7 +5028,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void dengWord() {
         String unicode = "ᠳ᠋ᠦᠩ ᠢ"; // D(FVS1)UNG (NNBSP) I
         String result = convert(unicode);
-        String expected = "\uE310\uE2A9\uE2BB \uE282";
+        String expected = "\uE310\uE2A9\uE2BB\uE263\uE282";
         assertEquals(expected, result);
     }
 
@@ -4670,7 +5036,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void sodnamWord() {
         String unicode = "ᠰᠣᠳᠨᠠᠮ ᠠᠴᠠ ᠪᠠᠨ ᠠᠴᠠᠭᠠᠨ"; // SODNAM (NNBSP) ACHA (NNBSP) BAN (NNBSP) ACHAGAN
         String result = convert(unicode);
-        String expected = "\uE2FE\uE289\uE314\uE2B7\uE26C\uE2F3 \uE267\uE317\uE268 \uE2C1\uE26D\uE2B5 \uE267\uE317\uE26C\uE2EA\uE26C\uE2B5";
+        String expected = "\uE2FE\uE289\uE314\uE2B7\uE26C\uE2F3\uE263\uE267\uE317\uE268\uE263\uE2C1\uE26D\uE2B5\uE263\uE267\uE317\uE26C\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4678,7 +5044,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void lhagbaWord() {
         String unicode = "ᡀᠠᠭᠪᠠ ᠯᠤᠭ᠎ᠠ"; // LHAGBA (NNBSP) LUG(MVS)A
         String result = convert(unicode);
-        String expected = "\uE34B\uE26C\uE2EE\uE2C5\uE26B \uE2F8\uE291\uE2E9\uE26A";
+        String expected = "\uE34B\uE26C\uE2EE\uE2C5\uE26B\uE263\uE2F8\uE291\uE2E9\uE26A";
         assertEquals(expected, result);
     }
 
@@ -4686,7 +5052,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void chebegmedWord() {
         String unicode = "ᠴᠡᠪᠡᠭᠮᠡᠳ ᠯᠦᠭᠡ"; // CHEBEGMED (NNBSP) LUGE
         String result = convert(unicode);
-        String expected = "\uE315\uE276\uE2C5\uE277\uE2EB\uE2F6\uE276\uE311 \uE2F8\uE2AB\uE2EB\uE275";
+        String expected = "\uE315\uE276\uE2C5\uE277\uE2EB\uE2F6\uE276\uE311\uE263\uE2F8\uE2AB\uE2EB\uE275";
         assertEquals(expected, result);
     }
 
@@ -4694,7 +5060,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tsementWord() {
         String unicode = "ᠼᠧᠮᠧᠨᠲ ᠲᠠᠶᠢᠭᠠᠨ"; // TSEMENT (NNBSP) TAYIGAN
         String result = convert(unicode);
-        String expected = "\uE33F\uE2B0\uE2F4\uE2B0\uE2BA\uE30A \uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
+        String expected = "\uE33F\uE2B0\uE2F4\uE2B0\uE2BA\uE30A\uE263\uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -4702,7 +5068,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uniyeWord() {
         String unicode = "ᠦᠨᠢᠶ᠎ᠡ ᠲᠡᠶᠢᠭᠡᠨ"; // UNIY(MVS)E (NNBSP) TEYIGEN
         String result = convert(unicode);
-        String expected = "\uE2A2\uE2B7\uE27E\uE31F\uE274 \uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
+        String expected = "\uE2A2\uE2B7\uE27E\uE31F\uE274\uE263\uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5180,7 +5546,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void yinSuffix() {
         String unicode = " ᠶᠢᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE321\uE27E\uE2B5";
+        String expected = "\uE263\uE321\uE27E\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5188,7 +5554,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void unSuffix() {
         String unicode = " ᠤᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE292\uE2B5";
+        String expected = "\uE263\uE292\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5196,7 +5562,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uenSuffix() {
         String unicode = " ᠦᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE2AC\uE2B5";
+        String expected = "\uE263\uE2AC\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5204,7 +5570,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uSuffix() {
         String unicode = " ᠤ"; //
         String result = convert(unicode);
-        String expected = " \uE28D";
+        String expected = "\uE263\uE28D";
         assertEquals(expected, result);
     }
 
@@ -5212,7 +5578,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void ueSuffix() {
         String unicode = " ᠦ"; //
         String result = convert(unicode);
-        String expected = " \uE2A3";
+        String expected = "\uE263\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -5220,7 +5586,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void iSuffix() {
         String unicode = " ᠢ"; //
         String result = convert(unicode);
-        String expected = " \uE282";
+        String expected = "\uE263\uE282";
         assertEquals(expected, result);
     }
 
@@ -5228,7 +5594,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void yiSuffix() {
         String unicode = " ᠶᠢ"; //
         String result = convert(unicode);
-        String expected = " \uE321\uE27B";
+        String expected = "\uE263\uE321\uE27B";
         assertEquals(expected, result);
     }
 
@@ -5236,7 +5602,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void duSuffix() {
         String unicode = " ᠳᠤ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE28D";
+        String expected = "\uE263\uE310\uE28D";
         assertEquals(expected, result);
     }
 
@@ -5244,7 +5610,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void dueSuffix() {
         String unicode = " ᠳᠦ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE2A3";
+        String expected = "\uE263\uE310\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -5252,7 +5618,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tuSuffix() {
         String unicode = " ᠲᠤ"; //
         String result = convert(unicode);
-        String expected = " \uE309\uE28D";
+        String expected = "\uE263\uE309\uE28D";
         assertEquals(expected, result);
     }
 
@@ -5260,7 +5626,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tueSuffix() {
         String unicode = " ᠲᠦ"; //
         String result = convert(unicode);
-        String expected = " \uE309\uE2A3";
+        String expected = "\uE263\uE309\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -5268,7 +5634,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void durSuffix() {
         String unicode = " ᠳᠤᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE291\uE325";
+        String expected = "\uE263\uE310\uE291\uE325";
         assertEquals(expected, result);
     }
 
@@ -5276,7 +5642,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void duerSuffix() {
         String unicode = " ᠳᠦᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE2AB\uE325";
+        String expected = "\uE263\uE310\uE2AB\uE325";
         assertEquals(expected, result);
     }
 
@@ -5284,7 +5650,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void turSuffix() {
         String unicode = " ᠲᠤᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE309\uE291\uE325";
+        String expected = "\uE263\uE309\uE291\uE325";
         assertEquals(expected, result);
     }
 
@@ -5292,7 +5658,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tuerSuffix() {
         String unicode = " ᠲᠦᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE309\uE2AB\uE325";
+        String expected = "\uE263\uE309\uE2AB\uE325";
         assertEquals(expected, result);
     }
 
@@ -5300,7 +5666,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void daqiSuffix() {
         String unicode = " ᠳᠠᠬᠢ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE26C\uE2DA\uE27C";
+        String expected = "\uE263\uE310\uE26C\uE2DA\uE27C";
         assertEquals(expected, result);
     }
 
@@ -5308,7 +5674,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void deqiSuffix() {
         String unicode = " ᠳᠡᠬᠢ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE276\uE2DA\uE27C";
+        String expected = "\uE263\uE310\uE276\uE2DA\uE27C";
         assertEquals(expected, result);
     }
 
@@ -5316,7 +5682,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void achaSuffix() {
         String unicode = " ᠠᠴᠠ"; //
         String result = convert(unicode);
-        String expected = " \uE267\uE317\uE268";
+        String expected = "\uE263\uE267\uE317\uE268";
         assertEquals(expected, result);
     }
 
@@ -5324,7 +5690,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void echeSuffix() {
         String unicode = " ᠡᠴᠡ"; //
         String result = convert(unicode);
-        String expected = " \uE271\uE317\uE273";
+        String expected = "\uE263\uE271\uE317\uE273";
         assertEquals(expected, result);
     }
 
@@ -5332,7 +5698,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void barSuffix() {
         String unicode = " ᠪᠠᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE2C1\uE26D\uE325";
+        String expected = "\uE263\uE2C1\uE26D\uE325";
         assertEquals(expected, result);
     }
 
@@ -5340,7 +5706,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void berSuffix() {
         String unicode = " ᠪᠡᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE2C1\uE277\uE325";
+        String expected = "\uE263\uE2C1\uE277\uE325";
         assertEquals(expected, result);
     }
 
@@ -5348,7 +5714,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void iyarSuffix() {
         String unicode = " ᠢᠶᠠᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE280\uE321\uE26C\uE325";
+        String expected = "\uE263\uE280\uE321\uE26C\uE325";
         assertEquals(expected, result);
     }
 
@@ -5356,7 +5722,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void iyerSuffix() {
         String unicode = " ᠢᠶᠡᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE280\uE321\uE276\uE325";
+        String expected = "\uE263\uE280\uE321\uE276\uE325";
         assertEquals(expected, result);
     }
 
@@ -5364,7 +5730,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void taiSuffix() {
         String unicode = " ᠲᠠᠢ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE26C\uE27B";
+        String expected = "\uE263\uE308\uE26C\uE27B";
         assertEquals(expected, result);
     }
 
@@ -5373,7 +5739,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     //public void tayiSuffix() {
     //    String unicode = " ᠲᠠᠶᠢ"; //
     //    String result = convert(unicode);
-    //    String expected = " \uE308\uE26C\uE27B";
+    //    String expected = "\uE263\uE308\uE26C\uE27B";
     //    assertEquals(expected, result);
     //}
 
@@ -5381,7 +5747,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void teiSuffix() {
         String unicode = " ᠲᠡᠢ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE276\uE27B";
+        String expected = "\uE263\uE308\uE276\uE27B";
         assertEquals(expected, result);
     }
 
@@ -5390,7 +5756,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     //public void teyiSuffix() {
     //    String unicode = " ᠲᠡᠶᠢ"; //
     //    String result = convert(unicode);
-    //    String expected = " \uE308\uE276\uE27B";
+    //    String expected = "\uE263\uE308\uE276\uE27B";
     //    assertEquals(expected, result);
     //}
 
@@ -5398,7 +5764,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void lugaSuffix() {
         String unicode = " ᠯᠤᠭ᠎ᠠ"; //
         String result = convert(unicode);
-        String expected = " \uE2F8\uE291\uE2E9\uE26A";
+        String expected = "\uE263\uE2F8\uE291\uE2E9\uE26A";
         assertEquals(expected, result);
     }
 
@@ -5406,7 +5772,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void luegeSuffix() {
         String unicode = " ᠯᠦᠭᠡ"; //
         String result = convert(unicode);
-        String expected = " \uE2F8\uE2AB\uE2EB\uE275";
+        String expected = "\uE263\uE2F8\uE2AB\uE2EB\uE275";
         assertEquals(expected, result);
     }
 
@@ -5414,7 +5780,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void banSuffix() {
         String unicode = " ᠪᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE2C1\uE26D\uE2B5";
+        String expected = "\uE263\uE2C1\uE26D\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5422,7 +5788,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void benSuffix() {
         String unicode = " ᠪᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE2C1\uE277\uE2B5";
+        String expected = "\uE263\uE2C1\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5430,7 +5796,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void iyanSuffix() {
         String unicode = " ᠢᠶᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE280\uE321\uE26C\uE2B5";
+        String expected = "\uE263\uE280\uE321\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5438,7 +5804,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void iyenSuffix() {
         String unicode = " ᠢᠶᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE280\uE321\uE276\uE2B5";
+        String expected = "\uE263\uE280\uE321\uE276\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5446,7 +5812,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void yuganSuffix() {
         String unicode = " ᠶᠤᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE31E\uE291\uE2EA\uE26C\uE2B5";
+        String expected = "\uE263\uE31E\uE291\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5454,7 +5820,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void yuegenSuffix() {
         String unicode = " ᠶᠦᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE31E\uE2AB\uE2EB\uE277\uE2B5";
+        String expected = "\uE263\uE31E\uE2AB\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5462,7 +5828,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void daganSuffix() {
         String unicode = " ᠳᠠᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE26C\uE2EA\uE26C\uE2B5";
+        String expected = "\uE263\uE310\uE26C\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5470,7 +5836,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void degenSuffix() {
         String unicode = " ᠳᠡᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE276\uE2EB\uE277\uE2B5";
+        String expected = "\uE263\uE310\uE276\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5478,7 +5844,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void taganSuffix() {
         String unicode = " ᠲᠠᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE26C\uE2EA\uE26C\uE2B5";
+        String expected = "\uE263\uE308\uE26C\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5486,7 +5852,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tegenSuffix() {
         String unicode = " ᠲᠡᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE276\uE2EB\uE277\uE2B5";
+        String expected = "\uE263\uE308\uE276\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5494,7 +5860,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void achaganSuffix() {
         String unicode = " ᠠᠴᠠᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE267\uE317\uE26C\uE2EA\uE26C\uE2B5";
+        String expected = "\uE263\uE267\uE317\uE26C\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5502,7 +5868,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void echegenSuffix() {
         String unicode = " ᠡᠴᠡᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE271\uE317\uE276\uE2EB\uE277\uE2B5";
+        String expected = "\uE263\uE271\uE317\uE276\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5510,7 +5876,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void taiganSuffix() {
         String unicode = " ᠲᠠᠢᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE26C\uE281\uE2EA\uE26C\uE2B5";
+        String expected = "\uE263\uE308\uE26C\uE281\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5518,7 +5884,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void tayiganSuffix() {
         String unicode = " ᠲᠠᠶᠢᠭᠠᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
+        String expected = "\uE263\uE308\uE26C\uE321\uE27E\uE2EA\uE26C\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5526,7 +5892,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void teigenSuffix() {
         String unicode = " ᠲᠡᠢᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE276\uE281\uE2EB\uE277\uE2B5";
+        String expected = "\uE263\uE308\uE276\uE281\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5534,7 +5900,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void teyigenSuffix() {
         String unicode = " ᠲᠡᠶᠢᠭᠡᠨ"; //
         String result = convert(unicode);
-        String expected = " \uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
+        String expected = "\uE263\uE308\uE276\uE321\uE27E\uE2EB\uE277\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5542,7 +5908,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void udSuffix() {
         String unicode = " ᠤᠳ"; //
         String result = convert(unicode);
-        String expected = " \uE292\uE311";
+        String expected = "\uE263\uE292\uE311";
         assertEquals(expected, result);
     }
 
@@ -5550,7 +5916,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uedSuffix() {
         String unicode = " ᠦᠳ"; //
         String result = convert(unicode);
-        String expected = " \uE2AC\uE311";
+        String expected = "\uE263\uE2AC\uE311";
         assertEquals(expected, result);
     }
 
@@ -5558,7 +5924,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void nugudSuffix() {
         String unicode = " ᠨᠤᠭᠤᠳ"; //
         String result = convert(unicode);
-        String expected = " \uE2B3\uE291\uE2EC\uE291\uE311";
+        String expected = "\uE263\uE2B3\uE291\uE2EC\uE291\uE311";
         assertEquals(expected, result);
     }
 
@@ -5566,7 +5932,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void nueguedSuffix() {
         String unicode = " ᠨᠦᠭᠦᠳ"; //
         String result = convert(unicode);
-        String expected = " \uE2B3\uE2AB\uE2ED\uE2AC\uE311";
+        String expected = "\uE263\uE2B3\uE2AB\uE2ED\uE2AC\uE311";
         assertEquals(expected, result);
     }
 
@@ -5574,7 +5940,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void narSuffix() {
         String unicode = " ᠨᠠᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE2B1\uE26C\uE325";
+        String expected = "\uE263\uE2B1\uE26C\uE325";
         assertEquals(expected, result);
     }
 
@@ -5582,7 +5948,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void nerSuffix() {
         String unicode = " ᠨᠡᠷ"; //
         String result = convert(unicode);
-        String expected = " \uE2B1\uE276\uE325";
+        String expected = "\uE263\uE2B1\uE276\uE325";
         assertEquals(expected, result);
     }
 
@@ -5590,7 +5956,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void uuSuffix() {
         String unicode = " ᠤᠤ"; //
         String result = convert(unicode);
-        String expected = " \uE292\uE28D";
+        String expected = "\uE263\uE292\uE28D";
         assertEquals(expected, result);
     }
 
@@ -5598,7 +5964,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void ueueSuffix() {
         String unicode = " ᠦᠦ"; //
         String result = convert(unicode);
-        String expected = " \uE2AC\uE2A3";
+        String expected = "\uE263\uE2AC\uE2A3";
         assertEquals(expected, result);
     }
 
@@ -5606,7 +5972,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void daSuffix() {
         String unicode = " ᠳᠠ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE268";
+        String expected = "\uE263\uE310\uE268";
         assertEquals(expected, result);
     }
 
@@ -5614,7 +5980,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void deSuffix() {
         String unicode = " ᠳᠡ"; //
         String result = convert(unicode);
-        String expected = " \uE310\uE273";
+        String expected = "\uE263\uE310\uE273";
         assertEquals(expected, result);
     }
 
