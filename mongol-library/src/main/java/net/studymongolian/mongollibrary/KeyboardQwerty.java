@@ -908,6 +908,16 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(new PopupKeyCandidate(KEY_S_PUNCT_SUB));
             return candidates;
         }
+
+        if (isIsolateOrInitial()) {
+            return candidates;
+        }
+
+        PopupKeyCandidate sa_fvs1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.SA + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.SA + MongolCode.Uni.FVS1);
+        candidates.add(sa_fvs1);
+
         return candidates;
     }
 
