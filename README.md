@@ -8,7 +8,7 @@ Android UI components for vertical Mongolian text
 
 * [Introduction](https://github.com/suragch/mongol-library#introduction)
 * [Installing](https://github.com/suragch/mongol-library#installing)
-* [UI Components](https://github.com/suragch/mongol-library#uicomponents)
+* [UI Components](https://github.com/suragch/mongol-library#ui-components)
     * [MongolTextView](https://github.com/suragch/mongol-library#mongoltextview) 
     * [MongolLabel](https://github.com/suragch/mongol-library#mongollabel)
     * [MongolEditText](https://github.com/suragch/mongol-library#mongoledittext)
