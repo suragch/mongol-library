@@ -8,7 +8,7 @@ Android UI components for vertical Mongolian text
 
 * [Introduction](https://github.com/suragch/mongol-library#introduction)
 * [Installing](https://github.com/suragch/mongol-library#installing)
-* [UI Componants](https://github.com/suragch/mongol-library#uicomponants)
+* [UI Components](https://github.com/suragch/mongol-library#ui-components)
     * [MongolTextView](https://github.com/suragch/mongol-library#mongoltextview) 
     * [MongolLabel](https://github.com/suragch/mongol-library#mongollabel)
     * [MongolEditText](https://github.com/suragch/mongol-library#mongoledittext)
@@ -53,7 +53,7 @@ If you are still using Android Studio 2.x, you should use `compile` rather than 
 - **The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library.
 - Upgrades in the form of `1.x` likely introduce breaking changes, so don't use `1.x+` notation.
 
-## UI Componants
+## UI Components
 
 The following are the primary UI components in the library. See also the [Demo App](https://github.com/suragch/mongol-library/tree/master/demo-app/release) for an example of how they are used. 
 
