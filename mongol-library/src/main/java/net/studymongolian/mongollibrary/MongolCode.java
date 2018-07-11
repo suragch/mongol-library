@@ -1,6 +1,8 @@
 package net.studymongolian.mongollibrary;
 
 
+import android.provider.Settings;
+
 /*
  * Mongol Code
  *
@@ -28,6 +30,7 @@ public final class MongolCode {
 
     // this is a singleton class (should it just be a static class?)
     public final static MongolCode INSTANCE = new MongolCode();
+    private final static char SPACE = ' ';
 
     public enum Location {
         ISOLATE, INITIAL, MEDIAL, FINAL
@@ -144,7 +147,7 @@ public final class MongolCode {
         int length = inputString.length();
         for (int i = 0; i < length; i++) {
             final char character = inputString.charAt(i);
-            if (isMenksoft(character)) {
+            if (isMenksoft(character) && !isMenksoftSpace(character)) {
                 menksoftWord.append(character);
                 continue;
             }
@@ -154,11 +157,11 @@ public final class MongolCode {
                 menksoftWord.setLength(0);
             }
 
-            // NNBS starts a new Mongol word but is not itself a Mongol char
-            //if (character == Uni.NNBS) {
-            //    menksoftWord.append(Uni.NNBS);
-            //    continue;
-            //}
+            // A space starts a new Mongol word but is not itself a Mongol char
+            if (isMenksoftSpace(character)) {
+                menksoftWord.append(character);
+                continue;
+            }
 
             // non-Menksoft character
             outputString.append(character);
@@ -169,6 +172,12 @@ public final class MongolCode {
             appendMenksoftWord(outputString, menksoftWord);
 
         return outputString.toString();
+    }
+
+    private boolean isMenksoftSpace(char character) {
+        return character == Glyph.SUFFIX_SPACE
+                || character == Glyph.UNKNOWN_SPACE
+                || character == SPACE;
     }
 
     private void appendMenksoftWord(StringBuilder outputString, StringBuilder menksoftWord) {
@@ -2990,7 +2999,7 @@ public final class MongolCode {
                     // before and after ANG
                     handleAng(outputString, currentChar);
                 } else if (currentChar < Glyph.BA_START) {                 // NA
-                    handleNa(outputString, currentChar);
+                    handleNa(outputString, currentChar, charAbove, charBelow);
                 } else if (currentChar < Glyph.PA_START) {                 // BA
                     handleBa(outputString, currentChar);
                 } else if (currentChar < Glyph.QA_START) {                 // PA
@@ -3053,6 +3062,11 @@ public final class MongolCode {
         private boolean isANG(char currentChar) {
             return (currentChar >= Glyph.ANG_START &&
                     currentChar <= Glyph.ANG_END);
+        }
+
+        private boolean startsWithNnbsSuffix(StringBuilder outputString) {
+            return  (outputString.length() != 0)
+                    && outputString.charAt(0) == Uni.NNBS;
         }
 
         private void handleA(StringBuilder outputString, char currentChar) {
@@ -3188,7 +3202,6 @@ public final class MongolCode {
                         case Glyph.INIT_E_FVS1:
                             outputString.append(Uni.E);
                             outputString.append(Uni.FVS1);
-                            outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_E:
                         case Glyph.MEDI_E_BP:
@@ -3201,7 +3214,7 @@ public final class MongolCode {
                     }
                     break;
                 case MEDIAL:
-                    outputString.append(Uni.A);
+                    outputString.append(Uni.E);
                     break;
                 case FINAL:
                     switch (currentChar) {
@@ -3235,7 +3248,9 @@ public final class MongolCode {
                         case Glyph.FINA_I:
                         case Glyph.FINA_I_BP:
                         case Glyph.ISOL_I_SUFFIX:
-                            outputString.append(Uni.ZWJ);
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             outputString.append(Uni.I);
                             break;
                         case Glyph.MEDI_I:
@@ -3266,18 +3281,20 @@ public final class MongolCode {
                         case Glyph.MEDI_I:
                         case Glyph.MEDI_I_BP:
                         case Glyph.MEDI_I_SUFFIX:
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             outputString.append(Uni.I);
-                            outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_I_FVS1:
+                            outputString.append(Uni.ZWJ);
                             outputString.append(Uni.I);
                             outputString.append(Uni.FVS1);
-                            outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_I_DOUBLE_TOOTH:
+                            outputString.append(Uni.ZWJ);
                             outputString.append(Uni.YA);
                             outputString.append(Uni.I);
-                            outputString.append(Uni.ZWJ);
                             break;
                         default:
                             outputString.append(Uni.I);
@@ -3288,7 +3305,7 @@ public final class MongolCode {
                         case Glyph.MEDI_I:
                         case Glyph.MEDI_I_BP:
                             outputString.append(Uni.I);
-                            if (isMenksoftVowel(charAbove) && isMenksoftConsonant(charBelow)) {
+                            if (isLikeIofNaima(charAbove, charBelow)) {
                                 // override double tooth for words like NAIMA
                                 outputString.append(Uni.FVS2);
                             }
@@ -3326,6 +3343,18 @@ public final class MongolCode {
             }
         }
 
+        private boolean isLikeIofNaima(char charAbove, char charBelow) {
+            return isMenksoftA(charAbove) && isMenksoftM(charBelow);
+        }
+
+        private boolean isMenksoftA(char character) {
+            return character >= Glyph.A_START && character <= Glyph.MEDI_A_UNKNOWN;
+        }
+
+        private boolean isMenksoftM(char character) {
+            return character >= Glyph.INIT_MA_TOOTH && character <= Glyph.MEDI_MA_BP;
+        }
+
         private void handleO(StringBuilder outputString, char currentChar) {
             switch (location) {
                 case ISOLATE:
@@ -3335,8 +3364,13 @@ public final class MongolCode {
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.FINA_O:
-                            outputString.append(Uni.ZWJ);
-                            outputString.append(Uni.O);
+                            if (startsWithNnbsSuffix(outputString)) {
+                                // substituting more standard U suffix
+                                outputString.append(Uni.U);
+                            } else {
+                                outputString.append(Uni.ZWJ);
+                                outputString.append(Uni.O);
+                            }
                             break;
                         case Glyph.FINA_O_FVS1:
                         case Glyph.FINA_O_BP:
@@ -3363,14 +3397,14 @@ public final class MongolCode {
                 case INITIAL:
                     switch (currentChar) {
                         case Glyph.MEDI_O_FVS1:
+                            outputString.append(Uni.ZWJ);
                             outputString.append(Uni.O);
                             outputString.append(Uni.FVS1);
-                            outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_O:
                         case Glyph.MEDI_O_BP:
-                            outputString.append(Uni.O);
                             outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.O);
                             break;
                         default:
                             outputString.append(Uni.O);
@@ -3387,19 +3421,19 @@ public final class MongolCode {
                     }
                     break;
                 case FINAL:
+                    outputString.append(Uni.O);
                     switch (currentChar) {
+                        case Glyph.FINA_O_FVS1:
+                            outputString.append(Uni.FVS1);
+                            break;
                         case Glyph.MEDI_O_FVS1:
-                            outputString.append(Uni.O);
                             outputString.append(Uni.FVS1);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_O:
                         case Glyph.MEDI_O_BP:
-                            outputString.append(Uni.O);
                             outputString.append(Uni.ZWJ);
                             break;
-                        default:
-                            outputString.append(Uni.O);
                     }
                     break;
             }
@@ -3414,7 +3448,9 @@ public final class MongolCode {
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.FINA_U:
-                            outputString.append(Uni.ZWJ);
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             outputString.append(Uni.U);
                             break;
                         case Glyph.FINA_U_FVS1:
@@ -3442,14 +3478,16 @@ public final class MongolCode {
                 case INITIAL:
                     switch (currentChar) {
                         case Glyph.MEDI_U_FVS1:
+                            outputString.append(Uni.ZWJ);
                             outputString.append(Uni.U);
                             outputString.append(Uni.FVS1);
-                            outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_U:
                         case Glyph.MEDI_U_BP:
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             outputString.append(Uni.U);
-                            outputString.append(Uni.ZWJ);
                             break;
                         default:
                             outputString.append(Uni.U);
@@ -3466,19 +3504,19 @@ public final class MongolCode {
                     }
                     break;
                 case FINAL:
+                    outputString.append(Uni.U);
                     switch (currentChar) {
+                        case Glyph.FINA_U_FVS1:
+                            outputString.append(Uni.FVS1);
+                            break;
                         case Glyph.MEDI_U_FVS1:
-                            outputString.append(Uni.U);
                             outputString.append(Uni.FVS1);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_U:
                         case Glyph.MEDI_U_BP:
-                            outputString.append(Uni.U);
                             outputString.append(Uni.ZWJ);
                             break;
-                        default:
-                            outputString.append(Uni.U);
                     }
                     break;
             }
@@ -3498,8 +3536,13 @@ public final class MongolCode {
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.FINA_OE:
-                            outputString.append(Uni.ZWJ);
-                            outputString.append(Uni.OE);
+                            if (startsWithNnbsSuffix(outputString)) {
+                                // substituting more standard UE suffix
+                                outputString.append(Uni.UE);
+                            } else {
+                                outputString.append(Uni.ZWJ);
+                                outputString.append(Uni.OE);
+                            }
                             break;
                         case Glyph.FINA_OE_FVS1:
                         case Glyph.FINA_OE_FVS1_BP:
@@ -3570,25 +3613,25 @@ public final class MongolCode {
                     }
                     break;
                 case FINAL:
+                    outputString.append(Uni.OE);
                     switch (currentChar) {
+                        case Glyph.FINA_OE_FVS1:
+                        case Glyph.FINA_OE_FVS1_BP:
+                            outputString.append(Uni.FVS1);
+                            break;
                         case Glyph.MEDI_OE_FVS2:
-                            outputString.append(Uni.OE);
                             outputString.append(Uni.FVS2);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_OE:
                         case Glyph.MEDI_OE_BP:
-                            outputString.append(Uni.OE);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_OE_FVS1:
                         case Glyph.MEDI_OE_FVS1_BP:
-                            outputString.append(Uni.OE);
                             outputString.append(Uni.FVS1);
                             outputString.append(Uni.ZWJ);
                             break;
-                        default:
-                            outputString.append(Uni.OE);
                     }
                     break;
             }
@@ -3607,7 +3650,9 @@ public final class MongolCode {
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.FINA_UE:
-                            outputString.append(Uni.ZWJ);
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             outputString.append(Uni.UE);
                             break;
                         case Glyph.FINA_UE_FVS1:
@@ -3655,7 +3700,9 @@ public final class MongolCode {
                             break;
                         case Glyph.MEDI_UE:
                         case Glyph.MEDI_UE_BP:
-                            outputString.append(Uni.ZWJ);
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             outputString.append(Uni.UE);
                             break;
                         case Glyph.MEDI_UE_FVS1:
@@ -3679,25 +3726,25 @@ public final class MongolCode {
                     }
                     break;
                 case FINAL:
+                    outputString.append(Uni.UE);
                     switch (currentChar) {
+                        case Glyph.FINA_UE_FVS1:
+                        case Glyph.FINA_UE_FVS1_BP:
+                            outputString.append(Uni.FVS1);
+                            break;
                         case Glyph.MEDI_UE_FVS2:
-                            outputString.append(Uni.UE);
                             outputString.append(Uni.FVS2);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_UE:
                         case Glyph.MEDI_UE_BP:
-                            outputString.append(Uni.UE);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_UE_FVS1:
                         case Glyph.MEDI_UE_FVS1_BP:
-                            outputString.append(Uni.UE);
                             outputString.append(Uni.FVS1);
                             outputString.append(Uni.ZWJ);
                             break;
-                        default:
-                            outputString.append(Uni.UE);
                     }
                     break;
             }
@@ -3763,7 +3810,8 @@ public final class MongolCode {
             outputString.append(Uni.ANG);
         }
 
-        private void handleNa(StringBuilder outputString, char currentChar) {
+        private void handleNa(StringBuilder outputString, char currentChar,
+                              char charAbove, char charBelow) {
             switch (location) {
                 case ISOLATE:
                     switch (currentChar) {
@@ -3817,9 +3865,14 @@ public final class MongolCode {
                     break;
                 case MEDIAL:
                     switch (currentChar) {
-                        case Glyph.MEDI_NA_FVS2:
+                        case Glyph.MEDI_NA_NG:
+                        case Glyph.MEDI_NA_STEM:
+                        case Glyph.MEDI_NA_TOOTH:
                             outputString.append(Uni.NA);
-                            outputString.append(Uni.MVS);
+                            if (isMenksoftVowel(charAbove)
+                                    && isMenksoftVowel(charBelow)) {
+                                outputString.append(Uni.ZWJ);
+                            }
                             break;
                         default:
                             outputString.append(Uni.NA);
@@ -3961,10 +4014,6 @@ public final class MongolCode {
                     break;
                 case MEDIAL:
                     switch (currentChar) {
-                        case Glyph.FINA_QA:
-                            outputString.append(Uni.QA);
-                            outputString.append(Uni.MVS);
-                            break;
                         case Glyph.MEDI_QA_STEM:
                         case Glyph.MEDI_QA_TOOTH:
                         case Glyph.MEDI_QA_FEM_CONSONANT:
@@ -4018,6 +4067,7 @@ public final class MongolCode {
         }
 
         private void handleGa(StringBuilder outputString, char currentChar) {
+            Gender gender = getWordGender(outputString.toString());
             switch (location) {
                 case ISOLATE:
                     switch (currentChar) {
@@ -4078,41 +4128,48 @@ public final class MongolCode {
                     }
                     break;
                 case MEDIAL:
-                    outputString.append(Uni.GA);
-                    if (currentChar == Glyph.MEDI_GA_FVS2) {
-                        outputString.append(Uni.MVS);
+                    switch (currentChar) {
+                        case Glyph.MEDI_GA_FVS3_TOOTH:
+                        case Glyph.MEDI_GA_FVS3_STEM:
+                            outputString.append(Uni.GA);
+                            if (gender == Gender.MASCULINE) {
+                                outputString.append(Uni.FVS3);
+                            }
+                            break;
+                        default:
+                            outputString.append(Uni.GA);
+                            break;
                     }
                     break;
                 case FINAL:
+                    outputString.append(Uni.GA);
                     switch (currentChar) {
-                        // TODO need to check for word gender to see if FVS is required
-                        //case Glyph.FINA_GA_FVS2:
-                        //    outputString.append(Uni.GA);
-                        //    outputString.append(Uni.FVS2);
-                        //    break;
+                        case Glyph.FINA_GA_FVS1:
+                            if (gender == Gender.NEUTER) {
+                                outputString.append(Uni.FVS1);
+                            }
+                            break;
+                        case Glyph.FINA_GA_FVS2:
+                            if (gender == Gender.MASCULINE) {
+                                outputString.append(Uni.FVS2);
+                            }
+                            break;
                         case Glyph.MEDI_GA:
-                            outputString.append(Uni.GA);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_GA_FVS1_STEM:
                         case Glyph.MEDI_GA_FVS1_TOOTH:
-                            outputString.append(Uni.GA);
                             outputString.append(Uni.FVS1);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_GA_FVS2:
-                            outputString.append(Uni.GA);
                             outputString.append(Uni.FVS2);
                             outputString.append(Uni.ZWJ);
                             break;
                         case Glyph.MEDI_GA_FVS3_STEM:
                         case Glyph.MEDI_GA_FVS3_TOOTH:
-                            outputString.append(Uni.GA);
                             outputString.append(Uni.FVS3);
                             outputString.append(Uni.ZWJ);
-                            break;
-                        default:
-                            outputString.append(Uni.GA);
                             break;
                     }
                     break;
@@ -4144,8 +4201,8 @@ public final class MongolCode {
                         case Glyph.MEDI_MA_BP:
                         case Glyph.MEDI_MA_STEM_LONG:
                         case Glyph.MEDI_MA_TOOTH:
-                            outputString.append(Uni.MA);
                             outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.MA);
                             break;
                         default:
                             outputString.append(Uni.MA);
@@ -4153,15 +4210,7 @@ public final class MongolCode {
                     }
                     break;
                 case MEDIAL:
-                    switch (currentChar) {
-                        case Glyph.FINA_MA:
-                            outputString.append(Uni.MA);
-                            outputString.append(Uni.MVS);
-                            break;
-                        default:
-                            outputString.append(Uni.MA);
-                            break;
-                    }
+                    outputString.append(Uni.MA);
                     break;
                 case FINAL:
                     switch (currentChar) {
@@ -4213,15 +4262,7 @@ public final class MongolCode {
                     }
                     break;
                 case MEDIAL:
-                    switch (currentChar) {
-                        case Glyph.FINA_LA:
-                            outputString.append(Uni.LA);
-                            outputString.append(Uni.MVS);
-                            break;
-                        default:
-                            outputString.append(Uni.LA);
-                            break;
-                    }
+                    outputString.append(Uni.LA);
                     break;
                 case FINAL:
                     switch (currentChar) {
@@ -4456,9 +4497,12 @@ public final class MongolCode {
                             outputString.append(Uni.ZWJ);
                             outputString.append(Uni.DA);
                             break;
+                        case Glyph.INIT_DA_FVS1:
                         case Glyph.MEDI_DA_FVS1:
                             outputString.append(Uni.DA);
-                            outputString.append(Uni.FVS1);
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.FVS1);
+                            }
                             break;
                         default:
                             outputString.append(Uni.DA);
@@ -4556,15 +4600,7 @@ public final class MongolCode {
                     }
                     break;
                 case MEDIAL:
-                    switch (currentChar) {
-                        case Glyph.MEDI_JA_FVS1:
-                            outputString.append(Uni.JA);
-                            outputString.append(Uni.MVS);
-                            break;
-                        default:
-                            outputString.append(Uni.JA);
-                            break;
-                    }
+                    outputString.append(Uni.JA);
                     break;
                 case FINAL:
                     switch (currentChar) {
@@ -4607,7 +4643,9 @@ public final class MongolCode {
                     switch (currentChar) {
                         case Glyph.MEDI_YA:
                             outputString.append(Uni.YA);
-                            outputString.append(Uni.FVS1);
+                            if (!startsWithNnbsSuffix(outputString)) {
+                                outputString.append(Uni.FVS1);
+                            }
                             break;
                         default:
                             outputString.append(Uni.YA);
@@ -4616,10 +4654,6 @@ public final class MongolCode {
                     break;
                 case MEDIAL:
                     switch (currentChar) {
-                        case Glyph.FINA_YA:
-                            outputString.append(Uni.YA);
-                            outputString.append(Uni.MVS);
-                            break;
                         case Glyph.MEDI_YA_FVS1:
                             outputString.append(Uni.YA);
                             if (isMenksoftVowel(charAbove) && isMenksoftI(charBelow)) {
@@ -4667,15 +4701,7 @@ public final class MongolCode {
                     outputString.append(Uni.RA);
                     break;
                 case MEDIAL:
-                    switch (currentChar) {
-                        case Glyph.FINA_RA:
-                            outputString.append(Uni.RA);
-                            outputString.append(Uni.MVS);
-                            break;
-                        default:
-                            outputString.append(Uni.RA);
-                            break;
-                    }
+                    outputString.append(Uni.RA);
                     break;
                 case FINAL:
                     switch (currentChar) {
@@ -4714,15 +4740,7 @@ public final class MongolCode {
                     outputString.append(Uni.WA);
                     break;
                 case MEDIAL:
-                    switch (currentChar) {
-                        case Glyph.FINA_WA_FVS1:
-                            outputString.append(Uni.WA);
-                            outputString.append(Uni.MVS);
-                            break;
-                        default:
-                            outputString.append(Uni.WA);
-                            break;
-                    }
+                    outputString.append(Uni.WA);
                     break;
                 case FINAL:
                     switch (currentChar) {

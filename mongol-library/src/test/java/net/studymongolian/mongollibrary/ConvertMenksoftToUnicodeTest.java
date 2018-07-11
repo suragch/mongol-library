@@ -3205,14 +3205,6 @@ public class ConvertMenksoftToUnicodeTest {
     }
 
     @Test
-    public void cholmonodo2Word() {
-        String menksoft = "\uE315\uE289\uE2FB\uE2F5\uE289\uE2BA\uE288\uE313\uE285";
-        String result = convert(menksoft);
-        String expected = "ᠴᠣᠯᠮᠣᠨᠣ᠋ᠳᠣ"; // CHOLMONO(FVS1)DO
-        assertEquals(expected, result);
-    }
-
-    @Test
     public void bayanunderWord() {
         String menksoft = "\uE2C1\uE26D\uE320\uE26C\uE2BA\uE2A8\uE2B8\uE313\uE2AB\uE325";
         String result = convert(menksoft);
