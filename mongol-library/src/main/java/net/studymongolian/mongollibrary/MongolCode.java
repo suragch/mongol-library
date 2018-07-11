@@ -1,8 +1,6 @@
 package net.studymongolian.mongollibrary;
 
 
-import android.provider.Settings;
-
 /*
  * Mongol Code
  *
@@ -26,6 +24,7 @@ import android.provider.Settings;
  * text use Unicode. However, Menksoft code can also be converted back
  * into Unicode.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public final class MongolCode {
 
     // this is a singleton class (should it just be a static class?)
@@ -62,6 +61,7 @@ public final class MongolCode {
 
     private boolean shouldBeStripped(String text, int index) {
         char thisChar = text.charAt(index);
+        //noinspection SimplifiableIfStatement
         if (isNonPrintingChar(thisChar)) {
             // old Menksoft code (in PUA region) context doesn't need
             // Unicode control characters. But keep control characters
@@ -679,6 +679,7 @@ public final class MongolCode {
         // urugu?
     }
 
+    @SuppressWarnings("unused")
     class Glyph {
 
         static final char MENKSOFT_START = '\uE234';
@@ -2856,6 +2857,7 @@ public final class MongolCode {
                 }
             }
 
+            //noinspection SimplifiableIfStatement
             if (uIndex == 2) {
                 return isConsonant(word.charAt(0)) && isFVS(word.charAt(1));
             }
