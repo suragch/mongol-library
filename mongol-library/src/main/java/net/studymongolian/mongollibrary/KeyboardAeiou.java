@@ -778,6 +778,12 @@ public class KeyboardAeiou extends Keyboard {
                 "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS2);
         candidates.add(ga_fvs2);
 
+        PopupKeyCandidate medi_ga_fvs3 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.GA + MongolCode.Uni.FVS3,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.GA + MongolCode.Uni.FVS3 + MongolCode.Uni.ZWJ,
+                "" + MongolCode.Uni.GA + MongolCode.Uni.FVS3 + MongolCode.Uni.ZWJ);
+        candidates.add(medi_ga_fvs3);
+
         return candidates;
     }
 
