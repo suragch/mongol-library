@@ -1,6 +1,5 @@
 package net.studymongolian.mongollibrary;
 
-
 /*
  * Mongol Code
  *
@@ -2843,7 +2842,9 @@ public final class MongolCode {
             renderedWord.insert(0, Uni.WJ);
         }
 
-        private boolean needsLongToothU(CharSequence word, int uIndex) {
+        private static boolean needsLongToothU(CharSequence word, int uIndex) {
+
+            if (uIndex < 0) return false;
 
             if (word.charAt(uIndex) != Uni.OE
                     && word.charAt(uIndex) != Uni.UE) return false;
@@ -2995,7 +2996,7 @@ public final class MongolCode {
                 } else if (currentChar < Glyph.EE_START) {                 // UE
                     handleUE(outputString, currentChar);
                 } else if (currentChar < Glyph.NA_START) {                 // EE
-                    handleEE(outputString, currentChar);
+                    handleEE(outputString, currentChar, charAbove, charBelow);
                 } else if (isANG(currentChar)) {                           // ANG
                     // handling ANG before NA because NA is appears
                     // before and after ANG
@@ -3031,7 +3032,7 @@ public final class MongolCode {
                 } else if (currentChar < Glyph.WA_START) {                 // RA
                     handleRa(outputString, currentChar);
                 } else if (currentChar < Glyph.FA_START) {                 // WA
-                    handleWa(outputString, currentChar);
+                    handleWa(outputString, currentChar, charAbove, charBelow);
                 } else if (currentChar < Glyph.KA_START) {                 // FA
                     handleFa(outputString, currentChar);
                 } else if (currentChar < Glyph.KHA_START) {                // KA
@@ -3055,10 +3056,173 @@ public final class MongolCode {
                 }
 
                 charAbove = currentChar;
+
+                // fix missing space
+                if (isMenksoftFinalIsolateGlyph(currentChar)
+                        && isMenksoftInitialIsolateGlyph(charBelow)) {
+                    outputString.append(SPACE);
+                    charAbove = 0;
+                }
+
                 currentChar = charBelow;
             }
 
             return outputString.toString();
+        }
+
+        private boolean isMenksoftInitialIsolateGlyph(char character) {
+            //noinspection SimplifiableIfStatement
+            if (character == 0) return false;
+            return character == Glyph.ISOL_A ||
+                    character == Glyph.ISOL_A_FVS1 ||
+                    character == Glyph.INIT_A ||
+                    character == Glyph.MEDI_A_FVS2 ||
+                    character == Glyph.ISOL_E ||
+                    character == Glyph.INIT_E ||
+                    character == Glyph.INIT_E_FVS1 ||
+                    character == Glyph.ISOL_I ||
+                    character == Glyph.ISOL_I_SUFFIX ||
+                    character == Glyph.INIT_I ||
+                    character == Glyph.INIT_O ||
+                    character == Glyph.ISOL_O ||
+                    character == Glyph.ISOL_U ||
+                    character == Glyph.U_START ||
+                    character == Glyph.ISOL_OE ||
+                    character == Glyph.INIT_OE ||
+                    character == Glyph.ISOL_OE_FVS1 ||
+                    character == Glyph.INIT_UE ||
+                    character == Glyph.UE_START ||
+                    character == Glyph.ISOL_UE_FVS1 ||
+                    character == Glyph.ISOL_EE ||
+                    character == Glyph.INIT_EE ||
+                    character == Glyph.INIT_NA_STEM ||
+                    character == Glyph.INIT_NA_TOOTH ||
+                    character == Glyph.INIT_NA_FVS1_STEM ||
+                    character == Glyph.INIT_NA_FVS1_TOOTH ||
+                    character == Glyph.INIT_BA ||
+                    character == Glyph.INIT_BA_OU ||
+                    character == Glyph.INIT_BA_STEM ||
+                    character == Glyph.INIT_PA ||
+                    character == Glyph.INIT_PA_OU ||
+                    character == Glyph.INIT_PA_STEM ||
+                    character == Glyph.INIT_QA_FEM ||
+                    character == Glyph.INIT_QA_FEM_OU ||
+                    character == Glyph.INIT_QA_FVS1_FEM ||
+                    character == Glyph.INIT_QA_FVS1_FEM_OU ||
+                    character == Glyph.INIT_QA_FVS1_STEM ||
+                    character == Glyph.INIT_QA_FVS1_TOOTH ||
+                    character == Glyph.INIT_QA_STEM ||
+                    character == Glyph.INIT_QA_TOOTH ||
+                    character == Glyph.INIT_GA_FEM ||
+                    character == Glyph.INIT_GA_FEM_OU ||
+                    character == Glyph.INIT_GA_FVS1_STEM ||
+                    character == Glyph.INIT_GA_FVS1_TOOTH ||
+                    character == Glyph.INIT_GA_STEM ||
+                    character == Glyph.INIT_GA_TOOTH ||
+                    character == Glyph.INIT_MA_TOOTH ||
+                    character == Glyph.INIT_MA_STEM_LONG ||
+                    character == Glyph.INIT_LA_TOOTH ||
+                    character == Glyph.INIT_LA_STEM_LONG ||
+                    character == Glyph.INIT_SA_STEM ||
+                    character == Glyph.INIT_SA_TOOTH ||
+                    character == Glyph.INIT_SHA_STEM ||
+                    character == Glyph.INIT_SHA_TOOTH ||
+                    character == Glyph.INIT_TA_STEM ||
+                    character == Glyph.INIT_TA_TOOTH ||
+                    character == Glyph.INIT_DA_FVS1 ||
+                    character == Glyph.INIT_DA_STEM ||
+                    character == Glyph.INIT_DA_TOOTH ||
+                    character == Glyph.INIT_CHA ||
+                    character == Glyph.INIT_JA_STEM ||
+                    character == Glyph.INIT_JA_TOOTH ||
+                    character == Glyph.INIT_YA ||
+                    character == Glyph.INIT_YA_FVS1 ||
+                    character == Glyph.INIT_RA_STEM ||
+                    character == Glyph.INIT_RA_TOOTH ||
+                    character == Glyph.INIT_WA ||
+                    character == Glyph.INIT_FA ||
+                    character == Glyph.INIT_FA_OU ||
+                    character == Glyph.INIT_FA_STEM ||
+                    character == Glyph.INIT_KA ||
+                    character == Glyph.INIT_KA_OU ||
+                    character == Glyph.INIT_KHA ||
+                    character == Glyph.INIT_KHA_OU ||
+                    character == Glyph.INIT_TSA ||
+                    character == Glyph.INIT_ZA ||
+                    character == Glyph.INIT_HAA ||
+                    character == Glyph.INIT_ZRA ||
+                    character == Glyph.INIT_LHA;
+        }
+
+        private boolean isMenksoftFinalIsolateGlyph(char character) {
+            //noinspection SimplifiableIfStatement
+            if (character == 0) return false;
+            return character == Glyph.ISOL_A ||
+                    character == Glyph.ISOL_A_FVS1 ||
+                    character == Glyph.FINA_A ||
+                    character == Glyph.FINA_A_BP ||
+                    character == Glyph.FINA_A_FVS1 ||
+                    character == Glyph.FINA_A_MVS ||
+                    character == Glyph.ISOL_E ||
+                    character == Glyph.FINA_E ||
+                    character == Glyph.FINA_E_BP ||
+                    character == Glyph.FINA_E_MVS ||
+                    character == Glyph.ISOL_I ||
+                    character == Glyph.ISOL_I_SUFFIX ||
+                    character == Glyph.FINA_I ||
+                    character == Glyph.FINA_I_BP ||
+                    character == Glyph.ISOL_O ||
+                    character == Glyph.FINA_O ||
+                    character == Glyph.FINA_O_FVS1 ||
+                    character == Glyph.ISOL_U ||
+                    character == Glyph.FINA_U ||
+                    character == Glyph.FINA_U_BP ||
+                    character == Glyph.FINA_U_FVS1 ||
+                    character == Glyph.ISOL_OE ||
+                    character == Glyph.ISOL_OE_FVS1 ||
+                    character == Glyph.FINA_OE ||
+                    character == Glyph.FINA_OE_BP ||
+                    character == Glyph.FINA_OE_FVS1 ||
+                    character == Glyph.FINA_OE_FVS1_BP ||
+                    character == Glyph.FINA_OE_FVS2 ||
+                    character == Glyph.ISOL_UE ||
+                    character == Glyph.ISOL_UE_FVS1 ||
+                    character == Glyph.FINA_UE ||
+                    character == Glyph.FINA_UE_BP ||
+                    character == Glyph.FINA_UE_FVS1 ||
+                    character == Glyph.FINA_UE_FVS1_BP ||
+                    character == Glyph.FINA_UE_FVS2 ||
+                    character == Glyph.ISOL_EE ||
+                    character == Glyph.FINA_EE ||
+                    character == Glyph.FINA_NA ||
+                    character == Glyph.FINA_ANG ||
+                    character == Glyph.FINA_BA ||
+                    character == Glyph.FINA_BA_FVS1 ||
+                    character == Glyph.FINA_PA ||
+                    character == Glyph.FINA_QA ||
+                    character == Glyph.FINA_GA ||
+                    character == Glyph.FINA_GA_FVS2 ||
+                    character == Glyph.FINA_MA ||
+                    character == Glyph.FINA_LA ||
+                    character == Glyph.FINA_SA ||
+                    character == Glyph.FINA_SA_FVS1 ||
+                    character == Glyph.FINA_SHA ||
+                    character == Glyph.FINA_TA ||
+                    character == Glyph.FINA_DA ||
+                    character == Glyph.FINA_DA_FVS1 ||
+                    character == Glyph.FINA_CHA ||
+                    character == Glyph.FINA_JA ||
+                    character == Glyph.FINA_YA ||
+                    character == Glyph.FINA_RA ||
+                    character == Glyph.FINA_WA ||
+                    character == Glyph.FINA_WA_FVS1 ||
+                    character == Glyph.FINA_FA ||
+                    character == Glyph.FINA_KA ||
+                    character == Glyph.FINA_KHA ||
+                    character == Glyph.FINA_TSA ||
+                    character == Glyph.FINA_ZA ||
+                    character == Glyph.FINA_HAA ||
+                    character == Glyph.FINA_ZRA;
         }
 
         private boolean isANG(char currentChar) {
@@ -3719,6 +3883,13 @@ public final class MongolCode {
                     break;
                 case MEDIAL:
                     switch (currentChar) {
+                        case Glyph.MEDI_UE_FVS1:
+                            outputString.append(Uni.UE);
+                            int index = outputString.length() - 1;
+                            if (!MongolWord.needsLongToothU(outputString, index)) {
+                                outputString.append(Uni.FVS1);
+                            }
+                            break;
                         case Glyph.MEDI_UE_FVS2:
                             outputString.append(Uni.UE);
                             outputString.append(Uni.FVS2);
@@ -3752,7 +3923,8 @@ public final class MongolCode {
             }
         }
 
-        private void handleEE(StringBuilder outputString, char currentChar) {
+        private void handleEE(StringBuilder outputString,
+                              char currentChar, char charAbove, char charBelow) {
             switch (location) {
                 case ISOLATE:
                     switch (currentChar) {
@@ -3786,7 +3958,12 @@ public final class MongolCode {
                     }
                     break;
                 case MEDIAL:
-                    outputString.append(Uni.EE);
+                    // replace EE between two vowels with W
+                    if (isMenksoftVowel(charAbove)
+                            && isMenksoftVowel(charBelow))
+                        outputString.append(Uni.WA);
+                    else
+                        outputString.append(Uni.EE);
                     break;
                 case FINAL:
                     switch (currentChar) {
@@ -3874,6 +4051,14 @@ public final class MongolCode {
                             if (isMenksoftVowel(charAbove)
                                     && isMenksoftVowel(charBelow)) {
                                 outputString.append(Uni.ZWJ);
+                            }
+                            break;
+                        case Glyph.MEDI_NA_FVS1_NG:
+                        case Glyph.MEDI_NA_FVS1_STEM:
+                        case Glyph.MEDI_NA_FVS1_TOOTH:
+                            outputString.append(Uni.NA);
+                            if (isMenksoftConsonant(charBelow)) {
+                                outputString.append(Uni.FVS1);
                             }
                             break;
                         default:
@@ -4592,6 +4777,14 @@ public final class MongolCode {
                     break;
                 case INITIAL:
                     switch (currentChar) {
+                        case Glyph.INIT_JA_STEM:
+                        case Glyph.INIT_JA_TOOTH:
+                            // if user used a JA to write a YA suffix then replace it
+                            if (startsWithNnbsSuffix(outputString))
+                                outputString.append(Uni.YA);
+                            else
+                                outputString.append(Uni.JA);
+                            break;
                         case Glyph.MEDI_JA:
                             outputString.append(Uni.ZWJ);
                             outputString.append(Uni.JA);
@@ -4720,7 +4913,8 @@ public final class MongolCode {
             }
         }
 
-        private void handleWa(StringBuilder outputString, char currentChar) {
+        private void handleWa(StringBuilder outputString,
+                              char currentChar, char charAbove, char charBelow) {
             switch (location) {
                 case ISOLATE:
                     switch (currentChar) {
@@ -4742,13 +4936,22 @@ public final class MongolCode {
                     outputString.append(Uni.WA);
                     break;
                 case MEDIAL:
-                    outputString.append(Uni.WA);
+                    // replace W between two consonants with EE
+                    if (isMenksoftConsonant(charAbove)
+                            && isMenksoftConsonant(charBelow))
+                        outputString.append(Uni.EE);
+                    else
+                        outputString.append(Uni.WA);
                     break;
                 case FINAL:
                     switch (currentChar) {
                         case Glyph.FINA_WA_FVS1:
                             outputString.append(Uni.WA);
                             outputString.append(Uni.FVS1);
+                            break;
+                        case Glyph.MEDI_WA:
+                            outputString.append(Uni.WA);
+                            outputString.append(Uni.ZWJ);
                             break;
                         default:
                             outputString.append(Uni.WA);
