@@ -15,12 +15,12 @@ public class MongolToast {
     public static final int LENGTH_SHORT = Toast.LENGTH_SHORT;
     public static final int LENGTH_LONG = Toast.LENGTH_LONG;
 
-    private static final int DEFAULT_BACKGROUND = Color.parseColor("#555555");
-    private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
+    private static final int DEFAULT_BACKGROUND = Color.parseColor("#f0f0f0");
+    private static final int DEFAULT_TEXT_COLOR = Color.BLACK;
     private static final int DEFAULT_TEXT_SIZE = 20;
     private static final int DEFAULT_CORNER_RADIUS = 24;
-    private static final float DEFAULT_HORIZONTAL_PADDING = 11;
-    private static final float DEFAULT_VERTICAL_PADDING = 25;
+    private static final float DEFAULT_HORIZONTAL_PADDING = 15;
+    private static final float DEFAULT_VERTICAL_PADDING = 30;
     private static final int DEFAULT_ALPHA = 230;
 
     private final Context context;
