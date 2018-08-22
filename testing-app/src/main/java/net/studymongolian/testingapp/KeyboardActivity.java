@@ -54,7 +54,7 @@ public class KeyboardActivity extends AppCompatActivity {
         mimm.setIme(imeContainer);
         mimm.setAllowSystemSoftInput(MongolInputMethodManager.NO_EDITORS);
 
-
+        mongolEditText.requestFocus();
     }
 
     public void onTestDeleteKeyClick(View view) {
