@@ -2462,14 +2462,16 @@ public final class MongolCode {
                     renderedWord.insert(0, Glyph.ISOL_JA);                       // normal
                     break;
                 case INITIAL:
-                    if (glyphShapeBelow == Shape.STEM) {
+                    if (charBelow == Uni.MVS) {
+                        renderedWord.insert(0, Glyph.MEDI_JA_FVS1);              // MVS
+                    } else if (glyphShapeBelow == Shape.STEM) {
                         renderedWord.insert(0, Glyph.INIT_JA_STEM);              // stem
-                    } else {
+                    } else { // tooth
                         // The Qimad font seems to be broken here
                         // so temporarily disabling this glyph
                         // TODO fix the font, or remove it, or just use
                         // this alternate glyph.
-                        //renderedWord.insert(0, Glyph.INIT_JA_TOOTH);             // tooth
+                        //renderedWord.insert(0, Glyph.INIT_JA_TOOTH);                 // tooth
                         renderedWord.insert(0, Glyph.INIT_JA_STEM);
                     }
                     break;
@@ -3230,7 +3232,7 @@ public final class MongolCode {
         }
 
         private boolean startsWithNnbsSuffix(StringBuilder outputString) {
-            return  (outputString.length() != 0)
+            return (outputString.length() != 0)
                     && outputString.charAt(0) == Uni.NNBS;
         }
 
@@ -3978,7 +3980,6 @@ public final class MongolCode {
             }
 
 
-
         }
 
         private void handleAng(StringBuilder outputString, char currentChar) {
@@ -4595,21 +4596,21 @@ public final class MongolCode {
                     }
                     break;
                 case INITIAL:
-                        switch (currentChar) {
-                            case Glyph.MEDI_TA:
-                                outputString.append(Uni.ZWJ);
-                                outputString.append(Uni.TA);
-                                break;
-                            case Glyph.MEDI_TA_FVS1_STEM:
-                            case Glyph.MEDI_TA_FVS1_TOOTH:
-                                outputString.append(Uni.ZWJ);
-                                outputString.append(Uni.TA);
-                                outputString.append(Uni.FVS1);
-                                break;
-                            default:
-                                outputString.append(Uni.TA);
-                                break;
-                        }
+                    switch (currentChar) {
+                        case Glyph.MEDI_TA:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.TA);
+                            break;
+                        case Glyph.MEDI_TA_FVS1_STEM:
+                        case Glyph.MEDI_TA_FVS1_TOOTH:
+                            outputString.append(Uni.ZWJ);
+                            outputString.append(Uni.TA);
+                            outputString.append(Uni.FVS1);
+                            break;
+                        default:
+                            outputString.append(Uni.TA);
+                            break;
+                    }
                     break;
                 case MEDIAL:
                     switch (currentChar) {
