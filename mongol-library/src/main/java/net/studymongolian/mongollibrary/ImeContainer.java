@@ -1011,7 +1011,7 @@ public class ImeContainer extends ViewGroup
         return images;
     }
 
-    private void hideImeContainer() {
+    protected void hideImeContainer() {
         hideTempView();
         if (mSystemImeListener != null) {
             mSystemImeListener.onHideKeyboardRequest();
