@@ -404,9 +404,10 @@ public class ImeContainer extends ViewGroup
     public void onRequestNewKeyboard(String keyboardDisplayName) {
         if (isSystemKeyboardRequest(keyboardDisplayName)) {
             chooseSystemKeyboard();
+        } else {
+            int newKeyboardIndex = getKeyboardIndexFromDisplayName(keyboardDisplayName);
+            requestNewKeyboard(newKeyboardIndex);
         }
-        int newKeyboardIndex = getKeyboardIndexFromDisplayName(keyboardDisplayName);
-        requestNewKeyboard(newKeyboardIndex);
     }
 
     /**
