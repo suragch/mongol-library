@@ -2172,8 +2172,7 @@ public final class MongolCode {
                                 if (glyphShapeBelow == Shape.STEM) {
                                     renderedWord.insert(0, Glyph.MEDI_GA_FVS3_STEM);    // feminine before consonant stem
                                 } else {
-                                    renderedWord.insert(0, Glyph.MEDI_GA_FEM);      // feminine
-                                    //renderedWord.insert(0, Glyph.MEDI_GA_FVS3_TOOTH);   // feminine before consonant tooth
+                                    renderedWord.insert(0, Glyph.MEDI_GA_FVS3_TOOTH);   // feminine before consonant tooth
                                 }
                                 glyphShapeBelow = Shape.ROUND;
                             } else {
