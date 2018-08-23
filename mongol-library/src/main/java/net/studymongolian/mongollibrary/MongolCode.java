@@ -2169,7 +2169,20 @@ public final class MongolCode {
                                             (isConsonant(charAbove) ||
                                                     charAbove == Uni.ZWJ))) {
 
-                                if (glyphShapeBelow == Shape.STEM) {
+                                if (charBelow == Uni.NA ||
+                                        charBelow == Uni.MA ||
+                                        charBelow == Uni.LA ) {
+                                    char renderedCharBelow = renderedWord.charAt(0);
+                                    if (renderedCharBelow == Glyph.FINA_MA ||
+                                            renderedCharBelow == Glyph.FINA_LA ||
+                                            renderedCharBelow == Glyph.FINA_NA ||
+                                            renderedCharBelow == Glyph.MEDI_NA_FVS2) {
+                                        // make exception for words like CHECHEGM_A
+                                        renderedWord.insert(0, Glyph.MEDI_GA_FVS3_STEM);    // feminine before consonant stem
+                                    } else {
+                                        renderedWord.insert(0, Glyph.MEDI_GA_FEM);      // BIG Fem G looks better for medial N, M, L
+                                    }
+                                } else if (glyphShapeBelow == Shape.STEM) {
                                     renderedWord.insert(0, Glyph.MEDI_GA_FVS3_STEM);    // feminine before consonant stem
                                 } else {
                                     renderedWord.insert(0, Glyph.MEDI_GA_FVS3_TOOTH);   // feminine before consonant tooth
@@ -2222,14 +2235,13 @@ public final class MongolCode {
                     if (isRoundLetter(charAbove) ||
                             charAbove == Uni.ANG) {
                         renderedWord.insert(0, Glyph.MEDI_MA_BP);                // tail extended for round letter
-                    } else if (charAbove == Uni.QA ||
-                            charAbove == Uni.GA) {
+                    } else if (charAbove == Uni.GA) {
                         if (gender == Gender.NEUTER) {
                             gender = getWordGenderAboveIndex(positionInWord, inputWord);
                         }
                         if (gender != Gender.MASCULINE ||
                                 // feminine G when between consonants
-                                (positionInWord > 1 && charAbove == Uni.GA &&
+                                (positionInWord > 1 &&
                                         (isConsonant(inputWord.charAt(positionInWord - 2)) ||
                                                 inputWord.charAt(positionInWord - 2) == Uni.ZWJ))) {
                             renderedWord.insert(0, Glyph.MEDI_MA_BP);            // tail extended for round letter
@@ -2271,14 +2283,13 @@ public final class MongolCode {
                     if (isRoundLetter(charAbove) ||
                             charAbove == Uni.ANG) {
                         renderedWord.insert(0, Glyph.MEDI_LA_BP);                // tail extended for round letter
-                    } else if (charAbove == Uni.QA ||
-                            charAbove == Uni.GA) {
+                    } else if (charAbove == Uni.GA) {
                         if (gender == Gender.NEUTER) {
                             gender = getWordGenderAboveIndex(positionInWord, inputWord);
                         }
                         if (gender != Gender.MASCULINE ||
                                 // feminine G when between consonants
-                                (positionInWord > 1 && charAbove == Uni.GA &&
+                                (positionInWord > 1 &&
                                         (isConsonant(inputWord.charAt(positionInWord - 2)) ||
                                                 inputWord.charAt(positionInWord - 2) == Uni.ZWJ))) {
                             renderedWord.insert(0, Glyph.MEDI_LA_BP);            // tail extended for round letter
