@@ -147,7 +147,7 @@ public class KeyboardAeiou extends Keyboard {
         // Row 1
 
         mKeyA.setText(MongolCode.Uni.A);
-        mKeyA.setSubText("");
+        mKeyA.setSubText("" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1);
 
         mKeyE.setText(MongolCode.Uni.E);
         mKeyE.setSubText(MongolCode.Uni.EE);

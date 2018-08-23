@@ -219,7 +219,7 @@ public class KeyboardQwerty extends Keyboard {
 
         // Row 2
         mKeyA.setText(MongolCode.Uni.A);
-        mKeyA.setSubText("");
+        mKeyA.setSubText("" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1);
 
         mKeyS.setText(MongolCode.Uni.SA);
         mKeyS.setSubText("");
