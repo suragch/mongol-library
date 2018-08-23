@@ -5132,7 +5132,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void sigsiglequWord() {
         String unicode = "ᠰᠢᠭᠰᠢᠭᠯᠡᠬᠦ"; // SIGSIGLEQU
         String result = convert(unicode);
-        String expected = "\uE2FD\uE27E\uE2EB\uE301\uE27E\uE2EB\uE2FC\uE276\uE2DD\uE2A7";
+        String expected = "\uE2FD\uE27E\uE2EF\uE301\uE27E\uE2EB\uE2FC\uE276\uE2DD\uE2A7";
         assertEquals(expected, result);
     }
 
@@ -5140,7 +5140,7 @@ public class ConvertUnicodeToMenksoftCodeTest {
     public void diglimsigsenWord() {
         String unicode = "ᠳᠢᠭᠯᠢᠮᠰᠢᠭᠰᠡᠨ"; // DIGLIMSIGSEN
         String result = convert(unicode);
-        String expected = "\uE30E\uE27E\uE2EB\uE2FC\uE27E\uE2F4\uE301\uE27E\uE2EB\uE301\uE276\uE2B5";
+        String expected = "\uE30E\uE27E\uE2EB\uE2FC\uE27E\uE2F4\uE301\uE27E\uE2EF\uE301\uE276\uE2B5";
         assertEquals(expected, result);
     }
 
@@ -5537,6 +5537,14 @@ public class ConvertUnicodeToMenksoftCodeTest {
         String expected = "\uE2FD\uE27E\uE2E7";
         assertEquals(expected, result);
     }
+
+//    @Test  // Do we need to modify the R?
+//    public void tegriWord() {
+//        String unicode = "ᠲᠡᠭᠷᠢ"; // TEGRI
+//        String result = convert(unicode);
+//        String expected = "\uE308\uE276\uE2EF\uE328\uE27B";
+//        assertEquals(expected, result);
+//    }
 
 
     ///////////////////////// Suffixes ////////////////////////
@@ -6026,4 +6034,61 @@ public class ConvertUnicodeToMenksoftCodeTest {
         assertEquals(expected, result);
     }
 
+    // other random tests
+
+    @Test
+    public void qmqShortTailM() {
+        String unicode = "ᠬᠮᠬ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE2CE\uE2F4\uE2D6";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void qlqShortTailL() {
+        String unicode = "ᠬᠯᠬ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE2CE\uE2FA\uE2D6";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void egnenBigG() {
+        String unicode = "ᠡᠭᠨᠡᠨ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE271\uE2EB\uE2B7\uE276\uE2B5";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void egmenBigG() {
+        String unicode = "ᠡᠭᠮᠡᠨ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE271\uE2EB\uE2F6\uE276\uE2B5";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void eglenBigG() {
+        String unicode = "ᠡᠭᠯᠡᠨ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE271\uE2EB\uE2FC\uE276\uE2B5";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void egdenSmallG() {
+        String unicode = "ᠡᠭᠳᠡᠨ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE271\uE2EF\uE313\uE276\uE2B5";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void egsenSmallG() {
+        String unicode = "ᠡᠭᠰᠡᠨ"; // KART
+        String result = convert(unicode);
+        String expected = "\uE271\uE2EF\uE301\uE276\uE2B5";
+        assertEquals(expected, result);
+    }
 }
