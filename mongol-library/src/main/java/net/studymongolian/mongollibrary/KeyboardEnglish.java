@@ -77,18 +77,18 @@ public class KeyboardEnglish extends Keyboard {
         // keyboard layout
 
         // | Q | W | E | R | T | Y | U | I | O | P |  Row 1
-        //   | A | S | D | F | G | H | J | K | L |    Row 2
+        // | A  |  S | D | F | G | H | J | K  | L  |    Row 2
         // |shift| Z | X | C | V | B | N | M | del |  Row 3
         // |  kb | ! | , |   space   | : | ? | ret |  Row 4
 
         // actual layout work is done by Keyboard superclass's onLayout
         mNumberOfKeysInRow = new int[]{10, 9, 9, 7}; // 36 keys total
         // this is the percent to inset the row
-        mInsetWeightInRow = new float[]{0, 0.05f, 0, 0};
+        mInsetWeightInRow = new float[]{0, 0, 0, 0};
         // the key weights for each row should sum to 1 (unless there is an inset)
         mKeyWeights = new float[]{
                 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,     // row 0
-                0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,           // row 1
+                1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f,           // row 1
                 0.15f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.15f,         // row 2
                 0.15f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.15f};                    // row 3
 
