@@ -13,13 +13,13 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 
 public abstract class Key extends View {
 
     public static final float MAX_CONTENT_PROPORTION = 0.8f;
     private static final float SUBTEXT_INDENT = 3; // dp
+    private static final int LONG_PRESS_TIMEOUT = 300; // ViewConfiguration.getLongPressTimeout() too slow
 
     protected boolean mStatePressed = false;
     protected Paint mKeyPaint;
@@ -39,7 +39,6 @@ public abstract class Key extends View {
     private TextPaint mSubTextPaint;
     private float mSubtextIndent;
 
-    private final int LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
     private Handler mHandler = new Handler();
     private boolean mIsLongPress = false;
     private int lastTouchDownX;
