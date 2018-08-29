@@ -289,7 +289,6 @@ public final class MongolCode {
     }
 
     private static boolean isBGDRS(char character) {
-        // This method is not used internally, only for external use.
         return (character == Uni.BA || character == Uni.GA || character == Uni.DA
                 || character == Uni.RA || character == Uni.SA);
     }
