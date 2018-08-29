@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.12.3'
+    implementation 'net.studymongolian:mongol-library:1.12.4'
 }
 ```
 
@@ -678,6 +678,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.12.4`: Made ImeContainer.getPreviousMongolWords() public
 * `1.12.3`: Bug fixes and minor adjustments
 * `1.12.2`: Improved Menksoft to Unicode conversion, targeting Android P
 * `1.12.1`: Improved Menksoft to Unicode conversion
