@@ -587,6 +587,9 @@ public class ImeContainer extends ViewGroup
     /**
      * Keyboard.OnKeyboardListener method
      *
+     * Returns one word before the cursor. If the cursor is touching a word then the text
+     * from the cursor to the beginning of the word is considered the previous word.
+     *
      * @param allowSingleSpaceBeforeCursor whether a space is allowed between the cursor
      *                                     and the end of the previous word
      * @return the previous Mongolian word before the cursor
@@ -598,7 +601,16 @@ public class ImeContainer extends ViewGroup
         return words.get(0);
     }
 
-    private List<String> getPreviousMongolWords(int numberOfWords, boolean allowSingleSpaceBeforeCursor) {
+    /**
+     * Returns the previous words before the cursor. If the cursor is touching a word then the text
+     * from the cursor to the beginning of the word is counted as the first previous word.
+     *
+     * @param numberOfWords the number of words to return
+     * @param allowSingleSpaceBeforeCursor if true then a single space is ignored before the cursor
+     *                                     and the word before that is counted as the first word
+     * @return a array of words of length numberOfWords where index 0 is closest to the cursor
+     */
+    public List<String> getPreviousMongolWords(int numberOfWords, boolean allowSingleSpaceBeforeCursor) {
         InputConnection ic = getInputConnection();
         List<String> words = new ArrayList<>();
         if (ic == null) return words;
