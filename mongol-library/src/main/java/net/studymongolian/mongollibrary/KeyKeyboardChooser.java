@@ -30,7 +30,7 @@ public class KeyKeyboardChooser extends KeyImage {
     }
 
     @Override
-    protected void onActionUp(int xPosition) {
+    protected void onActionUp(int xPosition, int yPosition) {
         if (getIsShowingPopup())
             chooseAnotherKeyboard(xPosition);
         else

@@ -23,7 +23,7 @@ public class KeyBackspace extends KeyImage {
     }
 
     @Override
-    protected void onActionDown(int xPosition) {
+    protected void onActionDown(int xPosition, int yPosition) {
         backspace();
         mHandler.postDelayed(actionBackspace, INITIAL_DELAY);
     }
@@ -40,7 +40,7 @@ public class KeyBackspace extends KeyImage {
     protected void onActionScroll(int xPosition) {}
 
     @Override
-    protected void onActionUp(int xPosition) {
+    protected void onActionUp(int xPosition, int yPosition) {
         mHandler.removeCallbacks(actionBackspace);
     }
 

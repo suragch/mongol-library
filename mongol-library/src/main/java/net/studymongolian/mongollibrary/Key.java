@@ -13,13 +13,15 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 
 public abstract class Key extends View {
 
     public static final float MAX_CONTENT_PROPORTION = 0.8f;
-    private static final float SUBTEXT_INDENT = 3; // dp
+    private static final float SUBTEXT_INDENT_DP = 3;
     private static final int LONG_PRESS_TIMEOUT = 300; // ViewConfiguration.getLongPressTimeout() too slow
+    private static final float MIN_SWIPE_DISTANCE_DP = 10;
 
     protected boolean mStatePressed = false;
     protected Paint mKeyPaint;
@@ -33,6 +35,7 @@ public abstract class Key extends View {
 
     protected MongolCode renderer = MongolCode.INSTANCE;
     protected String mKeyInputText;
+    protected String mKeySwipeUpText;
     private String mSubTextDisplay;
     private boolean mIsRotatedSubText;
     private Rect mSubTextBounds;
@@ -42,32 +45,35 @@ public abstract class Key extends View {
     private Handler mHandler = new Handler();
     private boolean mIsLongPress = false;
     private int lastTouchDownX;
+    private int lastTouchDownY;
+    private float mMinSwipeDistance;
 
     private KeyListener mKeyListener = null;
 
     public Key(Context context) {
         super(context);
-        initDefault();
+        initDefault(context);
         initPaints();
     }
 
     public Key(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initDefault();
+        initDefault(context);
         initPaints();
     }
 
     Key(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initDefault();
+        initDefault(context);
         initPaints();
     }
 
-    private void initDefault() {
+    private void initDefault(Context context) {
         mPressedColor = Color.GRAY;
         mIsRotatedSubText = true;
         mSubTextBounds = new Rect();
-        mSubtextIndent = SUBTEXT_INDENT * getResources().getDisplayMetrics().density;
+        mSubtextIndent = SUBTEXT_INDENT_DP * getResources().getDisplayMetrics().density;
+        mMinSwipeDistance = MIN_SWIPE_DISTANCE_DP * getResources().getDisplayMetrics().density;
     }
 
     private void initPaints() {
@@ -183,10 +189,11 @@ public abstract class Key extends View {
 
         int action = event.getActionMasked();
         int x = (int) event.getRawX();
+        int y = (int) event.getRawY();
 
         switch(action) {
             case (MotionEvent.ACTION_DOWN) :
-                onActionDown(x);
+                onActionDown(x, y);
                 return true;
             case (MotionEvent.ACTION_MOVE) :
                 onActionScroll(x);
@@ -194,7 +201,7 @@ public abstract class Key extends View {
             case (MotionEvent.ACTION_UP) :
                 mIsLongPress = false;
                 mHandler.removeCallbacks(longPress);
-                onActionUp(x);
+                onActionUp(x, y);
                 return true;
             default :
                 mIsLongPress = false;
@@ -203,8 +210,9 @@ public abstract class Key extends View {
         }
     }
 
-    protected void onActionDown(int xPosition) {
+    protected void onActionDown(int xPosition, int yPosition) {
         lastTouchDownX = xPosition;
+        lastTouchDownY = yPosition;
         mIsLongPress = true;
         mHandler.postDelayed(longPress, LONG_PRESS_TIMEOUT);
     }
@@ -228,11 +236,23 @@ public abstract class Key extends View {
         updatePopup(xPosition);
     }
 
-    protected void onActionUp(int xPosition) {
-        if (getIsShowingPopup())
+    protected void onActionUp(int xPosition, int yPosition) {
+        if (getIsShowingPopup()) {
             finishPopup(xPosition);
-        else if (mKeyInputText != null)
+            return;
+        }
+        if (mKeyInputText == null) return;
+
+        if (didSwipeUp(yPosition) && mKeySwipeUpText != null) {
+            sendTextToKeyboard(mKeySwipeUpText);
+        } else {
             sendTextToKeyboard(mKeyInputText);
+        }
+    }
+
+    private boolean didSwipeUp(int yPosition) {
+        int deltaY = lastTouchDownY - yPosition;
+        return deltaY > mMinSwipeDistance;
     }
 
     @Override
@@ -317,6 +337,28 @@ public abstract class Key extends View {
      */
     public void setText(String text) {
         this.mKeyInputText = text;
+    }
+
+    /**
+     * Setting this creates a swipe up shortcut to enter secondary text (for example,
+     * as a shortcut for the first popup value or the value shown on the subtext label)
+     * If this is not set then the default key text is used.
+     *
+     * @param text the text to enter if the user swipes up on the key
+     */
+    public void setSwipeUpText(char text) {
+        setSwipeUpText(String.valueOf(text));
+    }
+
+    /**
+     * Setting this creates a swipe up shortcut to enter secondary text (for example,
+     * as a shortcut for the first popup value or the value shown on the subtext label)
+     * If this is not set then the default key text is used.
+     *
+     * @param text the text to enter if the user swipes up on the key
+     */
+    public void setSwipeUpText(String text) {
+        this.mKeySwipeUpText = text;
     }
 
     /**

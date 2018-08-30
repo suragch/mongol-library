@@ -147,58 +147,75 @@ public class KeyboardAeiou extends Keyboard {
         // Row 1
 
         mKeyA.setText(MongolCode.Uni.A);
+        mKeyA.setSwipeUpText(null);
         mKeyA.setSubText("" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1);
 
         mKeyE.setText(MongolCode.Uni.E);
+        mKeyE.setSwipeUpText(MongolCode.Uni.EE);
         mKeyE.setSubText(MongolCode.Uni.EE);
 
         mKeyI.setText(MongolCode.Uni.I);
+        mKeyI.setSwipeUpText(null);
         mKeyI.setSubText("");
 
         mKeyO.setText(MongolCode.Uni.U);
+        mKeyO.setSwipeUpText(null);
         mKeyO.setSubText("");
 
         mKeyU.setText(MongolCode.Uni.UE);
+        mKeyU.setSwipeUpText(null);
         mKeyU.setSubText("");
 
         // Row 2
 
         mKeyNA.setText(MongolCode.Uni.NA);
+        mKeyNA.setSwipeUpText(MongolCode.Uni.ANG);
         mKeyNA.setSubText(MongolCode.Uni.ANG);
 
         mKeyBA.setText(MongolCode.Uni.BA);
+        mKeyBA.setSwipeUpText(MongolCode.Uni.PA);
         mKeyBA.setSubText(MongolCode.Uni.PA);
 
         mKeyQA.setText(MongolCode.Uni.QA);
+        mKeyQA.setSwipeUpText(MongolCode.Uni.HAA);
         mKeyQA.setSubText(MongolCode.Uni.HAA);
 
         mKeyGA.setText(MongolCode.Uni.GA);
+        mKeyGA.setSwipeUpText(MongolCode.Uni.KA);
         mKeyGA.setSubText(MongolCode.Uni.KA);
 
         mKeyMA.setText(MongolCode.Uni.MA);
+        mKeyMA.setSwipeUpText(null);
         mKeyMA.setSubText("");
 
         mKeyLA.setText(MongolCode.Uni.LA);
+        mKeyLA.setSwipeUpText(MongolCode.Uni.LHA);
         mKeyLA.setSubText(MongolCode.Uni.LHA);
 
         // Row 3
 
         mKeySA.setText(MongolCode.Uni.SA);
+        mKeySA.setSwipeUpText(MongolCode.Uni.SHA);
         mKeySA.setSubText(MongolCode.Uni.SHA);
 
         mKeyTADA.setText(MongolCode.Uni.DA, MongolCode.Uni.TA);
+        mKeyTADA.setSwipeUpText(null);
         mKeyTADA.setSubText(MongolCode.Uni.DA);
 
         mKeyCHA.setText(MongolCode.Uni.CHA);
+        mKeyCHA.setSwipeUpText(MongolCode.Uni.ZA);
         mKeyCHA.setSubText(MongolCode.Uni.ZA);
 
         mKeyJA.setText(MongolCode.Uni.JA);
+        mKeyJA.setSwipeUpText(MongolCode.Uni.ZHI);
         mKeyJA.setSubText(MongolCode.Uni.ZHI);
 
         mKeyYA.setText(MongolCode.Uni.YA);
+        mKeyYA.setSwipeUpText(MongolCode.Uni.WA);
         mKeyYA.setSubText(MongolCode.Uni.WA);
 
         mKeyRA.setText(MongolCode.Uni.RA);
+        mKeyRA.setSwipeUpText(MongolCode.Uni.ZRA);
         mKeyRA.setSubText(MongolCode.Uni.ZRA);
 
     }
@@ -223,58 +240,75 @@ public class KeyboardAeiou extends Keyboard {
         // Row 1
 
         mKeyA.setText(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
+        mKeyA.setSwipeUpText(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
         mKeyA.setSubText(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
 
         mKeyE.setText(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
+        mKeyE.setSwipeUpText(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
         mKeyE.setSubText(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
 
         mKeyI.setText(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
+        mKeyI.setSwipeUpText(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
         mKeyI.setSubText(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
 
         mKeyO.setText(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
+        mKeyO.setSwipeUpText(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
         mKeyO.setSubText(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
 
         mKeyU.setText(MongolCode.Uni.MIDDLE_DOT);
+        mKeyU.setSwipeUpText(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
         mKeyU.setSubText(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
 
         // Row 2
 
         mKeyNA.setText("1");
+        mKeyNA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
         mKeyNA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
 
         mKeyBA.setText("2");
+        mKeyBA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
         mKeyBA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
 
         mKeyQA.setText("3");
+        mKeyQA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
         mKeyQA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
 
         mKeyGA.setText("4");
+        mKeyGA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
         mKeyGA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
 
         mKeyMA.setText("5");
+        mKeyMA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
         mKeyMA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
 
         mKeyLA.setText(MongolCode.Uni.VERTICAL_EM_DASH);
+        mKeyLA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_BIRGA);
         mKeyLA.setSubText(MongolCode.Uni.MONGOLIAN_BIRGA);
 
         // Row 3
 
         mKeySA.setText("6");
+        mKeySA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
         mKeySA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
 
         mKeyTADA.setText("7");
+        mKeyTADA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
         mKeyTADA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
 
         mKeyCHA.setText("8");
+        mKeyCHA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
         mKeyCHA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
 
         mKeyJA.setText("9");
+        mKeyJA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
         mKeyJA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
 
         mKeyYA.setText("0");
+        mKeyYA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
         mKeyYA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
 
         mKeyRA.setText(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
+        mKeyRA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
         mKeyRA.setSubText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
     }
 
@@ -293,6 +327,7 @@ public class KeyboardAeiou extends Keyboard {
 
     private void setNonChangingKeyValues() {
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
+        mKeyComma.setSwipeUpText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeySpace.setText(" ");
         if (hasCandidatesView()) {

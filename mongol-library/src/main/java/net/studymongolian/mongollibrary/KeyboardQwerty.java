@@ -188,89 +188,117 @@ public class KeyboardQwerty extends Keyboard {
         // Row 1
 
         mKeyQ.setText(MongolCode.Uni.CHA);
+        mKeyQ.setSwipeUpText(MongolCode.Uni.CHI);
         mKeyQ.setSubText(MongolCode.Uni.CHI);
 
         mKeyW.setText(MongolCode.Uni.WA);
+        mKeyW.setSwipeUpText(null);
         mKeyW.setSubText("");
 
         mKeyE.setText(MongolCode.Uni.E);
+        mKeyE.setSwipeUpText(MongolCode.Uni.EE);
         mKeyE.setSubText(MongolCode.Uni.EE);
 
         mKeyR.setText(MongolCode.Uni.RA);
+        mKeyR.setSwipeUpText(MongolCode.Uni.ZRA);
         mKeyR.setSubText(MongolCode.Uni.ZRA);
 
         mKeyT.setText(MongolCode.Uni.TA);
+        mKeyT.setSwipeUpText(null);
         mKeyT.setSubText("");
 
         mKeyY.setText(MongolCode.Uni.YA);
+        mKeyY.setSwipeUpText(null);
         mKeyY.setSubText("");
 
         mKeyU.setText(MongolCode.Uni.UE);
+        mKeyU.setSwipeUpText(null);
         mKeyU.setSubText("");
 
         mKeyI.setText(MongolCode.Uni.I);
+        mKeyI.setSwipeUpText(null);
         mKeyI.setSubText("");
 
         mKeyO.setText(MongolCode.Uni.OE);
+        mKeyO.setSwipeUpText(null);
         mKeyO.setSubText("");
 
         mKeyP.setText(MongolCode.Uni.PA);
+        mKeyP.setSwipeUpText(null);
         mKeyP.setSubText("");
 
         // Row 2
         mKeyA.setText(MongolCode.Uni.A);
+        mKeyA.setSwipeUpText(null);
         mKeyA.setSubText("" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1);
 
         mKeyS.setText(MongolCode.Uni.SA);
+        mKeyS.setSwipeUpText(null);
         mKeyS.setSubText("");
 
         mKeyD.setText(MongolCode.Uni.DA);
+        mKeyD.setSwipeUpText(null);
         mKeyD.setSubText("");
 
         mKeyF.setText(MongolCode.Uni.FA);
+        mKeyF.setSwipeUpText(null);
         mKeyF.setSubText("");
 
         mKeyG.setText(MongolCode.Uni.GA);
+        mKeyG.setSwipeUpText(null);
         mKeyG.setSubText("");
 
         mKeyH.setText(MongolCode.Uni.QA);
+        mKeyH.setSwipeUpText(MongolCode.Uni.HAA);
         mKeyH.setSubText(MongolCode.Uni.HAA);
 
         mKeyJ.setText(MongolCode.Uni.JA);
+        mKeyJ.setSwipeUpText(MongolCode.Uni.ZHI);
         mKeyJ.setSubText(MongolCode.Uni.ZHI);
 
         mKeyK.setText(MongolCode.Uni.KA);
+        mKeyK.setSwipeUpText(null);
         mKeyK.setSubText("");
 
         mKeyL.setText(MongolCode.Uni.LA);
+        mKeyL.setSwipeUpText(MongolCode.Uni.LHA);
         mKeyL.setSubText(MongolCode.Uni.LHA);
 
         mKeyNg.setText(MongolCode.Uni.ANG);
+        mKeyNg.setSwipeUpText(null);
         mKeyNg.setSubText("");
 
         // Row 3
         mKeyZwj.setText(MongolCode.Uni.ZWJ, '/'); // TODO should we add ZWNJ?
+        mKeyZwj.setSwipeUpText(null);
         mKeyZwj.setSubText("");
 
         mKeyZ.setText(MongolCode.Uni.ZA);
+        mKeyZ.setSwipeUpText(MongolCode.Uni.TSA);
         mKeyZ.setSubText(MongolCode.Uni.TSA);
 
         mKeyX.setText(MongolCode.Uni.SHA);
+        mKeyX.setSwipeUpText(null);
         mKeyX.setSubText("");
 
         mKeyC.setText(MongolCode.Uni.O);
+        mKeyC.setSwipeUpText(null);
         mKeyC.setSubText("");
 
         mKeyV.setText(MongolCode.Uni.U);
+        mKeyV.setSwipeUpText(null);
         mKeyV.setSubText("");
 
         mKeyB.setText(MongolCode.Uni.BA);
+        mKeyB.setSwipeUpText(null);
         mKeyB.setSubText("");
 
         mKeyN.setText(MongolCode.Uni.NA);
+        mKeyN.setSwipeUpText(null);
         mKeyN.setSubText("");
 
         mKeyM.setText(MongolCode.Uni.MA);
+        mKeyM.setSwipeUpText(null);
         mKeyM.setSubText("");
     }
 
@@ -295,91 +323,119 @@ public class KeyboardQwerty extends Keyboard {
         // Row 1
 
         mKeyQ.setText("1");
+        mKeyQ.setSwipeUpText(KEY_Q_PUNCT_SUB);
         mKeyQ.setSubText(KEY_Q_PUNCT_SUB);
 
         mKeyW.setText("2");
+        mKeyW.setSwipeUpText(KEY_W_PUNCT_SUB);
         mKeyW.setSubText(KEY_W_PUNCT_SUB);
 
         mKeyE.setText("3");
+        mKeyE.setSwipeUpText(KEY_E_PUNCT_SUB);
         mKeyE.setSubText(KEY_E_PUNCT_SUB);
 
         mKeyR.setText("4");
+        mKeyR.setSwipeUpText(KEY_R_PUNCT_SUB);
         mKeyR.setSubText(KEY_R_PUNCT_SUB);
 
         mKeyT.setText("5");
+        mKeyT.setSwipeUpText(KEY_T_PUNCT_SUB);
         mKeyT.setSubText(KEY_T_PUNCT_SUB);
 
         mKeyY.setText("6");
+        mKeyY.setSwipeUpText(KEY_Y_PUNCT_SUB);
         mKeyY.setSubText(KEY_Y_PUNCT_SUB);
 
         mKeyU.setText("7");
+        mKeyU.setSwipeUpText(KEY_U_PUNCT_SUB);
         mKeyU.setSubText(KEY_U_PUNCT_SUB);
 
         mKeyI.setText("8");
+        mKeyI.setSwipeUpText(KEY_I_PUNCT_SUB);
         mKeyI.setSubText(KEY_I_PUNCT_SUB);
 
         mKeyO.setText("9");
+        mKeyO.setSwipeUpText(KEY_O_PUNCT_SUB);
         mKeyO.setSubText(KEY_O_PUNCT_SUB);
 
         mKeyP.setText("0");
+        mKeyP.setSwipeUpText(KEY_P_PUNCT_SUB);
         mKeyP.setSubText(KEY_P_PUNCT_SUB);
 
         // Row 2
 
         mKeyA.setText(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
+        mKeyA.setSwipeUpText(KEY_A_PUNCT_SUB);
         mKeyA.setSubText(KEY_A_PUNCT_SUB);
 
         mKeyS.setText(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
+        mKeyS.setSwipeUpText(KEY_S_PUNCT_SUB);
         mKeyS.setSubText(KEY_S_PUNCT_SUB);
 
         mKeyD.setText(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
+        mKeyD.setSwipeUpText(KEY_D_PUNCT_SUB);
         mKeyD.setSubText(KEY_D_PUNCT_SUB);
 
         mKeyF.setText(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
+        mKeyF.setSwipeUpText(KEY_F_PUNCT_SUB);
         mKeyF.setSubText(KEY_F_PUNCT_SUB);
 
         mKeyG.setText("=");
+        mKeyG.setSwipeUpText(KEY_G_PUNCT_SUB);
         mKeyG.setSubText(KEY_G_PUNCT_SUB);
 
         mKeyH.setText("¥");
+        mKeyH.setSwipeUpText(KEY_H_PUNCT_SUB);
         mKeyH.setSubText(KEY_H_PUNCT_SUB);
 
         mKeyJ.setText("'");
+        mKeyJ.setSwipeUpText(KEY_J_PUNCT_SUB);
         mKeyJ.setSubText(KEY_J_PUNCT_SUB);
 
         mKeyK.setText("\"");
+        mKeyK.setSwipeUpText(KEY_K_PUNCT_SUB);
         mKeyK.setSubText(KEY_K_PUNCT_SUB);
 
         mKeyL.setText("#");
+        mKeyL.setSwipeUpText(KEY_L_PUNCT_SUB);
         mKeyL.setSubText(KEY_L_PUNCT_SUB);
 
         mKeyNg.setText("|");
+        mKeyNg.setSwipeUpText(KEY_NG_PUNCT_SUB);
         mKeyNg.setSubText(KEY_NG_PUNCT_SUB);
 
         // Row 3
 
         mKeyZwj.setText("/");
+        mKeyZwj.setSwipeUpText(KEY_ZWJ_PUNCT_SUB);
         mKeyZwj.setSubText(KEY_ZWJ_PUNCT_SUB);
 
         mKeyZ.setText(MongolCode.Uni.REFERENCE_MARK);
+        mKeyZ.setSwipeUpText(KEY_Z_PUNCT_SUB);
         mKeyZ.setSubText(KEY_Z_PUNCT_SUB);
 
         mKeyX.setText(MongolCode.Uni.MONGOLIAN_BIRGA);
+        mKeyX.setSwipeUpText(KEY_X_PUNCT_SUB);
         mKeyX.setSubText(KEY_X_PUNCT_SUB);
 
         mKeyC.setText(MongolCode.Uni.MIDDLE_DOT);
+        mKeyC.setSwipeUpText(KEY_C_PUNCT_SUB);
         mKeyC.setSubText(KEY_C_PUNCT_SUB);
 
         mKeyV.setText(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
+        mKeyV.setSwipeUpText(KEY_V_PUNCT_SUB);
         mKeyV.setSubText(KEY_V_PUNCT_SUB);
 
         mKeyB.setText(MongolCode.Uni.VERTICAL_EM_DASH);
+        mKeyB.setSwipeUpText(KEY_B_PUNCT_SUB);
         mKeyB.setSubText(KEY_B_PUNCT_SUB);
 
         mKeyN.setText(MongolCode.Uni.MONGOLIAN_COLON);
+        mKeyN.setSwipeUpText(KEY_N_PUNCT_SUB);
         mKeyN.setSubText(KEY_N_PUNCT_SUB);
 
         mKeyM.setText(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
+        mKeyM.setSwipeUpText(KEY_M_PUNCT_SUB);
         mKeyM.setSubText(KEY_M_PUNCT_SUB);
     }
 
