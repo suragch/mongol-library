@@ -39,6 +39,7 @@ public class ImeContainer extends ViewGroup
     private static final int DIVIDER_ALPHA = 0x40; // 25%
     private static final int MAX_CHARS_BEFORE_CURSOR = 128;
     private static final int DEFAULT_HEIGHT_DP = 240;
+    private static final char SPACE = ' ';
 
     // default keyboard candidate tool button items
     private static final int DISMISS_KEYBOARD = 0;
@@ -57,7 +58,7 @@ public class ImeContainer extends ViewGroup
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
     private PopupKeyCandidate mShowSystemKeyboardsOption;
-    private CharSequence mCharactersThatDontFollowSpace = String.valueOf(MongolCode.Uni.NNBS);
+    //private CharSequence mCharactersThatDontFollowSpace = String.valueOf(MongolCode.Uni.NNBS);
 
     public ImeContainer(Context context) {
         super(context, null, 0);
@@ -148,6 +149,7 @@ public class ImeContainer extends ViewGroup
      */
     public interface OnNonSystemImeListener {
         void onSystemKeyboardRequest();
+
         void onHideKeyboardRequest();
     }
 
@@ -586,7 +588,7 @@ public class ImeContainer extends ViewGroup
 
     /**
      * Keyboard.OnKeyboardListener method
-     *
+     * <p>
      * Returns one word before the cursor. If the cursor is touching a word then the text
      * from the cursor to the beginning of the word is considered the previous word.
      *
@@ -605,7 +607,7 @@ public class ImeContainer extends ViewGroup
      * Returns the previous words before the cursor. If the cursor is touching a word then the text
      * from the cursor to the beginning of the word is counted as the first previous word.
      *
-     * @param numberOfWords the number of words to return
+     * @param numberOfWords                the number of words to return
      * @param allowSingleSpaceBeforeCursor if true then a single space is ignored before the cursor
      *                                     and the word before that is counted as the first word
      * @return a array of words of length numberOfWords where index 0 is closest to the cursor
@@ -690,39 +692,98 @@ public class ImeContainer extends ViewGroup
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
-        char previousChar = getPreviousChar();
-        if (previousChar == ' ' || previousChar == MongolCode.Uni.NNBS) {
-            char initialChar = text.charAt(0);
-            if (characterDoesntFollowSpace(initialChar)) {
+        //replacePreviousSpaceIfNnbs(ic, text, previousChar);
+        //addSpaceForPunctuation(ic, text, previousChar);
+        char initialChar = text.charAt(0);
+        if (initialChar == MongolCode.Uni.NNBS) {
+            char previousChar = getPreviousChar();
+            if (isSpace(previousChar)) {
                 ic.deleteSurroundingText(1, 0);
             }
+            ic.commitText(text, 1);
+        } else if (text.equals(String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA))) {
+            char previousChar = getPreviousChar();
+            if (previousChar == MongolCode.Uni.MONGOLIAN_COMMA) {
+                ic.deleteSurroundingText(1, 0);
+                String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
+                ic.commitText(insert, 1);
+            } else if (previousChar == SPACE) {
+                CharSequence previousTwo = ic.getTextBeforeCursor(2, 0);
+                if (!TextUtils.isEmpty(previousTwo)
+                        && previousTwo.charAt(0) == MongolCode.Uni.MONGOLIAN_COMMA) {
+                    ic.deleteSurroundingText(2, 0);
+                    String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
+                    ic.commitText(String.valueOf(insert), 1);
+                } else {
+                    ic.commitText(text + SPACE, 1);
+                }
+            } else {
+                addSpacedPunctuation(ic, text, previousChar);
+            }
+        } else if (isPunctuationThatNeedsSpace(initialChar)) {
+            char previousChar = getPreviousChar();
+            addSpacedPunctuation(ic, text, previousChar);
+        } else {
+            ic.commitText(text, 1);
         }
-        ic.commitText(text, 1);
         ic.endBatchEdit();
     }
 
-    private boolean characterDoesntFollowSpace(char character) {
-        int length = mCharactersThatDontFollowSpace.length();
-        for (int i = 0; i < length; i++) {
-            if (mCharactersThatDontFollowSpace.charAt(i) == character)
-                return true;
+    private void addSpacedPunctuation(InputConnection ic, String text, char previousChar) {
+        if (isSpace(previousChar) || previousChar == 0) {
+            ic.commitText(text + SPACE, 1);
+        } else {
+            ic.commitText("" + SPACE + text + SPACE, 1);
         }
-        return false;
     }
 
-    /**
-     * This allows keyboard input to automatically backspace before inserting text
-     * if the previous character is a space. This is convenient for certain characters
-     * that do not normally follow a space.
-     * <p>
-     * If not set the default value is NNBS for suffixes.
-     *
-     * @param characters a string of characters. For example, "?.,". You should also
-     *                   include MongolCode.Uni.NNBS.
-     */
-    public void setCharactersThatDontFollowSpace(CharSequence characters) {
-        mCharactersThatDontFollowSpace = characters;
+    private boolean isPunctuationThatNeedsSpace(char punctChar) {
+        return punctChar == MongolCode.Uni.MONGOLIAN_COMMA ||
+                punctChar == MongolCode.Uni.MONGOLIAN_FULL_STOP ||
+                punctChar == MongolCode.Uni.MONGOLIAN_COLON ||
+                punctChar == MongolCode.Uni.DOUBLE_EXCLAMATION_MARK ||
+                punctChar == MongolCode.Uni.DOUBLE_QUESTION_MARK ||
+                punctChar == MongolCode.Uni.QUESTION_EXCLAMATION_MARK ||
+                punctChar == MongolCode.Uni.EXCLAMATION_QUESTION_MARK ||
+                (punctChar >= MongolCode.Uni.VERTICAL_COMMA
+                        && punctChar <= MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
     }
+
+//    private void replacePreviousSpaceIfNnbs(InputConnection ic, String text, char previousChar) {
+//        if (previousChar == ' ' || previousChar == MongolCode.Uni.NNBS) {
+//            char initialChar = text.charAt(0);
+//            if (characterDoesntFollowSpace(initialChar)) {
+//                ic.deleteSurroundingText(1, 0);
+//            }
+//        }
+//    }
+//
+//    private void addSpaceForPunctuation(InputConnection ic, String text, char previousChar) {
+//        if (isPun)
+//    }
+
+//    private boolean characterDoesntFollowSpace(char character) {
+//        int length = mCharactersThatDontFollowSpace.length();
+//        for (int i = 0; i < length; i++) {
+//            if (mCharactersThatDontFollowSpace.charAt(i) == character)
+//                return true;
+//        }
+//        return false;
+//    }
+
+//    /**
+//     * This allows keyboard input to automatically backspace before inserting text
+//     * if the previous character is a space. This is convenient for certain characters
+//     * that do not normally follow a space.
+//     * <p>
+//     * If not set the default value is NNBS for suffixes.
+//     *
+//     * @param characters a string of characters. For example, "?.,". You should also
+//     *                   include MongolCode.Uni.NNBS.
+//     */
+//    public void setCharactersThatDontFollowSpace(CharSequence characters) {
+//        mCharactersThatDontFollowSpace = characters;
+//    }
 
     private void updateCandidatesView() {
         if (mCandidatesView == null || mDataSource == null) return;

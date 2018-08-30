@@ -411,7 +411,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
     }
 
     @SuppressWarnings("unused")
-    protected void setShouldShowSuffixesInPopup(boolean whether) {
+    public void setShouldShowSuffixesInPopup(boolean whether) {
         mShouldShowSuffixesInPopup = whether;
     }
 

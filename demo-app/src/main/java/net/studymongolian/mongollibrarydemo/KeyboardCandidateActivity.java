@@ -42,14 +42,6 @@ public class KeyboardCandidateActivity extends AppCompatActivity
         imeContainer.setOnNonSystemImeListener(this);
         imeContainer.showSystemKeyboardsOption("ᠰᠢᠰᠲ᠋ᠧᠮ");
 
-        // these will characters will cause the cursor to back up
-        // if they come after a space.
-        imeContainer.setCharactersThatDontFollowSpace("" +
-                MongolCode.Uni.NNBS +
-                MongolCode.Uni.VERTICAL_QUESTION_MARK +
-                MongolCode.Uni.MONGOLIAN_FULL_STOP +
-                MongolCode.Uni.MONGOLIAN_COMMA);
-
         // set up input method manager
         MongolInputMethodManager mimm = new MongolInputMethodManager();
         mongolEditText = findViewById(R.id.mongoledittext);
