@@ -754,13 +754,17 @@ public class ImeContainer extends ViewGroup
     }
 
     private boolean isPunctuationThatNeedsSpace(char punctChar) {
-        return punctChar == MongolCode.Uni.MONGOLIAN_COMMA ||
+        return punctChar == MongolCode.Uni.MONGOLIAN_ELLIPSIS ||
+                punctChar == MongolCode.Uni.MONGOLIAN_COMMA ||
                 punctChar == MongolCode.Uni.MONGOLIAN_FULL_STOP ||
                 punctChar == MongolCode.Uni.MONGOLIAN_COLON ||
+                punctChar == MongolCode.Uni.MONGOLIAN_FOUR_DOTS ||
                 punctChar == MongolCode.Uni.DOUBLE_EXCLAMATION_MARK ||
                 punctChar == MongolCode.Uni.DOUBLE_QUESTION_MARK ||
                 punctChar == MongolCode.Uni.QUESTION_EXCLAMATION_MARK ||
                 punctChar == MongolCode.Uni.EXCLAMATION_QUESTION_MARK ||
+                punctChar == MongolCode.Uni.MIDDLE_DOT ||
+                punctChar == MongolCode.Uni.REFERENCE_MARK ||
                 (punctChar >= MongolCode.Uni.VERTICAL_COMMA
                         && punctChar <= MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
     }
