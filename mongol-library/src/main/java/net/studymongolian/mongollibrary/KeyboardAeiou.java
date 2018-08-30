@@ -330,6 +330,7 @@ public class KeyboardAeiou extends Keyboard {
         mKeyComma.setSwipeUpText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeySpace.setText(" ");
+        mKeySpace.setSwipeUpText(MongolCode.Uni.NNBS);
         if (hasCandidatesView()) {
             mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
         }

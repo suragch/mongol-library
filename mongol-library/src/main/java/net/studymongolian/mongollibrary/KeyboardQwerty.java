@@ -457,6 +457,7 @@ public class KeyboardQwerty extends Keyboard {
         mKeyExclamation.setText(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK);
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
         mKeySpace.setText(" ");
+        mKeySpace.setSwipeUpText(MongolCode.Uni.NNBS);
         if (hasCandidatesView()) {
             mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
         }
