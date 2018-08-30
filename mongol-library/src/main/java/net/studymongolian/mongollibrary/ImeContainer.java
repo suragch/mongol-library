@@ -692,8 +692,6 @@ public class ImeContainer extends ViewGroup
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
-        //replacePreviousSpaceIfNnbs(ic, text, previousChar);
-        //addSpaceForPunctuation(ic, text, previousChar);
         char initialChar = text.charAt(0);
         if (initialChar == MongolCode.Uni.NNBS) {
             char previousChar = getPreviousChar();
@@ -701,25 +699,11 @@ public class ImeContainer extends ViewGroup
                 ic.deleteSurroundingText(1, 0);
             }
             ic.commitText(text, 1);
+        } else if (shouldDoMvsShortcut(ic, text)) {
+            ic.deleteSurroundingText(1, 0);
+            ic.commitText("" + MongolCode.Uni.MVS + text, 1);
         } else if (text.equals(String.valueOf(MongolCode.Uni.MONGOLIAN_COMMA))) {
-            char previousChar = getPreviousChar();
-            if (previousChar == MongolCode.Uni.MONGOLIAN_COMMA) {
-                ic.deleteSurroundingText(1, 0);
-                String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
-                ic.commitText(insert, 1);
-            } else if (previousChar == SPACE) {
-                CharSequence previousTwo = ic.getTextBeforeCursor(2, 0);
-                if (!TextUtils.isEmpty(previousTwo)
-                        && previousTwo.charAt(0) == MongolCode.Uni.MONGOLIAN_COMMA) {
-                    ic.deleteSurroundingText(2, 0);
-                    String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
-                    ic.commitText(String.valueOf(insert), 1);
-                } else {
-                    ic.commitText(text + SPACE, 1);
-                }
-            } else {
-                addSpacedPunctuation(ic, text, previousChar);
-            }
+            doCommaSubstitution(ic, text);
         } else if (isPunctuationThatNeedsSpace(initialChar)) {
             char previousChar = getPreviousChar();
             addSpacedPunctuation(ic, text, previousChar);
@@ -727,6 +711,38 @@ public class ImeContainer extends ViewGroup
             ic.commitText(text, 1);
         }
         ic.endBatchEdit();
+    }
+
+    private void doCommaSubstitution(InputConnection ic, String text) {
+        char previousChar = getPreviousChar();
+        if (previousChar == MongolCode.Uni.MONGOLIAN_COMMA) {
+            ic.deleteSurroundingText(1, 0);
+            String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
+            ic.commitText(insert, 1);
+        } else if (previousChar == SPACE) {
+            CharSequence previousTwo = ic.getTextBeforeCursor(2, 0);
+            if (!TextUtils.isEmpty(previousTwo)
+                    && previousTwo.charAt(0) == MongolCode.Uni.MONGOLIAN_COMMA) {
+                ic.deleteSurroundingText(2, 0);
+                String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
+                ic.commitText(String.valueOf(insert), 1);
+            } else {
+                ic.commitText(text + SPACE, 1);
+            }
+        } else {
+            addSpacedPunctuation(ic, text, previousChar);
+        }
+    }
+
+    private boolean shouldDoMvsShortcut(InputConnection ic, String text) {
+        if (!text.equals(String.valueOf(MongolCode.Uni.A))
+                && !text.equals(String.valueOf(MongolCode.Uni.E)))
+            return false;
+        CharSequence previousTwo = ic.getTextBeforeCursor(2, 0);
+        return previousTwo != null
+                && previousTwo.length() >= 2
+                && MongolCode.isMvsConsonant(previousTwo.charAt(0))
+                && previousTwo.charAt(1) == text.charAt(0);
     }
 
     private void addSpacedPunctuation(InputConnection ic, String text, char previousChar) {
@@ -748,42 +764,6 @@ public class ImeContainer extends ViewGroup
                 (punctChar >= MongolCode.Uni.VERTICAL_COMMA
                         && punctChar <= MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
     }
-
-//    private void replacePreviousSpaceIfNnbs(InputConnection ic, String text, char previousChar) {
-//        if (previousChar == ' ' || previousChar == MongolCode.Uni.NNBS) {
-//            char initialChar = text.charAt(0);
-//            if (characterDoesntFollowSpace(initialChar)) {
-//                ic.deleteSurroundingText(1, 0);
-//            }
-//        }
-//    }
-//
-//    private void addSpaceForPunctuation(InputConnection ic, String text, char previousChar) {
-//        if (isPun)
-//    }
-
-//    private boolean characterDoesntFollowSpace(char character) {
-//        int length = mCharactersThatDontFollowSpace.length();
-//        for (int i = 0; i < length; i++) {
-//            if (mCharactersThatDontFollowSpace.charAt(i) == character)
-//                return true;
-//        }
-//        return false;
-//    }
-
-//    /**
-//     * This allows keyboard input to automatically backspace before inserting text
-//     * if the previous character is a space. This is convenient for certain characters
-//     * that do not normally follow a space.
-//     * <p>
-//     * If not set the default value is NNBS for suffixes.
-//     *
-//     * @param characters a string of characters. For example, "?.,". You should also
-//     *                   include MongolCode.Uni.NNBS.
-//     */
-//    public void setCharactersThatDontFollowSpace(CharSequence characters) {
-//        mCharactersThatDontFollowSpace = characters;
-//    }
 
     private void updateCandidatesView() {
         if (mCandidatesView == null || mDataSource == null) return;
