@@ -5,8 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -49,16 +51,37 @@ class PopupKeyCandidatesView extends ViewGroup {
     private void initDisplay() {
         int paddingPX = (int) (LABEL_PADDING_DP * getResources().getDisplayMetrics().density);
         for (PopupKeyCandidate candidate : mCandidates) {
-            MongolLabel label = new MongolLabel(mContext);
-            String text = (candidate.getDisplay() != null) ? candidate.getDisplay() : candidate.getUnicode();
-            label.setText(text);
-            label.setTextSize(mTextSize);
-            label.setTextColor(mTextColor);
-            if (mTypeface != null)
-                label.setTypeface(mTypeface);
-            label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
-            addView(label);
+            if (candidate.isRotated()) {
+                addMongolLabel(candidate, paddingPX);
+            } else {
+                addTextView(candidate, paddingPX);
+            }
         }
+    }
+
+    private void addMongolLabel(PopupKeyCandidate candidate, int paddingPX) {
+        MongolLabel label = new MongolLabel(mContext);
+        String text = (candidate.getDisplay() != null) ? candidate.getDisplay() : candidate.getUnicode();
+        label.setText(text);
+        label.setTextSize(mTextSize);
+        label.setTextColor(mTextColor);
+        if (mTypeface != null)
+            label.setTypeface(mTypeface);
+        label.setPadding(paddingPX, paddingPX, paddingPX, paddingPX);
+        addView(label);
+    }
+
+    private void addTextView(PopupKeyCandidate candidate, int paddingPX) {
+        TextView label = new TextView(mContext);
+        String text = (candidate.getDisplay() != null) ? candidate.getDisplay() : candidate.getUnicode();
+        label.setText(text);
+        label.setTextSize(mTextSize);
+        label.setTextColor(mTextColor);
+        if (mTypeface != null)
+            label.setTypeface(mTypeface);
+        label.setPadding(3*paddingPX, paddingPX, 3*paddingPX, paddingPX);
+        label.setGravity(Gravity.CENTER);
+        addView(label);
     }
 
     public void setHeight(int height) {
@@ -138,13 +161,13 @@ class PopupKeyCandidatesView extends ViewGroup {
         int leftOffset = this.getPaddingLeft();
         int topOffset = this.getPaddingTop();
 
-        int widthSize = getMeasuredWidth() / getChildCount();
-        int widthMode = MeasureSpec.EXACTLY;
+        //int widthSize = getMeasuredWidth() / getChildCount();
+        int widthMode = MeasureSpec.UNSPECIFIED;
 
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            child.measure(View.MeasureSpec.makeMeasureSpec(widthSize, widthMode),
+            child.measure(View.MeasureSpec.makeMeasureSpec(0, widthMode),
                     View.MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY));
 
             int rightOffset = leftOffset + child.getMeasuredWidth();

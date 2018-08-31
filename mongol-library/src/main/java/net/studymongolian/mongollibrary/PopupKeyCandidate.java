@@ -6,11 +6,18 @@ package net.studymongolian.mongollibrary;
 public class PopupKeyCandidate {
 
     private String unicode;
+
     private String display;
+
+    /**
+     * The composing String can be set if a unicode character would be temporarily
+     * rendered incorrectly. For example, a mongolian medial would be rendered as
+     * a final until another character is typed. Adding the composing span will let
+     * it be displayed as a medial until the next char is typed.
+     */
     private String composing;
-    // The composing String can be set if a unicode character would be temporarily rendered incorrectly.
-    // For example, a mongolian medial would be rendered as a final until another character is typed.
-    // Adding the composing span will let it be displayed as a medial until the next char is typed.
+
+    private boolean isRotated;
 
     /**
      * Convenience constructor for PopupCandidates(String unicode)
@@ -22,32 +29,54 @@ public class PopupKeyCandidate {
     }
 
     /**
-     * Convenience constructor for PopupCandidates(String unicode, String display, String composing)
      * @param unicode the unicode value for a popup item
      */
     public PopupKeyCandidate(String unicode) {
-        this(unicode, null, null);
+        this(unicode, null, null, true);
     }
 
     /**
-     * Convenience constructor for PopupCandidates(String unicode, String display, String composing)
+     * This constructor can be used for non-Mongolian keyboards so that the popup
+     * characters are not rotated. The default for other constructors is rotated.
+     *
+     * @param unicode   the unicode value for a popup item
+     * @param isRotated whether the popup display is rotated
+     */
+    public PopupKeyCandidate(String unicode, boolean isRotated) {
+        this(unicode, null, null, isRotated);
+    }
+
+    /**
      * @param unicode the unicode value for a popup item
      * @param display the value to display if different than the unicode value
      */
     public PopupKeyCandidate(String unicode, String display) {
-        this(unicode, display, null);
+        this(unicode, display, null, true);
     }
 
     /**
-     * @param unicode the unicode value for a popup item
-     * @param display the value to display if different than the unicode value
+     * @param unicode   the unicode value for a popup item
+     * @param display   the value to display if different than the unicode value
      * @param composing the value to display for a temporary composing span
      */
     public PopupKeyCandidate(String unicode, String display, String composing) {
+        this(unicode, display, composing, true);
+    }
+
+    /**
+     * @param unicode   the unicode value for a popup item
+     * @param display   the value to display if different than the unicode value
+     * @param composing the value to display for a temporary composing span
+     * @param isRotated whether the popup display is rotated
+     */
+    public PopupKeyCandidate(String unicode, String display, String composing, boolean isRotated) {
         this.unicode = unicode;
         this.display = display;
         this.composing = composing;
+        this.isRotated = isRotated;
     }
+
+
     public String getUnicode() {
         return unicode;
     }
@@ -62,4 +91,7 @@ public class PopupKeyCandidate {
         return composing;
     }
 
+    public boolean isRotated() {
+        return isRotated;
+    }
 }
