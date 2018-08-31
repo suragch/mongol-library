@@ -15,6 +15,7 @@ import java.util.List;
 class PopupKeyCandidatesView extends ViewGroup {
 
     private static final int LABEL_PADDING_DP = 5;
+    private static final int TEXTVIEW_WIDTH_PADDING_MULTIPLIER = 2;
     private static final int BORDER_WIDTH_DP = 1;
     private static final int DEFAULT_KEY_HEIGHT_DP = 60;
     public static final int DEFAULT_TEXT_SIZE = 30;
@@ -79,7 +80,10 @@ class PopupKeyCandidatesView extends ViewGroup {
         label.setTextColor(mTextColor);
         if (mTypeface != null)
             label.setTypeface(mTypeface);
-        label.setPadding(3*paddingPX, paddingPX, 3*paddingPX, paddingPX);
+        label.setPadding(TEXTVIEW_WIDTH_PADDING_MULTIPLIER*paddingPX,
+                paddingPX,
+                TEXTVIEW_WIDTH_PADDING_MULTIPLIER*paddingPX,
+                paddingPX);
         label.setGravity(Gravity.CENTER);
         addView(label);
     }

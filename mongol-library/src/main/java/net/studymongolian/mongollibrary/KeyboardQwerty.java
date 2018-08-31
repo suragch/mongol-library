@@ -57,35 +57,6 @@ public class KeyboardQwerty extends Keyboard {
     protected KeyText mKeyQuestion;
     protected KeyImage mKeyReturn;
 
-    private static final String KEY_Q_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
-    private static final String KEY_W_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
-    private static final String KEY_E_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
-    private static final String KEY_R_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
-    private static final String KEY_T_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
-    private static final String KEY_Y_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
-    private static final String KEY_U_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
-    private static final String KEY_I_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
-    private static final String KEY_O_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
-    private static final String KEY_P_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
-    private static final String KEY_A_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
-    private static final String KEY_S_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
-    private static final String KEY_D_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
-    private static final String KEY_F_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
-    private static final String KEY_G_PUNCT_SUB = "+";
-    private static final String KEY_H_PUNCT_SUB = "$";
-    private static final String KEY_J_PUNCT_SUB = "";
-    private static final String KEY_K_PUNCT_SUB = "";
-    private static final String KEY_L_PUNCT_SUB = "";
-    private static final String KEY_NG_PUNCT_SUB = "";
-    private static final String KEY_ZWJ_PUNCT_SUB = "\\";
-    private static final String KEY_Z_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
-    private static final String KEY_X_PUNCT_SUB = "";
-    private static final String KEY_C_PUNCT_SUB = ".";
-    private static final String KEY_V_PUNCT_SUB = "";
-    private static final String KEY_B_PUNCT_SUB = "~";
-    private static final String KEY_N_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_COMMA);
-    private static final String KEY_M_PUNCT_SUB = String.valueOf(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
-
     private static final String NEWLINE = "\n";
     private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
@@ -183,7 +154,8 @@ public class KeyboardQwerty extends Keyboard {
 
     private void setKeyValues() {
 
-        rotatePrimaryText();
+        rotatePrimaryTextForSelectKeys();
+        rotateSecondaryTextForSelectedKeys();
 
         // Row 1
 
@@ -269,7 +241,7 @@ public class KeyboardQwerty extends Keyboard {
         mKeyNg.setSubText("");
 
         // Row 3
-        mKeyZwj.setText(MongolCode.Uni.ZWJ, '/'); // TODO should we add ZWNJ?
+        mKeyZwj.setText(MongolCode.Uni.ZWJ, '|'); // TODO should we add ZWNJ?
         mKeyZwj.setSwipeUpText(null);
         mKeyZwj.setSubText("");
 
@@ -302,7 +274,7 @@ public class KeyboardQwerty extends Keyboard {
         mKeyM.setSubText("");
     }
 
-    private void rotatePrimaryText() {
+    private void rotatePrimaryTextForSelectKeys() {
         mKeyQ.setIsRotatedPrimaryText(true);
         mKeyW.setIsRotatedPrimaryText(true);
         mKeyE.setIsRotatedPrimaryText(true);
@@ -313,130 +285,12 @@ public class KeyboardQwerty extends Keyboard {
         mKeyI.setIsRotatedPrimaryText(true);
         mKeyO.setIsRotatedPrimaryText(true);
         mKeyP.setIsRotatedPrimaryText(true);
+        mKeyG.setIsRotatedPrimaryText(true);
         mKeyH.setIsRotatedPrimaryText(true);
-    }
-
-    private void setPuncuationKeyValues() {
-
-        dontRotatePrimaryTextForSelectKeys();
-
-        // Row 1
-
-        mKeyQ.setText("1");
-        mKeyQ.setSwipeUpText(KEY_Q_PUNCT_SUB);
-        mKeyQ.setSubText(KEY_Q_PUNCT_SUB);
-
-        mKeyW.setText("2");
-        mKeyW.setSwipeUpText(KEY_W_PUNCT_SUB);
-        mKeyW.setSubText(KEY_W_PUNCT_SUB);
-
-        mKeyE.setText("3");
-        mKeyE.setSwipeUpText(KEY_E_PUNCT_SUB);
-        mKeyE.setSubText(KEY_E_PUNCT_SUB);
-
-        mKeyR.setText("4");
-        mKeyR.setSwipeUpText(KEY_R_PUNCT_SUB);
-        mKeyR.setSubText(KEY_R_PUNCT_SUB);
-
-        mKeyT.setText("5");
-        mKeyT.setSwipeUpText(KEY_T_PUNCT_SUB);
-        mKeyT.setSubText(KEY_T_PUNCT_SUB);
-
-        mKeyY.setText("6");
-        mKeyY.setSwipeUpText(KEY_Y_PUNCT_SUB);
-        mKeyY.setSubText(KEY_Y_PUNCT_SUB);
-
-        mKeyU.setText("7");
-        mKeyU.setSwipeUpText(KEY_U_PUNCT_SUB);
-        mKeyU.setSubText(KEY_U_PUNCT_SUB);
-
-        mKeyI.setText("8");
-        mKeyI.setSwipeUpText(KEY_I_PUNCT_SUB);
-        mKeyI.setSubText(KEY_I_PUNCT_SUB);
-
-        mKeyO.setText("9");
-        mKeyO.setSwipeUpText(KEY_O_PUNCT_SUB);
-        mKeyO.setSubText(KEY_O_PUNCT_SUB);
-
-        mKeyP.setText("0");
-        mKeyP.setSwipeUpText(KEY_P_PUNCT_SUB);
-        mKeyP.setSubText(KEY_P_PUNCT_SUB);
-
-        // Row 2
-
-        mKeyA.setText(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
-        mKeyA.setSwipeUpText(KEY_A_PUNCT_SUB);
-        mKeyA.setSubText(KEY_A_PUNCT_SUB);
-
-        mKeyS.setText(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
-        mKeyS.setSwipeUpText(KEY_S_PUNCT_SUB);
-        mKeyS.setSubText(KEY_S_PUNCT_SUB);
-
-        mKeyD.setText(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
-        mKeyD.setSwipeUpText(KEY_D_PUNCT_SUB);
-        mKeyD.setSubText(KEY_D_PUNCT_SUB);
-
-        mKeyF.setText(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
-        mKeyF.setSwipeUpText(KEY_F_PUNCT_SUB);
-        mKeyF.setSubText(KEY_F_PUNCT_SUB);
-
-        mKeyG.setText("=");
-        mKeyG.setSwipeUpText(KEY_G_PUNCT_SUB);
-        mKeyG.setSubText(KEY_G_PUNCT_SUB);
-
-        mKeyH.setText("¥");
-        mKeyH.setSwipeUpText(KEY_H_PUNCT_SUB);
-        mKeyH.setSubText(KEY_H_PUNCT_SUB);
-
-        mKeyJ.setText("'");
-        mKeyJ.setSwipeUpText(KEY_J_PUNCT_SUB);
-        mKeyJ.setSubText(KEY_J_PUNCT_SUB);
-
-        mKeyK.setText("\"");
-        mKeyK.setSwipeUpText(KEY_K_PUNCT_SUB);
-        mKeyK.setSubText(KEY_K_PUNCT_SUB);
-
-        mKeyL.setText("#");
-        mKeyL.setSwipeUpText(KEY_L_PUNCT_SUB);
-        mKeyL.setSubText(KEY_L_PUNCT_SUB);
-
-        mKeyNg.setText("|");
-        mKeyNg.setSwipeUpText(KEY_NG_PUNCT_SUB);
-        mKeyNg.setSubText(KEY_NG_PUNCT_SUB);
-
-        // Row 3
-
-        mKeyZwj.setText("/");
-        mKeyZwj.setSwipeUpText(KEY_ZWJ_PUNCT_SUB);
-        mKeyZwj.setSubText(KEY_ZWJ_PUNCT_SUB);
-
-        mKeyZ.setText(MongolCode.Uni.REFERENCE_MARK);
-        mKeyZ.setSwipeUpText(KEY_Z_PUNCT_SUB);
-        mKeyZ.setSubText(KEY_Z_PUNCT_SUB);
-
-        mKeyX.setText(MongolCode.Uni.MONGOLIAN_BIRGA);
-        mKeyX.setSwipeUpText(KEY_X_PUNCT_SUB);
-        mKeyX.setSubText(KEY_X_PUNCT_SUB);
-
-        mKeyC.setText(MongolCode.Uni.MIDDLE_DOT);
-        mKeyC.setSwipeUpText(KEY_C_PUNCT_SUB);
-        mKeyC.setSubText(KEY_C_PUNCT_SUB);
-
-        mKeyV.setText(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
-        mKeyV.setSwipeUpText(KEY_V_PUNCT_SUB);
-        mKeyV.setSubText(KEY_V_PUNCT_SUB);
-
-        mKeyB.setText(MongolCode.Uni.VERTICAL_EM_DASH);
-        mKeyB.setSwipeUpText(KEY_B_PUNCT_SUB);
-        mKeyB.setSubText(KEY_B_PUNCT_SUB);
-
-        mKeyN.setText(MongolCode.Uni.MONGOLIAN_COLON);
-        mKeyN.setSwipeUpText(KEY_N_PUNCT_SUB);
-        mKeyN.setSubText(KEY_N_PUNCT_SUB);
-
-        mKeyM.setText(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
-        mKeyM.setSwipeUpText(KEY_M_PUNCT_SUB);
-        mKeyM.setSubText(KEY_M_PUNCT_SUB);
+        mKeyJ.setIsRotatedPrimaryText(true);
+        mKeyK.setIsRotatedPrimaryText(true);
+        mKeyL.setIsRotatedPrimaryText(true);
+        mKeyZwj.setIsRotatedPrimaryText(true);
     }
 
     private void dontRotatePrimaryTextForSelectKeys() {
@@ -450,7 +304,148 @@ public class KeyboardQwerty extends Keyboard {
         mKeyI.setIsRotatedPrimaryText(false);
         mKeyO.setIsRotatedPrimaryText(false);
         mKeyP.setIsRotatedPrimaryText(false);
+        mKeyG.setIsRotatedPrimaryText(false);
         mKeyH.setIsRotatedPrimaryText(false);
+        mKeyJ.setIsRotatedPrimaryText(false);
+        mKeyK.setIsRotatedPrimaryText(false);
+        mKeyL.setIsRotatedPrimaryText(false);
+        mKeyZwj.setIsRotatedPrimaryText(false);
+    }
+
+    private void rotateSecondaryTextForSelectedKeys() {
+        mKeyG.setIsRotatedSubText(true);
+        mKeyK.setIsRotatedSubText(true);
+        mKeyZwj.setIsRotatedSubText(true);
+    }
+
+    private void dontRotateSecondaryTextForSelectedKeys() {
+        mKeyG.setIsRotatedSubText(false);
+        mKeyK.setIsRotatedSubText(false);
+        mKeyZwj.setIsRotatedSubText(false);
+    }
+
+    private void setPunctuationKeyValues() {
+
+        dontRotatePrimaryTextForSelectKeys();
+        dontRotateSecondaryTextForSelectedKeys();
+
+        // Row 1
+
+        mKeyQ.setText("1");
+        mKeyQ.setSwipeUpText("①");
+        mKeyQ.setSubText("①");
+
+        mKeyW.setText("2");
+        mKeyW.setSwipeUpText("②");
+        mKeyW.setSubText("②");
+
+        mKeyE.setText("3");
+        mKeyE.setSwipeUpText("③");
+        mKeyE.setSubText("③");
+
+        mKeyR.setText("4");
+        mKeyR.setSwipeUpText("④");
+        mKeyR.setSubText("④");
+
+        mKeyT.setText("5");
+        mKeyT.setSwipeUpText("⑤");
+        mKeyT.setSubText("⑤");
+
+        mKeyY.setText("6");
+        mKeyY.setSwipeUpText("⑥");
+        mKeyY.setSubText("⑥");
+
+        mKeyU.setText("7");
+        mKeyU.setSwipeUpText("⑦");
+        mKeyU.setSubText("⑦");
+
+        mKeyI.setText("8");
+        mKeyI.setSwipeUpText("⑧");
+        mKeyI.setSubText("⑧");
+
+        mKeyO.setText("9");
+        mKeyO.setSwipeUpText("⑨");
+        mKeyO.setSubText("⑨");
+
+        mKeyP.setText("0");
+        mKeyP.setSwipeUpText("⑩");
+        mKeyP.setSubText("⑩");
+
+        // Row 2
+
+        mKeyA.setText(MongolCode.Uni.VERTICAL_LEFT_PARENTHESIS);
+        mKeyA.setSwipeUpText(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
+        mKeyA.setSubText(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
+
+        mKeyS.setText(MongolCode.Uni.VERTICAL_RIGHT_PARENTHESIS);
+        mKeyS.setSwipeUpText(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
+        mKeyS.setSubText(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
+
+        mKeyD.setText(MongolCode.Uni.VERTICAL_LEFT_DOUBLE_ANGLE_BRACKET);
+        mKeyD.setSwipeUpText(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
+        mKeyD.setSubText(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
+
+        mKeyF.setText(MongolCode.Uni.VERTICAL_RIGHT_DOUBLE_ANGLE_BRACKET);
+        mKeyF.setSwipeUpText(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
+        mKeyF.setSubText(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
+
+        mKeyG.setText("¥");
+        mKeyG.setSwipeUpText("₮");
+        mKeyG.setSubText("₮");
+
+        mKeyH.setText("=");
+        mKeyH.setSwipeUpText("");
+        mKeyH.setSubText("");
+
+        mKeyJ.setText("+");
+        mKeyJ.setSwipeUpText("×");
+        mKeyJ.setSubText("×");
+
+        mKeyK.setText("-");
+        mKeyK.setSwipeUpText("÷");
+        mKeyK.setSubText("÷");
+
+        mKeyL.setText("#");
+        mKeyL.setSwipeUpText("");
+        mKeyL.setSubText("");
+
+        mKeyNg.setText("|");
+        mKeyNg.setSwipeUpText("");
+        mKeyNg.setSubText("");
+
+        // Row 3
+
+        mKeyZwj.setText("/");
+        mKeyZwj.setSwipeUpText("\\");
+        mKeyZwj.setSubText("\\");
+
+        mKeyZ.setText(MongolCode.Uni.REFERENCE_MARK);
+        mKeyZ.setSwipeUpText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
+        mKeyZ.setSubText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
+
+        mKeyX.setText(MongolCode.Uni.MONGOLIAN_BIRGA);
+        mKeyX.setSwipeUpText("");
+        mKeyX.setSubText("");
+
+        mKeyC.setText(MongolCode.Uni.MIDDLE_DOT);
+        mKeyC.setSwipeUpText(".");
+        mKeyC.setSubText(".");
+
+        mKeyV.setText(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
+        mKeyV.setSwipeUpText("");
+        mKeyV.setSubText("");
+
+        mKeyB.setText(MongolCode.Uni.VERTICAL_EM_DASH);
+        mKeyB.setSwipeUpText("~");
+        mKeyB.setSubText("~");
+
+        mKeyN.setText(MongolCode.Uni.MONGOLIAN_COLON);
+        mKeyN.setSwipeUpText(MongolCode.Uni.VERTICAL_COMMA);
+        mKeyN.setSubText(MongolCode.Uni.VERTICAL_COMMA);
+
+        mKeyM.setText(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
+        mKeyM.setSwipeUpText(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
+        mKeyM.setSubText(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
     }
 
     private void setNonChangingKeyValues() {
@@ -636,7 +631,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForQ() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_Q_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("①"));
+            candidates.add(new PopupKeyCandidate("⑪"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_ONE));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.CHI));
@@ -661,7 +658,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForW() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_W_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("②"));
+            candidates.add(new PopupKeyCandidate("⑫"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_TWO));
             return candidates;
         }
         return candidates;
@@ -670,7 +669,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForE() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_E_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("③"));
+            candidates.add(new PopupKeyCandidate("⑬"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_THREE));
             return candidates;
         }
 
@@ -708,7 +709,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForR() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_R_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("④"));
+            candidates.add(new PopupKeyCandidate("⑭"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.ZRA));
@@ -718,7 +721,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForT() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_T_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑤"));
+            candidates.add(new PopupKeyCandidate("⑮"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE));
             return candidates;
         }
 
@@ -768,7 +773,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForY() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_Y_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑥"));
+            candidates.add(new PopupKeyCandidate("⑯"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_SIX));
             return candidates;
         }
 
@@ -793,7 +800,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForU() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_U_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑦"));
+            candidates.add(new PopupKeyCandidate("⑰"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN));
             return candidates;
         }
 
@@ -824,7 +833,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForI() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_I_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑧"));
+            candidates.add(new PopupKeyCandidate("⑱"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT));
             return candidates;
         }
 
@@ -893,7 +904,9 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForO() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_O_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑨"));
+            candidates.add(new PopupKeyCandidate("⑲"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_NINE));
             return candidates;
         }
 
@@ -917,7 +930,10 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForP() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_P_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⓪"));
+            candidates.add(new PopupKeyCandidate("⑩"));
+            candidates.add(new PopupKeyCandidate("⑳"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO));
             return candidates;
         }
         return candidates;
@@ -926,7 +942,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_A_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET));
             return candidates;
         }
 
@@ -962,7 +978,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForS() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_S_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET));
             return candidates;
         }
 
@@ -981,7 +997,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForD() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_D_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET));
             return candidates;
         }
 
@@ -1039,7 +1055,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForF() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_F_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET));
             return candidates;
         }
         return candidates;
@@ -1048,12 +1064,8 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForG() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate("+"));
-            candidates.add(new PopupKeyCandidate("-"));
-            candidates.add(new PopupKeyCandidate("×"));
-            candidates.add(new PopupKeyCandidate("÷"));
-            candidates.add(new PopupKeyCandidate("≠"));
-            candidates.add(new PopupKeyCandidate("≈"));
+            candidates.add(new PopupKeyCandidate("₮", false));
+            candidates.add(new PopupKeyCandidate("$", false));
             return candidates;
         }
 
@@ -1084,8 +1096,8 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForH() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate("$"));
-            candidates.add(new PopupKeyCandidate("₮"));
+            candidates.add(new PopupKeyCandidate("≠", false));
+            candidates.add(new PopupKeyCandidate("≈", false));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.HAA));
@@ -1095,7 +1107,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForJ() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_J_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("×", false));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.ZHI));
@@ -1105,7 +1117,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForK() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_K_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("÷", false));
             return candidates;
         }
         return candidates;
@@ -1114,7 +1126,6 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForL() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_L_PUNCT_SUB));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.LHA));
@@ -1124,16 +1135,16 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForNG() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_NG_PUNCT_SUB));
             return candidates;
         }
         return candidates;
     }
 
+
     private List<PopupKeyCandidate> getCandidatesForZwj() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_ZWJ_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("\\", false));
             return candidates;
         }
         return candidates;
@@ -1142,8 +1153,8 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForZ() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_Z_PUNCT_SUB));
-            candidates.add(new PopupKeyCandidate("*"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_FOUR_DOTS));
+            candidates.add(new PopupKeyCandidate("*", false));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.TSA));
@@ -1153,7 +1164,6 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForX() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_X_PUNCT_SUB));
             return candidates;
         }
         return candidates;
@@ -1162,7 +1172,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForC() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_C_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(".", false));
             return candidates;
         }
 
@@ -1186,7 +1196,6 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForV() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_V_PUNCT_SUB));
             return candidates;
         }
 
@@ -1234,7 +1243,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForB() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_B_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("~", false));
             return candidates;
         }
 
@@ -1265,7 +1274,7 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForN() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_N_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_COMMA));
             return candidates;
         }
 
@@ -1352,7 +1361,7 @@ public class KeyboardQwerty extends Keyboard {
     public void onKeyboardKeyClick() {
         mIsShowingPunctuation = !mIsShowingPunctuation;
         if (mIsShowingPunctuation) {
-            setPuncuationKeyValues();
+            setPunctuationKeyValues();
         } else {
             setKeyValues();
         }

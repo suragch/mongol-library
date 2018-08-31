@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 
 public abstract class Key extends View {
@@ -52,23 +51,23 @@ public abstract class Key extends View {
 
     public Key(Context context) {
         super(context);
-        initDefault(context);
+        initDefault();
         initPaints();
     }
 
     public Key(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initDefault(context);
+        initDefault();
         initPaints();
     }
 
     Key(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initDefault(context);
+        initDefault();
         initPaints();
     }
 
-    private void initDefault(Context context) {
+    private void initDefault() {
         mPressedColor = Color.GRAY;
         mIsRotatedSubText = true;
         mSubTextBounds = new Rect();

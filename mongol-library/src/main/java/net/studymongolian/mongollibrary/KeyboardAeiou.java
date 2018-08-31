@@ -42,26 +42,6 @@ public class KeyboardAeiou extends Keyboard {
     protected KeyBackspace mKeyBackspace;
     protected KeyImage mKeyReturn;
 
-
-    private static final String KEY_A_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET);
-    private static final String KEY_E_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET);
-    private static final String KEY_I_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET);
-    private static final String KEY_O_PUNCT_SUB = String.valueOf(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET);
-    private static final String KEY_U_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_ELLIPSIS);
-    private static final String KEY_NA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
-    private static final String KEY_BA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
-    private static final String KEY_QA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
-    private static final String KEY_GA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
-    private static final String KEY_MA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
-    private static final String KEY_LA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_BIRGA);
-    private static final String KEY_SA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
-    private static final String KEY_DA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
-    private static final String KEY_CHA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
-    private static final String KEY_JA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
-    private static final String KEY_YA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
-    private static final String KEY_RA_PUNCT_SUB = String.valueOf(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
-
-
     private static final String NEWLINE = "\n";
     private static final String KEY_SPACE_SUB_DISPLAY = "ᠶ᠋ᠢ ᠳᠤ ᠤᠨ";
 
@@ -142,7 +122,8 @@ public class KeyboardAeiou extends Keyboard {
 
     private void setKeyValues() {
 
-        rotatePrimaryText();
+        rotatePrimaryTextForSelectKeys();
+        rotateSecondaryTextForSelectedKeys();
 
         // Row 1
 
@@ -218,9 +199,15 @@ public class KeyboardAeiou extends Keyboard {
         mKeyRA.setSwipeUpText(MongolCode.Uni.ZRA);
         mKeyRA.setSubText(MongolCode.Uni.ZRA);
 
+        // Row 4
+
+        mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
+        mKeyComma.setSwipeUpText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
+        mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
+
     }
 
-    private void rotatePrimaryText() {
+    private void rotatePrimaryTextForSelectKeys() {
         mKeyNA.setIsRotatedPrimaryText(true);
         mKeyBA.setIsRotatedPrimaryText(true);
         mKeyQA.setIsRotatedPrimaryText(true);
@@ -231,11 +218,38 @@ public class KeyboardAeiou extends Keyboard {
         mKeyCHA.setIsRotatedPrimaryText(true);
         mKeyJA.setIsRotatedPrimaryText(true);
         mKeyYA.setIsRotatedPrimaryText(true);
+
+        mKeyComma.setIsRotatedPrimaryText(true);
+    }
+
+
+    private void dontRotatePrimaryTextForSelectKeys() {
+        mKeyNA.setIsRotatedPrimaryText(false);
+        mKeyBA.setIsRotatedPrimaryText(false);
+        mKeyQA.setIsRotatedPrimaryText(false);
+        mKeyGA.setIsRotatedPrimaryText(false);
+        mKeyMA.setIsRotatedPrimaryText(false);
+        mKeySA.setIsRotatedPrimaryText(false);
+        mKeyTADA.setIsRotatedPrimaryText(false);
+        mKeyCHA.setIsRotatedPrimaryText(false);
+        mKeyJA.setIsRotatedPrimaryText(false);
+        mKeyYA.setIsRotatedPrimaryText(false);
+
+        mKeyComma.setIsRotatedPrimaryText(false);
+    }
+
+    private void rotateSecondaryTextForSelectedKeys() {
+        mKeyComma.setIsRotatedSubText(true);
+    }
+
+    private void dontRotateSecondaryTextForSelectedKeys() {
+        mKeyComma.setIsRotatedSubText(false);
     }
 
     private void setPunctuationKeyValues() {
 
         dontRotatePrimaryTextForSelectKeys();
+        dontRotateSecondaryTextForSelectedKeys();
 
         // Row 1
 
@@ -262,24 +276,24 @@ public class KeyboardAeiou extends Keyboard {
         // Row 2
 
         mKeyNA.setText("1");
-        mKeyNA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
-        mKeyNA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_ONE);
+        mKeyNA.setSwipeUpText("①");
+        mKeyNA.setSubText("①");
 
         mKeyBA.setText("2");
-        mKeyBA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
-        mKeyBA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_TWO);
+        mKeyBA.setSwipeUpText("②");
+        mKeyBA.setSubText("②");
 
         mKeyQA.setText("3");
-        mKeyQA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
-        mKeyQA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_THREE);
+        mKeyQA.setSwipeUpText("③");
+        mKeyQA.setSubText("③");
 
         mKeyGA.setText("4");
-        mKeyGA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
-        mKeyGA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR);
+        mKeyGA.setSwipeUpText("④");
+        mKeyGA.setSubText("④");
 
         mKeyMA.setText("5");
-        mKeyMA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
-        mKeyMA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE);
+        mKeyMA.setSwipeUpText("⑤");
+        mKeyMA.setSubText("⑤");
 
         mKeyLA.setText(MongolCode.Uni.VERTICAL_EM_DASH);
         mKeyLA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_BIRGA);
@@ -288,47 +302,37 @@ public class KeyboardAeiou extends Keyboard {
         // Row 3
 
         mKeySA.setText("6");
-        mKeySA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
-        mKeySA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_SIX);
+        mKeySA.setSwipeUpText("⑥");
+        mKeySA.setSubText("⑥");
 
         mKeyTADA.setText("7");
-        mKeyTADA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
-        mKeyTADA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN);
+        mKeyTADA.setSwipeUpText("⑦");
+        mKeyTADA.setSubText("⑦");
 
         mKeyCHA.setText("8");
-        mKeyCHA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
-        mKeyCHA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT);
+        mKeyCHA.setSwipeUpText("⑧");
+        mKeyCHA.setSubText("⑧");
 
         mKeyJA.setText("9");
-        mKeyJA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
-        mKeyJA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_NINE);
+        mKeyJA.setSwipeUpText("⑨");
+        mKeyJA.setSubText("⑨");
 
         mKeyYA.setText("0");
-        mKeyYA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
-        mKeyYA.setSubText(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO);
+        mKeyYA.setSwipeUpText("⑩");
+        mKeyYA.setSubText("⑩");
 
         mKeyRA.setText(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
-        mKeyRA.setSwipeUpText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
-        mKeyRA.setSubText(MongolCode.Uni.MONGOLIAN_FOUR_DOTS);
-    }
+        mKeyRA.setSwipeUpText(MongolCode.Uni.DOUBLE_QUESTION_MARK);
+        mKeyRA.setSubText(MongolCode.Uni.DOUBLE_QUESTION_MARK);
 
-    private void dontRotatePrimaryTextForSelectKeys() {
-        mKeyNA.setIsRotatedPrimaryText(false);
-        mKeyBA.setIsRotatedPrimaryText(false);
-        mKeyQA.setIsRotatedPrimaryText(false);
-        mKeyGA.setIsRotatedPrimaryText(false);
-        mKeyMA.setIsRotatedPrimaryText(false);
-        mKeySA.setIsRotatedPrimaryText(false);
-        mKeyTADA.setIsRotatedPrimaryText(false);
-        mKeyCHA.setIsRotatedPrimaryText(false);
-        mKeyJA.setIsRotatedPrimaryText(false);
-        mKeyYA.setIsRotatedPrimaryText(false);
+        // Row 4
+
+        mKeyComma.setText(".");
+        mKeyComma.setSwipeUpText("-");
+        mKeyComma.setSubText("-");
     }
 
     private void setNonChangingKeyValues() {
-        mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
-        mKeyComma.setSwipeUpText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
-        mKeyComma.setSubText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
         mKeySpace.setText(" ");
         mKeySpace.setSwipeUpText(MongolCode.Uni.NNBS);
         if (hasCandidatesView()) {
@@ -462,7 +466,7 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_A_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET));
             return candidates;
         }
 
@@ -499,7 +503,7 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_E_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET));
             return candidates;
         }
 
@@ -539,7 +543,7 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_I_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_ANGLE_BRACKET));
             return candidates;
         }
 
@@ -611,7 +615,7 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_O_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_ANGLE_BRACKET));
             return candidates;
         }
 
@@ -662,7 +666,9 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_U_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_ELLIPSIS));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.REFERENCE_MARK));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_FOUR_DOTS));
             return candidates;
         }
 
@@ -695,7 +701,9 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_NA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("①"));
+            candidates.add(new PopupKeyCandidate("⑪"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_ONE));
             return candidates;
         }
 
@@ -748,7 +756,9 @@ public class KeyboardAeiou extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_BA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("②"));
+            candidates.add(new PopupKeyCandidate("⑫"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_TWO));
             return candidates;
         }
 
@@ -782,7 +792,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForQA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_QA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("③"));
+            candidates.add(new PopupKeyCandidate("⑬"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_THREE));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.HAA));
@@ -792,7 +804,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForGA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_GA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("④"));
+            candidates.add(new PopupKeyCandidate("⑭"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_FOUR));
             return candidates;
         }
 
@@ -826,7 +840,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForMA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_MA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑤"));
+            candidates.add(new PopupKeyCandidate("⑮"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_FIVE));
             return candidates;
         }
         return candidates;
@@ -835,7 +851,7 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForLA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_LA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_BIRGA));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.LHA));
@@ -845,7 +861,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForSA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_SA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑥"));
+            candidates.add(new PopupKeyCandidate("⑯"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_SIX));
             return candidates;
         }
 
@@ -856,7 +874,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForTADA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_DA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑦"));
+            candidates.add(new PopupKeyCandidate("⑰"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_SEVEN));
             return candidates;
         }
 
@@ -941,7 +961,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForCHA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_CHA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑧"));
+            candidates.add(new PopupKeyCandidate("⑱"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_EIGHT));
             return candidates;
         }
 
@@ -955,7 +977,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForJA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_JA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⑨"));
+            candidates.add(new PopupKeyCandidate("⑲"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_NINE));
             return candidates;
         }
 
@@ -966,7 +990,10 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForYA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_YA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate("⓪"));
+            candidates.add(new PopupKeyCandidate("⑩"));
+            candidates.add(new PopupKeyCandidate("⑳"));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_DIGIT_ZERO));
             return candidates;
         }
 
@@ -994,7 +1021,9 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForRA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(KEY_RA_PUNCT_SUB));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_QUESTION_MARK));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.EXCLAMATION_QUESTION_MARK));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK));
             return candidates;
         }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.ZRA));
@@ -1003,6 +1032,12 @@ public class KeyboardAeiou extends Keyboard {
 
     private List<PopupKeyCandidate> getCandidatesForComma() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("-", false));
+            candidates.add(new PopupKeyCandidate("+", false));
+            candidates.add(new PopupKeyCandidate("=", false));
+            return candidates;
+        }
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_QUESTION_MARK));
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_FULL_STOP));
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK));

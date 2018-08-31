@@ -4,6 +4,7 @@ package net.studymongolian.mongollibrary;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class KeyboardEnglish extends Keyboard {
@@ -47,7 +48,7 @@ public class KeyboardEnglish extends Keyboard {
 
     // Row 4
     protected KeyKeyboardChooser mKeyKeyboard;
-    protected KeyText mKeyExclamation;
+    protected KeyText mKeyQuote;
     protected KeyText mKeyComma;
     protected KeyText mKeySpace;
     protected KeyText mKeyPeriod;
@@ -88,7 +89,7 @@ public class KeyboardEnglish extends Keyboard {
         // the key weights for each row should sum to 1 (unless there is an inset)
         mKeyWeights = new float[]{
                 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f,     // row 0
-                1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f, 1/9f,           // row 1
+                1 / 9f, 1 / 9f, 1 / 9f, 1 / 9f, 1 / 9f, 1 / 9f, 1 / 9f, 1 / 9f, 1 / 9f,           // row 1
                 0.15f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.15f,         // row 2
                 0.15f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.15f};                    // row 3
 
@@ -99,6 +100,7 @@ public class KeyboardEnglish extends Keyboard {
         makeKeysLowercase();
         setNonChangingKeyValues();
         dontRotatePrimaryTextForSelectKeys();
+        dontRotateSecondaryText();
         setKeyImages();
         setListeners();
         addKeysToKeyboard();
@@ -143,7 +145,7 @@ public class KeyboardEnglish extends Keyboard {
 
         // Row 4
         mKeyKeyboard = new KeyKeyboardChooser(context);
-        mKeyExclamation = new KeyText(context);
+        mKeyQuote = new KeyText(context);
         mKeyComma = new KeyText(context);
         mKeySpace = new KeyText(context);
         mKeyPeriod = new KeyText(context);
@@ -156,84 +158,110 @@ public class KeyboardEnglish extends Keyboard {
         // Row 1
 
         mKeyQ.setText("q");
-        mKeyQ.setSubText("");
+        mKeyQ.setSwipeUpText("Q");
+        mKeyQ.setSubText("1");
 
         mKeyW.setText("w");
-        mKeyW.setSubText("");
+        mKeyW.setSwipeUpText("W");
+        mKeyW.setSubText("2");
 
         mKeyE.setText("e");
-        mKeyE.setSubText("");
+        mKeyE.setSwipeUpText("E");
+        mKeyE.setSubText("3");
 
         mKeyR.setText("r");
-        mKeyR.setSubText("");
+        mKeyR.setSwipeUpText("R");
+        mKeyR.setSubText("4");
 
         mKeyT.setText("t");
-        mKeyT.setSubText("");
+        mKeyT.setSwipeUpText("T");
+        mKeyT.setSubText("5");
 
         mKeyY.setText("y");
-        mKeyY.setSubText("");
+        mKeyY.setSwipeUpText("Y");
+        mKeyY.setSubText("6");
 
         mKeyU.setText("u");
-        mKeyU.setSubText("");
+        mKeyU.setSwipeUpText("U");
+        mKeyU.setSubText("7");
 
         mKeyI.setText("i");
-        mKeyI.setSubText("");
+        mKeyI.setSwipeUpText("I");
+        mKeyI.setSubText("8");
 
         mKeyO.setText("o");
-        mKeyO.setSubText("");
+        mKeyO.setSwipeUpText("O");
+        mKeyO.setSubText("9");
 
         mKeyP.setText("p");
-        mKeyP.setSubText("");
+        mKeyP.setSwipeUpText("P");
+        mKeyP.setSubText("0");
 
         // Row 2
         mKeyA.setText("a");
-        mKeyA.setSubText("");
+        mKeyA.setSwipeUpText("A");
+        mKeyA.setSubText("ɑ");
 
         mKeyS.setText("s");
+        mKeyS.setSwipeUpText("S");
         mKeyS.setSubText("");
 
         mKeyD.setText("d");
-        mKeyD.setSubText("");
+        mKeyD.setSwipeUpText("D");
+        mKeyD.setSubText("ː");
 
         mKeyF.setText("f");
-        mKeyF.setSubText("");
+        mKeyF.setSwipeUpText("F");
+        mKeyF.setSubText("̌");
 
         mKeyG.setText("g");
+        mKeyG.setSwipeUpText("G");
         mKeyG.setSubText("");
 
         mKeyH.setText("h");
+        mKeyH.setSwipeUpText("H");
         mKeyH.setSubText("");
 
         mKeyJ.setText("j");
-        mKeyJ.setSubText("");
+        mKeyJ.setSwipeUpText("J");
+        mKeyJ.setSubText("ʤ");
 
         mKeyK.setText("k");
+        mKeyK.setSwipeUpText("K");
         mKeyK.setSubText("");
 
         mKeyL.setText("l");
-        mKeyL.setSubText("");
+        mKeyL.setSwipeUpText("L");
+        mKeyL.setSubText("ɬ");
 
         // Row 3
 
         mKeyZ.setText("z");
+        mKeyZ.setSwipeUpText("Z");
         mKeyZ.setSubText("");
 
         mKeyX.setText("x");
-        mKeyX.setSubText("");
+        mKeyX.setSwipeUpText("X");
+        mKeyX.setSubText("ʃ");
 
         mKeyC.setText("c");
-        mKeyC.setSubText("");
+        mKeyC.setSwipeUpText("C");
+        mKeyC.setSubText("ɔ");
 
         mKeyV.setText("v");
-        mKeyV.setSubText("");
+        mKeyV.setSwipeUpText("V");
+        mKeyV.setSubText("ʊ");
 
         mKeyB.setText("b");
+        mKeyB.setSwipeUpText("B");
         mKeyB.setSubText("");
 
         mKeyN.setText("n");
-        mKeyN.setSubText("");
+        mKeyN.setSwipeUpText("N");
+        mKeyN.setSubText("ŋ");
 
         mKeyM.setText("m");
+        mKeyM.setSwipeUpText("M");
         mKeyM.setSubText("");
     }
 
@@ -242,84 +270,110 @@ public class KeyboardEnglish extends Keyboard {
         // Row 1
 
         mKeyQ.setText("Q");
+        mKeyQ.setSwipeUpText("");
         mKeyQ.setSubText("");
 
         mKeyW.setText("W");
+        mKeyW.setSwipeUpText("");
         mKeyW.setSubText("");
 
         mKeyE.setText("E");
+        mKeyE.setSwipeUpText("");
         mKeyE.setSubText("");
 
         mKeyR.setText("R");
+        mKeyR.setSwipeUpText("");
         mKeyR.setSubText("");
 
         mKeyT.setText("T");
+        mKeyT.setSwipeUpText("");
         mKeyT.setSubText("");
 
         mKeyY.setText("Y");
+        mKeyY.setSwipeUpText("");
         mKeyY.setSubText("");
 
         mKeyU.setText("U");
+        mKeyU.setSwipeUpText("");
         mKeyU.setSubText("");
 
         mKeyI.setText("I");
+        mKeyI.setSwipeUpText("");
         mKeyI.setSubText("");
 
         mKeyO.setText("O");
+        mKeyO.setSwipeUpText("");
         mKeyO.setSubText("");
 
         mKeyP.setText("P");
+        mKeyP.setSwipeUpText("");
         mKeyP.setSubText("");
 
         // Row 2
         mKeyA.setText("A");
+        mKeyA.setSwipeUpText("");
         mKeyA.setSubText("");
 
         mKeyS.setText("S");
+        mKeyS.setSwipeUpText("");
         mKeyS.setSubText("");
 
         mKeyD.setText("D");
+        mKeyD.setSwipeUpText("");
         mKeyD.setSubText("");
 
         mKeyF.setText("F");
+        mKeyF.setSwipeUpText("");
         mKeyF.setSubText("");
 
         mKeyG.setText("G");
+        mKeyG.setSwipeUpText("");
         mKeyG.setSubText("");
 
         mKeyH.setText("H");
+        mKeyH.setSwipeUpText("");
         mKeyH.setSubText("");
 
         mKeyJ.setText("J");
+        mKeyJ.setSwipeUpText("");
         mKeyJ.setSubText("");
 
         mKeyK.setText("K");
+        mKeyK.setSwipeUpText("");
         mKeyK.setSubText("");
 
         mKeyL.setText("L");
+        mKeyL.setSwipeUpText("");
         mKeyL.setSubText("");
 
         // Row 3
 
         mKeyZ.setText("Z");
+        mKeyZ.setSwipeUpText("");
         mKeyZ.setSubText("");
 
         mKeyX.setText("X");
+        mKeyX.setSwipeUpText("");
         mKeyX.setSubText("");
 
         mKeyC.setText("C");
+        mKeyC.setSwipeUpText("");
         mKeyC.setSubText("");
 
         mKeyV.setText("V");
+        mKeyV.setSwipeUpText("");
         mKeyV.setSubText("");
 
         mKeyB.setText("B");
+        mKeyB.setSwipeUpText("");
         mKeyB.setSubText("");
 
         mKeyN.setText("N");
+        mKeyN.setSwipeUpText("");
         mKeyN.setSubText("");
 
         mKeyM.setText("M");
+        mKeyM.setSwipeUpText("");
         mKeyM.setSubText("");
     }
 
@@ -329,94 +383,133 @@ public class KeyboardEnglish extends Keyboard {
         // Row 1
 
         mKeyQ.setText("1");
+        mKeyQ.setSwipeUpText("");
         mKeyQ.setSubText("");
 
         mKeyW.setText("2");
+        mKeyW.setSwipeUpText("");
         mKeyW.setSubText("");
 
         mKeyE.setText("3");
+        mKeyE.setSwipeUpText("");
         mKeyE.setSubText("");
 
         mKeyR.setText("4");
+        mKeyR.setSwipeUpText("");
         mKeyR.setSubText("");
 
         mKeyT.setText("5");
+        mKeyT.setSwipeUpText("");
         mKeyT.setSubText("");
 
         mKeyY.setText("6");
+        mKeyY.setSwipeUpText("");
         mKeyY.setSubText("");
 
         mKeyU.setText("7");
+        mKeyU.setSwipeUpText("");
         mKeyU.setSubText("");
 
         mKeyI.setText("8");
+        mKeyI.setSwipeUpText("");
         mKeyI.setSubText("");
 
         mKeyO.setText("9");
+        mKeyO.setSwipeUpText("");
         mKeyO.setSubText("");
 
         mKeyP.setText("0");
+        mKeyP.setSwipeUpText("");
         mKeyP.setSubText("");
 
         // Row 2
 
-        mKeyA.setText("\\");
-        mKeyA.setSubText("");
+        mKeyA.setText("@");
+        mKeyA.setSwipeUpText("~");
+        mKeyA.setSubText("~");
 
-        mKeyS.setText("_");
+        mKeyS.setText("#");
+        mKeyS.setSwipeUpText("");
         mKeyS.setSubText("");
 
-        mKeyD.setText("(");
-        mKeyD.setSubText("");
+        mKeyD.setText("$");
+        mKeyD.setSwipeUpText("¥");
+        mKeyD.setSubText("¥");
 
-        mKeyF.setText(":");
+        mKeyF.setText("%");
+        mKeyF.setSwipeUpText("");
         mKeyF.setSubText("");
 
-        mKeyG.setText(")");
+        mKeyG.setText("^");
+        mKeyG.setSwipeUpText("");
         mKeyG.setSubText("");
 
         mKeyH.setText("&");
+        mKeyH.setSwipeUpText("");
         mKeyH.setSubText("");
 
-        mKeyJ.setText("#");
+        mKeyJ.setText("*");
+        mKeyJ.setSwipeUpText("");
         mKeyJ.setSubText("");
 
-        mKeyK.setText("*");
-        mKeyK.setSubText("");
+        mKeyK.setText("(");
+        mKeyK.setSwipeUpText("[");
+        mKeyK.setSubText("[");
 
-        mKeyL.setText("\"");
-        mKeyL.setSubText("");
+        mKeyL.setText(")");
+        mKeyL.setSwipeUpText("]");
+        mKeyL.setSubText("]");
 
         // Row 3
 
-        mKeyZ.setText("@");
-        mKeyZ.setSubText("");
+        mKeyZ.setText("°");
+        mKeyZ.setSwipeUpText("℃");
+        mKeyZ.setSubText("℃");
 
-        mKeyX.setText("/");
+        mKeyX.setText("+");
+        mKeyX.setSwipeUpText("");
         mKeyX.setSubText("");
 
         mKeyC.setText("-");
-        mKeyC.setSubText("");
+        mKeyC.setSwipeUpText("_");
+        mKeyC.setSubText("_");
 
-        mKeyV.setText("\'");
+        mKeyV.setText("×");
+        mKeyV.setSwipeUpText("");
         mKeyV.setSubText("");
 
-        mKeyB.setText("!");
-        mKeyB.setSubText("");
+        mKeyB.setText("÷");
+        mKeyB.setSwipeUpText("√");
+        mKeyB.setSubText("√");
 
-        mKeyN.setText("?");
+        mKeyN.setText("=");
+        mKeyN.setSwipeUpText("");
         mKeyN.setSubText("");
 
-        mKeyM.setText(";");
-        mKeyM.setSubText("");
+        mKeyM.setText("/");
+        mKeyM.setSwipeUpText("\\");
+        mKeyM.setSubText("\\");
     }
 
     private void setNonChangingKeyValues() {
-        mKeyExclamation.setText("!");
+        mKeyQuote.setText("\'");
+        mKeyQuote.setSwipeUpText("\"");
+        mKeyQuote.setSubText("\"");
+
         mKeyComma.setText(",");
+        mKeyComma.setSwipeUpText(";");
+        mKeyComma.setSubText(";");
+
         mKeySpace.setText(" ");
+
         mKeyPeriod.setText(".");
+        mKeyPeriod.setSwipeUpText(":");
+        mKeyPeriod.setSubText(":");
+
         mKeyQuestion.setText("?");
+        mKeyQuestion.setSwipeUpText("!");
+        mKeyQuestion.setSubText("!");
+
         mKeyReturn.setText(NEWLINE);
     }
 
@@ -455,11 +548,51 @@ public class KeyboardEnglish extends Keyboard {
         mKeyM.setIsRotatedPrimaryText(false);
 
         // Row 4
-        mKeyExclamation.setIsRotatedPrimaryText(false);
+        mKeyQuote.setIsRotatedPrimaryText(false);
         mKeyComma.setIsRotatedPrimaryText(false);
         mKeySpace.setIsRotatedPrimaryText(false);
         mKeyPeriod.setIsRotatedPrimaryText(false);
         mKeyQuestion.setIsRotatedPrimaryText(false);
+    }
+
+    private void dontRotateSecondaryText() {
+        // Row 1
+        mKeyQ.setIsRotatedSubText(false);
+        mKeyW.setIsRotatedSubText(false);
+        mKeyE.setIsRotatedSubText(false);
+        mKeyR.setIsRotatedSubText(false);
+        mKeyT.setIsRotatedSubText(false);
+        mKeyY.setIsRotatedSubText(false);
+        mKeyU.setIsRotatedSubText(false);
+        mKeyI.setIsRotatedSubText(false);
+        mKeyO.setIsRotatedSubText(false);
+        mKeyP.setIsRotatedSubText(false);
+
+        // Row 2
+        mKeyA.setIsRotatedSubText(false);
+        mKeyS.setIsRotatedSubText(false);
+        mKeyD.setIsRotatedSubText(false);
+        mKeyF.setIsRotatedSubText(false);
+        mKeyG.setIsRotatedSubText(false);
+        mKeyH.setIsRotatedSubText(false);
+        mKeyJ.setIsRotatedSubText(false);
+        mKeyK.setIsRotatedSubText(false);
+        mKeyL.setIsRotatedSubText(false);
+
+        // Row 3
+        mKeyZ.setIsRotatedSubText(false);
+        mKeyX.setIsRotatedSubText(false);
+        mKeyC.setIsRotatedSubText(false);
+        mKeyV.setIsRotatedSubText(false);
+        mKeyB.setIsRotatedSubText(false);
+        mKeyN.setIsRotatedSubText(false);
+        mKeyM.setIsRotatedSubText(false);
+
+        // Row 4
+        mKeyQuote.setIsRotatedSubText(false);
+        mKeyComma.setIsRotatedSubText(false);
+        mKeyPeriod.setIsRotatedSubText(false);
+        mKeyQuestion.setIsRotatedSubText(false);
     }
 
     private void setKeyImages() {
@@ -507,7 +640,7 @@ public class KeyboardEnglish extends Keyboard {
 
         // Row 4
         mKeyKeyboard.setKeyListener(this);
-        mKeyExclamation.setKeyListener(this);
+        mKeyQuote.setKeyListener(this);
         mKeyComma.setKeyListener(this);
         mKeySpace.setKeyListener(this);
         mKeyPeriod.setKeyListener(this);
@@ -553,7 +686,7 @@ public class KeyboardEnglish extends Keyboard {
 
         // Row 4
         addView(mKeyKeyboard);
-        addView(mKeyExclamation);
+        addView(mKeyQuote);
         addView(mKeyComma);
         addView(mKeySpace);
         addView(mKeyPeriod);
@@ -563,11 +696,437 @@ public class KeyboardEnglish extends Keyboard {
 
     public List<PopupKeyCandidate> getPopupCandidates(Key key) {
         // get the appropriate candidates based on the key pressed
-        if (key == mKeyKeyboard) {
+        if (key == mKeyQ) {
+            return getCandidatesForQ();
+        } else if (key == mKeyW) {
+            return getCandidatesForW();
+        } else if (key == mKeyE) {
+            return getCandidatesForE();
+        } else if (key == mKeyR) {
+            return getCandidatesForR();
+        } else if (key == mKeyT) {
+            return getCandidatesForT();
+        } else if (key == mKeyY) {
+            return getCandidatesForY();
+        } else if (key == mKeyU) {
+            return getCandidatesForU();
+        } else if (key == mKeyI) {
+            return getCandidatesForI();
+        } else if (key == mKeyO) {
+            return getCandidatesForO();
+        } else if (key == mKeyP) {
+            return getCandidatesForP();
+        } else if (key == mKeyA) {
+            return getCandidatesForA();
+        } else if (key == mKeyS) {
+            return getCandidatesForS();
+        } else if (key == mKeyD) {
+            return getCandidatesForD();
+        } else if (key == mKeyF) {
+            return getCandidatesForF();
+        } else if (key == mKeyG) {
+            return getCandidatesForG();
+        } else if (key == mKeyH) {
+            return getCandidatesForH();
+        } else if (key == mKeyJ) {
+            return getCandidatesForJ();
+        } else if (key == mKeyK) {
+            return getCandidatesForK();
+        } else if (key == mKeyL) {
+            return getCandidatesForL();
+        } else if (key == mKeyZ) {
+            return getCandidatesForZ();
+        } else if (key == mKeyX) {
+            return getCandidatesForX();
+        } else if (key == mKeyC) {
+            return getCandidatesForC();
+        } else if (key == mKeyV) {
+            return getCandidatesForV();
+        } else if (key == mKeyB) {
+            return getCandidatesForB();
+        } else if (key == mKeyN) {
+            return getCandidatesForN();
+        } else if (key == mKeyM) {
+            return getCandidatesForM();
+        } else if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();
+        } else if (key == mKeyQuote) {
+            return getCandidatesForQuote();
+        } else if (key == mKeyComma) {
+            return getCandidatesForComma();
+        } else if (key == mKeySpace) {
+            return getCandidatesForSpace();
+        } else if (key == mKeyPeriod) {
+            return getCandidatesForPeriod();
+        } else if (key == mKeyQuestion) {
+            return getCandidatesForQuestion();
         }
 
         return null;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForQ() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("¹", false));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("1", false));
+        candidates.add(new PopupKeyCandidate("ʧ", false));
+        candidates.add(new PopupKeyCandidate("č", false));
+        candidates.add(new PopupKeyCandidate("tʂ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForW() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("²", false));
+            candidates.add(new PopupKeyCandidate("½", false));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("2", false));
+        //candidates.add(new PopupKeyCandidate("ʦ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForE() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("³", false));
+            candidates.add(new PopupKeyCandidate("⅓", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("3", false));
+        candidates.add(new PopupKeyCandidate("ə", false));
+        candidates.add(new PopupKeyCandidate("ᴇ", false));
+        candidates.add(new PopupKeyCandidate("ē", false));
+        candidates.add(new PopupKeyCandidate("é", false));
+        candidates.add(new PopupKeyCandidate("ě", false));
+        candidates.add(new PopupKeyCandidate("è", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForR() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("¼", false));
+            candidates.add(new PopupKeyCandidate("¾", false));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("4", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForT() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("5", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForY() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("6", false));
+        candidates.add(new PopupKeyCandidate("ʏ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForU() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("ʉ", false));
+        candidates.add(new PopupKeyCandidate("ü", false));
+        candidates.add(new PopupKeyCandidate("ū", false));
+        candidates.add(new PopupKeyCandidate("ú", false));
+        candidates.add(new PopupKeyCandidate("ǔ", false));
+        candidates.add(new PopupKeyCandidate("ù", false));
+        candidates.add(new PopupKeyCandidate("7", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForI() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+
+
+        candidates.add(new PopupKeyCandidate("ɪ", false));
+        candidates.add(new PopupKeyCandidate("ī", false));
+        candidates.add(new PopupKeyCandidate("í", false));
+        candidates.add(new PopupKeyCandidate("ǐ", false));
+        candidates.add(new PopupKeyCandidate("ì", false));
+        candidates.add(new PopupKeyCandidate("8", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForO() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ө", false));
+        candidates.add(new PopupKeyCandidate("ö", false));
+        candidates.add(new PopupKeyCandidate("ø", false));
+        candidates.add(new PopupKeyCandidate("ō", false));
+        candidates.add(new PopupKeyCandidate("ó", false));
+        candidates.add(new PopupKeyCandidate("ǒ", false));
+        candidates.add(new PopupKeyCandidate("ò", false));
+        candidates.add(new PopupKeyCandidate("9", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForP() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("0", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForA() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("~", false));
+            candidates.add(new PopupKeyCandidate("`", false));
+            candidates.add(new PopupKeyCandidate("©", false));
+            candidates.add(new PopupKeyCandidate("®", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ɑ", false));
+        candidates.add(new PopupKeyCandidate("æ", false));
+        candidates.add(new PopupKeyCandidate("ā", false));
+        candidates.add(new PopupKeyCandidate("á", false));
+        candidates.add(new PopupKeyCandidate("ǎ", false));
+        candidates.add(new PopupKeyCandidate("à", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForS() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("ʂ", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForD() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("¥", false));
+            candidates.add(new PopupKeyCandidate("₮", false));
+            candidates.add(new PopupKeyCandidate("€", false));
+            candidates.add(new PopupKeyCandidate("£", false));
+            candidates.add(new PopupKeyCandidate("¢", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ː", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForF() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("̌", "x̌", null, false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForG() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ɣ", false));
+        candidates.add(new PopupKeyCandidate("ɡ", false));
+        candidates.add(new PopupKeyCandidate("ɢ", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForH() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForJ() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ʤ", false));
+        candidates.add(new PopupKeyCandidate("ǰ", false));
+        candidates.add(new PopupKeyCandidate("dʐ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForK() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("[", false));
+            candidates.add(new PopupKeyCandidate("{", false));
+            return candidates;
+        }
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForL() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("]", false));
+            candidates.add(new PopupKeyCandidate("}", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ɬ", false));
+        candidates.add(new PopupKeyCandidate("ɮ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForZ() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("℃", false));
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("ʣ", false));
+        candidates.add(new PopupKeyCandidate("ʦ", false));
+        candidates.add(new PopupKeyCandidate("ʐ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForX() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("±", false));
+            candidates.add(new PopupKeyCandidate("∑", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ʃ", false));
+        candidates.add(new PopupKeyCandidate("š", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForC() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("_", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ɔ", false));
+        candidates.add(new PopupKeyCandidate("œ", false));
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForV() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            return candidates;
+        }
+        candidates.add(new PopupKeyCandidate("ʊ", false));
+        candidates.add(new PopupKeyCandidate("ǖ", false));
+        candidates.add(new PopupKeyCandidate("ǘ", false));
+        candidates.add(new PopupKeyCandidate("ǚ", false));
+        candidates.add(new PopupKeyCandidate("ǜ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForB() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("√", false));
+            return candidates;
+        }
+
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForN() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("<", false));
+            candidates.add(new PopupKeyCandidate(">", false));
+            candidates.add(new PopupKeyCandidate("≤", false));
+            candidates.add(new PopupKeyCandidate("≥", false));
+            candidates.add(new PopupKeyCandidate("≠", false));
+            candidates.add(new PopupKeyCandidate("≈", false));
+            return candidates;
+        }
+
+        candidates.add(new PopupKeyCandidate("ŋ", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForM() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("\\", false));
+            candidates.add(new PopupKeyCandidate("|", false));
+            return candidates;
+        }
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForQuote() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+
+        candidates.add(new PopupKeyCandidate("\"", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForComma() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+
+        candidates.add(new PopupKeyCandidate(";", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForSpace() {
+        return null;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForPeriod() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+
+        candidates.add(new PopupKeyCandidate(":", false));
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForQuestion() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+
+        candidates.add(new PopupKeyCandidate("!", false));
+        return candidates;
     }
 
     @Override

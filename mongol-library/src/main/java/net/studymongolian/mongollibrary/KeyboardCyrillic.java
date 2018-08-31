@@ -3,6 +3,7 @@ package net.studymongolian.mongollibrary;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class KeyboardCyrillic extends Keyboard {
@@ -109,6 +110,7 @@ public class KeyboardCyrillic extends Keyboard {
         makeKeysLowercase();
         setNonChangingKeyValues();
         dontRotatePrimaryTextForSelectKeys();
+        dontRotateSecondaryText();
         setKeyImages();
         setListeners();
         addKeysToKeyboard();
@@ -456,7 +458,7 @@ public class KeyboardCyrillic extends Keyboard {
         mKey_a.setText("%");
         mKey_a.setSubText("");
 
-        mKey_kh.setText("^");
+        mKey_kh.setText("№");
         mKey_kh.setSubText("");
 
         mKey_r.setText("&");
@@ -505,7 +507,8 @@ public class KeyboardCyrillic extends Keyboard {
         mKey_i_joolen.setSubText("");
 
         mKey_v.setText("/");
-        mKey_v.setSubText("");
+        mKey_v.setSwipeUpText("\\");
+        mKey_v.setSubText("\\");
 
         // Row 4
 
@@ -566,6 +569,10 @@ public class KeyboardCyrillic extends Keyboard {
         mKeySpace.setIsRotatedPrimaryText(false);
         mKeyPeriod.setIsRotatedPrimaryText(false);
         mKey_yu.setIsRotatedPrimaryText(false);
+    }
+
+    private void dontRotateSecondaryText() {
+        mKey_v.setIsRotatedSubText(false);
     }
 
     private void setKeyImages() {
@@ -683,9 +690,22 @@ public class KeyboardCyrillic extends Keyboard {
         // get the appropriate candidates based on the key pressed
         if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();
+        } else if (key == mKey_v) {
+            return getCandidatesForV();
         }
 
         return null;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForV() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate("\\", false));
+            candidates.add(new PopupKeyCandidate("|", false));
+            return candidates;
+        }
+
+        return candidates;
     }
 
     @Override
