@@ -713,10 +713,31 @@ public class ImeContainer extends ViewGroup
         } else if (isPunctuationThatNeedsSpace(initialChar)) {
             char previousChar = getPreviousChar();
             addSpacedPunctuation(ic, text, previousChar);
+        } else if (isSingleZwjThatSplitsWord(ic, text)) {
+            ic.commitText("" + MongolCode.Uni.ZWJ + SPACE + MongolCode.Uni.ZWJ, 1);
         } else {
             ic.commitText(text, 1);
         }
         ic.endBatchEdit();
+    }
+
+    private boolean isSingleZwjThatSplitsWord(InputConnection ic, String text) {
+        if (text.length() != 1
+                || text.charAt(0) != MongolCode.Uni.ZWJ)
+            return false;
+        CharSequence previous = ic.getTextBeforeCursor(1, 0);
+        if (TextUtils.isEmpty(previous))
+            return false;
+        char previousChar = previous.charAt(0);
+        if (!MongolCode.isMongolian(previousChar)
+                || previousChar == MongolCode.Uni.ZWJ)
+            return false;
+        CharSequence next = ic.getTextAfterCursor(1, 0);
+        if (TextUtils.isEmpty(next))
+            return false;
+        char nextChar = next.charAt(0);
+        return (MongolCode.isMongolian(nextChar)
+                && nextChar != MongolCode.Uni.ZWJ);
     }
 
     private void doCommaSubstitution(InputConnection ic, String text) {
