@@ -37,6 +37,7 @@ public class EspressoTests {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+
     @Test
     public void mongolMenuTest() {
         ViewInteraction recyclerView = onView(
@@ -57,9 +58,7 @@ public class EspressoTests {
         appCompatButton.perform(click());
 
         ViewInteraction recyclerView2 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView2.perform(actionOnItemAtPosition(0, click()));
 
         ViewInteraction appCompatButton2 = onView(
@@ -73,9 +72,7 @@ public class EspressoTests {
         appCompatButton2.perform(click());
 
         ViewInteraction recyclerView3 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView3.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction appCompatButton3 = onView(
@@ -89,9 +86,7 @@ public class EspressoTests {
         appCompatButton3.perform(click());
 
         ViewInteraction recyclerView4 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView4.perform(actionOnItemAtPosition(2, click()));
 
         ViewInteraction appCompatButton4 = onView(
@@ -105,9 +100,7 @@ public class EspressoTests {
         appCompatButton4.perform(click());
 
         ViewInteraction recyclerView5 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView5.perform(actionOnItemAtPosition(0, click()));
 
         ViewInteraction appCompatButton5 = onView(
@@ -121,9 +114,7 @@ public class EspressoTests {
         appCompatButton5.perform(click());
 
         ViewInteraction recyclerView6 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView6.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction appCompatButton6 = onView(
@@ -137,9 +128,7 @@ public class EspressoTests {
         appCompatButton6.perform(click());
 
         ViewInteraction recyclerView7 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView7.perform(actionOnItemAtPosition(2, click()));
 
         ViewInteraction appCompatButton7 = onView(
@@ -153,9 +142,7 @@ public class EspressoTests {
         appCompatButton7.perform(click());
 
         ViewInteraction recyclerView8 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView8.perform(actionOnItemAtPosition(0, click()));
 
         ViewInteraction appCompatButton8 = onView(
@@ -169,9 +156,7 @@ public class EspressoTests {
         appCompatButton8.perform(click());
 
         ViewInteraction recyclerView9 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView9.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction appCompatButton9 = onView(
@@ -185,9 +170,7 @@ public class EspressoTests {
         appCompatButton9.perform(click());
 
         ViewInteraction recyclerView10 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView10.perform(actionOnItemAtPosition(2, click()));
 
         ViewInteraction actionMenuItemView = onView(
@@ -201,9 +184,7 @@ public class EspressoTests {
         actionMenuItemView.perform(click());
 
         ViewInteraction recyclerView11 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView11.perform(actionOnItemAtPosition(0, click()));
 
         ViewInteraction actionMenuItemView2 = onView(
@@ -217,9 +198,7 @@ public class EspressoTests {
         actionMenuItemView2.perform(click());
 
         ViewInteraction recyclerView12 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView12.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction actionMenuItemView3 = onView(
@@ -233,12 +212,8 @@ public class EspressoTests {
         actionMenuItemView3.perform(click());
 
         ViewInteraction recyclerView13 = onView(
-                childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0));
+                withClassName(is("android.support.v7.widget.RecyclerView")));
         recyclerView13.perform(actionOnItemAtPosition(2, click()));
-
-        pressBack();
 
     }
 
@@ -429,6 +404,8 @@ public class EspressoTests {
 
     }
 
+
+
     @Test
     public void labelTest() {
         ViewInteraction recyclerView = onView(
@@ -449,10 +426,8 @@ public class EspressoTests {
         appCompatSpinner.perform(click());
 
         DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(1);
+                .inAdapterView(withClassName(is("android.support.v7.widget.DropDownListView")))
+                .atPosition(0);
         appCompatCheckedTextView.perform(click());
 
         ViewInteraction appCompatSpinner2 = onView(
@@ -466,115 +441,39 @@ public class EspressoTests {
         appCompatSpinner2.perform(click());
 
         DataInteraction appCompatCheckedTextView2 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(2);
+                .inAdapterView(withClassName(is("android.support.v7.widget.DropDownListView")))
+                .atPosition(1);
         appCompatCheckedTextView2.perform(click());
 
         ViewInteraction appCompatSpinner3 = onView(
-                allOf(withId(R.id.fontcolor_spinner),
+                allOf(withId(R.id.fontsize_spinner),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
         appCompatSpinner3.perform(click());
 
         DataInteraction appCompatCheckedTextView3 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(3);
+                .inAdapterView(withClassName(is("android.support.v7.widget.DropDownListView")))
+                .atPosition(0);
         appCompatCheckedTextView3.perform(click());
 
         ViewInteraction appCompatSpinner4 = onView(
-                allOf(withId(R.id.fontcolor_spinner),
+                allOf(withId(R.id.fontsize_spinner),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
         appCompatSpinner4.perform(click());
 
         DataInteraction appCompatCheckedTextView4 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        appCompatCheckedTextView4.perform(click());
-
-        ViewInteraction appCompatSpinner5 = onView(
-                allOf(withId(R.id.fontsize_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatSpinner5.perform(click());
-
-        DataInteraction appCompatCheckedTextView5 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        appCompatCheckedTextView5.perform(click());
-
-        ViewInteraction appCompatSpinner6 = onView(
-                allOf(withId(R.id.fontsize_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatSpinner6.perform(click());
-
-        DataInteraction appCompatCheckedTextView6 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(1);
-        appCompatCheckedTextView6.perform(click());
-
-        ViewInteraction appCompatSpinner7 = onView(
-                allOf(withId(R.id.fontsize_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatSpinner7.perform(click());
-
-        DataInteraction appCompatCheckedTextView7 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(3);
-        appCompatCheckedTextView7.perform(click());
-
-        ViewInteraction appCompatSpinner8 = onView(
-                allOf(withId(R.id.fontsize_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatSpinner8.perform(click());
-
-        DataInteraction appCompatCheckedTextView8 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
+                .inAdapterView(withClassName(is("android.support.v7.widget.DropDownListView")))
                 .atPosition(4);
-        appCompatCheckedTextView8.perform(click());
-
-        pressBack();
+        appCompatCheckedTextView4.perform(click());
 
     }
 
@@ -601,7 +500,7 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
+                                1)))
                 .atPosition(1);
         appCompatCheckedTextView.perform(click());
 
@@ -619,7 +518,7 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
+                                1)))
                 .atPosition(0);
         appCompatCheckedTextView2.perform(click());
 
@@ -637,7 +536,7 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
+                                1)))
                 .atPosition(2);
         appCompatCheckedTextView3.perform(click());
 
@@ -655,16 +554,16 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
+                                1)))
                 .atPosition(1);
         appCompatCheckedTextView4.perform(click());
 
         ViewInteraction appCompatButton5 = onView(
-                allOf(withText("Color"),
+                allOf(withText("Alignment"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        1),
+                                        2),
                                 0),
                         isDisplayed()));
         appCompatButton5.perform(click());
@@ -673,16 +572,16 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(2);
+                                1)))
+                .atPosition(1);
         appCompatCheckedTextView5.perform(click());
 
         ViewInteraction appCompatButton6 = onView(
-                allOf(withText("Color"),
+                allOf(withText("Alignment"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        1),
+                                        2),
                                 0),
                         isDisplayed()));
         appCompatButton6.perform(click());
@@ -691,8 +590,8 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(0);
+                                1)))
+                .atPosition(2);
         appCompatCheckedTextView6.perform(click());
 
         ViewInteraction appCompatButton7 = onView(
@@ -709,17 +608,17 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(1);
+                                1)))
+                .atPosition(0);
         appCompatCheckedTextView7.perform(click());
 
         ViewInteraction appCompatButton8 = onView(
-                allOf(withText("Alignment"),
+                allOf(withText("Size"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        2),
-                                0),
+                                        0),
+                                1),
                         isDisplayed()));
         appCompatButton8.perform(click());
 
@@ -727,17 +626,17 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(2);
+                                1)))
+                .atPosition(4);
         appCompatCheckedTextView8.perform(click());
 
         ViewInteraction appCompatButton9 = onView(
-                allOf(withText("Alignment"),
+                allOf(withText("Size"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        2),
-                                0),
+                                        0),
+                                1),
                         isDisplayed()));
         appCompatButton9.perform(click());
 
@@ -745,16 +644,16 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(0);
+                                1)))
+                .atPosition(1);
         appCompatCheckedTextView9.perform(click());
 
         ViewInteraction appCompatButton10 = onView(
-                allOf(withText("Size"),
+                allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        0),
+                                        1),
                                 1),
                         isDisplayed()));
         appCompatButton10.perform(click());
@@ -763,83 +662,128 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
+                                1)))
                 .atPosition(0);
         appCompatCheckedTextView10.perform(click());
 
         ViewInteraction appCompatButton11 = onView(
-                allOf(withText("Size"),
+                allOf(withId(android.R.id.button1), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton11.perform(scrollTo(), click());
+
+        ViewInteraction appCompatButton12 = onView(
+                allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        0),
+                                        1),
                                 1),
                         isDisplayed()));
-        appCompatButton11.perform(click());
+        appCompatButton12.perform(click());
 
         DataInteraction appCompatCheckedTextView11 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
+                                1)))
                 .atPosition(1);
         appCompatCheckedTextView11.perform(click());
 
-        ViewInteraction appCompatButton12 = onView(
-                allOf(withText("Size"),
+        ViewInteraction appCompatButton13 = onView(
+                allOf(withId(android.R.id.button1), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton13.perform(scrollTo(), click());
+
+        ViewInteraction appCompatButton14 = onView(
+                allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        0),
+                                        1),
                                 1),
                         isDisplayed()));
-        appCompatButton12.perform(click());
+        appCompatButton14.perform(click());
 
         DataInteraction appCompatCheckedTextView12 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(3);
+                                1)))
+                .atPosition(2);
         appCompatCheckedTextView12.perform(click());
 
-        ViewInteraction appCompatButton13 = onView(
-                allOf(withText("Size"),
+        ViewInteraction appCompatButton15 = onView(
+                allOf(withId(android.R.id.button1), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton15.perform(scrollTo(), click());
+
+        ViewInteraction appCompatButton16 = onView(
+                allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        0),
+                                        1),
                                 1),
                         isDisplayed()));
-        appCompatButton13.perform(click());
+        appCompatButton16.perform(click());
 
         DataInteraction appCompatCheckedTextView13 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(4);
+                                1)))
+                .atPosition(3);
         appCompatCheckedTextView13.perform(click());
 
-        ViewInteraction appCompatButton14 = onView(
-                allOf(withText("Size"),
+        ViewInteraction appCompatButton17 = onView(
+                allOf(withId(android.R.id.button1), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton17.perform(scrollTo(), click());
+
+        ViewInteraction appCompatButton18 = onView(
+                allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        0),
+                                        1),
                                 1),
                         isDisplayed()));
-        appCompatButton14.perform(click());
+        appCompatButton18.perform(click());
 
         DataInteraction appCompatCheckedTextView14 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(2);
+                                1)))
+                .atPosition(4);
         appCompatCheckedTextView14.perform(click());
 
-        ViewInteraction appCompatButton15 = onView(
+        ViewInteraction appCompatButton19 = onView(
+                allOf(withId(android.R.id.button1), withText("OK"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton19.perform(scrollTo(), click());
+
+        ViewInteraction appCompatButton20 = onView(
                 allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
@@ -847,26 +791,26 @@ public class EspressoTests {
                                         1),
                                 1),
                         isDisplayed()));
-        appCompatButton15.perform(click());
+        appCompatButton20.perform(click());
 
         DataInteraction appCompatCheckedTextView15 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(0);
+                                1)))
+                .atPosition(5);
         appCompatCheckedTextView15.perform(click());
 
-        ViewInteraction appCompatButton16 = onView(
+        ViewInteraction appCompatButton21 = onView(
                 allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.buttonPanel),
                                         0),
                                 3)));
-        appCompatButton16.perform(scrollTo(), click());
+        appCompatButton21.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton17 = onView(
+        ViewInteraction appCompatButton22 = onView(
                 allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
@@ -874,26 +818,26 @@ public class EspressoTests {
                                         1),
                                 1),
                         isDisplayed()));
-        appCompatButton17.perform(click());
+        appCompatButton22.perform(click());
 
         DataInteraction appCompatCheckedTextView16 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(1);
+                                1)))
+                .atPosition(6);
         appCompatCheckedTextView16.perform(click());
 
-        ViewInteraction appCompatButton18 = onView(
+        ViewInteraction appCompatButton23 = onView(
                 allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.buttonPanel),
                                         0),
                                 3)));
-        appCompatButton18.perform(scrollTo(), click());
+        appCompatButton23.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton19 = onView(
+        ViewInteraction appCompatButton24 = onView(
                 allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
@@ -901,26 +845,26 @@ public class EspressoTests {
                                         1),
                                 1),
                         isDisplayed()));
-        appCompatButton19.perform(click());
+        appCompatButton24.perform(click());
 
         DataInteraction appCompatCheckedTextView17 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(2);
+                                1)))
+                .atPosition(7);
         appCompatCheckedTextView17.perform(click());
 
-        ViewInteraction appCompatButton20 = onView(
+        ViewInteraction appCompatButton25 = onView(
                 allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.buttonPanel),
                                         0),
                                 3)));
-        appCompatButton20.perform(scrollTo(), click());
+        appCompatButton25.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton21 = onView(
+        ViewInteraction appCompatButton26 = onView(
                 allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
@@ -928,26 +872,26 @@ public class EspressoTests {
                                         1),
                                 1),
                         isDisplayed()));
-        appCompatButton21.perform(click());
+        appCompatButton26.perform(click());
 
         DataInteraction appCompatCheckedTextView18 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(3);
+                                1)))
+                .atPosition(8);
         appCompatCheckedTextView18.perform(click());
 
-        ViewInteraction appCompatButton22 = onView(
+        ViewInteraction appCompatButton27 = onView(
                 allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.buttonPanel),
                                         0),
                                 3)));
-        appCompatButton22.perform(scrollTo(), click());
+        appCompatButton27.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton23 = onView(
+        ViewInteraction appCompatButton28 = onView(
                 allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
@@ -955,186 +899,141 @@ public class EspressoTests {
                                         1),
                                 1),
                         isDisplayed()));
-        appCompatButton23.perform(click());
+        appCompatButton28.perform(click());
 
         DataInteraction appCompatCheckedTextView19 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(4);
+                                1)))
+                .atPosition(9);
         appCompatCheckedTextView19.perform(click());
 
-        ViewInteraction appCompatButton24 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton24.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton25 = onView(
-                allOf(withText("Span"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton25.perform(click());
-
-        DataInteraction appCompatCheckedTextView20 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(5);
-        appCompatCheckedTextView20.perform(click());
-
-        ViewInteraction appCompatButton26 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton26.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton27 = onView(
-                allOf(withText("Span"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton27.perform(click());
-
-        DataInteraction appCompatCheckedTextView21 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(6);
-        appCompatCheckedTextView21.perform(click());
-
-        ViewInteraction appCompatButton28 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton28.perform(scrollTo(), click());
-
         ViewInteraction appCompatButton29 = onView(
-                allOf(withText("Span"),
+                allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.button_layout),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton29.perform(click());
-
-        DataInteraction appCompatCheckedTextView22 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(7);
-        appCompatCheckedTextView22.perform(click());
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton29.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton30 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
+                allOf(withText("Span"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton30.perform(scrollTo(), click());
+                                        withId(R.id.button_layout),
+                                        1),
+                                1),
+                        isDisplayed()));
+        appCompatButton30.perform(click());
 
         ViewInteraction appCompatButton31 = onView(
-                allOf(withText("Span"),
+                allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.button_layout),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton31.perform(click());
-
-        DataInteraction appCompatCheckedTextView23 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(8);
-        appCompatCheckedTextView23.perform(click());
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton31.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton32 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton32.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton33 = onView(
-                allOf(withText("Span"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton33.perform(click());
-
-        DataInteraction appCompatCheckedTextView24 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(9);
-        appCompatCheckedTextView24.perform(click());
-
-        ViewInteraction appCompatButton34 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton34.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton35 = onView(
-                allOf(withText("Span"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton35.perform(click());
-
-        ViewInteraction appCompatButton36 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.buttonPanel),
-                                        0),
-                                3)));
-        appCompatButton36.perform(scrollTo(), click());
-
-        ViewInteraction appCompatButton37 = onView(
                 allOf(withText("Padding"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
                                         2),
                                 1),
+                        isDisplayed()));
+        appCompatButton32.perform(click());
+
+        DataInteraction appCompatCheckedTextView20 = onData(anything())
+                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
+                        childAtPosition(
+                                withId(R.id.contentPanel),
+                                1)))
+                .atPosition(2);
+        appCompatCheckedTextView20.perform(click());
+
+        ViewInteraction appCompatButton33 = onView(
+                allOf(withText("Padding"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.button_layout),
+                                        2),
+                                1),
+                        isDisplayed()));
+        appCompatButton33.perform(click());
+
+        DataInteraction appCompatCheckedTextView21 = onData(anything())
+                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
+                        childAtPosition(
+                                withId(R.id.contentPanel),
+                                1)))
+                .atPosition(1);
+        appCompatCheckedTextView21.perform(click());
+
+        ViewInteraction appCompatButton34 = onView(
+                allOf(withText("Font"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.button_layout),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatButton34.perform(click());
+
+        DataInteraction appCompatCheckedTextView22 = onData(anything())
+                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
+                        childAtPosition(
+                                withId(R.id.contentPanel),
+                                1)))
+                .atPosition(1);
+        appCompatCheckedTextView22.perform(click());
+
+        ViewInteraction appCompatButton35 = onView(
+                allOf(withText("Font"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.button_layout),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatButton35.perform(click());
+
+        DataInteraction appCompatCheckedTextView23 = onData(anything())
+                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
+                        childAtPosition(
+                                withId(R.id.contentPanel),
+                                1)))
+                .atPosition(2);
+        appCompatCheckedTextView23.perform(click());
+
+        ViewInteraction appCompatButton36 = onView(
+                allOf(withText("Font"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.button_layout),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatButton36.perform(click());
+
+        DataInteraction appCompatCheckedTextView24 = onData(anything())
+                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
+                        childAtPosition(
+                                withId(R.id.contentPanel),
+                                1)))
+                .atPosition(3);
+        appCompatCheckedTextView24.perform(click());
+
+        ViewInteraction appCompatButton37 = onView(
+                allOf(withText("Font"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.button_layout),
+                                        0),
+                                2),
                         isDisplayed()));
         appCompatButton37.perform(click());
 
@@ -1142,17 +1041,17 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(1);
+                                1)))
+                .atPosition(4);
         appCompatCheckedTextView25.perform(click());
 
         ViewInteraction appCompatButton38 = onView(
-                allOf(withText("Padding"),
+                allOf(withText("Font"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.button_layout),
-                                        2),
-                                1),
+                                        0),
+                                2),
                         isDisplayed()));
         appCompatButton38.perform(click());
 
@@ -1160,119 +1059,9 @@ public class EspressoTests {
                 .inAdapterView(allOf(withId(R.id.select_dialog_listview),
                         childAtPosition(
                                 withId(R.id.contentPanel),
-                                0)))
-                .atPosition(2);
+                                1)))
+                .atPosition(0);
         appCompatCheckedTextView26.perform(click());
-
-        ViewInteraction appCompatButton39 = onView(
-                allOf(withText("Padding"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        2),
-                                1),
-                        isDisplayed()));
-        appCompatButton39.perform(click());
-
-        DataInteraction appCompatCheckedTextView27 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(0);
-        appCompatCheckedTextView27.perform(click());
-
-        ViewInteraction appCompatButton40 = onView(
-                allOf(withText("Font"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatButton40.perform(click());
-
-        DataInteraction appCompatCheckedTextView28 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(1);
-        appCompatCheckedTextView28.perform(click());
-
-        ViewInteraction appCompatButton41 = onView(
-                allOf(withText("Font"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatButton41.perform(click());
-
-        DataInteraction appCompatCheckedTextView29 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(2);
-        appCompatCheckedTextView29.perform(click());
-
-        ViewInteraction appCompatButton42 = onView(
-                allOf(withText("Font"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatButton42.perform(click());
-
-        DataInteraction appCompatCheckedTextView30 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(3);
-        appCompatCheckedTextView30.perform(click());
-
-        ViewInteraction appCompatButton43 = onView(
-                allOf(withText("Font"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatButton43.perform(click());
-
-        DataInteraction appCompatCheckedTextView31 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(4);
-        appCompatCheckedTextView31.perform(click());
-
-        ViewInteraction appCompatButton44 = onView(
-                allOf(withText("Font"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.button_layout),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatButton44.perform(click());
-
-        DataInteraction appCompatCheckedTextView32 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.select_dialog_listview),
-                        childAtPosition(
-                                withId(R.id.contentPanel),
-                                0)))
-                .atPosition(0);
-        appCompatCheckedTextView32.perform(click());
-
-        pressBack();
 
     }
 
