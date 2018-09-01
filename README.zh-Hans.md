@@ -450,7 +450,7 @@ String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822
 * `boolean isMasculineVowel(char character)`
 * `boolean isFeminineVowel(char character)`
 * `boolean isFVS(char character)`
-* `boolean isMvsConsonant(char character)`
+* `boolean isMvsPrecedingChar(char character)`
 * `boolean isMenksoft(char character)`
 
 ## 如何参与

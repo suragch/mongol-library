@@ -293,16 +293,21 @@ public final class MongolCode {
                 || character == Uni.RA || character == Uni.SA);
     }
 
-    public static boolean isMvsConsonant(char character) {
+    /**
+     * An MVS (Mongolian Vowel Separator) only appears before an A or E and after certain
+     * characters (usually consonants but could come after O as in CHINO_A (wolf)). This
+     * method tests the preceding character to see whether an MVS could follow it.
+     *
+     * @param character the character to text
+     * @return whether an MVS could follow the given character
+     */
+    public static boolean isMvsPrecedingChar(char character) {
         return (character == Uni.NA || character == Uni.QA || character == Uni.GA
                 || character == Uni.MA || character == Uni.LA || character == Uni.JA
-                || character == Uni.YA || character == Uni.RA || character == Uni.WA);
+                || character == Uni.YA || character == Uni.RA || character == Uni.WA
+                || character == Uni.O || character == Uni.U || character == Uni.OE
+                || character == Uni.UE);
     }
-
-//    private static boolean isMongolianAlphabet(char character) {
-//        // This method is not used internally, only for external use.
-//        return (character >= Uni.A && character <= Uni.CHI);
-//    }
 
     // YIN comes after a vowel, UN comes after a consonant, U comes after N.
     public static String getSuffixYinUnU(Gender previousWordGender, char previousWordLastChar) {

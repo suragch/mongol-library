@@ -768,7 +768,7 @@ public class ImeContainer extends ViewGroup
         CharSequence previousTwo = ic.getTextBeforeCursor(2, 0);
         return previousTwo != null
                 && previousTwo.length() >= 2
-                && MongolCode.isMvsConsonant(previousTwo.charAt(0))
+                && MongolCode.isMvsPrecedingChar(previousTwo.charAt(0))
                 && previousTwo.charAt(1) == text.charAt(0);
     }
 

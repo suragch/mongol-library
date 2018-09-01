@@ -678,7 +678,7 @@ public class KeyboardQwerty extends Keyboard {
         if (!isIsolateOrInitial()) {
             // MVS
             char previousChar = getPreviousChar();
-            if (MongolCode.isMvsConsonant(previousChar)
+            if (MongolCode.isMvsPrecedingChar(previousChar)
                     && previousChar != MongolCode.Uni.QA && previousChar != MongolCode.Uni.GA) {
                 PopupKeyCandidate mvs_E = new PopupKeyCandidate(
                         "" + MongolCode.Uni.MVS + MongolCode.Uni.E,
@@ -966,7 +966,7 @@ public class KeyboardQwerty extends Keyboard {
 
         // MVS-A
         char previousChar = getPreviousChar();
-        if (MongolCode.isMvsConsonant(previousChar)) {
+        if (MongolCode.isMvsPrecedingChar(previousChar)) {
             PopupKeyCandidate mvs_a = new PopupKeyCandidate(
                     "" + MongolCode.Uni.MVS + MongolCode.Uni.A,
                     "" + MongolCode.Uni.ZWJ + previousChar + MongolCode.Uni.MVS + MongolCode.Uni.A,

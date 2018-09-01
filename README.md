@@ -611,7 +611,7 @@ There are a number of static methods that may also be useful.
 * `boolean isMasculineVowel(char character)`
 * `boolean isFeminineVowel(char character)`
 * `boolean isFVS(char character)`
-* `boolean isMvsConsonant(char character)`
+* `boolean isMvsPrecedingChar(char character)`
 * `boolean isMenksoft(char character)`
 
 ## Fonts
