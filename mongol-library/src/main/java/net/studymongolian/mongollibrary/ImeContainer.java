@@ -467,7 +467,13 @@ public class ImeContainer extends ViewGroup
     private void addNewCurrentKeyboard(Keyboard keyboard) {
         mCurrentKeyboard = keyboard;
         keyboard.setOnKeyboardListener(this);
+        makeSureThatPunctuationIsOff(keyboard);
         this.addView(keyboard);
+    }
+
+    private void makeSureThatPunctuationIsOff(Keyboard keyboard) {
+        if (keyboard.isShowingPunctuation())
+            keyboard.onKeyboardKeyClick();
     }
 
     /**

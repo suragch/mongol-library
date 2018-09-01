@@ -471,6 +471,10 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
         return mPopupTextColor;
     }
 
+    public boolean isShowingPunctuation() {
+        return mIsShowingPunctuation;
+    }
+
     // KeyListener methods
 
     @Override
