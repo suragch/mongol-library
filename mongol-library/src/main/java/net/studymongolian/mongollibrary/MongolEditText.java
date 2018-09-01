@@ -618,7 +618,7 @@ public class MongolEditText extends MongolTextView {
         }
     };
 
-    private boolean copySelectedText() {
+    public boolean copySelectedText() {
         CharSequence selectedText = getSelectedText();
         if (TextUtils.isEmpty(selectedText))
             return false;
@@ -627,10 +627,18 @@ public class MongolEditText extends MongolTextView {
         ClipData clip = ClipData.newPlainText(null, selectedText);
         if (clipboard == null) return false;
         clipboard.setPrimaryClip(clip);
+        moveCursorToSelectionEnd();
         return true;
     }
 
-    private void cutSelectedText() {
+    private void moveCursorToSelectionEnd() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
+        int moveTo = Math.max(start, end);
+        setSelection(moveTo);
+    }
+
+    public void cutSelectedText() {
         boolean copiedSuccessfully = copySelectedText();
         if (copiedSuccessfully) {
             int start = getSelectionStart();
@@ -639,7 +647,7 @@ public class MongolEditText extends MongolTextView {
         }
     }
 
-    private void pasteText() {
+    public void pasteText() {
         Context context = getContext();
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         if (clipboard == null) return;
