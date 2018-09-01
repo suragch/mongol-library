@@ -174,113 +174,147 @@ public class KeyboardCyrillic extends Keyboard {
         // Row 1
 
         mKey_f.setText("ф");
+        mKey_f.setSwipeUpText("Ф");
         mKey_f.setSubText("");
 
         mKey_ts.setText("ц");
+        mKey_ts.setSwipeUpText("Ц");
         mKey_ts.setSubText("");
 
         mKey_u.setText("у");
+        mKey_u.setSwipeUpText("У");
         mKey_u.setSubText("");
 
         mKey_j.setText("ж");
+        mKey_j.setSwipeUpText("Ж");
         mKey_j.setSubText("");
 
         mKey_e.setText("э");
+        mKey_e.setSwipeUpText("Э");
         mKey_e.setSubText("");
 
         mKey_n.setText("н");
+        mKey_n.setSwipeUpText("Н");
         mKey_n.setSubText("");
 
         mKey_g.setText("г");
+        mKey_g.setSwipeUpText("Г");
         mKey_g.setSubText("");
 
         mKey_sh.setText("ш");
+        mKey_sh.setSwipeUpText("Ш");
         mKey_sh.setSubText("");
 
         mKey_u7.setText("ү");
+        mKey_u7.setSwipeUpText("Ү");
         mKey_u7.setSubText("");
 
         mKey_z.setText("з");
+        mKey_z.setSwipeUpText("З");
         mKey_z.setSubText("");
 
         mKey_k.setText("к");
+        mKey_k.setSwipeUpText("К");
         mKey_k.setSubText("");
 
         mKey_i_xatuu.setText("ъ");
+        mKey_i_xatuu.setSwipeUpText("Ъ");
         mKey_i_xatuu.setSubText("");
 
 
         // Row 2
 
         mKey_i_xagas.setText("й");
+        mKey_i_xagas.setSwipeUpText("Й");
         mKey_i_xagas.setSubText("");
 
         mKey_y.setText("ы");
+        mKey_y.setSwipeUpText("Ы");
         mKey_y.setSubText("");
 
         mKey_b.setText("б");
+        mKey_b.setSwipeUpText("Б");
         mKey_b.setSubText("");
 
         mKey_o6.setText("ө");
+        mKey_o6.setSwipeUpText("Ө");
         mKey_o6.setSubText("");
 
         mKey_a.setText("а");
+        mKey_a.setSwipeUpText("А");
         mKey_a.setSubText("");
 
         mKey_kh.setText("х");
+        mKey_kh.setSwipeUpText("Х");
         mKey_kh.setSubText("");
 
         mKey_r.setText("р");
+        mKey_r.setSwipeUpText("Р");
         mKey_r.setSubText("");
 
         mKey_o.setText("о");
+        mKey_o.setSwipeUpText("О");
         mKey_o.setSubText("");
 
         mKey_l.setText("л");
+        mKey_l.setSwipeUpText("Л");
         mKey_l.setSubText("");
 
         mKey_d.setText("д");
+        mKey_d.setSwipeUpText("Д");
         mKey_d.setSubText("");
 
         mKey_p.setText("п");
+        mKey_p.setSwipeUpText("П");
         mKey_p.setSubText("");
 
         mKey_ye.setText("е");
+        mKey_ye.setSwipeUpText("Е");
         mKey_ye.setSubText("");
 
 
         // Row 3
 
         mKey_ya.setText("я");
+        mKey_ya.setSwipeUpText("Я");
         mKey_ya.setSubText("");
 
         mKey_ch.setText("ч");
+        mKey_ch.setSwipeUpText("Ч");
         mKey_ch.setSubText("");
 
         mKey_yo.setText("ё");
+        mKey_yo.setSwipeUpText("Ё");
         mKey_yo.setSubText("");
 
         mKey_s.setText("с");
+        mKey_s.setSwipeUpText("С");
         mKey_s.setSubText("");
 
         mKey_m.setText("м");
+        mKey_m.setSwipeUpText("М");
         mKey_m.setSubText("");
 
         mKey_i.setText("и");
+        mKey_i.setSwipeUpText("И");
         mKey_i.setSubText("");
 
         mKey_t.setText("т");
+        mKey_t.setSwipeUpText("Т");
         mKey_t.setSubText("");
 
         mKey_i_joolen.setText("ь");
+        mKey_i_joolen.setSwipeUpText("Ь");
         mKey_i_joolen.setSubText("");
 
         mKey_v.setText("в");
+        mKey_v.setSwipeUpText("В");
         mKey_v.setSubText("");
 
         // Row 4
 
         mKey_yu.setText("ю");
+        mKey_yu.setSwipeUpText("Ю");
         mKey_yu.setSubText("");
     }
 
@@ -289,113 +323,147 @@ public class KeyboardCyrillic extends Keyboard {
         // Row 1
 
         mKey_f.setText("Ф");
+        mKey_f.setSwipeUpText("");
         mKey_f.setSubText("");
 
         mKey_ts.setText("Ц");
+        mKey_ts.setSwipeUpText("");
         mKey_ts.setSubText("");
 
         mKey_u.setText("У");
+        mKey_u.setSwipeUpText("");
         mKey_u.setSubText("");
 
         mKey_j.setText("Ж");
+        mKey_j.setSwipeUpText("");
         mKey_j.setSubText("");
 
         mKey_e.setText("Э");
+        mKey_e.setSwipeUpText("");
         mKey_e.setSubText("");
 
         mKey_n.setText("Н");
+        mKey_n.setSwipeUpText("");
         mKey_n.setSubText("");
 
         mKey_g.setText("Г");
+        mKey_g.setSwipeUpText("");
         mKey_g.setSubText("");
 
         mKey_sh.setText("Ш");
+        mKey_sh.setSwipeUpText("");
         mKey_sh.setSubText("");
 
         mKey_u7.setText("Ү");
+        mKey_u7.setSwipeUpText("");
         mKey_u7.setSubText("");
 
         mKey_z.setText("З");
+        mKey_z.setSwipeUpText("");
         mKey_z.setSubText("");
 
         mKey_k.setText("К");
+        mKey_k.setSwipeUpText("");
         mKey_k.setSubText("");
 
         mKey_i_xatuu.setText("Ъ");
+        mKey_i_xatuu.setSwipeUpText("");
         mKey_i_xatuu.setSubText("");
 
 
         // Row 2
 
         mKey_i_xagas.setText("Й");
+        mKey_i_xagas.setSwipeUpText("");
         mKey_i_xagas.setSubText("");
 
         mKey_y.setText("Ы");
+        mKey_y.setSwipeUpText("");
         mKey_y.setSubText("");
 
         mKey_b.setText("Б");
+        mKey_b.setSwipeUpText("");
         mKey_b.setSubText("");
 
         mKey_o6.setText("Ө");
+        mKey_o6.setSwipeUpText("");
         mKey_o6.setSubText("");
 
         mKey_a.setText("А");
+        mKey_a.setSwipeUpText("");
         mKey_a.setSubText("");
 
         mKey_kh.setText("Х");
+        mKey_kh.setSwipeUpText("");
         mKey_kh.setSubText("");
 
         mKey_r.setText("Р");
+        mKey_r.setSwipeUpText("");
         mKey_r.setSubText("");
 
         mKey_o.setText("О");
+        mKey_o.setSwipeUpText("");
         mKey_o.setSubText("");
 
         mKey_l.setText("Л");
+        mKey_l.setSwipeUpText("");
         mKey_l.setSubText("");
 
         mKey_d.setText("Д");
+        mKey_d.setSwipeUpText("");
         mKey_d.setSubText("");
 
         mKey_p.setText("П");
+        mKey_p.setSwipeUpText("");
         mKey_p.setSubText("");
 
         mKey_ye.setText("Е");
+        mKey_ye.setSwipeUpText("");
         mKey_ye.setSubText("");
 
 
         // Row 3
 
         mKey_ya.setText("Я");
+        mKey_ya.setSwipeUpText("");
         mKey_ya.setSubText("");
 
         mKey_ch.setText("Ч");
+        mKey_ch.setSwipeUpText("");
         mKey_ch.setSubText("");
 
         mKey_yo.setText("Ё");
+        mKey_yo.setSwipeUpText("");
         mKey_yo.setSubText("");
 
         mKey_s.setText("С");
+        mKey_s.setSwipeUpText("");
         mKey_s.setSubText("");
 
         mKey_m.setText("М");
+        mKey_m.setSwipeUpText("");
         mKey_m.setSubText("");
 
         mKey_i.setText("И");
+        mKey_i.setSwipeUpText("");
         mKey_i.setSubText("");
 
         mKey_t.setText("Т");
+        mKey_t.setSwipeUpText("");
         mKey_t.setSubText("");
 
         mKey_i_joolen.setText("Ь");
+        mKey_i_joolen.setSwipeUpText("");
         mKey_i_joolen.setSubText("");
 
         mKey_v.setText("В");
+        mKey_v.setSwipeUpText("");
         mKey_v.setSubText("");
 
         // Row 4
 
         mKey_yu.setText("Ю");
+        mKey_yu.setSwipeUpText("");
         mKey_yu.setSubText("");
     }
 
@@ -405,105 +473,137 @@ public class KeyboardCyrillic extends Keyboard {
         // Row 1
 
         mKey_f.setText("1");
+        mKey_f.setSwipeUpText("");
         mKey_f.setSubText("");
 
         mKey_ts.setText("2");
+        mKey_ts.setSwipeUpText("");
         mKey_ts.setSubText("");
 
         mKey_u.setText("3");
+        mKey_u.setSwipeUpText("");
         mKey_u.setSubText("");
 
         mKey_j.setText("4");
+        mKey_j.setSwipeUpText("");
         mKey_j.setSubText("");
 
         mKey_e.setText("5");
+        mKey_e.setSwipeUpText("");
         mKey_e.setSubText("");
 
         mKey_n.setText("6");
+        mKey_n.setSwipeUpText("");
         mKey_n.setSubText("");
 
         mKey_g.setText("7");
+        mKey_g.setSwipeUpText("");
         mKey_g.setSubText("");
 
         mKey_sh.setText("8");
+        mKey_sh.setSwipeUpText("");
         mKey_sh.setSubText("");
 
         mKey_u7.setText("9");
+        mKey_u7.setSwipeUpText("");
         mKey_u7.setSubText("");
 
         mKey_z.setText("0");
+        mKey_z.setSwipeUpText("");
         mKey_z.setSubText("");
 
         mKey_k.setText("-");
+        mKey_k.setSwipeUpText("");
         mKey_k.setSubText("");
 
         mKey_i_xatuu.setText("=");
+        mKey_i_xatuu.setSwipeUpText("");
         mKey_i_xatuu.setSubText("");
 
 
         // Row 2
 
         mKey_i_xagas.setText("!");
+        mKey_i_xagas.setSwipeUpText("");
         mKey_i_xagas.setSubText("");
 
         mKey_y.setText("@");
+        mKey_y.setSwipeUpText("");
         mKey_y.setSubText("");
 
         mKey_b.setText("#");
+        mKey_b.setSwipeUpText("");
         mKey_b.setSubText("");
 
         mKey_o6.setText("₮");
+        mKey_o6.setSwipeUpText("");
         mKey_o6.setSubText("");
 
         mKey_a.setText("%");
+        mKey_a.setSwipeUpText("");
         mKey_a.setSubText("");
 
         mKey_kh.setText("№");
+        mKey_kh.setSwipeUpText("");
         mKey_kh.setSubText("");
 
         mKey_r.setText("&");
+        mKey_r.setSwipeUpText("");
         mKey_r.setSubText("");
 
         mKey_o.setText("*");
+        mKey_o.setSwipeUpText("");
         mKey_o.setSubText("");
 
         mKey_l.setText("(");
+        mKey_l.setSwipeUpText("");
         mKey_l.setSubText("");
 
         mKey_d.setText(")");
+        mKey_d.setSwipeUpText("");
         mKey_d.setSubText("");
 
         mKey_p.setText("_");
+        mKey_p.setSwipeUpText("");
         mKey_p.setSubText("");
 
         mKey_ye.setText("+");
+        mKey_ye.setSwipeUpText("");
         mKey_ye.setSubText("");
 
 
         // Row 3
 
         mKey_ya.setText("[");
+        mKey_ya.setSwipeUpText("");
         mKey_ya.setSubText("");
 
         mKey_ch.setText("]");
+        mKey_ch.setSwipeUpText("");
         mKey_ch.setSubText("");
 
         mKey_yo.setText("{");
+        mKey_yo.setSwipeUpText("");
         mKey_yo.setSubText("");
 
         mKey_s.setText("}");
+        mKey_s.setSwipeUpText("");
         mKey_s.setSubText("");
 
         mKey_m.setText(";");
+        mKey_m.setSwipeUpText("");
         mKey_m.setSubText("");
 
         mKey_i.setText(":");
+        mKey_i.setSwipeUpText("");
         mKey_i.setSubText("");
 
         mKey_t.setText("'");
+        mKey_t.setSwipeUpText("");
         mKey_t.setSubText("");
 
         mKey_i_joolen.setText("\"");
+        mKey_i_joolen.setSwipeUpText("");
         mKey_i_joolen.setSubText("");
 
         mKey_v.setText("/");
@@ -513,6 +613,7 @@ public class KeyboardCyrillic extends Keyboard {
         // Row 4
 
         mKey_yu.setText("?");
+        mKey_yu.setSwipeUpText("");
         mKey_yu.setSubText("");
     }
 
