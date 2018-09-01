@@ -242,8 +242,8 @@ public class KeyboardQwerty extends Keyboard {
 
         // Row 3
         mKeyZwj.setText(MongolCode.Uni.ZWJ, '|'); // TODO should we add ZWNJ?
-        mKeyZwj.setSwipeUpText(null);
-        mKeyZwj.setSubText("");
+        mKeyZwj.setSwipeUpText(MongolCode.Uni.MONGOLIAN_NIRUGU);
+        mKeyZwj.setSubText(MongolCode.Uni.MONGOLIAN_NIRUGU);
 
         mKeyZ.setText(MongolCode.Uni.ZA);
         mKeyZ.setSwipeUpText(MongolCode.Uni.TSA);
@@ -689,6 +689,14 @@ public class KeyboardQwerty extends Keyboard {
 
         candidates.add(new PopupKeyCandidate(MongolCode.Uni.EE));
 
+        if (!isIsolateOrInitial()) {
+            PopupKeyCandidate final_E_FVS1 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.E + MongolCode.Uni.FVS1,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.E + MongolCode.Uni.FVS1,
+                    null);
+            candidates.add(final_E_FVS1);
+        }
+
         if (shouldShowSuffixesInPopup()) {
             candidates.addAll(getSuffixForKeyE());
         }
@@ -806,8 +814,10 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        if (isIsolateOrInitial())
+        if (isIsolateOrInitial()) {
+            candidates.add(new PopupKeyCandidate("" + MongolCode.Uni.UE + MongolCode.Uni.FVS1));
             return candidates;
+        }
 
         PopupKeyCandidate medial_UE_FVS1 = new PopupKeyCandidate(
                 "" + MongolCode.Uni.UE + MongolCode.Uni.FVS1,
@@ -946,11 +956,11 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        PopupKeyCandidate nirugu = new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_NIRUGU);
+        //PopupKeyCandidate nirugu = new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_NIRUGU);
 
         if (isIsolateOrInitial()){
             candidates.add(new PopupKeyCandidate("" + MongolCode.Uni.A + MongolCode.Uni.FVS1));
-            candidates.add(nirugu);
+            //candidates.add(nirugu);
             return candidates;
         }
 
@@ -970,7 +980,13 @@ public class KeyboardQwerty extends Keyboard {
                 "" + MongolCode.Uni.A + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
         candidates.add(medial_A_FVS1);
 
-        candidates.add(nirugu);
+        PopupKeyCandidate final_A_FVS1 = new PopupKeyCandidate(
+                "" + MongolCode.Uni.A + MongolCode.Uni.FVS1,
+                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.A + MongolCode.Uni.FVS1,
+                null);
+        candidates.add(final_A_FVS1);
+
+        //candidates.add(nirugu);
 
         return candidates;
     }
@@ -1147,6 +1163,7 @@ public class KeyboardQwerty extends Keyboard {
             candidates.add(new PopupKeyCandidate("\\", false));
             return candidates;
         }
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_NIRUGU));
         return candidates;
     }
 
@@ -1286,11 +1303,17 @@ public class KeyboardQwerty extends Keyboard {
                     "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.ZWJ);
             candidates.add(na_zwj);
 
-            PopupKeyCandidate na_fvs1 = new PopupKeyCandidate(
+            PopupKeyCandidate medial_na_fvs1 = new PopupKeyCandidate(
                     "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1,
                     "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
                     "" + MongolCode.Uni.NA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-            candidates.add(na_fvs1);
+            candidates.add(medial_na_fvs1);
+
+            PopupKeyCandidate medial_na_fvs2 = new PopupKeyCandidate(
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.FVS2,
+                    "" + MongolCode.Uni.ZWJ + MongolCode.Uni.NA + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ,
+                    "" + MongolCode.Uni.NA + MongolCode.Uni.FVS2 + MongolCode.Uni.ZWJ);
+            candidates.add(medial_na_fvs2);
 
         }
 
