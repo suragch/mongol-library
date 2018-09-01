@@ -58,7 +58,6 @@ public class ImeContainer extends ViewGroup
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
     private PopupKeyCandidate mShowSystemKeyboardsOption;
-    //private CharSequence mCharactersThatDontFollowSpace = String.valueOf(MongolCode.Uni.NNBS);
 
     public ImeContainer(Context context) {
         super(context, null, 0);
