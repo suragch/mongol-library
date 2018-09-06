@@ -672,7 +672,6 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
 * [ ] apply style/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
-* [ ] Remove AndroidManifest rtl support option. (But need to check how that affects applications that do support it.)
 * [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 * [ ] Convert more punctuation and NNBS in to Menksoft code in MongolCode
 
