@@ -257,6 +257,7 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public void setText(CharSequence text) {
         mTextStorage.setText(text);
         mLayout.setText(mTextStorage.getGlyphText());
+        setSelection(mTextStorage.length());
         invalidate();
         requestLayout();
     }
