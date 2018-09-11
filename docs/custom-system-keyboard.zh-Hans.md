@@ -1,6 +1,6 @@
 # 如何创建自定义系统输入法
 
-本教成以Andoid Studio 3.1和monogl-library 1.1.0测试的 （mongol-library不能低于1.1.0版）
+本教成以Andoid Studio 3.1和monogl-library 1.13.0测试的
 
 ## 1、 新的项目
 
