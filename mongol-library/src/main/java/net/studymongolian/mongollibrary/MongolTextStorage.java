@@ -61,6 +61,8 @@ public class MongolTextStorage implements Editable {
         if (mUnicodeText == null) mUnicodeText = "";
         if (mGlyphText == null) mGlyphText = "";
 
+        clearSpans();
+
         // just using the Editable interface method in order to keep all the logic in one place
         replace(0, mUnicodeText.length(), unicodeText, 0, unicodeText.length());
 

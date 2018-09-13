@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         // data to populate the RecyclerView with
         ArrayList<String> testingActivities = new ArrayList<>();
         testingActivities.add("Keyboard");
-        //testingActivities.add("MongolTextView");
+        testingActivities.add("MongolTextView");
 
 
         // set up the RecyclerView
