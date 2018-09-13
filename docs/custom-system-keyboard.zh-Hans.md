@@ -1,6 +1,6 @@
 # 如何创建自定义系统输入法
 
-本教成以Andoid Studio 3.1和monogl-library 1.13.0测试的
+本教成以Andoid Studio 3.1和monogl-library 1.1.0测试的 （mongol-library不能低于1.1.0版）
 
 ## 1、 新的项目
 
@@ -11,7 +11,7 @@
 在build.gradle(Module: app)文件里的dependencies中加蒙文控件库
 
 ```java
-implementation 'net.studymongolian:mongol-library:1.13.0'
+implementation 'net.studymongolian:mongol-library:1.3.1'
 ```
 
 ## 3、 自定义键盘布局
@@ -20,7 +20,7 @@ implementation 'net.studymongolian:mongol-library:1.13.0'
 
 - [KeyboardAeiou](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/KeyboardAeiou.java)
 - [KeyboardQwerty](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/KeyboardQwerty.java)
-- [KeyboardEnglish](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/KeyboardEnglish.java)
+- [KeyboardLatin](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/KeyboardLatin.java)
 - [KeyboardCyrillic](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/KeyboardCyrillic.java)
 - [CustomKeyboard](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/java/net/studymongolian/mongollibrarydemo/CustomKeyboard.java)
 - [CustomKeyboardTwo](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/java/net/studymongolian/mongollibrarydemo/CustomKeyboardTwo.java)
@@ -86,15 +86,10 @@ public class WodeInputMethodService extends InputMethodService implements ImeCon
     }
 
     @Override
-    public void onSystemKeyboardRequest() {
+    public void onChooseNewSystemKeyboard() {
         InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (im == null) return;
         im.showInputMethodPicker();
-    }
-
-    @Override
-    public void onHideKeyboardRequest() {
-        requestHideSelf(0);
     }
 }
 ```
