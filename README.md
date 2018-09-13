@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.13.0'
+    implementation 'net.studymongolian:mongol-library:1.14.0'
 }
 ```
 
@@ -672,11 +672,11 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
 * [ ] apply style/theme colors to `MongolTextView`, `MongolLabel` and `MongolEditText` so that the default colors are correct for both light and dark themes.
-* [ ] Add cut/copy/paste/navigation support from keyboard through `InputConnection`. (`MongolEditText` doesn't respond to some functions of the Menksoft and Delehi keyboards.)
 * [ ] Convert more punctuation and NNBS in to Menksoft code in MongolCode
 
 #### Version changes 
 
+* `1.14.0`: Renamed English keyboard to Latin and added more symbols; bug fixes
 * `1.13.0`: Keyboard improvements: punctuation/ZWJ layout changes, punctuation auto-spacing, double tap shortcuts for MVS/period, swipe up shortcuts; bug fixes 
 * `1.12.4`: Made ImeContainer.getPreviousMongolWords() public
 * `1.12.3`: Bug fixes and minor adjustments
