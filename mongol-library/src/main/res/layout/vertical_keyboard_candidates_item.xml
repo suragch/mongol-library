@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
-    android:orientation="vertical"
+    android:minHeight="48dp"
     >
 
     <net.studymongolian.mongollibrary.MongolLabel
         android:id="@+id/mongolLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:paddingBottom="8dp"
         />
 
@@ -18,7 +19,8 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_gravity="bottom"
         android:background="@color/background_dark"
         />
 
-</LinearLayout>
+</FrameLayout>

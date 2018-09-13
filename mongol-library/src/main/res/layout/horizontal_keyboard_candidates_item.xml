@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:paddingLeft="8dp"
-    android:orientation="horizontal">
+    android:minWidth="48dp"
+    tools:ignore="RtlSymmetry">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="8dp"
-        android:layout_gravity="center_vertical"
-        />
+        android:layout_gravity="center" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/background_dark"
+        android:layout_gravity="right"
         />
 
-</LinearLayout>
+</FrameLayout>
