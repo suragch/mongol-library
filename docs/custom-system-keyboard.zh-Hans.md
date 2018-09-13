@@ -1,6 +1,6 @@
 # 如何创建自定义系统输入法
 
-本教成以Andoid Studio 3.1和monogl-library 1.1.0测试的 （mongol-library不能低于1.1.0版）
+本教成以Andoid Studio 3.1和monogl-library 1.13.0测试的
 
 ## 1、 新的项目
 
@@ -11,7 +11,7 @@
 在build.gradle(Module: app)文件里的dependencies中加蒙文控件库
 
 ```java
-implementation 'net.studymongolian:mongol-library:1.3.1'
+implementation 'net.studymongolian:mongol-library:1.13.0'
 ```
 
 ## 3、 自定义键盘布局
@@ -86,10 +86,15 @@ public class WodeInputMethodService extends InputMethodService implements ImeCon
     }
 
     @Override
-    public void onChooseNewSystemKeyboard() {
+    public void onSystemKeyboardRequest() {
         InputMethodManager im = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (im == null) return;
         im.showInputMethodPicker();
+    }
+
+    @Override
+    public void onHideKeyboardRequest() {
+        requestHideSelf(0);
     }
 }
 ```
