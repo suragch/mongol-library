@@ -70,11 +70,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:padding="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
             app:gravity="bottom"
             app:textSize="20sp"
             android:clickable="true"
             android:focusable="true"
+            android:background="@drawable/custom_ripple"
             />
 
         <net.studymongolian.mongollibrary.MongolTextView
@@ -82,11 +86,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/mongol_dialog_button_positive"
-            android:padding="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
             app:gravity="bottom"
             app:textSize="20sp"
             android:clickable="true"
             android:focusable="true"
+            android:background="@drawable/custom_ripple"
             />
 
         <net.studymongolian.mongollibrary.MongolTextView
@@ -95,11 +103,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_above="@id/mongol_dialog_button_negative"
-            android:padding="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
             app:gravity="top"
             app:textSize="20sp"
             android:clickable="true"
             android:focusable="true"
+            android:background="@drawable/custom_ripple"
             />
 
     </RelativeLayout>

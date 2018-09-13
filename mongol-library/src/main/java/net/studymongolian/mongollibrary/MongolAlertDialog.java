@@ -3,6 +3,7 @@ package net.studymongolian.mongollibrary;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,8 @@ import java.lang.ref.WeakReference;
 
 public class MongolAlertDialog extends Dialog implements DialogInterface {
 
+    private static final int DEFAULT_TEXT_COLOR = Color.BLACK;
+
     private CharSequence mTitle;
     private MongolTextView mTitleView;
 
@@ -34,14 +37,17 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
     private MongolTextView mButtonPositive;
     private CharSequence mButtonPositiveText;
     private Message mButtonPositiveMessage;
+    private int mButtonPositiveTextColor;
 
     private MongolTextView mButtonNegative;
     private Message mButtonNegativeMessage;
     private CharSequence mButtonNegativeText;
+    private int mButtonNegativeTextColor;
 
     private MongolTextView mButtonNeutral;
     private CharSequence mButtonNeutralText;
     private Message mButtonNeutralMessage;
+    private int mButtonNeutralTextColor;
 
     public MongolAlertDialog(Context context) {
         this(context, 0);
@@ -113,6 +119,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             mButtonPositive.setVisibility(View.GONE);
         } else {
             mButtonPositive.setText(mButtonPositiveText);
+            mButtonPositive.setTextColor(mButtonPositiveTextColor);
             mButtonPositive.setVisibility(View.VISIBLE);
             whichButtons = whichButtons | BIT_BUTTON_POSITIVE;
         }
@@ -124,6 +131,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             mButtonNegative.setVisibility(View.GONE);
         } else {
             mButtonNegative.setText(mButtonNegativeText);
+            mButtonNegative.setTextColor(mButtonNegativeTextColor);
             mButtonNegative.setVisibility(View.VISIBLE);
 
             whichButtons = whichButtons | BIT_BUTTON_NEGATIVE;
@@ -136,6 +144,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             mButtonNeutral.setVisibility(View.GONE);
         } else {
             mButtonNeutral.setText(mButtonNeutralText);
+            mButtonNeutral.setTextColor(mButtonNeutralTextColor);
             mButtonNeutral.setVisibility(View.VISIBLE);
 
             whichButtons = whichButtons | BIT_BUTTON_NEUTRAL;
@@ -158,7 +167,7 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
     }
 
     public void setButton(int whichButton, CharSequence text,
-                          DialogInterface.OnClickListener listener, Message msg) {
+                          DialogInterface.OnClickListener listener, Message msg, int textColor) {
 
         if (msg == null && listener != null) {
             msg = mHandler.obtainMessage(whichButton, listener);
@@ -169,16 +178,19 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             case DialogInterface.BUTTON_POSITIVE:
                 mButtonPositiveText = text;
                 mButtonPositiveMessage = msg;
+                mButtonPositiveTextColor = textColor;
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
                 mButtonNegativeText = text;
                 mButtonNegativeMessage = msg;
+                mButtonNegativeTextColor = textColor;
                 break;
 
             case DialogInterface.BUTTON_NEUTRAL:
                 mButtonNeutralText = text;
                 mButtonNeutralMessage = msg;
+                mButtonNeutralTextColor = textColor;
                 break;
 
             default:
@@ -283,6 +295,9 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
         public DialogInterface.OnClickListener positiveButtonListener;
         public DialogInterface.OnClickListener negativeButtonListener;
         public DialogInterface.OnClickListener neutralButtonListener;
+        private int positiveButtonTextColor = DEFAULT_TEXT_COLOR;
+        private int negativeButtonTextColor = DEFAULT_TEXT_COLOR;
+        private int neutralButtonTextColor = DEFAULT_TEXT_COLOR;
 
         public Builder(Context context) {
             this(context, resolveDialogTheme(context, 0));
@@ -329,6 +344,21 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
             return this;
         }
 
+        public Builder setPositiveButtonTextColor(int textColor) {
+            this.positiveButtonTextColor = textColor;
+            return this;
+        }
+
+        public Builder setNegativeButtonTextColor(int textColor) {
+            this.negativeButtonTextColor = textColor;
+            return this;
+        }
+
+        public Builder setNeutralButtonTextColor(int textColor) {
+            this.neutralButtonTextColor = textColor;
+            return this;
+        }
+
 
         public MongolAlertDialog create() {
 
@@ -344,17 +374,17 @@ public class MongolAlertDialog extends Dialog implements DialogInterface {
 
             if (positiveButtonText != null) {
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, positiveButtonText,
-                        positiveButtonListener, null);
+                        positiveButtonListener, null, positiveButtonTextColor);
             }
 
             if (negativeButtonText != null) {
                 dialog.setButton(DialogInterface.BUTTON_NEGATIVE, negativeButtonText,
-                        negativeButtonListener, null);
+                        negativeButtonListener, null, negativeButtonTextColor);
             }
 
             if (neutralButtonText != null) {
                 dialog.setButton(DialogInterface.BUTTON_NEUTRAL, neutralButtonText,
-                        neutralButtonListener, null);
+                        neutralButtonListener, null, neutralButtonTextColor);
             }
 
             return dialog;
