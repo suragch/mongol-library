@@ -7,10 +7,10 @@ import android.util.AttributeSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyboardEnglish extends Keyboard {
+public class KeyboardLatin extends Keyboard {
 
     // name to use in the keyboard popup chooser
-    private static final String DEFAULT_DISPLAY_NAME = "ᠠᠩᠭᠯᠢ";
+    private static final String DEFAULT_DISPLAY_NAME = "ᠯᠠᠲ᠋ᠢᠨ";
 
     // Row 1
     protected KeyText mKeyQ;
@@ -58,17 +58,17 @@ public class KeyboardEnglish extends Keyboard {
     private static final String NEWLINE = "\n";
 
     // Use this constructor if you want the default style
-    public KeyboardEnglish(Context context) {
+    public KeyboardLatin(Context context) {
         super(context);
         init(context);
     }
 
-    public KeyboardEnglish(Context context, AttributeSet attrs) {
+    public KeyboardLatin(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public KeyboardEnglish(Context context, AttributeSet attrs, int defStyle) {
+    public KeyboardLatin(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
@@ -925,6 +925,7 @@ public class KeyboardEnglish extends Keyboard {
             return candidates;
         }
         candidates.add(new PopupKeyCandidate("ʂ", false));
+        candidates.add(new PopupKeyCandidate("ß", false));
 
         return candidates;
     }
@@ -950,6 +951,12 @@ public class KeyboardEnglish extends Keyboard {
             return candidates;
         }
         candidates.add(new PopupKeyCandidate("̌", "x̌", null, false));
+        candidates.add(new PopupKeyCandidate("\u0308", "x\u0308", null, false));
+        candidates.add(new PopupKeyCandidate("\u0301", "x\u0301", null, false));
+        candidates.add(new PopupKeyCandidate("\u0300", "x\u0300", null, false));
+        candidates.add(new PopupKeyCandidate("\u0302", "x\u0302", null, false));
+        candidates.add(new PopupKeyCandidate("\u0304", "x\u0304", null, false));
+        candidates.add(new PopupKeyCandidate("\u0303", "x\u0303", null, false));
         return candidates;
     }
 
@@ -1044,6 +1051,7 @@ public class KeyboardEnglish extends Keyboard {
 
         candidates.add(new PopupKeyCandidate("ɔ", false));
         candidates.add(new PopupKeyCandidate("œ", false));
+        candidates.add(new PopupKeyCandidate("ç", false));
 
         return candidates;
     }
@@ -1084,6 +1092,7 @@ public class KeyboardEnglish extends Keyboard {
         }
 
         candidates.add(new PopupKeyCandidate("ŋ", false));
+        candidates.add(new PopupKeyCandidate("ñ", false));
         return candidates;
     }
 
@@ -1126,6 +1135,8 @@ public class KeyboardEnglish extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
 
         candidates.add(new PopupKeyCandidate("!", false));
+        candidates.add(new PopupKeyCandidate("¡", false));
+        candidates.add(new PopupKeyCandidate("¿", false));
         return candidates;
     }
 

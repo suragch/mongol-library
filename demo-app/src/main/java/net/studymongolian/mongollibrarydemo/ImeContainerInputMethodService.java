@@ -11,7 +11,7 @@ import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.KeyboardCyrillic;
-import net.studymongolian.mongollibrary.KeyboardEnglish;
+import net.studymongolian.mongollibrary.KeyboardLatin;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolFont;
 
@@ -25,7 +25,7 @@ public class ImeContainerInputMethodService extends InputMethodService
         Keyboard aeiou = new KeyboardAeiou(this);
         aeiou.setCandidatesLocation(Keyboard.CandidatesLocation.VERTICAL_LEFT);
         Keyboard qwerty = new KeyboardQwerty(this);
-        Keyboard english = new KeyboardEnglish(this);
+        Keyboard english = new KeyboardLatin(this);
         Keyboard cyrillic = new KeyboardCyrillic(this);
         Keyboard ipa = new CustomKeyboardTwo(this);
         ime.addKeyboard(aeiou);

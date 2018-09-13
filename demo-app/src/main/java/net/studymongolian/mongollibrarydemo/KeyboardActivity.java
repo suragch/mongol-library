@@ -11,7 +11,7 @@ import net.studymongolian.mongollibrary.ImeContainer;
 import net.studymongolian.mongollibrary.Keyboard;
 import net.studymongolian.mongollibrary.KeyboardAeiou;
 import net.studymongolian.mongollibrary.KeyboardCyrillic;
-import net.studymongolian.mongollibrary.KeyboardEnglish;
+import net.studymongolian.mongollibrary.KeyboardLatin;
 import net.studymongolian.mongollibrary.KeyboardQwerty;
 import net.studymongolian.mongollibrary.MongolEditText;
 import net.studymongolian.mongollibrary.MongolInputMethodManager;
@@ -77,7 +77,7 @@ public class KeyboardActivity extends AppCompatActivity {
         // keyboards to include (default style)
         Keyboard aeiou = new KeyboardAeiou(this);
         Keyboard qwerty = new KeyboardQwerty(this);
-        Keyboard english = new KeyboardEnglish(this);
+        Keyboard english = new KeyboardLatin(this);
         Keyboard cyrillic = new KeyboardCyrillic(this);
         Keyboard custom = new CustomKeyboard(this);
 

@@ -234,7 +234,7 @@ String text = mongolEditText.getText().toString();
 
 It cannot be assumed that all users will have a Mongol IME (like the Menksoft or Delehi keyboards) installed on their phone, so if you need Mongolian input in your app, you should probably include an in-app keyboard. 
 
-This library includes four keyboard layouts: two traditional Mongolian ones (AEIOU and QWERTY) and Cyrillic and English keyboards. Punctuation is shown by clicking the keyboard button. Keyboard layouts can be switched by long pressing the keyboard button. 
+This library includes four keyboard layouts: two traditional Mongolian ones (AEIOU and QWERTY) and Cyrillic and Latin keyboards. Punctuation is shown by clicking the keyboard button. Keyboard layouts can be switched by long pressing the keyboard button.
 
 ##### AEIOU keyboard
 
@@ -248,9 +248,9 @@ The philosophy behind the AEIOU keyboard is to make input as easy as possible. T
 
 This keyboard copies the layout of a computer keyboard (with the addition of Mongolian Unicode ANG). Users can differentiate O/U, OE/UE, and T/D.
 
-##### English keyboard
+##### Latin keyboard
 
-![English keyboard](docs/images/keyboard-english.png)
+![Latin keyboard](docs/images/keyboard-english.png)
 
 
 ##### Cyrillic keyboard
