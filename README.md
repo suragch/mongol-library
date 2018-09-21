@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.14.0'
+    implementation 'net.studymongolian:mongol-library:1.15.0'
 }
 ```
 
@@ -676,7 +676,8 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
-* `1.14.0`: Renamed English keyboard to Latin and added more symbols; bug fixes
+* `1.15.0`: Made more MongolLayout methods public to match the standard Android Layout classes
+* `1.14.0`: Renamed English keyboard to Latin and added more symbols; improved `MongolAlertDialog`; bug fixes
 * `1.13.0`: Keyboard improvements: punctuation/ZWJ layout changes, punctuation auto-spacing, double tap shortcuts for MVS/period, swipe up shortcuts; bug fixes 
 * `1.12.4`: Made ImeContainer.getPreviousMongolWords() public
 * `1.12.3`: Bug fixes and minor adjustments
