@@ -1,8 +1,6 @@
 package net.studymongolian.mongollibrary;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextPaint;
@@ -16,20 +14,22 @@ import java.util.List;
 // lines use width/height in horizontal orientation
 // layout uses width/height in vertical orientation
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class MongolLayout {
 
     private CharSequence mText;
     private TextPaint mTextPaint;
     private int mHeight;
     private int mAlignment; // Use Gravity for now
-    private float mSpacingMult; // TODO
-    private float mSpacingAdd; // TODO
+    //private float mSpacingMult; // TODO
+    //private float mSpacingAdd; // TODO
     private List<LineInfo> mLinesInfo; // = new ArrayList<>();
-    private boolean needsLineUpdate = true;
+    private boolean needsLineUpdate;
 
     private static final char CHAR_SPACE = ' ';
 
 
+    @SuppressWarnings("unused") // TODO add the unused parameters
     public MongolLayout(CharSequence text, int start, int end,
                         TextPaint paint, int height,
                         int align, float spacingMult, float spacingAdd,
@@ -42,8 +42,8 @@ public class MongolLayout {
         mTextPaint = paint;
         mHeight = height;
         mAlignment = align;
-        mSpacingMult = spacingMult;
-        mSpacingAdd = spacingAdd;
+        //mSpacingMult = spacingMult; TODO
+        //mSpacingAdd = spacingAdd; TODO
 
         needsLineUpdate = true;
     }
@@ -98,22 +98,7 @@ public class MongolLayout {
      * @param canvas the canvas to draw the layout on
      */
     public void draw(Canvas canvas) {
-        draw(canvas, null, null, 0);
-    }
-
-    /**
-     * Draw this Layout on the specified canvas, with the highlight path drawn
-     * between the background and the text.
-     *
-     * @param canvas               the canvas
-     * @param highlight            the path of the highlight or cursor; can be null
-     * @param highlightPaint       the paint for the highlight
-     * @param cursorOffsetVertical the amount to temporarily translate the
-     *                             canvas while rendering the highlight
-     */
-    public void draw(Canvas canvas, Path highlight, Paint highlightPaint,
-                     int cursorOffsetVertical) {
-
+        //draw(canvas, null, null, 0);
         if (mHeight <= 0) return;
 
         if (needsLineUpdate) updateLines();
@@ -126,6 +111,22 @@ public class MongolLayout {
         drawText(canvas);
     }
 
+//    private void draw(Canvas canvas, Path highlight, Paint highlightPaint,
+//                     int cursorOffsetVertical) {
+//
+//        if (mHeight <= 0) return;
+//
+//        if (needsLineUpdate) updateLines();
+//
+//        // TODO for now draw all the lines. Should we only draw the visible lines?
+//        // (see Layout source code)
+//        int lastLine = mLinesInfo.size() - 1;
+//        if (lastLine < 0) return;
+//
+//        drawText(canvas);
+//    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
     public void drawText(Canvas canvas) {
 
         if (mHeight <= 0) return;
@@ -178,13 +179,7 @@ public class MongolLayout {
         MongolTextLine.recycle(tl);
     }
 
-    // adding this because cursor blinking crashes on rotation
-    // because it is trying to get info before line is ready
-    // (this may not be the best way to solve that problem, though)
-    boolean getNeedsLineUpdate() {
-        return needsLineUpdate;
-    }
-
+    @SuppressWarnings("SuspiciousNameCombination")
     private void updateLines() {
 
         needsLineUpdate = false;
@@ -353,43 +348,43 @@ public class MongolLayout {
 //    }
 
     // negative value
-    public int getLineAscent(int line) {
+    public final int getLineAscent(int line) {
         return getLineBottom(line) - getLineTop(line) + getLineDescent(line);
     }
 
-    int getLineBaseline(int line) {
+    public final int getLineBaseline(int line) {
         return getLineBottom(line) + getLineDescent(line);
     }
 
-    int getLineBottom(int line) {
+    public final int getLineBottom(int line) {
         if (line <= 0) return 0;
         return mLinesInfo.get(line - 1).top;
     }
 
-    int getLineDescent(int line) {
+    public int getLineDescent(int line) {
         // TODO this should probably be based on the actual line
         // see http://stackoverflow.com/a/43691403
         return mTextPaint.getFontMetricsInt().descent;
     }
 
-    int getLineTop(int line) {
+    public int getLineTop(int line) {
         if (mLinesInfo == null || mLinesInfo.size() == 0) {
             return mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
         }
         return mLinesInfo.get(line).top;
     }
 
-    int getLineCount() {
+    public int getLineCount() {
         return mLinesInfo != null ? mLinesInfo.size() : 0;
         //return mLinesInfo.size();
     }
 
-    int getLineStart(int line) {
+    public final int getLineStart(int line) {
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         return mLinesInfo.get(line).startOffset;
     }
 
-    int getLineEnd(int line) {
+    public final int getLineEnd(int line) {
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         if (line == mLinesInfo.size() - 1) {
             return mText.length();
@@ -421,7 +416,7 @@ public class MongolLayout {
     // Get the line number corresponding to the specified horizontal position.
     // If you ask for a position before 0, you get 0; if you ask for a position
     // to the right of the last line of the text, you get the last line.
-    int getLineForHorizontal(int horizontal) {
+    public int getLineForHorizontal(int horizontal) {
         if (horizontal <= 0) return 0;
         if (mLinesInfo == null || mLinesInfo.size() == 0) return 0;
         final int lineCount = mLinesInfo.size();
@@ -476,6 +471,17 @@ public class MongolLayout {
         MongolTextLine.recycle(tl);
 
         return verticalLineHeight;
+    }
+
+    public final TextPaint getPaint() {
+        return mTextPaint;
+    }
+
+    /**
+     * Return the text that is displayed by this Layout.
+     */
+    public final CharSequence getText() {
+        return mText;
     }
 
 // TODO add spacing

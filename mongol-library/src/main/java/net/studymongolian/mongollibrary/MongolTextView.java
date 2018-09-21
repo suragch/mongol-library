@@ -215,7 +215,12 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
             mStickyWidth = STICKY_WIDTH_UNDEFINED;
         }
 
-        mOnMeasureData = new int[6];
+        clearOnMeasureData();
+    }
+
+    private void clearOnMeasureData() {
+        for (int i=0; i<mOnMeasureData.length; i++)
+            mOnMeasureData[i] = 0;
     }
 
     @Override
@@ -335,6 +340,14 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         if (getLayout() == null) return -1;
         final int line = getLineAtCoordinate(x); // vertical line
         return getOffsetAtCoordinate(line, y);
+    }
+
+    /**
+     * Returns the number of lines of text from the layout (this includes line-wrapping)
+     */
+    @SuppressWarnings("unused")
+    public int getLineCount() {
+        return mLayout != null ? mLayout.getLineCount() : 0;
     }
 
     int getLineAtCoordinate(float x) {
