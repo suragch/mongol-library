@@ -8,27 +8,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
-import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.SubscriptSpan;
 import android.text.style.SuperscriptSpan;
-import android.text.style.TypefaceSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import net.studymongolian.mongollibrary.MongolFont;
@@ -49,6 +40,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
     private int mCheckedColorItem = 0;
     private int mCheckedAlignmentItem = 0;
     private int mCheckedPaddingItem = 0;
+    private int mCheckedStrokeItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -429,6 +421,38 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mCheckedPaddingItem = which;
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onStrokeClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Stroke");
+        final String[] choices = {"none", "thin green", "thick yellow"};
+
+        builder.setSingleChoiceItems(choices, mCheckedStrokeItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        mtvExample.setStrokeWidth(0);
+                        mtvExample.setStrokeColor(Color.TRANSPARENT);
+                        break;
+                    case 1:
+                        mtvExample.setStrokeWidth(1);
+                        mtvExample.setStrokeColor(Color.GREEN);
+                        break;
+                    case 2:
+                        mtvExample.setStrokeWidth(5);
+                        mtvExample.setStrokeColor(Color.YELLOW);
+                        break;
+                }
+                mCheckedStrokeItem = which;
                 dialog.dismiss();
             }
         });

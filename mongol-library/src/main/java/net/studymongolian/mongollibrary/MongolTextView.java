@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
-import android.text.TextPaint;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
@@ -40,7 +39,9 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private float mTextSizePx;
     private Typeface mTypeface;
     private int mGravity = Gravity.TOP;
-    private TextPaint mTextPaint;
+    private float mTextStrokeWidthPx;
+    private TextPaintPlus mTextPaint;
+    private int mTextStrokeColor;
     protected MongolLayout mLayout;
     protected MongolTextStorage mTextStorage;
 
@@ -78,10 +79,12 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         }
         mTextSizePx = a.getDimensionPixelSize(R.styleable.MongolTextView_textSize, 0);
         mTextColor = a.getColor(R.styleable.MongolTextView_textColor, Color.BLACK);
+        mTextStrokeWidthPx = a.getDimensionPixelSize(R.styleable.MongolTextView_textStrokeWidth, 0);
+        mTextStrokeColor = a.getColor(R.styleable.MongolTextView_textStrokeColor, 0);
         mGravity = a.getInteger(R.styleable.MongolTextView_gravity, Gravity.TOP);
         a.recycle();
 
-        mTextPaint = new TextPaint();
+        mTextPaint = new TextPaintPlus();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(mTextColor);
         if (mTextSizePx <= 0) {
@@ -92,6 +95,9 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         mTypeface = MongolFont.get(MongolFont.QAGAN, context);
         mTextPaint.setTypeface(mTypeface);
         mTextPaint.linkColor = Color.BLUE;
+        mTextPaint.setStrokeWidth(mTextStrokeWidthPx);
+        mTextPaint.setStrokeColor(mTextStrokeColor);
+
 
         // initialize the layout, but the height still needs to be set
         final CharSequence glyphText = mTextStorage.getGlyphText();
@@ -308,6 +314,48 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         requestLayout();
     }
 
+    /**
+     * Draw a border outline around the text. May also need to set the stroke color.
+     *
+     * @param widthSp in SP units
+     */
+    public void setStrokeWidth(float widthSp) {
+        mTextStrokeWidthPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                widthSp, getResources().getDisplayMetrics());
+        mTextPaint.setStrokeWidth(mTextStrokeWidthPx);
+        invalidate();
+    }
+
+    /**
+     *
+     * @return the text stroke width in px units
+     */
+    @SuppressWarnings("unused")
+    public float getStrokeWidth() {
+        return mTextStrokeWidthPx;
+    }
+
+    /**
+     * sets the color of the border outline around the characters.
+     * Also need to set the stroke width greater than 0.
+     *
+     * @param color to set the stoke
+     */
+    public void setStrokeColor(int color) {
+        mTextStrokeColor = color;
+        mTextPaint.setStrokeColor(mTextStrokeColor);
+        invalidate();
+    }
+
+    /**
+     *
+     * @return the color of the stroke border outline around the text characters
+     */
+    @SuppressWarnings("unused")
+    public int getStrokeColor() {
+        return mTextStrokeColor;
+    }
+
     public void setPadding (int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
         if (mLayout == null) return;
@@ -456,4 +504,6 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                 ? mTextStorage.subSequence(end, start)
                 : mTextStorage.subSequence(start, end);
     }
+
+
 }

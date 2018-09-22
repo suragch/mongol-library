@@ -34,14 +34,14 @@ class MongolTextLine {
     private final static int CJK_COMPATIBILITY_IDEOGRAPHS_END = 0xFAFF;
     private static final int UNICODE_EMOJI_START = 0x1F000;
 
-    private TextPaint mPaint;
+    private TextPaintPlus mPaint;
     private CharSequence mText;
     private List<TextRun> mTextRuns;
 
     // XXX is having a static variable a bad idea here?
     // The purpose of the work paint is to avoid modifying paint
     // variables being passed in while measuring spanned text.
-    private static final TextPaint mWorkPaint = new TextPaint();
+    private static final TextPaintPlus mWorkPaint = new TextPaintPlus();
 
     // A text run is a substring of text within the text line. The substring is made up of
     //     (1) a single emoji or CJK character,
@@ -99,7 +99,7 @@ class MongolTextLine {
         return tl;
     }
 
-    static MongolTextLine recycle(MongolTextLine tl) {
+    static void recycle(MongolTextLine tl) {
         tl.mText = null;
         tl.mPaint = null;
         tl.mTextRuns = null;
@@ -111,12 +111,11 @@ class MongolTextLine {
                 }
             }
         }
-        return null;
     }
 
 
 
-    void set(TextPaint paint, CharSequence text, int start, int end) {
+    void set(TextPaintPlus paint, CharSequence text, int start, int end) {
 
         int nextSpanTransition = 0;
         boolean isSpanned = text instanceof Spanned;
@@ -238,7 +237,7 @@ class MongolTextLine {
             int start = run.offset;
             int end = run.offset + run.length;
 
-            TextPaint wp;
+            TextPaintPlus wp;
             if (hasSpan) {
                 wp = mWorkPaint;
                 wp.set(mPaint);
@@ -263,6 +262,17 @@ class MongolTextLine {
                 wp.setColor(previousColor);
             }
 
+            // text stroke
+            if (wp.getStrokeWidth() > 0 && wp.strokeColor != 0) {
+                int previousColor = wp.getColor();
+                Paint.Style previousStyle = wp.getStyle();
+                wp.setColor(wp.strokeColor);
+                wp.setStyle(Paint.Style.STROKE);
+                drawTextRun(c, run, bottom, width, start, end, wp);
+                wp.setStyle(previousStyle);
+                wp.setColor(previousColor);
+            }
+
             // "underline" (to the right of vertical text)
             if (wp.isUnderlineText()) {
                 wp.setUnderlineText(false);
@@ -275,21 +285,25 @@ class MongolTextLine {
             }
 
             // text
-            if (run.isRotated) {
-                c.save();
-                c.rotate(-90);
-                c.translate(-bottom, width - bottom);
-                c.drawText(mText, start, end, -wp.baselineShift, 0, wp);
-                c.restore();
-            } else {
-                c.drawText(mText, start, end, 0, wp.baselineShift, wp);
-            }
+            drawTextRun(c, run, bottom, width, start, end, wp);
 
             // move into position for next text run
             c.translate(width, 0);
         }
 
         c.restore();
+    }
+
+    private void drawTextRun(Canvas c, TextRun run, int bottom, float width, int start, int end, TextPaint wp) {
+        if (run.isRotated) {
+            c.save();
+            c.rotate(-90);
+            c.translate(-bottom, width - bottom);
+            c.drawText(mText, start, end, -wp.baselineShift, 0, wp);
+            c.restore();
+        } else {
+            c.drawText(mText, start, end, 0, wp.baselineShift, wp);
+        }
     }
 
     RectF measure() {

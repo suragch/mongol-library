@@ -18,7 +18,7 @@ import java.util.List;
 public class MongolLayout {
 
     private CharSequence mText;
-    private TextPaint mTextPaint;
+    private TextPaintPlus mTextPaint;
     private int mHeight;
     private int mAlignment; // Use Gravity for now
     //private float mSpacingMult; // TODO
@@ -31,7 +31,7 @@ public class MongolLayout {
 
     @SuppressWarnings("unused") // TODO add the unused parameters
     public MongolLayout(CharSequence text, int start, int end,
-                        TextPaint paint, int height,
+                        TextPaintPlus paint, int height,
                         int align, float spacingMult, float spacingAdd,
                         boolean includepad, int maxLines) {
 
@@ -59,7 +59,7 @@ public class MongolLayout {
      */
     public static Rect getDesiredSize(CharSequence source,
                                       int start, int end,
-                                      TextPaint paint) {
+                                      TextPaintPlus paint) {
 
         MongolTextLine tl = MongolTextLine.obtain();
 
@@ -110,21 +110,6 @@ public class MongolLayout {
 
         drawText(canvas);
     }
-
-//    private void draw(Canvas canvas, Path highlight, Paint highlightPaint,
-//                     int cursorOffsetVertical) {
-//
-//        if (mHeight <= 0) return;
-//
-//        if (needsLineUpdate) updateLines();
-//
-//        // TODO for now draw all the lines. Should we only draw the visible lines?
-//        // (see Layout source code)
-//        int lastLine = mLinesInfo.size() - 1;
-//        if (lastLine < 0) return;
-//
-//        drawText(canvas);
-//    }
 
     @SuppressWarnings("SuspiciousNameCombination")
     public void drawText(Canvas canvas) {
