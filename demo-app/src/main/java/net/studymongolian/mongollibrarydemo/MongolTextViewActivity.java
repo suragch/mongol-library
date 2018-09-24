@@ -41,6 +41,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
     private int mCheckedAlignmentItem = 0;
     private int mCheckedPaddingItem = 0;
     private int mCheckedStrokeItem = 0;
+    private int mCheckedShadowItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -453,6 +454,43 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mCheckedStrokeItem = which;
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onShadowClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Shadow");
+        final String[] choices = {
+                "none",
+                "radius=2, dx=4, dy=4",
+                "radius=10, dx=4, dy=4",
+                "radius=5, dx=-2, dy=-2, color=RED",
+        };
+
+        builder.setSingleChoiceItems(choices, mCheckedShadowItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        mtvExample.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
+                        break;
+                    case 1:
+                        mtvExample.setShadowLayer(2, 4, 4, Color.BLACK);
+                        break;
+                    case 2:
+                        mtvExample.setShadowLayer(10, 4, 4, Color.BLACK);
+                        break;
+                    case 3:
+                        mtvExample.setShadowLayer(5, -2, -2, Color.RED);
+                        break;
+                }
+                mCheckedShadowItem = which;
                 dialog.dismiss();
             }
         });

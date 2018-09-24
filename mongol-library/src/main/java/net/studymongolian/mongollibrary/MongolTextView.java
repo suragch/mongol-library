@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.support.annotation.ColorInt;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.MovementMethod;
@@ -48,6 +49,10 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private int mStickyWidth = STICKY_WIDTH_UNDEFINED;
     private int[] mOnMeasureData = new int[6];
     private MovementMethod mMovementMethod;
+    private float mShadowRadius;
+    private float mShadowDx;
+    private float mShadowDy;
+    private int mShadowColor;
 
 
     public MongolTextView(Context context) {
@@ -356,6 +361,60 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         return mTextStrokeColor;
     }
 
+    /**
+     * Sets a shadow on the text.
+     * Set the color to Color.TRANSPARENT to disable shadow
+     *
+     * @param radius the blur radius of the shadow
+     * @param dx the x offset
+     * @param dy the y offset
+     * @param color of the shadow
+     */
+    public void setShadowLayer(float radius, float dx, float dy, int color) {
+        mTextPaint.setShadowLayer(radius, dx, dy, color);
+
+        mShadowRadius = radius;
+        mShadowDx = dx;
+        mShadowDy = dy;
+        mShadowColor = color;
+
+        invalidate();
+    }
+
+    /**
+     *
+     * @return the blur radius of the text shadow
+     */
+    public float getShadowRadius() {
+        return mShadowRadius;
+    }
+
+    /**
+     *
+     * @return the x offset of the text shadow
+     */
+    public float getShadowDx() {
+        return mShadowDx;
+    }
+
+    /**
+     *
+     * @return the y offset of the text shadow
+     */
+    public float getShadowDy() {
+        return mShadowDy;
+    }
+
+    /**
+     *
+     * @return the color of the text shadow
+     */
+    @ColorInt
+    public int getShadowColor() {
+        return mShadowColor;
+    }
+
+
     public void setPadding (int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
         if (mLayout == null) return;
@@ -504,6 +563,4 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                 ? mTextStorage.subSequence(end, start)
                 : mTextStorage.subSequence(start, end);
     }
-
-
 }

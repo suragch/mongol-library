@@ -271,6 +271,8 @@ class MongolTextLine {
                 drawTextRun(c, run, bottom, width, start, end, wp);
                 wp.setStyle(previousStyle);
                 wp.setColor(previousColor);
+                // shadow no longer needed for text since it was already drawn for the stroke
+                wp.clearShadowLayer();
             }
 
             // "underline" (to the right of vertical text)
