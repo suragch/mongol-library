@@ -250,7 +250,10 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     public boolean onTouchEvent(MotionEvent event) {
 
         // this method is currently only for detecting a ClickableSpan
-        if (mMovementMethod != null && event.getAction() == MotionEvent.ACTION_UP) {
+        if (mMovementMethod == null)
+            return super.onTouchEvent(event);
+
+        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
             int x = (int) event.getX();
             int y = (int) event.getY();
             int offset = getOffsetForPosition(x, y);
@@ -259,11 +262,10 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
 
             if (links.length > 0) {
                 links[0].onClick(this);
-                return true;
             }
         }
 
-        return super.onTouchEvent(event);
+        return true;
     }
 
     public CharSequence getText() {
