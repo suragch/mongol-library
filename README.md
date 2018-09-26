@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.16.1'
+    implementation 'net.studymongolian:mongol-library:1.16.2'
 }
 ```
 
@@ -676,6 +676,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `1.16.2`: Shadow, text view, and edit text bug fixes
 * `1.16.1`: Added ability to set text shadow
 * `1.16.0`: Added ability to stroke text in `MongolTextView` and `MongolLayout`
 * `1.15.0`: Made more MongolLayout methods public to match the standard Android Layout classes
