@@ -639,10 +639,10 @@ public class MongolEditText extends MongolTextView {
     }
 
     public void cutSelectedText() {
+        int start = getSelectionStart();
+        int end = getSelectionEnd();
         boolean copiedSuccessfully = copySelectedText();
         if (copiedSuccessfully) {
-            int start = getSelectionStart();
-            int end = getSelectionEnd();
             mTextStorage.delete(start, end);
         }
     }
