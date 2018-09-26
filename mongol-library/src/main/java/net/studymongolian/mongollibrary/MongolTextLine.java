@@ -2,10 +2,10 @@ package net.studymongolian.mongollibrary;
 
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.MetricAffectingSpan;
 
@@ -41,7 +41,7 @@ class MongolTextLine {
     // XXX is having a static variable a bad idea here?
     // The purpose of the work paint is to avoid modifying paint
     // variables being passed in while measuring spanned text.
-    private static final TextPaintPlus mWorkPaint = new TextPaintPlus();
+    private static final TextPaintPlus sWorkPaint = new TextPaintPlus();
 
     // A text run is a substring of text within the text line. The substring is made up of
     //     (1) a single emoji or CJK character,
@@ -62,12 +62,12 @@ class MongolTextLine {
             this.length = length;
             this.isRotated = isRotated;
 
-            TextPaint wp;
+            TextPaintPlus wp;
             if (isSpanned) {
-                wp = mWorkPaint;
+                wp = sWorkPaint;
                 wp.set(mPaint);
                 MetricAffectingSpan[] spans = ((Spanned) mText).getSpans(offset, offset + length, MetricAffectingSpan.class);
-                for(MetricAffectingSpan span : spans) {
+                for (MetricAffectingSpan span : spans) {
                     span.updateDrawState(wp);
                 }
             } else {
@@ -86,7 +86,7 @@ class MongolTextLine {
     static MongolTextLine obtain() {
         MongolTextLine tl;
         synchronized (sCached) {
-            for (int i = sCached.length; --i >= 0;) {
+            for (int i = sCached.length; --i >= 0; ) {
                 if (sCached[i] != null) {
                     tl = sCached[i];
                     sCached[i] = null;
@@ -103,7 +103,7 @@ class MongolTextLine {
         tl.mText = null;
         tl.mPaint = null;
         tl.mTextRuns = null;
-        synchronized(sCached) {
+        synchronized (sCached) {
             for (int i = 0; i < sCached.length; ++i) {
                 if (sCached[i] == null) {
                     sCached[i] = tl;
@@ -111,8 +111,8 @@ class MongolTextLine {
                 }
             }
         }
+        // XXX do we need to do something with sWorkPaint here?
     }
-
 
 
     void set(TextPaintPlus paint, CharSequence text, int start, int end) {
@@ -131,11 +131,11 @@ class MongolTextLine {
         }
 
         for (int offset = start; offset < end; ) {
-            final int codepoint = Character.codePointAt(mText, offset);
-            charCount = Character.charCount(codepoint);
+            final int codePoint = Character.codePointAt(mText, offset);
+            charCount = Character.charCount(codePoint);
 
             // Rotate Chinese, emoji, etc
-            if (isRotated(codepoint)) {
+            if (isRotated(codePoint)) {
                 // save any old normal (nonrotated) runs
                 if (currentRunLength > 0) {
                     mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
@@ -149,7 +149,8 @@ class MongolTextLine {
                 // Mongolian, Latin, etc. Don't rotate.
                 if (isSpanned && nextSpanTransition == offset) {
                     if (currentRunLength > 0) {
-                        mTextRuns.add(new TextRun(currentRunStart, currentRunLength, false, isSpanned));
+                        mTextRuns.add(new TextRun(currentRunStart, currentRunLength,
+                                false, true));
                     }
                     // reset normal run
                     currentRunStart = offset;
@@ -167,54 +168,59 @@ class MongolTextLine {
         }
     }
 
-    private static boolean isRotated(int codepoint) {
+    @SuppressWarnings("RedundantIfStatement")
+    private static boolean isRotated(int codePoint) {
 
         // Quick return: most Mongol chars should be in this range
-        if (codepoint >= MONGOL_QUICKCHECK_START && codepoint < MONGOL_QUICKCHECK_END) return false;
+        if (codePoint >= MONGOL_QUICKCHECK_START && codePoint < MONGOL_QUICKCHECK_END) return false;
 
         // Korean Jamo
-        if (codepoint < KOREAN_JAMO_START) return false; // latin, etc
-        if (codepoint <= KOREAN_JAMO_END) return true;
+        if (codePoint < KOREAN_JAMO_START) return false; // latin, etc
+        if (codePoint <= KOREAN_JAMO_END) return true;
 
         // Chinese and Japanese
-        if (codepoint >= CJK_RADICAL_SUPPLEMENT_START && codepoint <= CJK_UNIFIED_IDEOGRAPHS_END) {
+        if (codePoint >= CJK_RADICAL_SUPPLEMENT_START && codePoint <= CJK_UNIFIED_IDEOGRAPHS_END) {
             // exceptions for font handled punctuation
-            if (codepoint >= CJK_SYMBOLS_AND_PUNCTUATION_START
-                    && codepoint <= CJK_SYMBOLS_AND_PUNCTUATION_MENKSOFT_END) return false;
-            if (codepoint >= CIRCLE_NUMBER_21 && codepoint <= CIRCLE_NUMBER_35) return false;
-            if (codepoint >= CIRCLE_NUMBER_36 && codepoint <= CIRCLE_NUMBER_50) return false;
+            if (codePoint >= CJK_SYMBOLS_AND_PUNCTUATION_START
+                    && codePoint <= CJK_SYMBOLS_AND_PUNCTUATION_MENKSOFT_END) return false;
+            if (codePoint >= CIRCLE_NUMBER_21 && codePoint <= CIRCLE_NUMBER_35) return false;
+            if (codePoint >= CIRCLE_NUMBER_36 && codePoint <= CIRCLE_NUMBER_50) return false;
             return true;
         }
 
         // Korean Hangul
-        if (codepoint >= HANGUL_SYLLABLES_START && codepoint <= HANGUL_JAMO_EXTENDED_B_END)
+        if (codePoint >= HANGUL_SYLLABLES_START && codePoint <= HANGUL_JAMO_EXTENDED_B_END)
             return true;
 
         // More Chinese
-        if (codepoint >= CJK_COMPATIBILITY_IDEOGRAPHS_START
-                && codepoint <= CJK_COMPATIBILITY_IDEOGRAPHS_END)
+        if (codePoint >= CJK_COMPATIBILITY_IDEOGRAPHS_START
+                && codePoint <= CJK_COMPATIBILITY_IDEOGRAPHS_END)
             return true;
 
-        // TODO the Halfwidth and Fullwidth Forms (0xFF00--0xFFEF) might be worth rotating
+        // TODO the Half-width and Full-width Forms (0xFF00--0xFFEF) might be worth rotating
         // The problem is the Menksoft font already rotated a few (but not all) of them.
 
         // Emoji
-        if (codepoint > UNICODE_EMOJI_START) return true;
+        if (isEmoji(codePoint)) return true;
+
+        // all other code points
+        return false;
+    }
+
+    private static boolean isEmoji(int codePoint) {
         // FIXME this will rotate some things that maybe shouldn't be rotated
         // TODO there are a few other random emoji in other places as well
-
-        // all other codepoints
-        return false;
+        return codePoint > UNICODE_EMOJI_START;
     }
 
 
     /**
      * Renders the TextLine.
      *
-     * @param c the canvas to render on
-     * @param x the leading margin position
-     * @param top the top of the line
-     * @param y the baseline
+     * @param c      the canvas to render on
+     * @param x      the leading margin position
+     * @param top    the top of the line
+     * @param y      the baseline
      * @param bottom the bottom of the line
      */
     void draw(Canvas c, float x, float top, float y, int bottom) {
@@ -239,7 +245,7 @@ class MongolTextLine {
 
             TextPaintPlus wp;
             if (hasSpan) {
-                wp = mWorkPaint;
+                wp = sWorkPaint;
                 wp.set(mPaint);
                 CharacterStyle[] csSpans = ((Spanned) mText).getSpans(start, end, CharacterStyle.class);
                 for (CharacterStyle span : csSpans) {
@@ -262,17 +268,18 @@ class MongolTextLine {
                 wp.setColor(previousColor);
             }
 
+            // shadow for rotated text
+            if (run.isRotated && wp.hasShadowLayer()) {
+                wp.setShadowLayer(
+                        wp.getShadowLayerRadius(),
+                        -wp.getShadowLayerDx(),  // mirror x coordinate
+                        wp.getShadowLayerDy(),
+                        wp.getShadowLayerColor());
+            }
+
             // text stroke
-            if (wp.getStrokeWidth() > 0 && wp.strokeColor != 0) {
-                int previousColor = wp.getColor();
-                Paint.Style previousStyle = wp.getStyle();
-                wp.setColor(wp.strokeColor);
-                wp.setStyle(Paint.Style.STROKE);
-                drawTextRun(c, run, bottom, width, start, end, wp);
-                wp.setStyle(previousStyle);
-                wp.setColor(previousColor);
-                // shadow no longer needed for text since it was already drawn for the stroke
-                wp.clearShadowLayer();
+            if (wp.hasStroke()) {
+                drawTextStroke(c, run, bottom, width, start, end, wp);
             }
 
             // "underline" (to the right of vertical text)
@@ -296,7 +303,34 @@ class MongolTextLine {
         c.restore();
     }
 
-    private void drawTextRun(Canvas c, TextRun run, int bottom, float width, int start, int end, TextPaint wp) {
+    private void drawTextStroke(Canvas c, TextRun run,
+                                int bottom, float width, int start, int end, TextPaintPlus wp) {
+        int previousColor = wp.getColor();
+        Paint.Style previousStyle = wp.getStyle();
+
+        wp.setColor(wp.getStrokeColor());
+
+        if (previousColor != Color.TRANSPARENT && wp.hasShadowLayer())
+            wp.setStyle(Paint.Style.FILL_AND_STROKE);
+        else
+            wp.setStyle(Paint.Style.STROKE);
+
+        drawTextRun(c, run, bottom, width, start, end, wp);
+
+        wp.setStyle(previousStyle);
+        wp.setColor(previousColor);
+
+        // shadow no longer needed for text since it was already drawn for the stroke
+        // unless it is an emoji
+        if (!wp.hasShadowLayer()) return;
+        if (run.isRotated && isEmoji(Character.codePointAt(mText, run.offset))) {
+            return;
+        }
+        wp.clearShadowLayer();
+    }
+
+    private void drawTextRun(Canvas c, TextRun run,
+                             int bottom, float width, int start, int end, TextPaintPlus wp) {
         if (run.isRotated) {
             c.save();
             c.rotate(-90);
@@ -315,6 +349,7 @@ class MongolTextLine {
 
         for (TextRun run : mTextRuns) {
             if (run.isRotated) {
+                //noinspection SuspiciousNameCombination
                 widthSum += run.measuredHeight;
                 maxHeight = Math.max(maxHeight, run.measuredWidth);
             } else {
@@ -328,7 +363,7 @@ class MongolTextLine {
     }
 
 
-    int getOffsetForAdvance (float advance) {
+    int getOffsetForAdvance(float advance) {
         boolean hasSpan = mText instanceof Spanned;
         int offset = 0;
         float oldWidth = 0;
@@ -350,7 +385,7 @@ class MongolTextLine {
                     break;
                 }
 
-                TextPaint wp = mWorkPaint;
+                TextPaintPlus wp = sWorkPaint;
                 wp.set(mPaint);
                 if (hasSpan) {
                     MetricAffectingSpan[] maSpans = ((Spanned) mText).getSpans(start, start + length, MetricAffectingSpan.class);

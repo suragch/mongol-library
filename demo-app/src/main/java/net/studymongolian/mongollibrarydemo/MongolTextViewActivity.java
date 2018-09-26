@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -50,6 +51,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
 
         mtvExample = findViewById(R.id.mongol_textview);
         mtvExample.setText(TEXT_3);
+
+        // When using shadow on the text it may be necessary to use software rendering
+        // especially if the blur radius is greater than 25 or when combining with a stroke.
+        //
+        // mtvExample.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     // Button click methods
@@ -335,7 +341,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         if (isChecked) {
                             ClickableSpan span = new ClickableSpan() {
                                 @Override
-                                public void onClick(View view) {
+                                public void onClick(@NonNull View view) {
                                     Toast.makeText(MongolTextViewActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
                                 }
                             };
@@ -434,7 +440,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Stroke");
-        final String[] choices = {"none", "thin green", "thick yellow"};
+        final String[] choices = {"none", "thin green", "thick yellow", "transparent text"};
 
         builder.setSingleChoiceItems(choices, mCheckedStrokeItem, new DialogInterface.OnClickListener() {
             @Override
@@ -452,6 +458,11 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         mtvExample.setStrokeWidth(5);
                         mtvExample.setStrokeColor(Color.YELLOW);
                         break;
+                    case 3:
+                        mtvExample.setTextColor(Color.TRANSPARENT);
+                        mtvExample.setStrokeWidth(1);
+                        mtvExample.setStrokeColor(Color.BLACK);
+                        break;
                 }
                 mCheckedStrokeItem = which;
                 dialog.dismiss();
@@ -468,7 +479,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
         builder.setTitle("Shadow");
         final String[] choices = {
                 "none",
-                "radius=2, dx=4, dy=4",
+                "radius=2, dx=14, dy=14",
                 "radius=10, dx=4, dy=4",
                 "radius=5, dx=-2, dy=-2, color=RED",
         };
@@ -481,7 +492,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         mtvExample.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
                         break;
                     case 1:
-                        mtvExample.setShadowLayer(2, 4, 4, Color.BLACK);
+                        mtvExample.setShadowLayer(2, 14, 14, Color.BLACK);
                         break;
                     case 2:
                         mtvExample.setShadowLayer(10, 4, 4, Color.BLACK);
