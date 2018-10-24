@@ -41,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.16.2'
+    implementation 'net.studymongolian:mongol-library:1.16.3'
 }
 ```
 
@@ -464,6 +464,7 @@ String iyerSuffix = MongolCode.Suffix.IYER;                     // "\u202F\u1822
 ## 使用此库的应用
 
 - [Demo app 演示应用](https://github.com/suragch/mongol-library/tree/master/demo-app)
-- [Suryaa 外语记忆卡篇](https://github.com/suragch/Suryaa) 
+- [Chimee 输入法，文字工具](https://github.com/suragch/Chimee)
+- [Suryaa 蒙外语记忆卡篇](https://github.com/suragch/Suryaa)
 - [Todo 托忒输入法](https://github.com/suragch/TodoKeyboard)
 - *加你的应用。。。*

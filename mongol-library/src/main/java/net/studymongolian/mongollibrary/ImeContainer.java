@@ -693,7 +693,7 @@ public class ImeContainer extends ViewGroup
         }
     }
 
-    private void commitText(String text) {
+    protected void commitText(String text) {
         InputConnection ic = getInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
@@ -714,10 +714,27 @@ public class ImeContainer extends ViewGroup
             addSpacedPunctuation(ic, text, previousChar);
         } else if (isSingleZwjThatSplitsWord(ic, text)) {
             ic.commitText("" + MongolCode.Uni.ZWJ + SPACE + MongolCode.Uni.ZWJ, 1);
+        } else if (needsHookedYForVowelYI(ic, text)) {
+            ic.commitText("" + MongolCode.Uni.FVS1 + text, 1);
         } else {
             ic.commitText(text, 1);
         }
         ic.endBatchEdit();
+    }
+
+    private boolean needsHookedYForVowelYI(InputConnection ic, String text) {
+        // XXX: Note that this makes it practically impossible for users to enter
+        //      spellings like BAYINA for the double long tooth rendering
+        // XXX: Developers can override this by subclassing ImeContainer
+        //      and overriding commitText()
+        if (text.length() != 1
+                || text.charAt(0) != MongolCode.Uni.I)
+            return false;
+        CharSequence previous = ic.getTextBeforeCursor(2, 0);
+        if (TextUtils.isEmpty(previous) || previous.length() != 2)
+            return false;
+        return (MongolCode.isVowel(previous.charAt(0))
+                && previous.charAt(1) == MongolCode.Uni.YA);
     }
 
     private boolean isSingleZwjThatSplitsWord(InputConnection ic, String text) {

@@ -796,12 +796,6 @@ public class KeyboardQwerty extends Keyboard {
             return candidates;
         }
 
-        PopupKeyCandidate medial_YA_FVS1 = new PopupKeyCandidate(
-                "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1,
-                "" + MongolCode.Uni.ZWJ + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ,
-                "" + MongolCode.Uni.YA + MongolCode.Uni.FVS1 + MongolCode.Uni.ZWJ);
-        candidates.add(medial_YA_FVS1);
-
         return candidates;
     }
 
