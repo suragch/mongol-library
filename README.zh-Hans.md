@@ -41,7 +41,7 @@
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.16.3'
+    implementation 'net.studymongolian:mongol-library:1.16.4'
 }
 ```
 
