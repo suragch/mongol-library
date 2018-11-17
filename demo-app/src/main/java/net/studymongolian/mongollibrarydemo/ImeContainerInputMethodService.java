@@ -18,9 +18,11 @@ import net.studymongolian.mongollibrary.MongolFont;
 public class ImeContainerInputMethodService extends InputMethodService
         implements ImeContainer.OnSystemImeListener {
 
+    ImeContainer ime;
+
     @Override
     public View onCreateInputView() {
-        ImeContainer ime = new ImeContainer(this);
+        ime = new ImeContainer(this);
         ime.setBackgroundColor(Color.BLACK);
         Keyboard aeiou = new KeyboardAeiou(this);
         aeiou.setCandidatesLocation(Keyboard.CandidatesLocation.VERTICAL_LEFT);
@@ -36,6 +38,16 @@ public class ImeContainerInputMethodService extends InputMethodService
         ime.showSystemKeyboardsOption("ᠰᠢᠰᠲ᠋ᠧᠮ");
         ime.setOnSystemImeListener(this);
         return ime;
+    }
+
+    @Override
+    public void onComputeInsets(InputMethodService.Insets outInsets) {
+        super.onComputeInsets(outInsets);
+
+        // This gives an invisible padding at the top so that key popups will show in API 28+
+        // Touch events on this padding are passed on to whatever views are below it.
+        outInsets.visibleTopInsets = ime.getVisibleTop();
+        outInsets.contentTopInsets = ime.getVisibleTop();
     }
 
     @Override

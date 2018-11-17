@@ -1,6 +1,9 @@
 package net.studymongolian.mongollibrary;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
@@ -39,12 +42,12 @@ public class ImeContainer extends ViewGroup
     private static final int DIVIDER_ALPHA = 0x40; // 25%
     private static final int MAX_CHARS_BEFORE_CURSOR = 128;
     private static final int DEFAULT_HEIGHT_DP = 240;
+    private static final int DEFAULT_EXTRA_POPUP_PADDING_DP = 100;
     private static final char SPACE = ' ';
 
     // default keyboard candidate tool button items
     private static final int DISMISS_KEYBOARD = 0;
     private static final int TOGGLE_NAVIGATION_VIEW = 1;
-
 
     private Context mContext;
     private List<Keyboard> mKeyboards;
@@ -58,6 +61,7 @@ public class ImeContainer extends ViewGroup
     private CharSequence mComposing = "";
     private InputConnection mInputConnection;
     private PopupKeyCandidate mShowSystemKeyboardsOption;
+    private Paint mBackgroundPaint;
 
     public ImeContainer(Context context) {
         super(context, null, 0);
@@ -76,6 +80,9 @@ public class ImeContainer extends ViewGroup
 
     private void init(Context context) {
         this.mContext = context;
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setStyle(Paint.Style.FILL);
+        mBackgroundPaint.setColor(Color.TRANSPARENT);
     }
 
     /**
@@ -193,9 +200,20 @@ public class ImeContainer extends ViewGroup
     }
 
     private int getDefaultHeight() {
+        int defaultHeight;
         if (mCurrentKeyboard != null)
-            return mCurrentKeyboard.getDefaultHeight();
-        return (int) (DEFAULT_HEIGHT_DP * getResources().getDisplayMetrics().density);
+            defaultHeight = mCurrentKeyboard.getDefaultHeight();
+        else
+            defaultHeight = (int) (DEFAULT_HEIGHT_DP * getResources().getDisplayMetrics().density);
+
+        if (mSystemImeListener != null)
+            defaultHeight += getExtraPaddingForKeyPopups();
+
+        return defaultHeight;
+    }
+
+    private int getExtraPaddingForKeyPopups() {
+        return (int) (DEFAULT_EXTRA_POPUP_PADDING_DP * getResources().getDisplayMetrics().density);
     }
 
     @Override
@@ -203,7 +221,9 @@ public class ImeContainer extends ViewGroup
 
         //  Keyboard.CandidateLocation
         //  VERTICAL_LEFT                  HORIZONTAL_TOP                 NONE
-        //  ___________________________    ___________________________    ___________________________
+        //  ___________________________     _________________________      _________________________
+        //  |     Room for popup      |    |     Room for popup      |    |     Room for popup      |
+        //  |_________________________|    |_________________________|    |_________________________|
         //  | C |                     |    |       Candidates        |    |                         |
         //  | a |                     |    |_________________________|    |                         |
         //  | n |                     |    |                         |    |                         |
@@ -239,6 +259,26 @@ public class ImeContainer extends ViewGroup
         return mCurrentKeyboard.getCandidatesLocation();
     }
 
+    /**
+     * This returns the visible top of the IME reletive to the parent. For system keyboards this
+     * is different than getTop() because system keyboards need a padding at the top to show popup keys.
+     *
+     * @return top visible position of this view, in pixels
+     */
+    public int getVisibleTop() {
+        int visibleTop = getTop();
+        if (mSystemImeListener != null)
+            visibleTop += getExtraPaddingForKeyPopups();
+        return visibleTop;
+    }
+
+    private int getTotalPaddingTop() {
+        int padding = getPaddingTop();
+        if (mSystemImeListener != null)
+            padding += getExtraPaddingForKeyPopups();
+        return padding;
+    }
+
     private void layoutWithNoCandidateView() {
         // candidate view
         if (mCandidatesView != null) {
@@ -247,7 +287,7 @@ public class ImeContainer extends ViewGroup
 
         // keyboard
         final int keyboardLeft = getPaddingLeft();
-        final int keyboardTop = getPaddingTop();
+        int keyboardTop = getTotalPaddingTop();
         final int keyboardRight = getMeasuredWidth() - getPaddingRight();
         final int keyboardBottom = getMeasuredHeight() - getPaddingBottom();
         layoutKeyboard(keyboardLeft, keyboardTop, keyboardRight, keyboardBottom);
@@ -258,7 +298,7 @@ public class ImeContainer extends ViewGroup
         final int availableWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         final int candidateViewWidth = (int) (availableWidth * DEFAULT_VERTICAL_CANDIDATE_VIEW_PROPORTION);
         final int candidateLeft = getPaddingLeft();
-        final int candidateTop = getPaddingTop();
+        final int candidateTop = getTotalPaddingTop();
         final int candidateRight = candidateLeft + candidateViewWidth;
         final int candidateBottom = getMeasuredHeight() - getPaddingBottom();
         final int padding = mCurrentKeyboard.getKeySpacing();
@@ -267,7 +307,7 @@ public class ImeContainer extends ViewGroup
 
         // keyboard
         final int keyboardLeft = candidateRight + mCurrentKeyboard.getKeySpacing();
-        final int keyboardTop = getPaddingTop();
+        final int keyboardTop = getTotalPaddingTop();
         final int keyboardRight = getMeasuredWidth() - getPaddingRight();
         final int keyboardBottom = getMeasuredHeight() - getPaddingBottom();
         layoutKeyboard(keyboardLeft, keyboardTop, keyboardRight, keyboardBottom);
@@ -278,7 +318,7 @@ public class ImeContainer extends ViewGroup
         final int availableHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
         final int candidateViewHeight = (int) (availableHeight * DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION);
         final int candidateLeft = getPaddingLeft();
-        final int candidateTop = getPaddingTop();
+        final int candidateTop = getTotalPaddingTop();
         final int candidateRight = getMeasuredWidth() - getPaddingRight();
         final int candidateBottom = getPaddingTop() + candidateViewHeight;
         final int padding = mCurrentKeyboard.getKeySpacing();
@@ -321,6 +361,17 @@ public class ImeContainer extends ViewGroup
         mTempKeyboardView.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         mTempKeyboardView.layout(left, top, right, bottom);
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        mBackgroundPaint.setColor(color);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // draw background (but not on invisible popup padding area)
+        canvas.drawRect(getLeft(), getVisibleTop(), getRight(), getBottom(), mBackgroundPaint);
     }
 
     /**
