@@ -80,9 +80,14 @@ public class ImeContainer extends ViewGroup
 
     private void init(Context context) {
         this.mContext = context;
+        initBackgroundPaint();
+    }
+
+    private void initBackgroundPaint() {
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setColor(Color.TRANSPARENT);
+        setWillNotDraw(false); // otherwise the background would not be drawn for a ViewGroup
     }
 
     /**
