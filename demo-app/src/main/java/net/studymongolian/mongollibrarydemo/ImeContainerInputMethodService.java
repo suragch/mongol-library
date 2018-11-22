@@ -27,6 +27,7 @@ public class ImeContainerInputMethodService extends InputMethodService
         Keyboard aeiou = new KeyboardAeiou(this);
         aeiou.setCandidatesLocation(Keyboard.CandidatesLocation.VERTICAL_LEFT);
         Keyboard qwerty = new KeyboardQwerty(this);
+        qwerty.setCandidatesLocation(Keyboard.CandidatesLocation.HORIZONTAL_TOP);
         Keyboard english = new KeyboardLatin(this);
         Keyboard cyrillic = new KeyboardCyrillic(this);
         Keyboard ipa = new CustomKeyboardTwo(this);

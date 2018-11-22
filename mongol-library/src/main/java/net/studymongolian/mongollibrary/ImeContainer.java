@@ -320,12 +320,12 @@ public class ImeContainer extends ViewGroup
 
     private void layoutWithCandidateViewAtHorizontalTop() {
         // candidate view
-        final int availableHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+        final int availableHeight = getMeasuredHeight() - getTotalPaddingTop() - getPaddingBottom();
         final int candidateViewHeight = (int) (availableHeight * DEFAULT_HORIZONTAL_CANDIDATE_VIEW_PROPORTION);
         final int candidateLeft = getPaddingLeft();
         final int candidateTop = getTotalPaddingTop();
         final int candidateRight = getMeasuredWidth() - getPaddingRight();
-        final int candidateBottom = getPaddingTop() + candidateViewHeight;
+        final int candidateBottom = candidateTop + candidateViewHeight;
         final int padding = mCurrentKeyboard.getKeySpacing();
         mCandidatesView.setPadding(padding, padding, padding, 0);
         layoutCandidateView(candidateLeft, candidateTop, candidateRight, candidateBottom);
