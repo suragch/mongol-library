@@ -21,12 +21,23 @@ public class MongolLayout {
     private TextPaintPlus mTextPaint;
     private int mHeight;
     private int mAlignment; // Use Gravity for now
-    //private float mSpacingMult; // TODO
-    //private float mSpacingAdd; // TODO
+    private float mSpacingMult;
+    private float mSpacingAdd;
     private List<LineInfo> mLinesInfo; // = new ArrayList<>();
     private boolean needsLineUpdate;
+    private static final double EXTRA_ROUNDING = 0.5;
 
     private static final char CHAR_SPACE = ' ';
+
+    /*
+     * Line spacing multiplier for default line spacing.
+     */
+    public static final float DEFAULT_LINESPACING_MULTIPLIER = 1.0f;
+
+    /*
+     * Line spacing addition for default line spacing.
+     */
+    public static final float DEFAULT_LINESPACING_ADDITION = 0.0f;
 
 
     @SuppressWarnings("unused") // TODO add the unused parameters
@@ -42,8 +53,8 @@ public class MongolLayout {
         mTextPaint = paint;
         mHeight = height;
         mAlignment = align;
-        //mSpacingMult = spacingMult; TODO
-        //mSpacingAdd = spacingAdd; TODO
+        mSpacingMult = spacingMult;
+        mSpacingAdd = spacingAdd;
 
         needsLineUpdate = true;
     }
@@ -125,6 +136,8 @@ public class MongolLayout {
         int y = 0; // baseline
         MongolTextLine tl = MongolTextLine.obtain();
 
+        boolean needMultiply = (mSpacingMult != 1 || mSpacingAdd != 0);
+
         // draw the lines one at a time
         int lastLine = mLinesInfo.size() - 1;
         for (int i = 0; i <= lastLine; i++) {
@@ -164,6 +177,7 @@ public class MongolLayout {
         MongolTextLine.recycle(tl);
     }
 
+    // TODO refactor this method. It's messy and hard to read.
     @SuppressWarnings("SuspiciousNameCombination")
     private void updateLines() {
 
@@ -174,7 +188,7 @@ public class MongolLayout {
 
         if (mText.length() == 0) {
             int defaultHeight = mTextPaint.getFontMetricsInt().bottom - mTextPaint.getFontMetricsInt().top;
-            mLinesInfo.add(new LineInfo(0, defaultHeight, 0));
+            mLinesInfo.add(new LineInfo(0, defaultHeight, 0, 0));
             return;
         }
 
@@ -182,6 +196,7 @@ public class MongolLayout {
 
         BreakIterator boundary = BreakIterator.getLineInstance();
         boundary.setText(mText.toString());
+        float extraSpacing;
         int start = boundary.first();
         int lineStart = start;
         float measuredSum = 0;
@@ -205,8 +220,9 @@ public class MongolLayout {
 
                 // add previously measured text as a new line
                 if (measuredSum > 0) {
-                    top += lineHeightMax;
-                    mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+                    extraSpacing = getExtraSpacing(lineHeightMax);
+                    top += lineHeightMax + extraSpacing;
+                    mLinesInfo.add(new LineInfo(lineStart, top, measuredSum, extraSpacing));
                     lineHeightMax = 0;
                     measuredSum = 0;
                 }
@@ -218,20 +234,23 @@ public class MongolLayout {
                 // FIXME this doesn't handle spanned text, does it? Should add a breakText method to TextLine.
                 int charactersMeasured = mTextPaint.breakText(mText, lineStart, end, true, mHeight, measuredWidth);
                 if (charactersMeasured > 0) {
-                    top += measuredSize.height();
-                    mLinesInfo.add(new LineInfo(lineStart, top, measuredWidth[0]));
+                    extraSpacing = getExtraSpacing(measuredSize.height());
+                    top += measuredSize.height() + extraSpacing;
+                    mLinesInfo.add(new LineInfo(lineStart, top, measuredWidth[0], extraSpacing));
                     lineStart += charactersMeasured;
                 } else {
                     // if mHeight is shorter than a single character then just add that char to the line
-                    mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.height()));
+                    extraSpacing = getExtraSpacing(measuredSize.height());
+                    mLinesInfo.add(new LineInfo(lineStart, mHeight, measuredSize.height(), extraSpacing));
                     lineStart++;
                 }
                 hadToSplitWord = true;
 
             } else if (Math.floor(measuredSum + measuredSize.width()) > mHeight) {
 
-                top += lineHeightMax;
-                mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+                extraSpacing = getExtraSpacing(lineHeightMax);
+                top += lineHeightMax + extraSpacing;
+                mLinesInfo.add(new LineInfo(lineStart, top, measuredSum, extraSpacing));
                 lineHeightMax = measuredSize.height();
                 lineStart = start;
                 measuredSum = measuredSize.width();
@@ -266,8 +285,9 @@ public class MongolLayout {
                     // TODO should be using a different height if there is a span
                     lineHeightMax = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
                 }
-                top += lineHeightMax;
-                mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+                extraSpacing = getExtraSpacing(lineHeightMax);
+                top += lineHeightMax + extraSpacing;
+                mLinesInfo.add(new LineInfo(lineStart, top, measuredSum, extraSpacing));
                 lineHeightMax = 0;
                 measuredSum = 0;
                 lineStart = start;
@@ -281,10 +301,39 @@ public class MongolLayout {
                 // TODO should be using a different height if there is a span
                 lineHeightMax = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
             }
-            top += lineHeightMax;
-            mLinesInfo.add(new LineInfo(lineStart, top, measuredSum));
+            extraSpacing = getExtraSpacing(lineHeightMax);
+            top += lineHeightMax + extraSpacing;
+            mLinesInfo.add(new LineInfo(lineStart, top, measuredSum, extraSpacing));
         }
     }
+
+    private float getExtraSpacing(float lineHeight) {
+        if (mSpacingAdd == 0 && mSpacingMult == 1)
+            return 0;
+        double extra = lineHeight * (mSpacingMult - 1) + mSpacingAdd;
+        if (extra >= 0) {
+            return (int)(extra + EXTRA_ROUNDING);
+        } else {
+            return -(int)(-extra + EXTRA_ROUNDING);
+        }
+    }
+//
+//    private int findNewTop(float oldTop, float lineHeight) {
+//        int sum = (int) (oldTop + lineHeight);
+//        int extra;
+//        if (mSpacingAdd != 0 || mSpacingMult != 1) {
+//            double ex = lineHeight * (mSpacingMult - 1) + mSpacingAdd;
+//            if (ex >= 0) {
+//                extra = (int)(ex + EXTRA_ROUNDING);
+//            } else {
+//                extra = -(int)(-ex + EXTRA_ROUNDING);
+//            }
+//        } else {
+//            extra = 0;
+//        }
+//
+//        return sum + extra;
+//    }
 
     /**
      * Call this if the height has not changed but something else like the font size has.
@@ -469,14 +518,10 @@ public class MongolLayout {
         return mText;
     }
 
-// TODO add spacing
-//    float getSpacingAdd () {
-//
-//    }
-//
-//    float getSpacingMultiplier () {
-//
-//    }
+    void setLineSpacing(float add, float mult) {
+        mSpacingAdd = add;
+        mSpacingMult = mult;
+    }
 
 
     private class LineInfo {
@@ -489,11 +534,13 @@ public class MongolLayout {
         int top;
 
         float measuredWidth;
+        float extraSpacing;
 
-        LineInfo(int start, int top, float measuredWidth) {
+        LineInfo(int start, int top, float measuredWidth, float extraSpacing) {
             this.startOffset = start;
             this.top = top;
             this.measuredWidth = measuredWidth;
+            this.extraSpacing = extraSpacing;
         }
 
     }

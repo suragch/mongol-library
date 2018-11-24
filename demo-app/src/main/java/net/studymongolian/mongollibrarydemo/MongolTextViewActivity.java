@@ -43,6 +43,7 @@ public class MongolTextViewActivity extends AppCompatActivity {
     private int mCheckedPaddingItem = 0;
     private int mCheckedStrokeItem = 0;
     private int mCheckedShadowItem = 0;
+    private int mCheckedSpacingItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -502,6 +503,51 @@ public class MongolTextViewActivity extends AppCompatActivity {
                         break;
                 }
                 mCheckedShadowItem = which;
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void onSpacingClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Line Spacing");
+        final String[] choices = {
+                "none (add=0 mult=1)",
+                "extra add = 20px",
+                "extra add = -20px",
+                "multiplier = 2",
+                "multiplier = 0.5",
+                "mult=2 add=20",
+        };
+
+        builder.setSingleChoiceItems(choices, mCheckedSpacingItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        mtvExample.setLineSpacing(0, 1);
+                        break;
+                    case 1:
+                        mtvExample.setLineSpacing(20, 1);
+                        break;
+                    case 2:
+                        mtvExample.setLineSpacing(-20, 1);
+                        break;
+                    case 3:
+                        mtvExample.setLineSpacing(0, 2);
+                        break;
+                    case 4:
+                        mtvExample.setLineSpacing(0, 0.5f);
+                        break;
+                    case 5:
+                        mtvExample.setLineSpacing(20, 2);
+                        break;
+                }
+                mCheckedSpacingItem = which;
                 dialog.dismiss();
             }
         });

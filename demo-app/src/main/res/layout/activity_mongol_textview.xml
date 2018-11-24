@@ -75,7 +75,7 @@
             android:orientation="vertical">
 
             <Button
-                android:text="Alignment"
+                android:text="Align"
                 android:onClick="onAlignmentClick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -89,6 +89,20 @@
             <Button
                 android:text="Shadow"
                 android:onClick="onShadowClick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:text="Spacing"
+                android:onClick="onSpacingClick"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

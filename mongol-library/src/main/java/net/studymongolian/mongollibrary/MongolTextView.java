@@ -53,6 +53,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
     private float mShadowDx;
     private float mShadowDy;
     private int mShadowColor;
+    private float mSpacingMult = 1.0f;
+    private float mSpacingAdd = 0.0f;
 
 
     public MongolTextView(Context context) {
@@ -113,8 +115,8 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
                 mTextPaint,
                 0,
                 Gravity.TOP,
-                1,
-                0,
+                mSpacingMult,
+                mSpacingAdd,
                 false,
                 Integer.MAX_VALUE);
 
@@ -416,6 +418,53 @@ public class MongolTextView extends View  implements ViewTreeObserver.OnPreDrawL
         return mShadowColor;
     }
 
+    /**
+     * This adds spacing to each line of text
+     *
+     * @param add the extra spacing to add between lines of text (default is 0)
+     * @param mult how much to multiply each line by in order to change the overall spacing (default is 1)
+     */
+    public void setLineSpacing(float add, float mult) {
+        if (mSpacingAdd != add || mSpacingMult != mult) {
+            mSpacingAdd = add;
+            mSpacingMult = mult;
+
+            if (mLayout != null) {
+                mLayout.setLineSpacing(add, mult);
+                mLayout.reflowLines();
+                requestLayout();
+                invalidate();
+            }
+        }
+    }
+
+    /**
+     *
+     * @return any extra spacing added to text lines (default is 0)
+     */
+    public float getLineSpacingExtra() {
+        return mSpacingAdd;
+    }
+
+    /**
+     *
+     * @return the multiplier that is used to change line spacing (default is 1)
+     */
+    public float getLineSpacingMultiplier() {
+        return mSpacingMult;
+    }
+
+    /**
+     * This is the width of a vertical text line, comparable to TextView.getLineHeight() for
+     * horizontal text.
+     *
+     * Any extra spacing or spacing multipliers are taken into account.
+     *
+     * @return the width of one line of vertical text
+     */
+    public int getLineWidth() {
+        return Math.round(mTextPaint.getFontMetricsInt(null) * mSpacingMult + mSpacingAdd);
+    }
 
     public void setPadding (int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
