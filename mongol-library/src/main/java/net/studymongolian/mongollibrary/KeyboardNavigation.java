@@ -21,7 +21,7 @@ public class KeyboardNavigation extends Keyboard {
     private static final String SELECT_WORD_BACK = "sel_back";
     private static final String SELECT_WORD_FORWARD = "sel_forward";
     private static final String COPY = "copy";
-    private static final String CUT = "cut";
+    private static final String NEWLINE = "\n";
     private static final String PASTE = "paste";
     private static final String FINISHED = "finished";
     private static final String SPACE = " ";
@@ -39,8 +39,8 @@ public class KeyboardNavigation extends Keyboard {
     protected KeyImage mKeyLeft;
     protected KeyImage mKeySelectAll;
     protected KeyImage mKeyRight;
-    protected KeyImage mKeyCut;
     protected KeyText mKeySpace;
+    protected KeyImage mKeyReturn;
 
     // Row 3
     protected KeyImage mKeySelectForward;
@@ -62,7 +62,7 @@ public class KeyboardNavigation extends Keyboard {
         void selectWordForward();
 
         void copyText();
-        void cutText();
+        //void cutText();
         void pasteText();
     }
 
@@ -94,7 +94,7 @@ public class KeyboardNavigation extends Keyboard {
     protected void init(Context context) {
 
         // | start | up    |       | copy  | del   |    Row 1
-        // | left  | all   | right | cut   | space |    Row 2
+        // | left  | all   | right | space | enter |    Row 2
         // |       | down  | end   | paste | back  |    Row 3
 
         // actual layout work is done by Keyboard superclass's onLayout
@@ -130,8 +130,8 @@ public class KeyboardNavigation extends Keyboard {
         mKeyLeft = new KeyImage(context);
         mKeySelectAll = new KeyImage(context);
         mKeyRight = new KeyImage(context);
-        mKeyCut = new KeyImage(context);
         mKeySpace = new KeyText(context);
+        mKeyReturn = new KeyImage(context);
 
         // Row 3
         mKeySelectForward = new KeyImage(context);
@@ -153,8 +153,8 @@ public class KeyboardNavigation extends Keyboard {
         mKeyLeft.setText(MOVE_LEFT);
         mKeySelectAll.setText(SELECT_ALL);
         mKeyRight.setText(MOVE_RIGHT);
-        mKeyCut.setText(CUT);
         mKeySpace.setText(SPACE);
+        mKeyReturn.setText(NEWLINE);
 
         // Row 3
         mKeySelectForward.setText(SELECT_WORD_FORWARD);
@@ -177,7 +177,7 @@ public class KeyboardNavigation extends Keyboard {
         mKeyLeft.setImage(getLeftImage(), getPrimaryTextColor());
         mKeySelectAll.setImage(getSelectAllImage(), getPrimaryTextColor());
         mKeyRight.setImage(getRightImage(), getPrimaryTextColor());
-        mKeyCut.setImage(getCutImage(), getPrimaryTextColor());
+        mKeyReturn.setImage(getReturnImage(), getPrimaryTextColor());
 
         // Row 3
         mKeySelectForward.setImage(getSelectForwardImage(), getPrimaryTextColor());
@@ -200,8 +200,8 @@ public class KeyboardNavigation extends Keyboard {
         mKeyLeft.setKeyListener(this);
         mKeySelectAll.setKeyListener(this);
         mKeyRight.setKeyListener(this);
-        mKeyCut.setKeyListener(this);
         mKeySpace.setKeyListener(this);
+        mKeyReturn.setKeyListener(this);
 
         // Row 3
         mKeySelectForward.setKeyListener(this);
@@ -224,8 +224,8 @@ public class KeyboardNavigation extends Keyboard {
         addView(mKeyLeft);
         addView(mKeySelectAll);
         addView(mKeyRight);
-        addView(mKeyCut);
         addView(mKeySpace);
+        addView(mKeyReturn);
 
         // Row 3
         addView(mKeySelectForward);
@@ -272,9 +272,6 @@ public class KeyboardNavigation extends Keyboard {
                 return;
             case COPY:
                 mNavigationListener.copyText();
-                return;
-            case CUT:
-                mNavigationListener.cutText();
                 return;
             case PASTE:
                 mNavigationListener.pasteText();

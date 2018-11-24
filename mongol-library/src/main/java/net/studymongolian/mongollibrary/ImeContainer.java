@@ -1278,7 +1278,6 @@ public class ImeContainer extends ViewGroup
         ic.performContextMenuAction(android.R.id.copy);
     }
 
-    @Override
     public void cutText() {
         InputConnection ic = getInputConnection();
         if (ic == null) return;
