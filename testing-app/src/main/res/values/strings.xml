@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Testing App</string>
     <string name="mongol_textview_activity_title">MongolTextView tests</string>
+    <string name="mongol_textview_spacing_activity_title">MongolTextView text spacing</string>
 </resources>

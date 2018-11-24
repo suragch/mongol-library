@@ -109,7 +109,6 @@ public class MongolLayout {
      * @param canvas the canvas to draw the layout on
      */
     public void draw(Canvas canvas) {
-        //draw(canvas, null, null, 0);
         if (mHeight <= 0) return;
 
         if (needsLineUpdate) updateLines();
@@ -129,7 +128,6 @@ public class MongolLayout {
 
         if (needsLineUpdate) updateLines();
 
-        float metricsTop;
         int metricsBottom = mTextPaint.getFontMetricsInt().bottom;
 
         int x = metricsBottom; // start position of each vertical line
@@ -168,7 +166,8 @@ public class MongolLayout {
             } else {
                 lineHeight = mLinesInfo.get(i).top;
             }
-            metricsTop = metricsBottom - lineHeight;
+            int extraSpacing = (int) (mLinesInfo.get(i).extraSpacing);
+            float metricsTop = metricsBottom - lineHeight + extraSpacing;
             tl.draw(canvas, x, metricsTop, y + gravityOffset, metricsBottom);
 
             x += lineHeight;
@@ -301,9 +300,8 @@ public class MongolLayout {
                 // TODO should be using a different height if there is a span
                 lineHeightMax = mTextPaint.getFontMetrics().bottom - mTextPaint.getFontMetrics().top;
             }
-            extraSpacing = getExtraSpacing(lineHeightMax);
-            top += lineHeightMax + extraSpacing;
-            mLinesInfo.add(new LineInfo(lineStart, top, measuredSum, extraSpacing));
+            top += lineHeightMax;
+            mLinesInfo.add(new LineInfo(lineStart, top, measuredSum, 0));
         }
     }
 
@@ -317,23 +315,6 @@ public class MongolLayout {
             return -(int)(-extra + EXTRA_ROUNDING);
         }
     }
-//
-//    private int findNewTop(float oldTop, float lineHeight) {
-//        int sum = (int) (oldTop + lineHeight);
-//        int extra;
-//        if (mSpacingAdd != 0 || mSpacingMult != 1) {
-//            double ex = lineHeight * (mSpacingMult - 1) + mSpacingAdd;
-//            if (ex >= 0) {
-//                extra = (int)(ex + EXTRA_ROUNDING);
-//            } else {
-//                extra = -(int)(-ex + EXTRA_ROUNDING);
-//            }
-//        } else {
-//            extra = 0;
-//        }
-//
-//        return sum + extra;
-//    }
 
     /**
      * Call this if the height has not changed but something else like the font size has.
