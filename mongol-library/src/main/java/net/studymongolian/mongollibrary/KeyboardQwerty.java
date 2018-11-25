@@ -444,20 +444,27 @@ public class KeyboardQwerty extends Keyboard {
         mKeyN.setSubText(MongolCode.Uni.VERTICAL_COMMA);
 
         mKeyM.setText(MongolCode.Uni.QUESTION_EXCLAMATION_MARK);
-        mKeyM.setSwipeUpText(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
-        mKeyM.setSubText(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
+        mKeyM.setSwipeUpText(MongolCode.Uni.EXCLAMATION_QUESTION_MARK);
+        mKeyM.setSubText(MongolCode.Uni.EXCLAMATION_QUESTION_MARK);
     }
 
     private void setNonChangingKeyValues() {
         mKeyExclamation.setText(MongolCode.Uni.VERTICAL_EXCLAMATION_MARK);
+        mKeyExclamation.setSwipeUpText(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK);
+
         mKeyComma.setText(MongolCode.Uni.MONGOLIAN_COMMA);
+
         mKeySpace.setText(" ");
         mKeySpace.setSwipeUpText(MongolCode.Uni.NNBS);
         if (hasCandidatesView()) {
             mKeySpace.setSubText(KEY_SPACE_SUB_DISPLAY);
         }
+
         mKeyPeriod.setText(MongolCode.Uni.MONGOLIAN_FULL_STOP);
+
         mKeyQuestion.setText(MongolCode.Uni.VERTICAL_QUESTION_MARK);
+        mKeyQuestion.setSwipeUpText(MongolCode.Uni.DOUBLE_QUESTION_MARK);
+
         mKeyReturn.setText(NEWLINE);
     }
 
@@ -621,8 +628,12 @@ public class KeyboardQwerty extends Keyboard {
             return getCandidatesForM();
         } else if (key == mKeyKeyboard) {
             return getCandidatesForKeyboardKey();
+        } else if (key == mKeyExclamation) {
+            return getCandidatesForExclamation();
         } else if (key == mKeySpace) {
             return getCandidatesForSpace();
+        } else if (key == mKeyQuestion) {
+            return getCandidatesForQuestion();
         }
 
         return null;
@@ -947,12 +958,13 @@ public class KeyboardQwerty extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET));
             return candidates;
         }
 
         //PopupKeyCandidate nirugu = new PopupKeyCandidate(MongolCode.Uni.MONGOLIAN_NIRUGU);
 
-        if (isIsolateOrInitial()){
+        if (isIsolateOrInitial()) {
             candidates.add(new PopupKeyCandidate("" + MongolCode.Uni.A + MongolCode.Uni.FVS1));
             //candidates.add(nirugu);
             return candidates;
@@ -989,6 +1001,7 @@ public class KeyboardQwerty extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET));
             return candidates;
         }
 
@@ -1286,6 +1299,9 @@ public class KeyboardQwerty extends Keyboard {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_COMMA));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_IDEOGRAPHIC_FULL_STOP));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_IDEOGRAPHIC_COMMA));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_SEMICOLON));
             return candidates;
         }
 
@@ -1342,11 +1358,15 @@ public class KeyboardQwerty extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForM() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
-            candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK));
-            candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_QUESTION_MARK));
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.EXCLAMATION_QUESTION_MARK));
             return candidates;
         }
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForExclamation() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK));
         return candidates;
     }
 
@@ -1364,6 +1384,12 @@ public class KeyboardQwerty extends Keyboard {
                     " ");
         }
         candidates.add(nnbs);
+        return candidates;
+    }
+
+    private List<PopupKeyCandidate> getCandidatesForQuestion() {
+        List<PopupKeyCandidate> candidates = new ArrayList<>();
+        candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_QUESTION_MARK));
         return candidates;
     }
 

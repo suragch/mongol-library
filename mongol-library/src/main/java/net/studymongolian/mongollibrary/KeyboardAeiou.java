@@ -467,6 +467,7 @@ public class KeyboardAeiou extends Keyboard {
 
         if (mIsShowingPunctuation) {
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_SQUARE_BRACKET));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_LEFT_WHITE_CORNER_BRACKET));
             return candidates;
         }
 
@@ -515,6 +516,7 @@ public class KeyboardAeiou extends Keyboard {
 
         if (mIsShowingPunctuation) {
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_SQUARE_BRACKET));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_RIGHT_WHITE_CORNER_BRACKET));
             return candidates;
         }
 
@@ -1035,6 +1037,10 @@ public class KeyboardAeiou extends Keyboard {
     private List<PopupKeyCandidate> getCandidatesForRA() {
         List<PopupKeyCandidate> candidates = new ArrayList<>();
         if (mIsShowingPunctuation) {
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_COMMA));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_IDEOGRAPHIC_FULL_STOP));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_IDEOGRAPHIC_COMMA));
+            candidates.add(new PopupKeyCandidate(MongolCode.Uni.VERTICAL_SEMICOLON));
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_QUESTION_MARK));
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.EXCLAMATION_QUESTION_MARK));
             candidates.add(new PopupKeyCandidate(MongolCode.Uni.DOUBLE_EXCLAMATION_MARK));
