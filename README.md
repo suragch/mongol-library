@@ -42,7 +42,7 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.17.1'
+    implementation 'net.studymongolian:mongol-library:1.17.2'
 }
 ```
 
@@ -676,7 +676,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
-
+* `1.17.2`: Minor keyboard adjustments (removed a few of the vertical presentation forms)
 * `1.17.1`: Added newline key to nav keyboard; added vertical presentation forms to Mongolian keyboards
 * `1.17.0`: Added MongolTextView line spacing
 * `1.16.6`: Fix for system keyboard horizontal candidates view layout

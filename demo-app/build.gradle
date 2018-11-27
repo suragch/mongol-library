@@ -6,8 +6,8 @@ android {
         applicationId "net.studymongolian.mongollibrarydemo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 38
-        versionName "1.17.1"
+        versionCode 39
+        versionName "1.17.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
