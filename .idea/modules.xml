@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidProjects-mongol-library.iml" filepath="$PROJECT_DIR$/AndroidProjects-mongol-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo-app/demo-app.iml" filepath="$PROJECT_DIR$/demo-app/demo-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mongol-library.iml" filepath="$PROJECT_DIR$/mongol-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/mongol-library/mongol-library-mongol-library.iml" filepath="$PROJECT_DIR$/mongol-library/mongol-library-mongol-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/testing-app/testing-app.iml" filepath="$PROJECT_DIR$/testing-app/testing-app.iml" />
     </modules>
