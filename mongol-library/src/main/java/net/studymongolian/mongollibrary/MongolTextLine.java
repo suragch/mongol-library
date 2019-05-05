@@ -171,6 +171,10 @@ class MongolTextLine {
     @SuppressWarnings("RedundantIfStatement")
     private static boolean isRotated(int codePoint) {
 
+        // TODO rotate single numbers
+        //if (codePoint >= 0x0030 && codePoint < 0x0039) return true;
+
+
         // Quick return: most Mongol chars should be in this range
         if (codePoint >= MONGOL_QUICKCHECK_START && codePoint < MONGOL_QUICKCHECK_END) return false;
 
