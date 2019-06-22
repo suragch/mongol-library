@@ -80,12 +80,12 @@ public class KeyImage extends Key {
 
         // automatically resize image that is too large
         if (mNeedToScaleImage) {
-            float x = getPaddingLeft() + (keyWidth - mImageScaled.getWidth()) / 2;
-            float y = getPaddingTop() + (keyHeight - mImageScaled.getHeight()) / 2;
+            float x = getPaddingLeft() + (keyWidth - mImageScaled.getWidth()) / 2f;
+            float y = getPaddingTop() + (keyHeight - mImageScaled.getHeight()) / 2f;
             canvas.drawBitmap(mImageScaled, x, y, mImagePaint);
         } else {
-            float x = getPaddingLeft() + (keyWidth - mImage.getWidth()) / 2;
-            float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2;
+            float x = getPaddingLeft() + (keyWidth - mImage.getWidth()) / 2f;
+            float y = getPaddingTop() + (keyHeight - mImage.getHeight()) / 2f;
             canvas.drawBitmap(mImage, x, y, mImagePaint);
         }
     }

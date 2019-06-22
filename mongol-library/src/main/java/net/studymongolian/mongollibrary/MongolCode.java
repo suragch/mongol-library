@@ -23,7 +23,7 @@ package net.studymongolian.mongollibrary;
  * text use Unicode. However, Menksoft code can also be converted back
  * into Unicode.
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused", "WeakerAccess", "SwitchStatementWithTooFewBranches"})
 public final class MongolCode {
 
     // this is a singleton class (should it just be a static class?)

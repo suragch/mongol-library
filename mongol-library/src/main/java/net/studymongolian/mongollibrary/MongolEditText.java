@@ -35,6 +35,8 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.HorizontalScrollView;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 
 // FIXME crash if setting on OnFocusChangeListener
 
+@SuppressWarnings("SwitchStatementWithTooFewBranches")
 public class MongolEditText extends MongolTextView {
 
     private static final int CONTEXT_MENU_TOUCH_PADDING_DP = 50;
@@ -983,6 +986,7 @@ public class MongolEditText extends MongolTextView {
             TextUtils.writeToParcel(text, out, flags);
         }
 
+        @NonNull
         @Override
         public String toString() {
             String str = "MongolEditText.SavedState{"

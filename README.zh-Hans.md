@@ -39,11 +39,23 @@
 
 在你的app模块的build.gradle文件里dependencies依赖项区加`mongol-library`的链接；
 
+AndroidX:
+
+```java
+dependencies {
+    implementation 'net.studymongolian:mongol-library:2.0.0'
+}
+```
+
+旧的SupportLibrary:
+
 ```java
 dependencies {
     implementation 'net.studymongolian:mongol-library:1.17.3'
 }
 ```
+
+`mongol-library`2.0.0版以上采用[语义化版本](https://semver.org/lang/zh-CN/)
 
 ## `MongolTextView`
 

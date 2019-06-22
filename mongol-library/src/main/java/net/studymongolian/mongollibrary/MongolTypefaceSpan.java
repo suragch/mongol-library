@@ -5,7 +5,6 @@ import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
 
 
-
 public class MongolTypefaceSpan extends MetricAffectingSpan {
 
     private final Typeface typeface;

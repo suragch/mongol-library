@@ -210,7 +210,7 @@ class PopupKeyCandidatesView extends ViewGroup {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            int location[] = new int[2];
+            int[] location = new int[2];
             child.getLocationOnScreen(location);
 
             int leftSide = location[0];

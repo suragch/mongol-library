@@ -5,8 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -824,7 +824,7 @@ public class ImeContainer extends ViewGroup
                     && previousTwo.charAt(0) == MongolCode.Uni.MONGOLIAN_COMMA) {
                 ic.deleteSurroundingText(2, 0);
                 String insert = "" + MongolCode.Uni.MONGOLIAN_FULL_STOP + SPACE;
-                ic.commitText(String.valueOf(insert), 1);
+                ic.commitText(insert, 1);
             } else {
                 ic.commitText(text + SPACE, 1);
             }

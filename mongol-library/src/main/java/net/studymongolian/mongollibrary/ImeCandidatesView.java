@@ -8,10 +8,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.ImageViewCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.widget.ImageViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -224,10 +224,10 @@ public class ImeCandidatesView extends ViewGroup {
         LinearLayoutManager layoutManager;
         if (mOrientation == Orientation.HORIZONTAL) {
             layoutManager = new LinearLayoutManager(mContext,
-                    LinearLayoutManager.HORIZONTAL, false);
+                    RecyclerView.HORIZONTAL, false);
         } else {
             layoutManager = new LinearLayoutManager(mContext,
-                    LinearLayoutManager.VERTICAL, false);
+                    RecyclerView.VERTICAL, false);
         }
         recyclerView.setLayoutManager(layoutManager);
         candidatesAdapter = new CandidatesAdapter(mContext);

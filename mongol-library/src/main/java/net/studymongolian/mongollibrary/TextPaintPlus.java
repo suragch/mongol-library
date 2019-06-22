@@ -2,9 +2,10 @@ package net.studymongolian.mongollibrary;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.text.TextPaint;
 
+@SuppressWarnings("WeakerAccess")
 public class TextPaintPlus extends TextPaint {
 
     @ColorInt

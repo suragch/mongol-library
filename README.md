@@ -17,7 +17,6 @@ Android UI components for vertical Mongolian text
     * [MongolToast](https://github.com/suragch/mongol-library#mongoltoast)
     * [MongolAlertDialog](https://github.com/suragch/mongol-library#mongolalertdialog)
     * [Horizontal RecyclerView](https://github.com/suragch/mongol-library#horizontal-recyclerview)
-    * [Deprecated views](https://github.com/suragch/mongol-library#deprecated-views)
 * [Unicode](https://github.com/suragch/mongol-library#unicode)
 * [Fonts](https://github.com/suragch/mongol-library#fonts)
 * [How to contribute](https://github.com/suragch/mongol-library#how-to-contribute)
@@ -42,16 +41,20 @@ You can import `mongol-library` into your project from jCenter by adding the fol
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:1.17.3'
+    implementation 'net.studymongolian:mongol-library:2.0.0'
 }
 ```
 
-If you are still using Android Studio 2.x, you should use `compile` rather than `implementation`.
+If you *not* using the AndroidX support library, then use the following import instead:
+
+```java
+implementation 'net.studymongolian:mongol-library:1.17.3'
+```
 
 #### Notes
 
 - **The minimum SDK version for this library is 14.** So if you are supporting Android versions below API 14 (Android 4.0 Icecream Sandwich), then you won't be able to use this library.
-- Upgrades in the form of `1.x` likely introduce breaking changes, so don't use `1.x+` notation.
+- Beginning with version `2.0.0`, this library uses [semantic versioning](https://semver.org/).
 
 ## UI Components
 
@@ -536,21 +539,6 @@ Also see the example in the Demo App. Here is the relevant code:
 * [activity_horizontal_recyclerview.xml](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/res/layout/activity_horizontal_recyclerview.xml)
 * [horizontal_recyclerview_item.xml](https://github.com/suragch/mongol-library/blob/master/demo-app/src/main/res/layout/horizontal_recyclerview_item.xml)
 
-### Deprecated views
-
-In the past I displayed Mongolian by rotating and mirroring the standard Android views (mainly `TextView`). There are a number of disadvantages with this method, which is why I no longer do it. However, I am including the following two views (but omitting `RotatedEditText`) in the library. This is partly for historical/reference purposes and partly because they could be used if `MongolTextView` is lacking some fuctionality that you need. 
-
-* [RotatedTextView](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedTextView.java)
-* [RotatedViewGroup](https://github.com/suragch/mongol-library/blob/master/mongol-library/src/main/java/net/studymongolian/mongollibrary/RotatedViewGroup.java)
-
-These views are deprecated. In the future they may be dropped from the library. If you plan to use them long term, it is recommended that you just copy the code into your project. 
-
-Disadvantages of using these views:
-
-* Since correct text orientation is achieved by rotating and mirroring the entire view, a vertically mirrored font must be used with them. This font is not included with this library. However, you may [download them from Menksoft](http://www.menksoft.com/site/alias__menkcms/2805/Default.aspx) (Choose the Photoshop mirrored fonts). 
-* It is very difficult to disable the popup menu to replace it with a Mongolian one. (This was the primary reason that this library was started.) 
-* Any glyphs not included in the mirrored font will be backwards. That includes all Chinese and other CJK characters. Also, emoji will not be correctly rotated. 
-
 ## Unicode 
 
 All of the UI components in this library are designed to use Unicode for all input and output. (However, since glyph rendering internally uses Menksoft code, you can also use Menksoft code for input. This is not recommended, though.) 
@@ -667,7 +655,6 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 #### TODO 
 
 * [ ] translate this documentation into Mongolian and correct the Chinese translation
-* [ ] `MongolTextView` line spacing
 * [ ] `MongolTextView` or its helper classes need optimization. Slow rendering time for long text strings.
 * [ ] more `MongolAlertDialog` types (check box, radio button, list)
 * [ ] add lots more jUnit and instrumentation tests 
@@ -676,6 +663,7 @@ The keyboards are embedded in the keyboard container, which acts as a controller
 
 #### Version changes 
 
+* `2.0.0`: Breaking change. Update for AndroidX support. Cleaned up some code warnings. Using [semantic versioning](https://semver.org/) from now on. Removed deprecated views.
 * `1.17.2`: Updated gradle. Nothing should be different in the library API.
 * `1.17.2`: Minor keyboard adjustments (removed a few of the vertical presentation forms)
 * `1.17.1`: Added newline key to nav keyboard; added vertical presentation forms to Mongolian keyboards

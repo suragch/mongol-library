@@ -254,7 +254,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 View child = getChildAt(keyIndex);
 
                 float keyWidth = totalWidth * mKeyWeights[keyIndex];
-                float keyHeight = totalHeight / numberOfRows;
+                float keyHeight = totalHeight / (float) numberOfRows;
                 child.measure(MeasureSpec.makeMeasureSpec((int) keyWidth, MeasureSpec.EXACTLY),
                         MeasureSpec.makeMeasureSpec((int) keyHeight, MeasureSpec.EXACTLY));
 
@@ -512,7 +512,7 @@ public abstract class Keyboard extends ViewGroup implements Key.KeyListener {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setClippingEnabled(false);
-        int location[] = new int[2];
+        int[] location = new int[2];
         key.getLocationInWindow(location);
         int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         popupView.measure(measureSpec, measureSpec);
