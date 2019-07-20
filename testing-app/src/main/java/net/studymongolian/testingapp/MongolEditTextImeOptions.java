@@ -25,18 +25,18 @@ public class MongolEditTextImeOptions extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Toast.makeText(MongolEditTextImeOptions.this, "Search", Toast.LENGTH_SHORT).show();
-                return false;
+                return true;
             }
         });
 
-//        MongolEditText metSearch = findViewById(R.id.met_search);
-//        metSearch.setOnEditorActionListener(new MongolEditText.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(MongolEditText v, int actionId, KeyEvent event) {
-//                Toast.makeText(MongolEditTextImeOptions.this, "Search", Toast.LENGTH_SHORT).show();
-//                return true;
-//            }
-//        });
+        MongolEditText metSearch = findViewById(R.id.met_search);
+        metSearch.setOnEditorActionListener(new MongolEditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(MongolEditText v, int actionId, KeyEvent event) {
+                Toast.makeText(MongolEditTextImeOptions.this, "Search", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
 

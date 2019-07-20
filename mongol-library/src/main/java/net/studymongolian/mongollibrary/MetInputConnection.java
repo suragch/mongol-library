@@ -45,7 +45,6 @@ class MetInputConnection extends BaseInputConnection {
         // see https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#closeConnection()
         super.closeConnection();
         mMongolEditText.ensureEndedBatchEdit();
-        //mMongolEditText.clearExtractedText();
     }
 
     @Override
