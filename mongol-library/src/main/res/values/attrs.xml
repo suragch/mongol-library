@@ -17,6 +17,27 @@
 
     <declare-styleable name="MongolEditText">
         <attr name="cursorVisible" format="boolean"/>
+        <attr name="inputType">
+            <flag name="none" value="0"/>
+            <flag name="text" value="1"/>
+            <flag name="number" value="2"/>
+            <flag name="phone" value="3"/>
+            <flag name="datetime" value="4"/>
+            <flag name="textUri" value="11"/>
+            <flag name="textEmailAddress" value="21"/>
+        </attr>
+        <attr name="imeOptions">
+            <!-- these are the same values as the Android EditorInfo.imeOptions constants -->
+            <flag name="normal" value="0"/>
+            <flag name="actionUnspecified" value="0"/>
+            <flag name="actionNone" value="1"/>
+            <flag name="actionGo" value="2"/>
+            <flag name="actionSearch" value="3"/>
+            <flag name="actionSend" value="4"/>
+            <flag name="actionNext" value="5"/>
+            <flag name="actionDone" value="6"/>
+            <flag name="actionPrevious" value="7"/>
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="MongolLabel">

@@ -21,6 +21,7 @@
         <activity android:label="@string/mongol_textview_spacing_activity_title"
             android:name=".MongolTextViewSpacingActivity"/>
         <activity android:name=".KeyboardActivity"/>
+        <activity android:name=".MongolEditTextImeOptions"/>
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import android.text.Selection;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
@@ -135,8 +136,14 @@ class MetInputConnection extends BaseInputConnection {
         return super.requestCursorUpdates(cursorUpdateMode);
     }
 
+    // TODO
+    @Override
+    public boolean performEditorAction(int actionCode) {
+        mMongolEditText.onEditorAction(actionCode);
+        return true;
+    }
+
     // TODO commitCompletion: after adding completion choices
     // https://developer.android.com/reference/android/view/inputmethod/InputConnection.html#commitCompletion(android.view.inputmethod.CompletionInfo)
     // TODO commitCorrection: add spell correction at some future date
-    // TODO? performEditorAction
 }

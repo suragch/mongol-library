@@ -5,12 +5,15 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.LocaleList;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -25,6 +28,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,11 +40,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.HorizontalScrollView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.XmlRes;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.BreakIterator;
 import java.util.ArrayList;
-
 
 
 // FIXME crash if setting on OnFocusChangeListener
@@ -63,6 +71,8 @@ public class MongolEditText extends MongolTextView {
     private boolean mAllowSystemKeyboard = true;
     private ContextMenuCallback mContextMenuCallbackListener;
     private int mExtractedTextRequestToken = 0;
+    InputContentType mInputContentType;
+    int mInputType = EditorInfo.TYPE_CLASS_TEXT;
 
     private int mSelectionHandle = SCROLLING_UNKNOWN;
     private static final int SCROLLING_UNKNOWN = 0;
@@ -100,7 +110,11 @@ public class MongolEditText extends MongolTextView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MongolEditText, defStyleAttr, 0);
         mCursorVisible = a.getBoolean(R.styleable.MongolEditText_cursorVisible, true);
+        int imeOptions = a.getInt(R.styleable.MongolEditText_imeOptions, EditorInfo.TYPE_NULL);
+        mInputType = a.getInt(R.styleable.MongolEditText_inputType, InputType.TYPE_CLASS_TEXT);
         a.recycle();
+
+        setImeOptions(imeOptions);
 
         int textLength = super.getText().length();
         setSelection(textLength); // TODO why did I do this?
@@ -352,11 +366,21 @@ public class MongolEditText extends MongolTextView {
     @Override
     public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
 
+        if (onCheckIsTextEditor() && isEnabled()) {
+            outAttrs.inputType = getInputType();
+            if (mInputContentType != null) {
+                outAttrs.imeOptions = mInputContentType.imeOptions;
+                outAttrs.privateImeOptions = mInputContentType.privateImeOptions;
+                outAttrs.actionLabel = mInputContentType.imeActionLabel;
+                outAttrs.actionId = mInputContentType.imeActionId;
+                outAttrs.extras = mInputContentType.extras;
+            } else {
+                outAttrs.imeOptions = EditorInfo.TYPE_CLASS_TEXT;
+            }
+        }
+
         outAttrs.initialSelStart = getSelectionStart();
         outAttrs.initialSelEnd = getSelectionEnd();
-
-        // TODO allow user to set type class
-        outAttrs.inputType = InputType.TYPE_CLASS_TEXT;
 
         return new MetInputConnection(this, true);
     }
@@ -373,6 +397,165 @@ public class MongolEditText extends MongolTextView {
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm == null) return;
         imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
+    }
+
+    /**
+     * Interface for listening to IME option actions
+     */
+    public interface OnEditorActionListener {
+        /**
+         * Called when an IME performs an action
+         *
+         * @param view     The MongolEditText that was clicked.
+         * @param actionId ID of the action. This will be either the
+         *                 id you set, or EditorInfo.IME_NULL if the enter key was pressed.
+         * @param event    If triggered by an enter key, this is the event;
+         *                 otherwise, this is null.
+         * @return Return true if you have consumed the action, else false.
+         */
+        boolean onEditorAction(MongolEditText view, int actionId, KeyEvent event);
+    }
+
+    public void setOnEditorActionListener(OnEditorActionListener listener) {
+        createInputContentTypeIfNeeded();
+        mInputContentType.onEditorActionListener = listener;
+    }
+
+    void createInputContentTypeIfNeeded() {
+        if (mInputContentType == null) {
+            mInputContentType = new InputContentType();
+        }
+    }
+
+    static class InputContentType {
+        int imeOptions = EditorInfo.IME_NULL;
+        String privateImeOptions;
+        CharSequence imeActionLabel;
+        int imeActionId;
+        Bundle extras;
+        OnEditorActionListener onEditorActionListener;
+        boolean enterDown;
+    }
+
+    public void setImeOptions(int imeOptions) {
+        createInputContentTypeIfNeeded();
+        mInputContentType.imeOptions = imeOptions;
+    }
+
+    public int getImeOptions() {
+        return mInputContentType != null
+                ? mInputContentType.imeOptions : EditorInfo.IME_NULL;
+    }
+
+    public void setImeActionLabel(CharSequence label, int actionId) {
+        createInputContentTypeIfNeeded();
+        mInputContentType.imeActionLabel = label;
+        mInputContentType.imeActionId = actionId;
+    }
+
+    public CharSequence getImeActionLabel() {
+        return mInputContentType != null
+                ? mInputContentType.imeActionLabel : null;
+    }
+
+    public int getImeActionId() {
+        return mInputContentType != null
+                ? mInputContentType.imeActionId : 0;
+    }
+
+    public void onEditorAction(int actionCode) {
+        final InputContentType ict = mInputContentType;
+        if (ict != null) {
+            if (ict.onEditorActionListener != null) {
+                if (ict.onEditorActionListener.onEditorAction(this,
+                        actionCode, null)) {
+                    return;
+                }
+            }
+
+            // modified this from TextView source code. Not sure if it still behaves correctly.
+            // Used to be FOCUS_FORWARD but that was giving an error.
+            if (actionCode == EditorInfo.IME_ACTION_NEXT) {
+                View v = focusSearch(FOCUS_RIGHT);
+                if (v != null) {
+                    if (!v.requestFocus(FOCUS_RIGHT)) {
+                        throw new IllegalStateException("focus search returned a view "
+                                + "that wasn't able to take focus!");
+                    }
+                }
+                return;
+
+            } else if (actionCode == EditorInfo.IME_ACTION_PREVIOUS) {
+                View v = focusSearch(FOCUS_LEFT);
+                if (v != null) {
+                    if (!v.requestFocus(FOCUS_LEFT)) {
+                        throw new IllegalStateException("focus search returned a view "
+                                + "that wasn't able to take focus!");
+                    }
+                }
+                return;
+
+            } else if (actionCode == EditorInfo.IME_ACTION_DONE) {
+                hideSystemKeyboard();
+                return;
+            }
+        }
+
+        // Press the enter key
+        // Changed original from TextView. It used to be viewRootImpl.dispatchKeyFromIme.
+        // Don't know if this still works.
+        long eventTime = SystemClock.uptimeMillis();
+        dispatchKeyEvent(
+                new KeyEvent(eventTime, eventTime,
+                        KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0, 0,
+                        KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                        KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE
+                                | KeyEvent.FLAG_EDITOR_ACTION));
+        dispatchKeyEvent(
+                new KeyEvent(SystemClock.uptimeMillis(), eventTime,
+                        KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER, 0, 0,
+                        KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                        KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE
+                                | KeyEvent.FLAG_EDITOR_ACTION));
+
+    }
+
+    public void setPrivateImeOptions(String type) {
+        createInputContentTypeIfNeeded();
+        mInputContentType.privateImeOptions = type;
+    }
+
+    public String getPrivateImeOptions() {
+        return mInputContentType != null
+                ? mInputContentType.privateImeOptions : null;
+    }
+
+    public void setInputExtras(@XmlRes int xmlResId) throws XmlPullParserException, IOException {
+        XmlResourceParser parser = getResources().getXml(xmlResId);
+        createInputContentTypeIfNeeded();
+        mInputContentType.extras = new Bundle();
+        getResources().parseBundleExtras(parser, mInputContentType.extras);
+    }
+
+    // @param create If true, the extras will be created if they don't already exist
+    public Bundle getInputExtras(boolean create) {
+        if (mInputContentType == null) {
+            if (!create) return null;
+            createInputContentTypeIfNeeded();
+        }
+        if (mInputContentType.extras == null) {
+            if (!create) return null;
+            mInputContentType.extras = new Bundle();
+        }
+        return mInputContentType.extras;
+    }
+
+    public void setRawInputType(int type) {
+        mInputType = type;
+    }
+
+    public int getInputType() {
+        return mInputType;
     }
 
     //////////// custom listener to send events to the MongolInputMethodManager //////////////////
@@ -394,7 +577,7 @@ public class MongolEditText extends MongolTextView {
 
     @Override
     public boolean onCheckIsTextEditor() {
-        return true;
+        return mInputType != EditorInfo.TYPE_NULL;
     }
 
     @Override
@@ -950,6 +1133,9 @@ public class MongolEditText extends MongolTextView {
         } else {
             if (mBlink != null) {
                 mBlink.cancel();
+            }
+            if (mInputContentType != null) {
+                mInputContentType.enterDown = false;
             }
             hideSystemKeyboard();
         }

@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
         testingActivities.add("Keyboard");
         testingActivities.add("MongolTextView");
         testingActivities.add("MongolTextView text spacing");
+        testingActivities.add("MongolEditText IME options");
 
 
         // set up the RecyclerView
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityRecyc
                 break;
             case 2: // MongolTextView text spacing
                 intent = new Intent(this, MongolTextViewSpacingActivity.class);
+                startActivity(intent);
+                break;
+            case 3: // MongolEditText IME options
+                intent = new Intent(this, MongolEditTextImeOptions.class);
                 startActivity(intent);
                 break;
         }
