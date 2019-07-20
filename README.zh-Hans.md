@@ -43,7 +43,7 @@ AndroidX:
 
 ```java
 dependencies {
-    implementation 'net.studymongolian:mongol-library:2.0.0'
+    implementation 'net.studymongolian:mongol-library:2.1.0'
 }
 ```
 
