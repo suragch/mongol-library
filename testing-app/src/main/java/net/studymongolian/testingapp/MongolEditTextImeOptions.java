@@ -2,6 +2,7 @@ package net.studymongolian.testingapp;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +34,15 @@ public class MongolEditTextImeOptions extends AppCompatActivity {
         metSearch.setOnEditorActionListener(new MongolEditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(MongolEditText v, int actionId, KeyEvent event) {
-                Toast.makeText(MongolEditTextImeOptions.this, "Search", Toast.LENGTH_SHORT).show();
+
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    Toast.makeText(MongolEditTextImeOptions.this, "Search", Toast.LENGTH_SHORT).show();
+                }
+
                 return true;
             }
         });
+
     }
 
 
